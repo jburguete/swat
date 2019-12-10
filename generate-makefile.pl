@@ -37,3 +37,26 @@ foreach $source (@sources)
 			"\t\$(cc) \$(cflags) ".$source." -o ".$obj."\n"
 	}
 }
+close DATA;
+@sources = (
+	"ascrv\.f90",
+	"aunif\.f90",
+	"aveval\.f90",
+	"caps\.f90",
+	"clgen\.f90",
+	"dstn1\.f90",
+	"ee\.f90",
+	"estimate_ksat\.f90",
+	"expo\.f90",
+	"jdt\.f90",
+	"log_normal\.f90",
+	"nuts\.f90",
+	"qman\.f90",
+	"ran1\.f90",
+	"theta\.f90",
+	"virtual\.f90"
+);
+foreach $source (@sources)
+{
+	system "sed -i \"s/".$source." parm\.mod/".$source."/g\" Makefile";
+}
