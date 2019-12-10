@@ -79,7 +79,9 @@ subroutine bmpfixed
    use parm
    implicit none
 
-!! set variables
+   integer :: j
+
+!!	set variables
    j = ihru
 
 

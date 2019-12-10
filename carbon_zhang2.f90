@@ -3,7 +3,7 @@ subroutine carbon_zhang2
    implicit none
    !!============================================
    !!Input variables
-   !!    sol_bd(:,:) |Mg/m**3       |bulk density of the soil
+   !!    sol_bd(:,:)   |Mg/m**3       |bulk density of the soil
    !!    sol_st(:,:)   |mm H2O        |amount of water stored in the soil layer on
    !!                                 |current day
    !!    sol_fc(:,:)   |mm H2O        |amount of water available to plants in soil
@@ -112,7 +112,8 @@ subroutine carbon_zhang2
    real*8 :: TOT
    real*8 :: PN1, PN2, PN3, PN4, PN5, PN6, PN7, PN8, PN9
    real*8 :: SUM, CPN1, CPN2, CPN3, CPN4, CPN5
-   real*8 :: WMIN,DMDN, wdn, Delta_BMC, DeltaWN
+   real*8 :: WMIN,DMDN, wdn, DeltaWN
+   real*8 :: BMNTP, decr, hmn, hmp, hmp_rate, RLR, rmn1, rmp, RTO, rwn, XBM
 
 
    j = 0
@@ -123,7 +124,7 @@ subroutine carbon_zhang2
    cmtot_kgh(j) = 0.
    !! initilize local variables
    DeltaWN = 0.
-   DeltaBMC = 0.
+   !DeltaBMC = 0. ! not used
    wdn = 0.
    X1 = 0.
    X3 = 0.
@@ -145,7 +146,7 @@ subroutine carbon_zhang2
    LSCTA = 0.
    LSLCTA = 0.
    LSLNCTA = 0.
-   SNTA = 0.
+   !SNTA = 0. ! not used
    LMCTA = 0.
    LMNTA = 0.
    BMCTA = 0.

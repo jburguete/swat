@@ -135,11 +135,12 @@ subroutine biofilm
    real*8 :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn
    real*8 :: uu, vv, cordo, f1, algcon, orgncon, nh3con, no2con, no3con
    real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot, bc1mod, bc2mod
-   real*8 :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
-   real*8 :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
-   real*8 :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
-   real*8 :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
+   real*8, parameter :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
+   real*8, parameter :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
+   real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
+   real*8, parameter :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
 !      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
+   real*8, parameter :: dcoef = 3. !! it was undefined, it is as in watqual.f ?
 
    jrch = 0
    jrch = inum1

@@ -21,7 +21,7 @@ subroutine burnop
    implicit none
 
    integer :: j
-   real*8 :: aphu
+   real*8 :: pburn, xx
 
    j = 0
    j = ihru

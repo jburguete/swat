@@ -79,7 +79,7 @@ subroutine carbon
    real*8 :: sol_thick, sol_mass, sol_cmass, sol_nmass
    real*8 :: net_N, net_P, rnet_N, rnet_P, mnet_N, mnet_P
    real*8 :: wc, fc, wf, of, void
-   real*8 :: sat, ffres1, ffres2, ffman1, ffman2
+   real*8 :: sat, ffres, ffres1, ffres2, ffman, ffman1, ffman2
 
    !! mass balance variables
    real*8 :: sum_c_i, sum_n_i, sum_p_i

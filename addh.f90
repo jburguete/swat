@@ -85,8 +85,8 @@ subroutine addh
          end do
       end do
 
-      DO K = 1, nstep
-         QHY(K,ihout,IHX(1))=QHY(K,inum1,IHX(1))+QHY(K,inum2,IHX(1)) !flood routing jaehak 2017
+      DO kk = 1, nstep
+         QHY(kk,ihout,IHX(1))=QHY(kk,inum1,IHX(1))+QHY(kk,inum2,IHX(1)) !flood routing jaehak 2017
       END DO
 
    endif

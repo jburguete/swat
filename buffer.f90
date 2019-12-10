@@ -112,7 +112,8 @@ subroutine buffer
    use parm
    implicit none
 
-   integer :: j, k
+   integer :: j
+   real*8 :: reduc
 
    j = 0
    j = ihru

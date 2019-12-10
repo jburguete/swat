@@ -17,7 +17,7 @@ subroutine anfert
 !!                               |nitrogen
 !!    forgp(:)    |kg orgP/kg frt|fraction of fertilizer which is organic
 !!                               |phosphorus
-!!    afrt_surface(:) |none          |fraction of fertilizer which is applied
+!!    afrt_surface(:) |none      |fraction of fertilizer which is applied
 !!                               |to top 10 mm of soil (the remaining
 !!                               |fraction is applied to first soil
 !!                               |layer)
@@ -25,7 +25,7 @@ subroutine anfert
 !!                               |applied in one year by auto-fertilization
 !!    auto_napp(:)|kg NO3-N/ha   |maximum NO3-N content allowed in one
 !!                               |fertilizer application
-!!    auto_nstrs(:)|none          |nitrogen stress factor which triggers
+!!    auto_nstrs(:)|none         |nitrogen stress factor which triggers
 !!                               |auto fertilization
 !!    auton       |kg N/ha       |amount of nitrogen applied in auto-fert
 !!                               |application
@@ -168,9 +168,12 @@ subroutine anfert
    use parm
    implicit none
 
-   real*8, parameter :: rtoaf = 0.50
+            !orgc_f is the fraction of organic carbon in fertilizer
+            !for most fertilziers this value is set to 0.
+   real*8, parameter :: rtoaf = 0.50, orgc_f = 0.0
    integer :: j, ly, ifrt
-   real*8 :: tsno3, tpno3, dwfert, xx, targn, tfp
+   real*8 :: tsno3, tpno3, dwfert, xx, targn, tfp, RLN, X1, X10, X8, XXX, XZ,&
+     YY, YZ, ZZ
 
    j = 0
    j = ihru
@@ -275,9 +278,6 @@ subroutine anfert
             &* dwfert * forgn(ifrt)
             sol_aorgn(ly,j) = sol_HSN(ly,j)
 
-            !orgc_f is the fraction of organic carbon in fertilizer
-            !for most fertilziers this value is set to 0.
-            orgc_f = 0.0
 
             !X1 is fertlizer applied to layer (kg/ha)
             !xx is fraction of fertilizer applied to layer

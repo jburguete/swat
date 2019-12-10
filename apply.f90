@@ -26,7 +26,7 @@ subroutine apply
 !!    nyskip       |none             |number of years to skip output
 !!                                   |summarization/printing
 !!    plt_pst(:,:) |kg/ha            |pesticide on plant foliage
-!!    pst_dep      |kg/ha          |depth of pesticide in soil
+!!    pst_dep      |kg/ha            |depth of pesticide in soil
 !!    pst_kg       |kg/ha            |amount of pesticide applied to HRU
 !!    sol_pst(:,:,1)|kg/ha           |pesticide in first layer of soil
 !!    wshd_pstap(:)|kg/ha            |total amount of pesticide type applied in
@@ -40,7 +40,7 @@ subroutine apply
 !!                               |channel in subbasin
 !!    plt_pst(:,:)|kg/ha         |pesticide on plant foliage
 !!    sol_pst(:,:,1)|kg/ha       |pesticide in first layer of soil
-!!    wshd_pstap(:)|kg/ha         |total amount of pesticide type applied in
+!!    wshd_pstap(:)|kg/ha        |total amount of pesticide type applied in
 !!                               |watershed during simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -64,7 +64,7 @@ subroutine apply
    use parm
    implicit none
 
-   integer :: j, kk, k, jj
+   integer :: j, kk, k, jj, nly
    real*8 :: xx, gc
 
    j = 0

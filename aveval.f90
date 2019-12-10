@@ -1,7 +1,7 @@
 subroutine aveval(itel,ave)
    implicit none
 
-   integer itel
+   integer ii, itel
    real*8 sumdat, sumout, ave, cal1, cal2
    sumdat=0.
    sumout=0.
