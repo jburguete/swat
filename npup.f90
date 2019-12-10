@@ -89,6 +89,7 @@ subroutine npup
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, icrop, l, ir
    real*8 :: up2, uapd, upmx, uapl, gx

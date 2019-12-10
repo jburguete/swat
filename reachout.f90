@@ -213,6 +213,7 @@ subroutine reachout
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, ii
    real*8 :: sedcon, bedvol, sedpest

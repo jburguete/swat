@@ -154,6 +154,7 @@ subroutine grow
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: delg, par, ruedecl, beadj, reg, f, ff, deltalai

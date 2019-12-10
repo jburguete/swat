@@ -167,6 +167,7 @@ subroutine nminrl
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k, kk
    real*8 :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr

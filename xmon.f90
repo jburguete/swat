@@ -33,6 +33,7 @@ subroutine xmon
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: m1, nda
 

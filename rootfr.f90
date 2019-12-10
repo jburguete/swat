@@ -4,6 +4,7 @@ subroutine rootfr
    !! March, 2009 further adjustments expected
 
    use parm
+   implicit none
 
    real*8 :: sol_thick(sol_nly(ihru))
    real*8 :: cum_rd, cum_d, cum_rf, x1, x2

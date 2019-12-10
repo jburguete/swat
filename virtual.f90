@@ -259,6 +259,7 @@ subroutine virtual
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, sb, kk, ii
    real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr,hr

@@ -70,6 +70,7 @@ subroutine pgenhr(jj)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: jj
    integer :: itime, pt, ihour, nhour, k

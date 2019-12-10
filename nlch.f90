@@ -59,6 +59,7 @@ subroutine nlch
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, jj
    real*8 :: sro, ssfnlyr, percnlyr, vv, vno3, co

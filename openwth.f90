@@ -41,6 +41,7 @@ subroutine openwth
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, kk1, kk2, k
    character (len=80) :: titldum

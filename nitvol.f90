@@ -73,6 +73,7 @@ subroutine nitvol
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
 
    integer :: j, k
    real*8 :: sw25, swwp, swf, xx, dmidl, dpf, akn, akv, rnv, rnit, rvol

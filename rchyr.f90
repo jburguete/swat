@@ -108,6 +108,7 @@ subroutine rchyr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8, dimension (mrcho) :: pdvar, pdvr

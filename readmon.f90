@@ -65,6 +65,7 @@ subroutine readmon
 
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    integer :: ii, iya, mon, eof, ia1, ia2, begmon

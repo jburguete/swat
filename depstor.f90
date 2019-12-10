@@ -52,6 +52,7 @@ subroutine depstor
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer ::j
    real*8 :: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei

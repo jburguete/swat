@@ -71,6 +71,7 @@ subroutine ttcoef(k)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
 
    integer, intent (in) :: k
    integer :: jj

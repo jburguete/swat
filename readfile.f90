@@ -119,6 +119,7 @@ subroutine readfile
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=13) :: figfile, bsnfile, plantdb, tilldb, urbandb,&
    &pestdb, fertdb, fcstfile

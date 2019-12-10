@@ -44,6 +44,7 @@ subroutine readpest
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: ip, ipnum, eof
    character (len=17) :: pstnm

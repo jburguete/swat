@@ -152,6 +152,7 @@ subroutine readplant
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: ic, eof, icnum, yrsmat
    real*8 :: xx, usle_c, frgrw2, laimx2, co2hi, bioehi, vpdfr, blaic

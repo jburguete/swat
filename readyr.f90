@@ -55,6 +55,7 @@ subroutine readyr
 
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    integer :: ii, iya, eof, ia1

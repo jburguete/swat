@@ -181,6 +181,7 @@ subroutine hruday
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, sb, ii, iflag
    real*8, dimension (mhruo) :: pdvas, pdvs

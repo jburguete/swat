@@ -84,6 +84,7 @@ subroutine dormant
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: resnew
    integer :: j

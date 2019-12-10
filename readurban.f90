@@ -58,6 +58,7 @@ subroutine readurban
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: iu, iunum, eof
    character (len=4) :: unam

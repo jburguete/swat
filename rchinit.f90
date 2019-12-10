@@ -80,6 +80,7 @@ subroutine rchinit
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: ii, jrch, kk
 

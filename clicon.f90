@@ -135,6 +135,7 @@ subroutine clicon
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib
    real*8 :: tmxbsb, tmnbsb, rbsb, rhdbsb, rabsb, u10bsb, rmxbsb

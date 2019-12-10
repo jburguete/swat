@@ -22,6 +22,7 @@ real*8 function theta(r20,thk,tmp) result (r_theta)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+   implicit none
 
    real*8, intent (in) :: r20, thk, tmp
 

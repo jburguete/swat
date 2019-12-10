@@ -110,6 +110,7 @@ subroutine readfig
 
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    character (len=1) ::  a

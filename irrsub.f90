@@ -83,6 +83,7 @@ subroutine irrsub
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k, flag
    real*8 :: vmma, vmm, cnv, vmxi, vol, vmms, vmmd

@@ -117,6 +117,7 @@ subroutine rthmusk
 !! Modified by N.Kannan, Blackland Research Center, Temple, USA
 
    use parm
+   implicit none
 
    integer :: jrch, ii
    real*8 :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c

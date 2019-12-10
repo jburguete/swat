@@ -111,6 +111,7 @@ subroutine rchmon(mdays)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: mdays
    integer :: j

@@ -23,6 +23,7 @@ real*8 function dstn1(rn1,rn2) result (r_dstn1)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
    real*8, intent (in) :: rn1, rn2
 
    r_dstn1 = 0.

@@ -56,6 +56,7 @@ subroutine cfactor
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: c, bio_frcov, rsd_frcov

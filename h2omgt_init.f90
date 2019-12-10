@@ -54,6 +54,7 @@ subroutine h2omgt_init
 
 
    use parm
+   implicit none
 
    integer :: j, mon
 

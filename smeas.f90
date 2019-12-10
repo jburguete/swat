@@ -51,6 +51,7 @@ subroutine smeas
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: k, iyp, idap, l, inum3sprev
    real*8 :: rabsb

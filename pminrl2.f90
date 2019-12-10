@@ -91,6 +91,7 @@ subroutine pminrl2
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
    integer :: j, l
    real*8 :: rto, rmn1, roc, wetness, base, vara,varb,varc,as_p_coeff
    real*8  solp(mlyr),actp(mlyr),stap(mlyr) !! locals for concentation based data

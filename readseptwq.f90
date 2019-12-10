@@ -62,6 +62,7 @@ subroutine readseptwq
 !!     of septic documentation. Data were compiled from Siegrist et al, 2005 and McCray et al,2007.
 
    use parm
+   implicit none
 
    character* 4 sptnames(50)
    character*4 sptname

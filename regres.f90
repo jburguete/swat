@@ -51,6 +51,7 @@ real*8 function regres(k) result (r_regres)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm, only: fimp, hru_km, hru_sub, ihru, ireg, precipday, urblu
+   implicit none
 
    integer, intent (in) :: k
    real*8, dimension (5,3) :: beta

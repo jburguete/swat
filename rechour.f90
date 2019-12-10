@@ -97,6 +97,7 @@ subroutine rechour
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: flohr, sedhr, orgnhr, orgphr, no3hr, minphr, solpsthr
    real*8 :: nh3hr, no2hr, cmtl1hr, cmtl2hr, cmtl3hr, srbpsthr

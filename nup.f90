@@ -93,6 +93,7 @@ subroutine nup
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, icrop, l, ir
    real*8 :: un2, unmx, uno3l, gx

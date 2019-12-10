@@ -27,6 +27,7 @@ subroutine sumhyd
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    do ivar = 1, 6
       shyd(ivar,ihout) = shyd(ivar,ihout) + varoute(ivar+1,ihout)

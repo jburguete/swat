@@ -29,6 +29,7 @@ subroutine schedule_ops
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, plant_no , zz
    real*8 :: b

@@ -14,6 +14,7 @@ subroutine tillfactor(jj,bmix,emix,dtil,sol_thick)
    ! XX = 0.5 is the initial value that works OK for the range of values observed
    ! If a layer is only partially tilled then emix is corrected accordingly
    use parm
+   implicit none
 
    integer, intent (in) :: jj
    real*8, intent (in) :: bmix

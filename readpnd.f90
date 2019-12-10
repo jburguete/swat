@@ -164,6 +164,7 @@ subroutine readpnd
 
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    character (len=200) :: lus

@@ -105,6 +105,7 @@ subroutine rteinit
 
 
    use parm
+   implicit none
 
    integer :: icd, inm1, inm2, inm3, inm4, iht
    real*8 :: rnm1

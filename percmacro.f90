@@ -46,6 +46,7 @@ subroutine percmacro
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, ly
    real*8 :: crklch = 0.5, xx

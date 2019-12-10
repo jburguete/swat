@@ -107,6 +107,7 @@ subroutine etact
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, ib, ly
 !!    real*8, parameter :: esd = 500., etco = 0.80, effnup = 0.1

@@ -56,6 +56,7 @@ subroutine clgen(j)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: j
    integer :: ii

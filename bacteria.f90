@@ -148,6 +148,7 @@ subroutine bacteria
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: bpq, blpq, bps, blps, wt1, cbact, xx

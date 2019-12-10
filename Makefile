@@ -7,6 +7,7 @@ objs = addh.o albedo.o allocate_parms.o alph.o anfert.o apex_day.o apply.o ascrv
 
 swat$(EXE): $(objs)
 	$(cc) -static $(objs) -o swat$(EXE)
+	$(strip) swat$(EXE)
 
 clean:
 	rm *.o swat*
@@ -15,7 +16,7 @@ tar:
 	tar cJf swat.tar.xz *.f90 *.pl *.sh Makefile
 
 modparm.o: modparm.f90 Makefile
-	$(prefix)$(cc) $(cflags) modparm.f90 -o modparm.o
+	$(cc) $(cflags) modparm.f90 -o modparm.o
 
 addh.o: addh.f90 modparm.o
 	$(cc) $(cflags) addh.f90 -o addh.o

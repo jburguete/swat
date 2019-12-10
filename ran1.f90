@@ -2,7 +2,7 @@ real*8 function ran1(idum)
 !
 !
 !  THIS SUBROUTINE IS FROM "NUMERICAL RECIPES" BY PRESS ET AL.
-   implicit real*8 (a-h,o-z)
+   implicit none
    dimension rqq(97)
    parameter (m1 = 259200, ia1 = 7141, ic1 = 54773, rm1 =&
    &3.8580247e-6)

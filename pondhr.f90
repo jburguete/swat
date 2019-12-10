@@ -128,6 +128,7 @@ subroutine pondhr(j,k)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: j, k
    real*8 :: vol, sed, pndsa, xx, targ, tpco, phosk, nitrok, chlaco

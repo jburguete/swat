@@ -22,6 +22,7 @@ subroutine volq
 
 
    use parm
+   implicit none
 
 
 !! Compute surface runoff for day

@@ -29,6 +29,7 @@ subroutine routeunit
 !!
 
    use parm
+   implicit none
 !        inum2 = 1
    varoute(:,ihout) = 0.
    sumc = 0.

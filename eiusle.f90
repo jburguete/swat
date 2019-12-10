@@ -47,6 +47,7 @@ subroutine eiusle
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: ab, xa, preceff, ajp, xb, pkrf, pkrf30

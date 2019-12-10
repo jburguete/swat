@@ -48,6 +48,7 @@ subroutine allocate_parms
 
 
    use parm
+   implicit none
 
    allocate (alph_e(mhru))
    allocate (co_p(mhru))

@@ -145,6 +145,7 @@ subroutine filter
 
 
    use parm
+   implicit none
 
    integer :: j, k
    real*8 :: sdrain_vfs1, drain_vfs2, area_vfs1, area_vfs2, vfs_depth1,&

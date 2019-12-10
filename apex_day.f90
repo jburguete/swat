@@ -101,6 +101,7 @@ subroutine apex_day
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: ii, j
 

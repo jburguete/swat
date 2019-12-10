@@ -28,6 +28,7 @@ subroutine routels(iru_sub)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!
    use parm
+   implicit none
    real*8 :: latqout, gwqout, latqrunon, surfqrunon, latqlyr
 
 !!    compute infiltration from surface runon to next landscape unit

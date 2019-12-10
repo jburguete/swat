@@ -38,6 +38,7 @@ subroutine std1
 
 
    use parm
+   implicit none
 
 !!    input summary file
    write (24,1000) prog,values(2),values(3),values(1),values(5),&

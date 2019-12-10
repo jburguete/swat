@@ -73,6 +73,7 @@ subroutine pestlch
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, ly, k, kk
    real*8 :: dg, yy, qsurf, vf, zdb1, xx, co, csurf, cocalc

@@ -63,6 +63,7 @@ subroutine percmicro(ly1)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: ly1
    integer :: j

@@ -72,6 +72,7 @@ subroutine killop
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k
    real*8 :: resnew

@@ -69,6 +69,7 @@ subroutine ttcoef_wway
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
 
 
    integer :: jj, k

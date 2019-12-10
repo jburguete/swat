@@ -56,6 +56,7 @@ subroutine subday
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: sb, ii
    real*8 :: sub_ha

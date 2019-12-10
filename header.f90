@@ -25,6 +25,7 @@ subroutine header
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
 !!    column headers for HRU output file
    heds = (/"  PRECIPmm"," SNOFALLmm"," SNOMELTmm","     IRRmm",&

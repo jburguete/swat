@@ -94,6 +94,7 @@ subroutine irr_res
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jres, k, flag
    real*8 :: cnv, vmm, vol, vmxi

@@ -81,6 +81,7 @@ subroutine readlwq
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: eof
    character (len=80) :: titldum

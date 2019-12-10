@@ -27,6 +27,8 @@ subroutine log_normal(mu,sig,c)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
+
    real*8,intent(in) :: mu,sig
    real*8,intent(out):: c
    real*8 :: temp(2),r,theta

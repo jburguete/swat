@@ -94,6 +94,7 @@ subroutine res
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jres
    real*8 :: vol, sed, vvr, targ, xx, flw

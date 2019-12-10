@@ -95,6 +95,7 @@ subroutine reshr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jres, inhyd
    real*8 :: vol, sed, vvr, targ, xx, flw

@@ -44,6 +44,7 @@ subroutine swbl(snow,irrg)
 !!ie this equation needs work
 
    use parm
+   implicit none
 
    real*8, intent (in) :: snow, irrg
 

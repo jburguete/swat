@@ -63,6 +63,7 @@ subroutine pestw
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: k, kk, j, l
    real*8 :: pfp, pfg

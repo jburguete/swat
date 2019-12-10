@@ -37,6 +37,7 @@ subroutine gwmod_deep
 !!    revap is subtracted and rchrg is delayed (johnson, 1977)
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: rchrg1

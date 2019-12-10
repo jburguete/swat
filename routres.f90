@@ -190,6 +190,7 @@ subroutine routres
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jres, k, ii
    real*8 :: sepmm, resorgpc, ressolpc, sedcon, resorgnc, resno3c

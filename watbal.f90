@@ -88,6 +88,7 @@ subroutine watbal
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: dstor, h2oloss

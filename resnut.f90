@@ -74,6 +74,7 @@ subroutine resnut
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jres, iseas
    real*8 :: nitrok, phosk, tpco, chlaco, conc_p, conc_n

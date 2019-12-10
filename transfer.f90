@@ -121,6 +121,7 @@ subroutine transfer
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
 
    integer :: k, ii
    real*8 :: volum, tranmx, ratio

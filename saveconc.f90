@@ -96,6 +96,7 @@ subroutine saveconc
 !!    Modified by N.Kannan, Blackland Research at Temple
 
    use parm
+   implicit none
 
    real*8, dimension (19) :: varii
    integer :: ii, j

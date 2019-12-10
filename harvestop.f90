@@ -130,6 +130,7 @@ subroutine harvestop
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
 
    integer :: j, k
 

@@ -125,6 +125,7 @@ subroutine pond(k)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: k
    real*8 :: vol, sed, pndsa, xx, targ, tpco, phosk, nitrok, chlaco

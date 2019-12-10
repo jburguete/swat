@@ -25,6 +25,7 @@ real*8 function qman(x1,x2,x3,x4) result (r_qman)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
    real*8, intent (in) :: x1, x2, x3, x4
 
    r_qman = 0.

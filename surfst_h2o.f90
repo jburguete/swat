@@ -48,6 +48,7 @@ subroutine surfst_h2o
 
 
    use parm
+   implicit none
 
    integer :: j
 

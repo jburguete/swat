@@ -123,6 +123,7 @@ subroutine harvgrainop
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f

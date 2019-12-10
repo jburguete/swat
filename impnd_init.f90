@@ -124,6 +124,7 @@ subroutine impnd_init
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: cl, si, mnpsz, targ, lnvol

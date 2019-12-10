@@ -35,6 +35,7 @@ subroutine enrsb(iwave)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: iwave
    integer :: j

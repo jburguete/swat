@@ -133,6 +133,7 @@ subroutine impndyr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, sb, ii, iflag
    real*8 :: orgn_ppm, orgp_ppm, ano3_ppm, minp_ppm, chla_ppm

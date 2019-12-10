@@ -53,6 +53,7 @@ subroutine sim_inityr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    !! initialize variables/arrays at beginning of every year
    ncpest = 1

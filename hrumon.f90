@@ -154,6 +154,7 @@ subroutine hrumon
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, sb, ii, days, iflag
    real*8 :: dmt, yldt

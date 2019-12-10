@@ -131,6 +131,7 @@ subroutine sub_subbasin
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
 
    real*8 :: hvol(10)
    integer :: sb

@@ -236,6 +236,7 @@ end subroutine bmp_wet_pond
 subroutine ext_dpth(hmax)
    use parm
    implicit none
+   implicit none
 
    real*8,dimension(40) :: cumrain=(/0.,0.006,0.012,0.019,0.026,0.034,&
    &0.043,0.053,0.064,0.077,0.092,0.11,0.134,0.166,0.212,0.287,0.384,&

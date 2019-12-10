@@ -101,6 +101,7 @@ subroutine command
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    idum = 0
 

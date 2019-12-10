@@ -94,6 +94,7 @@ subroutine getallo
 
 
    use parm
+   implicit none
 
    character (len=13) :: urbandb, plantdb, tilldb, pestdb, figfile,&
    &fertdb, subfile, fcstfile, bsnfile

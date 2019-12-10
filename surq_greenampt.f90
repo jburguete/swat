@@ -71,6 +71,7 @@ subroutine surq_greenampt
 
 
    use parm
+   implicit none
 
    integer :: j, k, kk, sb, ii,ida
    real*8 :: adj_hc, dthet, soilw, psidt, tst, f1

@@ -59,6 +59,7 @@ subroutine tran
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: qinit, vo, dur, k, b, zz, bxw, pr1, a, xx, axw, pxw

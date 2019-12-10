@@ -369,6 +369,7 @@ subroutine readbsn
 
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    character (len=130) :: tlu

@@ -30,6 +30,7 @@ subroutine resetlu
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
    character(len=80) :: titldum
 
    open (9123,file=fname(no_lup))

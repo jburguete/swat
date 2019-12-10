@@ -55,6 +55,7 @@ subroutine readfcst
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    real*8, dimension (12) :: pcpmm, pcpd

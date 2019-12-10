@@ -83,6 +83,7 @@ subroutine rtsed_yangsand
 !!    Plus particle size tracking.
 
    use parm
+   implicit none
 
    integer :: jrch, ch_d50type
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase

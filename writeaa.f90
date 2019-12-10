@@ -309,6 +309,7 @@ subroutine writeaa
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: yrs, xx, xmm, sumno3, sumorgn, summinp, sumorgp
    integer :: j, nnro, nicr, k, ly, ic, ii

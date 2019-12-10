@@ -54,6 +54,7 @@ subroutine subaa(years)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8, intent (in) :: years
    integer :: sb, ii

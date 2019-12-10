@@ -166,6 +166,7 @@ subroutine anfert
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8, parameter :: rtoaf = 0.50
    integer :: j, ly, ifrt

@@ -89,6 +89,7 @@ subroutine percmain
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, j1, nn, k, sb,isp, ii
    real*8 :: lid_cuminf_total

@@ -108,6 +108,7 @@ subroutine soil_chem
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: nly, j, jj, n
    real*8 :: xx, dg, wt1, zdst, soldepth, sumno3, sumorgn, summinp

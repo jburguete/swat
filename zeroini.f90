@@ -4,6 +4,7 @@ subroutine zeroini
 !!    this subroutine zeros values for single array variables
 
    use parm
+   implicit none
    lid_file = ""
    dpd_file = ""
    wpd_file = ""

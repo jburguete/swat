@@ -45,6 +45,7 @@ subroutine readfert
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: it, ifnum, eof
    real*8 :: ffminn, ffminp, fforgn, fforgp, ffnh3n, bctpdb, bctlpdb

@@ -27,6 +27,7 @@ subroutine carbon
    !! manc_hum = humified carbon manure
 
    use parm
+   implicit none
 
    INTERFACE
 

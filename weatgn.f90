@@ -52,6 +52,7 @@ subroutine weatgn(j)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: j
    integer, dimension (2) :: zshape

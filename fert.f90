@@ -145,6 +145,7 @@ subroutine fert
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8, parameter :: rtof=0.5
    integer :: j, l, ifrt

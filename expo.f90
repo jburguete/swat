@@ -21,6 +21,7 @@ real function expo (xx) result(r_expo)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
    real*8 :: xx, yy
 
    yy = xx

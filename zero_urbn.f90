@@ -5,6 +5,7 @@ subroutine zero_urbn
 !!    this subroutine zeros all array values used in urban modeling
 
    use parm
+   implicit none
 
    urban_flag = 0
    sci = 0.

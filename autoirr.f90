@@ -76,6 +76,7 @@ subroutine autoirr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k
    real*8 :: vmma, vmm, cnv, vol, vmms, vmmd

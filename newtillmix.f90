@@ -124,6 +124,7 @@ subroutine newtillmix(jj,bmix)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: jj
    real*8, intent (in) :: bmix

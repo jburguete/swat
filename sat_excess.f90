@@ -57,6 +57,7 @@ subroutine sat_excess(j1)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, j1, ii, isp
    real*8 :: ul_excess,qlyr,pormm,rtof

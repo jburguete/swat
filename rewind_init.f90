@@ -5,6 +5,7 @@ subroutine rewind_init
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    integer :: ii

@@ -76,6 +76,7 @@ subroutine drains
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j1, j, m
    real*8 :: cone, depth, dg, ad, ap

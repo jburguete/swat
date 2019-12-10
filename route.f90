@@ -72,6 +72,7 @@ subroutine route
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, ii
    real*8 :: subwtr

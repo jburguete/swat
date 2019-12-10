@@ -39,6 +39,7 @@ subroutine readinpt
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
 !! By Zhang for C/N cycling
 !!==============================

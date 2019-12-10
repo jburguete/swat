@@ -18,6 +18,7 @@ subroutine std3
 
 
    use parm
+   implicit none
 
 !!    standard output file
    if (iscen == 1) then

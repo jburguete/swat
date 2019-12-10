@@ -94,6 +94,7 @@ subroutine swu
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k, ir
    real*8, dimension(mlyr) :: wuse

@@ -54,6 +54,7 @@ subroutine gcycl
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: xx, rn
    integer :: ii, j, k, rndseed10

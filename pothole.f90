@@ -163,6 +163,7 @@ subroutine pothole
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8, parameter :: pi = 3.1416
    integer :: j, ly

@@ -86,6 +86,7 @@ subroutine rthsed
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, ii
    real*8 :: qin, qdin, sedin, vc, cyin, cych, depnet, deg, dep

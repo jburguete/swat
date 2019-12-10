@@ -74,6 +74,7 @@ subroutine pminrl
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8, parameter :: bk = .0006
    integer :: j, l

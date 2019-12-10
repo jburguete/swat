@@ -67,6 +67,7 @@ subroutine readsdr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    integer :: eof

@@ -62,6 +62,7 @@ subroutine apply
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, kk, k, jj
    real*8 :: xx, gc

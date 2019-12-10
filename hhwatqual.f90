@@ -219,6 +219,7 @@ subroutine hhwatqual
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, ii
    real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin

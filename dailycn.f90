@@ -55,6 +55,7 @@ subroutine dailycn
 
 
    use parm
+   implicit none
 
    integer :: j
 

@@ -100,6 +100,7 @@ subroutine std2
 
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: sumarea, xkm, xch_l1

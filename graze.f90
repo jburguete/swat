@@ -169,6 +169,7 @@ subroutine graze
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, l, it
    real*8 :: dmi, dmii, gc, gc1, swf, frt_t, xx

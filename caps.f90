@@ -21,6 +21,7 @@ subroutine caps(file_name)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 
+   implicit none
    intrinsic Len, Index, AdjustL
 
    character (len=*) ::  file_name

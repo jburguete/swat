@@ -71,6 +71,7 @@ subroutine grass_wway
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
+   implicit none
    real*8 :: chflow_m3, sf_area, surq_remove, sf_sed ,sed_remove,vc,&
    &chflow_day, rh
 !! set variables

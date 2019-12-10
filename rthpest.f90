@@ -94,6 +94,7 @@ subroutine rthpest
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, ii
    real*8 :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb

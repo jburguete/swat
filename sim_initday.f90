@@ -84,6 +84,7 @@ subroutine sim_initday
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    !!initialize variables at beginning of day
    cbodu = 0.

@@ -3,6 +3,7 @@ subroutine layersplit(dep_new)
    use parm, only: ihru, iseptic, sol_awc, sol_cbn, sol_bd, sol_cal, sol_clay,&
      sol_ec, sol_k, sol_mc, sol_mn, sol_mp, sol_n, sol_nly, sol_no3, sol_orgn,&
      sol_orgp, sol_ph, sol_rock, sol_sand, sol_silt, sol_solp, sol_z
+   implicit none
    integer nly,n,j
    integer :: flag
    real*8, intent(in):: dep_new

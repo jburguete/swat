@@ -73,6 +73,7 @@ subroutine subwq
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: tn, tp, qtot, org_c, tn_tp, wtmp, ww, xx, yy, zz, flow_cms

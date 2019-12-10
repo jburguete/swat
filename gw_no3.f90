@@ -69,6 +69,7 @@ subroutine gw_no3
 !!    revap is subtracted and rchrg is delayed (johnson, 1977)
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: rchrgn1, revapn, gwseepn

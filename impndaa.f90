@@ -147,6 +147,7 @@ subroutine impndaa(years)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8, intent (in) :: years
    real*8 :: orgn_ppm, orgp_ppm, ano3_ppm, minp_ppm, chla_ppm

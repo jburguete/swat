@@ -34,6 +34,7 @@ subroutine albedo
 
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: cej, eaj

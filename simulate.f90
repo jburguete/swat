@@ -94,6 +94,7 @@ subroutine simulate
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: idlst, j, iix, iiz, ic, mon, ii
    real*8 :: xx

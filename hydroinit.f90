@@ -79,6 +79,7 @@ subroutine hydroinit
 
 
    use parm
+   implicit none
 
    integer :: j, l
    real*8 :: t_ch, scmx, xx, a, b, c, rto

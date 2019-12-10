@@ -65,6 +65,7 @@ subroutine ovr_sed()
 !!  Code developed by J. Jeong and N. Kannan, BRC.
 
    use parm
+   implicit none
 
    integer :: k, j
    real*8 :: percent_clay, percent_silt, percent_sand, erod_k

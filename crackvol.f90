@@ -45,6 +45,7 @@ subroutine crackvol
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: l, j
    real*8 :: volcrnew, crlag, crlagdry = .99, crlagwet = 0.

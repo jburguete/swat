@@ -1,5 +1,6 @@
 subroutine carbon_zhang2
    use parm
+   implicit none
    !!============================================
    !!Input variables
    !!    sol_bd(:,:) |Mg/m**3       |bulk density of the soil

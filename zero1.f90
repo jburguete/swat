@@ -4,6 +4,7 @@ subroutine zero1
 !!    this subroutine initializes the values for some of the arrays
 
    use parm
+   implicit none
 
 !!    added for manure Armen Jan 2009
    sol_mc = 0.

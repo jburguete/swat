@@ -95,6 +95,7 @@ subroutine soil_phys
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: nly, j
    real*8 :: xx, sumpor, dg, pormm

@@ -20,6 +20,7 @@ subroutine soil_write
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, l
    real*8 :: solp_t, solno3_t, solorgn_t, solorgp_t

@@ -131,6 +131,7 @@ subroutine subbasin
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j,sb,kk
    real*8 :: tmpk, d, gma, ho, pet_alpha, aphu, phuop

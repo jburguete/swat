@@ -52,6 +52,7 @@ subroutine decay
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k, kk, l
    real*8 :: x1, xx

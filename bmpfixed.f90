@@ -77,6 +77,7 @@ subroutine bmpfixed
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
 !! set variables
    j = ihru

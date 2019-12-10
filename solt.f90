@@ -65,6 +65,7 @@ subroutine solt
 
 
    use parm
+   implicit none
 
    integer :: j, k
    real*8 :: f, dp, ww, b, wc, dd, xx, st0

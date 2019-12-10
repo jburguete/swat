@@ -6,6 +6,7 @@ subroutine storeinitial
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
 !!weather
    ivar_orig(1) = iyr

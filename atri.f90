@@ -40,6 +40,7 @@ function atri(at1,at2,at3,at4i) result (r_atri)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm, only: Aunif
+   implicit none
 
    real*8, intent (in) :: at1, at2, at3
    integer, intent (in out) :: at4i

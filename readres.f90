@@ -112,6 +112,7 @@ subroutine readres
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    character (len=13) :: resdayo, resmono

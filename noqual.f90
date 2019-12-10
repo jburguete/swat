@@ -85,6 +85,7 @@ subroutine noqual
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch
    real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin

@@ -16,6 +16,7 @@ subroutine water_hru
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
    j = ihru
 !! if the HRU is water compute only pet and et
 !! using Priestly-Taylor and a coefficient

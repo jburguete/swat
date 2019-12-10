@@ -136,6 +136,7 @@ subroutine wetlan
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, iseas
    real*8 :: vol, cnv, sed, wetsa, xx, phosk, nitrok, tpco

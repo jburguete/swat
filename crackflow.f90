@@ -36,6 +36,7 @@ subroutine crackflow
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, ii
    real*8 :: voli

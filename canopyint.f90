@@ -48,6 +48,7 @@ subroutine canopyint
 
 
    use parm
+   implicit none
 
    integer :: j, ii
    real*8 :: xx, canmxl, canstori

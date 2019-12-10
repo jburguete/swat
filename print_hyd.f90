@@ -23,6 +23,7 @@ subroutine print_hyd
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
 !!    mauro/jerry whittaker hourly output file
    if (iphr > 0 .and. curyr > nyskip) then

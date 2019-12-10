@@ -80,6 +80,7 @@ subroutine rthvsc()
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, ii, inhyd,j,l,cday,istep
    real*8 :: wtrin, c, p, scoef

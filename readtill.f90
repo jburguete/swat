@@ -38,6 +38,7 @@ subroutine readtill
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: it, eof, itnum, j
 !! drainmod tile equations  - addition random roughness 06/2006

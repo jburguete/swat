@@ -20,6 +20,7 @@ subroutine urb_bmp
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    j = 0
    j = ihru

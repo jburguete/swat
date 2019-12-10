@@ -79,6 +79,7 @@ subroutine lakeq
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jres
    real*8 :: tpest1, tpest2, fd1, fp1, fd2, dlake, fp2

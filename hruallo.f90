@@ -65,6 +65,7 @@ subroutine hruallo
 
 
    use parm
+   implicit none
 
    character (len=13) :: hrufile, mgtfile, solfile, chmfile
    character (len=80) ::  titldum

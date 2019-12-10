@@ -23,6 +23,8 @@ function jdt(numdays,i,m)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
+
    integer, intent (in), dimension (13) :: numdays
    integer, intent (in) :: m, i
    integer :: jdt

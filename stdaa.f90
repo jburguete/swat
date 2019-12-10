@@ -294,6 +294,7 @@ subroutine stdaa
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: xirr
    integer :: j, nnro, nicr, k, sumpady, ncrp

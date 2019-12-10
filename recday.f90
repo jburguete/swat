@@ -101,6 +101,7 @@ subroutine recday
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: floday, sedday, orgnday, orgpday, no3day, minpday
    real*8 :: nh3day, no2day, cmtl1day, cmtl2day, cmtl3day, solpstday

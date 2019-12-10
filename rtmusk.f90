@@ -109,6 +109,7 @@ subroutine rtmusk
 !!    Spatial Sciences Laboratory, Texas A&M University
 
    use parm
+   implicit none
 
    integer :: jrch,nn,ii
    real*8 :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c, rh

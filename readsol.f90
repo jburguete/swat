@@ -74,6 +74,7 @@ subroutine readsol
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
 !      integer :: j, nly, n, jj, flag, eof

@@ -4,6 +4,7 @@ subroutine zero0
 !!    this subroutine initializes the values for some of the arrays
 
    use parm
+   implicit none
 
 !!    Srin co2 (EPA)
    co2_x2 = 0.

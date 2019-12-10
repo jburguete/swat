@@ -59,6 +59,7 @@ subroutine structure
 !!    Hydrology-Vrije Universiteit Brussel, Belgium
 
    use parm
+   implicit none
 
    real*8 :: reak, wtmp, ww, xx, yy, zz, disoxin
    integer :: ii, jj

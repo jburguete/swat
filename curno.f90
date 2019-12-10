@@ -56,6 +56,7 @@ subroutine curno(cnn,h)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: h
    real*8, intent (in) :: cnn

@@ -124,7 +124,7 @@ subroutine biozone()
 
    use parm
    implicit none
-
+ 
 ! real*8 ntr_rt
    integer bz_lyr, isp, ii,j,nly
    real*8 bz_vol, rtrate,bodconc, qin, qout,qmm,qvol,pormm,rplqm

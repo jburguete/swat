@@ -4,6 +4,7 @@ subroutine zero2
 !!    this subroutine zeros all array values
 
    use parm
+   implicit none
 
    hrumono = 0.
    wtrmon = 0.

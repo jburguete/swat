@@ -46,6 +46,7 @@ subroutine surq_daycn
 
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: r2, bb, pb, cnimp, surfqimp

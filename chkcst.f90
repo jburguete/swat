@@ -10,7 +10,7 @@ subroutine chkcst(nopt,xi,bl,bu,ibound)
 !     nopt = number of optimizing variables
 !     ii = the ii'th variable of the arrays x, bl, and bu
 !
-   implicit real*8 (a-h,o-z)
+   implicit none
    dimension xi(nopt),bl(nopt),bu(nopt)
 !
    ibound = -1

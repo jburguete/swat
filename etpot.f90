@@ -95,6 +95,7 @@ subroutine etpot
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx

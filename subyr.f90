@@ -48,6 +48,7 @@ subroutine subyr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: sb, ii
    real*8, dimension (msubo) :: pdvab, pdvb

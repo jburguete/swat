@@ -55,6 +55,7 @@ subroutine irrigate(jj,volmm)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer, intent (in) :: jj
    real*8, intent (in out) :: volmm

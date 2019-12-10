@@ -76,6 +76,7 @@ subroutine pmeas
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=1) :: a
    integer :: k, kk1, kk2, iyp, idap, l, inum3sprev, ii

@@ -96,6 +96,7 @@ subroutine finalbal
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: tir, wshd_snoe, volout, sedout, res3, res4, res17

@@ -111,6 +111,7 @@ subroutine irr_rch
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: jrch, k, flag, ii
    real*8 :: cnv, vmm, vminmm, vol, wtrin

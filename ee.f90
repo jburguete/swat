@@ -21,6 +21,7 @@ real*8 function ee(tk) result (r_ee)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
    real*8, intent (in) :: tk
 
    r_ee = 0.

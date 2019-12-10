@@ -24,6 +24,8 @@ subroutine nuts(u1,u2,uu)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
+   implicit none
+
    real*8, intent (in) :: u1, u2
    real*8, intent (out) :: uu
 

@@ -69,6 +69,7 @@ subroutine rtday
 !!    Modified by Balaji Narasimhan
 !!    Spatial Sciences Laboratory, Texas A&M University
    use parm
+   implicit none
 
    integer :: jrch
    real*8 :: wtrin, scoef, p, tbase, topw, vol, c, rh

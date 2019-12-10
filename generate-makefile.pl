@@ -18,10 +18,11 @@ foreach $source (@sources)
 }
 print DATA
 	"\n\nswat\$(EXE): \$(objs)\n\t\$(cc) -static \$(objs) -o swat\$(EXE)\n".
+	"\t\$(strip) swat\$(EXE)\n".
 	"\nclean:\n\trm *.o swat*\n".
 	"\ntar:\n\ttar cJf swat.tar.xz *.f90 *.pl *.sh Makefile\n".
 	"\nmodparm.o: modparm.f90 Makefile\n".
-	"\t\$(prefix)\$(cc) \$(cflags) modparm.f90 -o modparm.o\n";
+	"\t\$(cc) \$(cflags) modparm.f90 -o modparm.o\n";
 foreach $source (@sources)
 {
 	if ($source ne "modparm.f90")

@@ -52,6 +52,7 @@ subroutine nfix
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, l
    real*8 :: uno3l, fxw, sumn, fxn, fxg, fxr

@@ -100,6 +100,7 @@ subroutine hrupond
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j
    real*8 :: cnv, pndsa, xx, yy, qdayi, latqi

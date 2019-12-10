@@ -132,6 +132,7 @@ subroutine readsub
 
 
    use parm
+   implicit none
 
    character (len=80) :: titldum, snofile
    character (len=13) :: hrufile, chmfile, mgtfile, solfile, gwfile

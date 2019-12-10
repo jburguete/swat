@@ -30,6 +30,7 @@ subroutine readlup
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
    character*13 fnam
    integer :: eof
 

@@ -39,6 +39,7 @@ subroutine washp
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    integer :: j, k, kk
    real*8 :: xx

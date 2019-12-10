@@ -107,6 +107,7 @@ subroutine recmon
 
 
    use parm
+   implicit none
 
    integer :: ii, j
 

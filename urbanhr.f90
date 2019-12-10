@@ -102,6 +102,7 @@ subroutine urbanhr
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    real*8 :: cod, sus_sol, tn, tp, urbk, dirto, qdt
    real*8 :: dirt

@@ -31,6 +31,7 @@ subroutine sched_mgt
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    j = ihru
 

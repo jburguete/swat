@@ -44,6 +44,7 @@ subroutine lwqdef
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
 !!    set default values for parameters
    if (chlar(i) <= 1.e-6) chlar(i) = 1.

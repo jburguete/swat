@@ -38,6 +38,7 @@ subroutine surface
 
 
    use parm
+   implicit none
 
    integer :: j,sb,kk
    real*8 :: precip_fr

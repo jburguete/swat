@@ -98,6 +98,7 @@ subroutine snom
 
 
    use parm
+   implicit none
 
    integer :: j, ib
    real*8 :: sum, smp, smfac, smleb

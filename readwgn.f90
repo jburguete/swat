@@ -129,6 +129,7 @@ subroutine readwgn
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
+   implicit none
 
    character (len=80) :: titldum
    real*8 :: xx, lattan, x1, x2, x3, tav, tmin, tmax, rain_yrs
