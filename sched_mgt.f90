@@ -199,7 +199,7 @@ subroutine sched_mgt
       ndeat(j) = 0
       igrz(j) = 1
 
-      if (manure_kg(j) < = 0.) then
+      if (manure_kg(j) <= 0.) then
          manure_kg(j) = 0.95 * mgt4op(nop(j),j)
       end if
       call graze

@@ -24,7 +24,7 @@ subroutine rsedaa(years)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-   use parm
+   use parm, only: rch_dakm, rchaao, subgis, subtot
 
    real*8, intent (in) :: years
    integer :: j

@@ -183,7 +183,7 @@ subroutine bmp_sed_pond(kk,flw,sed)
 
 
    return
-end subroutine bmp_sed _pond
+end subroutine bmp_sed_pond
 
  !-------------------------------------------------------------------------------
 function pipeflow(d,h)

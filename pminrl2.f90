@@ -92,7 +92,7 @@ subroutine pminrl2
 
    use parm
    integer :: j, l
-   real*8 :: rto, rmn1, roc, wetness, base vara,varb,varc,as_p_coeff
+   real*8 :: rto, rmn1, roc, wetness, base, vara,varb,varc,as_p_coeff
    real*8  solp(mlyr),actp(mlyr),stap(mlyr) !! locals for concentation based data
 
    j = 0
@@ -150,7 +150,7 @@ subroutine pminrl2
          rmn1 = Max(rmn1, (-1 * sol_solp(l,j)))
          !! Calculate Dynamic Coefficant
          vara = 0.918 * (exp(-4.603 * psp(j)))
-         varb = (-0.238 * ALOG(vara)) - 1.126
+         varb = (-0.238 * LOG(vara)) - 1.126
          if (a_days(l,j) >0) then
             arate = vara * (a_days(l,j) ** varb)
          else

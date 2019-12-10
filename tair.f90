@@ -37,7 +37,7 @@ function tair(hr,jj) result (r_tair)
 !!    Hydrology-Vrije Universiteit Brussel, Belgium
 !!    subroutine modified by SLN
 
-   use parm
+   use parm, only: tmn, tmp_hi, tmp_lo, tmx
 
    integer, intent (in) ::  jj
    real*8, intent(in) :: hr

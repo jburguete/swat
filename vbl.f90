@@ -50,7 +50,6 @@ subroutine vbl(evx,spx,pp,qin,ox,vx1,vy,yi,yo,ysx,vf,vyf,aha)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-   use parm
 
    real*8, intent (in) :: evx, spx, pp, qin, ox, yi, yo, ysx
    real*8, intent (in) :: vf, vyf, aha

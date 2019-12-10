@@ -132,7 +132,7 @@ subroutine readsepticbz
    if (coeff_plq(ihru) <= 1.e-6) coeff_plq(ihru) = 0.10
    if (coeff_mrt(ihru) <= 1.e-6) coeff_mrt(ihru) = 0.025
    if (coeff_rsp(ihru) <= 1.e-6) coeff_rsp(ihru) = 0.0156
-   if (coeff_slg1(ihru) <= 1.e-6) coeff_slg1(ihru) = 4. e-8
+   if (coeff_slg1(ihru) <= 1.e-6) coeff_slg1(ihru) = 4.e-8
    if (coeff_slg2(ihru) <= 1.e-6) coeff_slg2(ihru) = 1.5
    if (coeff_nitr(ihru) <= 1.e-6) coeff_nitr(ihru) = 0.086
    if (coeff_denitr(ihru) <= 1.e-6) coeff_denitr(ihru) = 0.00432

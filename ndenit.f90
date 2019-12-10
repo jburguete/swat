@@ -1,7 +1,7 @@
 subroutine ndenit(k,j,cdg,wdn,void)
 !!    this subroutine computes denitrification
 
-   use parm
+   use parm, only: cdn, sol_cbn, sol_no3
    integer :: k,j
    real*8 :: cdg, wdn, void
 
