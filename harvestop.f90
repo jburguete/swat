@@ -132,7 +132,7 @@ subroutine harvestop
    use parm
    implicit none
 
-   integer :: j, k
+   integer :: j, k, l
 
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
 !!    real*8 :: hiad1, wur, yield, clip, yieldn, yieldp, clipn, clipp
@@ -141,17 +141,18 @@ subroutine harvestop
    real*8 :: clipgrn,cliptbr,clipngrn,clippgrn,yieldngrn
    real*8 :: yieldntbr,yieldnrsd,yieldpgrn,yieldptbr,yieldprsd
    real*8 :: clipntbr,clipptbr,rtresp
+   real*8 :: clipbms, clipnbms, clippbms, ff3, rtresn, ssabg, ssb, ssn, ssp, ssr, XX, yieldnbms, yieldpbms
 
    !!add by zhang
    !!===================
-   real*8 :: BLG1, BLG2, BLG3,  CLG, sf
+   real*8 :: BLG1, BLG2, CLG, sf
    real*8 :: sol_min_n, resnew, resnew_n, resnew_ne
    real*8 :: LMF, LSF, LSLF, LSNF,LMNF
-   real*8 ::  RLN, RLR
-   orgc_f = 0.
+   real*8 :: RLN, RLR
+   real*8, parameter :: BLG3 = 0.10
+! orgc_f = 0. not used
    BLG1 = 0.
    BLG2 = 0.
-   BLG3 = 0.
    CLG = 0.
    sf = 0.
    sol_min_n = 0.
@@ -309,7 +310,6 @@ subroutine harvestop
    if (cswat == 2) then
       BLG1 = 0.01/0.10 !BLG1/BLG2
       BLG2 = 0.99
-      BLG3 = 0.10 !BLG2
       !CALL ASCRV(BLG(1,I),BLG(2,I),.5,1.)
       XX = log(0.5/BLG1-0.5)
       BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
@@ -428,7 +428,6 @@ subroutine harvestop
       !!=============================
       if (cswat == 2) then
          rsdc_d(j) = rsdc_d(j)+rtfr(l) * rtresnew * 0.42
-         BLG3 = 0.10
          BLG1 = 0.01/0.10
          BLG2 = 0.99
 

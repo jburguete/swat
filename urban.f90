@@ -105,7 +105,7 @@ subroutine urban
    use parm
    implicit none
 
-   real*8 :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt
+   real*8 :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt, tno3, xx
    integer :: j
 
    j = 0

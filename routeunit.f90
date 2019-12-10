@@ -30,6 +30,8 @@ subroutine routeunit
 
    use parm
    implicit none
+   integer :: jj, kk
+   real*8 :: sumc, sumeiq, xx
 !        inum2 = 1
    varoute(:,ihout) = 0.
    sumc = 0.

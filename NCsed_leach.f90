@@ -57,8 +57,9 @@ subroutine orgncswat2(iwave)
    integer :: j
    real*8 :: xx, wt1, er, conc
    real*8 :: sol_mass, QBC, VBC, YBC, YOC, YW, TOT, YEW, X1, PRMT_21, PRMT_44
-   real*8 :: DK,  V, X3, CO, CS, perc_clyr, latc_clyr
+   real*8 :: DK,  V, X3, CO, CS, perc_clyr, latc_clyr, sol_thick, xx1, Y1
    integer :: k
+   perc_clyr = 0.
    latc_clyr = 0.
 
    j = 0

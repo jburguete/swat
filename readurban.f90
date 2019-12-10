@@ -63,7 +63,7 @@ subroutine readurban
    integer :: iu, iunum, eof
    character (len=4) :: unam
    real*8 :: fimpu, fcimpu, crbdn, ucoef, dtmx, thlf, tncnc, tpcnc
-   real*8 :: tno3cnc
+   real*8 :: tno3cnc, urbcn
 
    iunum = 0
    eof = 0

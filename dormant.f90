@@ -94,8 +94,7 @@ subroutine dormant
 
    real*8 :: BLG1, BLG2, BLG3,  CLG, sf
    real*8 :: sol_min_n,  resnew_n, resnew_ne
-   real*8 :: LMF, LSF, LSLF, LSNF,LMNF
-   orgc_f = 0.
+   real*8 :: LMF, LSF, LSLF, LSNF, LMNF, RLN, RLR, XX
    BLG1 = 0.
    BLG2 = 0.
    BLG3 = 0.

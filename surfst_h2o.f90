@@ -50,7 +50,7 @@ subroutine surfst_h2o
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, k
 
    j = 0
    j = ihru

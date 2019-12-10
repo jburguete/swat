@@ -74,18 +74,18 @@ subroutine killop
    use parm
    implicit none
 
-   integer :: j, k
-   real*8 :: resnew
+   integer :: j, k, l
+   real*8 :: resnew, RLN, RLR, rtresnew, XX
 
    !!by zhang
    !!====================
-   real*8 :: BLG1, BLG2, BLG3,  CLG, sf
+   real*8 :: BLG1, BLG2, CLG, sf
    real*8 :: sol_min_n, resnew_n, resnew_ne
-   real*8 :: LMF, LSF, LSLF, LSNF,LMNF
-   orgc_f = 0.
+   real*8 :: LMF, LSF
+   real*8, parameter :: BLG3 = 0.10
+   ! orgc_f = 0. ! not used
    BLG1 = 0.
    BLG2 = 0.
-   BLG3 = 0.
    CLG = 0.
    sf = 0.
    sol_min_n = 0.
@@ -94,9 +94,9 @@ subroutine killop
    resnew_ne = 0.
    LMF = 0.
    LSF = 0.
-   LSLF = 0.
-   LSNF = 0.
-   LMNF = 0.
+   ! LSLF = 0. ! not used
+   ! LSNF = 0. ! not used
+   ! LMNF = 0. ! not used
    !!by zhang
    !!====================
 
@@ -147,7 +147,6 @@ subroutine killop
 
       BLG1 = 0.01/0.10
       BLG2 = 0.99
-      BLG3 = 0.10
       XX = log(0.5/BLG1-0.5)
       BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
       BLG1 = XX + 0.5*BLG2
@@ -164,7 +163,7 @@ subroutine killop
       sol_min_n = 0.
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
 
-      resnew = resnew
+      ! resnew = resnew ! redundant
       resnew_n = ff1 * (plantn(j) - yieldn)
       resnew_ne = resnew_n + sf * sol_min_n
 
@@ -195,8 +194,7 @@ subroutine killop
 
 
       !here a simplified assumption of 0.5 LSL
-      LSLF = 0.0
-      LSLF = CLG
+      !LSLF = CLG ! not used
 
       sol_LSL(1,j) = sol_LSL(1,j) + RLR* LSF * resnew
       sol_LSC(1,j) = sol_LSC(1,j) + 0.42*LSF * resnew
@@ -257,7 +255,6 @@ subroutine killop
 
          BLG1 = 0.01/0.10
          BLG2 = 0.99
-         BLG3 = 0.10
          XX = log(0.5/BLG1-0.5)
          BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
          BLG1 = XX + 0.5*BLG2

@@ -3,7 +3,7 @@ subroutine rthvsc()
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This subroutine routes flow at any required time step through the reach
 !!    using a variable storage coefficient
-!! Routing method: Enhanced Variable Storage routing (Jeong et al., 2014) adopted from APEX
+!!    Routing method: Enhanced Variable Storage routing (Jeong et al., 2014) adopted from APEX
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name            |units         |definition
@@ -82,11 +82,13 @@ subroutine rthvsc()
    use parm
    implicit none
 
-   integer :: jrch, ii, inhyd,j,l,cday,istep
-   real*8 :: wtrin, c, p, scoef
-   real*8 :: vol, topw,pcpday
+   integer :: jrch, ii, inhyd,j,l
+   real*8 :: wtrin, c, p
+   real*8 :: topw,pcpday
    real*8, dimension(nstep*5) :: QMS, QMSI,pcp
    real*8 :: ai, aii, ao, cbw, chw, fpw, g1, qi2, sss, xflo, zch, zi, zii, zo
+   real*8 :: ADI, DD, GB, GL, Q1, QO1, QO2, SIA, SMO, STHY, T1, T2, TT, V, XL3, XLS, XLT, XX, GQ, QI1
+   integer :: I1, IIY, IT, K
 
    QMS = 0.
    QMSI = 0.
@@ -162,15 +164,15 @@ subroutine rthvsc()
          IF(XFLO > 0.)EXIT
          QMS(ii) = 0.
          STHY = STHY + QI2
-         ZOO = 0.
-         AOO = 0.
+         !ZOO = 0. ! not used
+         !AOO = 0. ! not used
          V = .5 * QMSI(ii) / AII     !m/s
          TT = XL3 / (V + 1.E-5)     !hr
-         CVSC = MIN(.99,2.*dthy/(2.*TT+dthy))
+         !CVSC = MIN(.99,2.*dthy/(2.*TT+dthy)) ! not used
          QI1 = QI2
          !WRITE(KW(1),6)NIT,TM,ZII,ZOO,AII,AOO,V,TT,CVSC,STHY,QI2,QO2
       END DO
-      ISM=ii
+      ! ISM=ii ! not used
       IIY=0
 
       !Calculate discharge rate using variable storage coefficient

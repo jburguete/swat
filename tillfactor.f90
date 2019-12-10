@@ -18,9 +18,10 @@ subroutine tillfactor(jj,bmix,emix,dtil,sol_thick)
 
    integer, intent (in) :: jj
    real*8, intent (in) :: bmix
-   integer :: l, m1, m2
-   real*8 :: emix, dtil
+   integer :: l
+   real*8 :: emix, dtil, csdr, xx, xx1, xx2, yy, zz
    real*8 :: sol_thick(sol_nly(jj))
+   integer, parameter :: m1 = 1, m2 = 2
 
    emix = emix - bmix ! this is to avoid affecting tillage factor with biological mixing
 
@@ -43,8 +44,6 @@ subroutine tillfactor(jj,bmix,emix,dtil,sol_thick)
          xx = 0.
          zz = 3. + (8. - 3.) * exp(-5.5 * sol_clay(l,jj)/100.)
          yy = tillagef(l,jj) / zz
-         m1 = 1
-         m2 = 2
 
          ! empirical solution for x when y is known and y=x/(x+exp(m1-m2*x))
          if (yy > 0.01) then

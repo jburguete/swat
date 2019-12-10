@@ -116,7 +116,7 @@ subroutine readhru
 
    character (len=80) :: titldum
    integer :: eof
-   real*8 :: xm, sin_sl, epcohru, escohru
+   real*8 :: xm, sin_sl, epcohru, escohru, xx
 
 
 

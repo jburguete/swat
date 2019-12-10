@@ -125,7 +125,8 @@ subroutine harvkillop
    use parm
    implicit none
 
-   integer :: j, k
+   integer :: j, k, l
+   real*8 :: RLN, RLR, xx
 
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
 !!      real*8 :: wur, hiad1, yield, yieldn, yieldp, yldpst
@@ -135,13 +136,13 @@ subroutine harvkillop
 
    !!By Zhang
    !!=============
-   real*8 :: BLG1, BLG2, BLG3,  CLG, sf
+   real*8 :: BLG1, BLG2, CLG, sf
    real*8 :: sol_min_n, resnew_n, resnew_ne
    real*8 :: LMF, LSF, LSLF, LSNF,LMNF
-   orgc_f = 0.
+   real*8, parameter :: BLG3 = 0.10
+   ! orgc_f = 0. ! not used
    BLG1 = 0.
    BLG2 = 0.
-   BLG3 = 0.
    CLG = 0.
    sf = 0.
    sol_min_n = 0.
@@ -291,7 +292,6 @@ subroutine harvkillop
 
       BLG1 = 0.01/0.10
       BLG2 = 0.99
-      BLG3 = 0.10
       XX = log(0.5/BLG1-0.5)
       BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
       BLG1 = XX + 0.5*BLG2
@@ -308,7 +308,7 @@ subroutine harvkillop
       sol_min_n = 0.
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
 
-      resnew = resnew
+      !resnew = resnew ! redundant
       resnew_n = ff1 * (plantn(j) - yieldn)
       resnew_ne = resnew_n + sf * sol_min_n
 
@@ -403,7 +403,6 @@ subroutine harvkillop
 
          BLG1 = 0.01/0.10
          BLG2 = 0.99
-         BLG3 = 0.10
          XX = log(0.5/BLG1-0.5)
          BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
          BLG1 = XX + 0.5*BLG2

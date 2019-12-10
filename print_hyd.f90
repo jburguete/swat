@@ -25,6 +25,8 @@ subroutine print_hyd
    use parm
    implicit none
 
+   integer :: ij
+
 !!    mauro/jerry whittaker hourly output file
    if (iphr > 0 .and. curyr > nyskip) then
       do ij = 1, nstep

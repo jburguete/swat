@@ -11,7 +11,8 @@ subroutine chkcst(nopt,xi,bl,bu,ibound)
 !     ii = the ii'th variable of the arrays x, bl, and bu
 !
    implicit none
-   dimension xi(nopt),bl(nopt),bu(nopt)
+   real*8 :: xi(nopt),bl(nopt),bu(nopt)
+   integer :: nopt,ibound,ii
 !
    ibound = -1
 !

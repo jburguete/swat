@@ -17,6 +17,11 @@ subroutine water_hru
 
    use parm
    implicit none
+
+   integer :: j
+   real*8 :: d, gma, ho, tmpk
+   real*8, parameter :: pet_alpha = 1.28
+
    j = ihru
 !! if the HRU is water compute only pet and et
 !! using Priestly-Taylor and a coefficient
@@ -25,7 +30,6 @@ subroutine water_hru
    gma = 0.
    ho = 0.
    albday = .08
-   pet_alpha = 1.28
    tmpk = tmpav(j) + 273.15
    d = Exp(21.255 - 5304. / tmpk) * 5304. / tmpk ** 2
    gma = d / (d + .68)

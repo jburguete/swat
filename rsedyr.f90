@@ -27,7 +27,7 @@ subroutine rsedyr
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, ii
 
    do j = 1, subtot
       rchyro(58,j) = rchyro(58,j)/dfloat(idlast)

@@ -117,7 +117,7 @@ subroutine readres
    character (len=80) :: titldum
    character (len=13) :: resdayo, resmono
    integer :: eof, mon, j
-   real*8 :: resdif, targ, lnvol, res_d50
+   real*8 :: resdif, targ, lnvol, res_d50, res_d50mm
 
 !!    initialize local variables
    resdayo = ""

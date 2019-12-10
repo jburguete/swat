@@ -27,7 +27,8 @@ subroutine rsedmon(mdays)
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: mdays
+   integer :: j, ii
 
    do j = 1, subtot
       rchmono(58,j) = rchmono(58,j)/dfloat(mdays)

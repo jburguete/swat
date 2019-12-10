@@ -98,7 +98,7 @@ subroutine rthpest
 
    integer :: jrch, ii
    real*8 :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
-   real*8 :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
+   real*8 :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, thour
 
    jrch = 0
    jrch = inum1

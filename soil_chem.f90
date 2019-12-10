@@ -112,7 +112,8 @@ subroutine soil_chem
 
    integer :: nly, j, jj, n
    real*8 :: xx, dg, wt1, zdst, soldepth, sumno3, sumorgn, summinp
-   real*8 :: sumorgp, solpst, soil_TP, labfrac,solp
+   real*8 :: sumorgp, solpst, solp
+   real*8 :: actp, sol_cmass, sol_thick, SSP
 
    !!by zhang
    !!=============
@@ -122,7 +123,7 @@ subroutine soil_chem
    DG = 0.
    FBM = 0.
    FHP = 0.
-   RTNO = 0.
+   !RTNO = 0. !not used
    FHS = 0.
    X1 = 0.
    RTO = 0.
@@ -360,7 +361,7 @@ subroutine soil_chem
          FBM = 0.0
          FHP = 0.0
          IF(FBM<1.E-10)FBM=.04
-         RTN0 = 100.
+         !RTN0 = 100. !not used
          IF(FHP<1.E-10)FHP=.7-.4*EXP(-.0277*100)
          FHS = 1 - FBM - FHP
          !From DSSAT

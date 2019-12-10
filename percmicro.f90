@@ -67,7 +67,7 @@ subroutine percmicro(ly1)
 
    integer, intent (in) :: ly1
    integer :: j
-   real*8 :: adjf, yy, dg, ho, ratio, sol_k_sep
+   real*8 :: adjf, yy, dg, ho, ratio, sol_k_sep, xx
 
    j = 0
    j = ihru

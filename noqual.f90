@@ -113,7 +113,7 @@ subroutine noqual
       dispin = 0.
       cbodin = 0.
       disoxin = 0.
-      cinn = 0.
+      ! cinn = 0. ! not used
       if (varoute(13,inum2) < 1.e-6) varoute(13,inum2) = 0.0
       chlin = 1000. * varoute(13,inum2) * (1. - rnum1) / wtrin
       algin = 1000. * chlin / ai0        !! QUAL2E equation III-1

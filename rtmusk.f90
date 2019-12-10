@@ -116,6 +116,7 @@ subroutine rtmusk
    real*8 :: topw,msk1,msk2,detmax,detmin,qinday,qoutday
    real*8 :: volrt, maxrt, adddep, addp, addarea
    real*8 :: rttlc1, rttlc2, rtevp1, rtevp2
+   real*8 :: aaa, vc
 
    jrch = 0
    jrch = inum1

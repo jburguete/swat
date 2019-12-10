@@ -35,7 +35,7 @@ subroutine zero0
    cf = 0.0
    cfh = 0.0
    cfdec = 0.0
-   pnd_d50 = 0.0
+   ! pnd_d50 = 0.0 ! not defined
    isnow = 0
    imgt = 0
    iwtr = 0
@@ -181,7 +181,7 @@ subroutine zero0
    daylmn = 0.
    daru_km = 0.
 !    Drainmod tile equations  01/2006
-   dc = 0.
+   !dc = 0. ! not defined
    drain_co_bsn = 0.
 !    Drainmod tile equations  01/2006
    ddrain = 0.
@@ -213,8 +213,8 @@ subroutine zero0
    dorm_flag = 0
    driftco = 0.
 !    Drainmod tile equations  01/2006
-   dtwt = 600.
-   dz = 0.
+   ! dtwt = 600. ! not defined
+   ! dz = 0. ! not defined
 !    Drainmod tile equations  01/2006
    drydep_no3 = 0.
    drydep_nh4 = 0.
@@ -256,7 +256,7 @@ subroutine zero0
    gdrain = 0.
    gdrain_bsn = 0.
 !    Drainmod tile equations  01/2006
-   gee = 0.
+   ! gee = 0. ! not defined
 !    Drainmod tile equations  01/2006
    gsi = 0.
    gw_delaye = 0.
@@ -270,14 +270,14 @@ subroutine zero0
 !      infl_ru = 0.
    gwqmn = 0.
 !    Drainmod tile equations  01/2006
-   hdrain = 0.
-   hdrain_bsn = 0.
+   ! hdrain = 0. ! not defined
+   ! hdrain_bsn = 0. ! not defined
 !    Drainmod tile equations  01/2006
    hi_ovr = 0.
    hi_targ = 0.
    hlife_f = 0.
    hlife_s = 0.
-   hqd = 0.
+   ! hqd = 0. ! not defined
    hqdsave = 0.
    hru_dafr = 0.
    hru_fr = 0.
@@ -308,7 +308,7 @@ subroutine zero0
    idplt = 0
    idplrot = 1
    idtill = 0
-   ihv_gbm = 0
+   ! ihv_gbm = 0 ! not defined
    wstrs_id = 0
    ifirstpcp = 1
    ifirsthr = 1
@@ -337,7 +337,7 @@ subroutine zero0
    inum6s = 0
    inum7s = 0
    inum8s = 1
-   iop = 0
+   ! iop = 0 ! not defined
    ioper = 1
    iopera = 1
    iopday = 0
@@ -354,7 +354,7 @@ subroutine zero0
    iroutunit = 0
    irn = 0
    irramt = 0.
-   irreff = 1.
+   ! irreff = 1. ! not defined
    irrefm = 1.
    irrsalt = 0.
    irrsc = 0
@@ -366,7 +366,7 @@ subroutine zero0
    irrsc = 0
    irr_sc = 0
    irr_no = 0
-   irr_sq = 0
+   ! irr_sq = 0 ! not defined
    irr_asq = 0
    irr_sca = 0
    irr_noa = 0
@@ -410,7 +410,7 @@ subroutine zero0
    nair = 1
    irr_mx = 0.
    latno3 = 0.
-   nicr = 0
+   ! nicr = 0 ! not defined
    ndmo = 0
    ndtarg = 0
    newrti = 0.
@@ -459,8 +459,8 @@ subroutine zero0
    rchrg_n = 0.
    rcn_sub = 0.
    rcn_sub_bsn = 0.
-   reccnstps = '             '
-   recmonps = '             '
+   reccnstps = '          '
+   recmonps = '          '
    rammo_mo = 0.
    rcn_mo = 0.
    drydep_nh4_mo = 0.
@@ -499,14 +499,14 @@ subroutine zero0
    sol_clay = 0.
 !    Drainmod tile equations  01/2006
    stmaxd = 0.
-   stmaxd_bsn = 0.
+   ! stmaxd_bsn = 0. ! not defined
 !    Drainmod tile equations  01/2006
    sol_ec = 0.
    sol_sand = 0.
    sol_silt = 0.
    sol_clay = 0.
 !!   added for Srini in output.mgt nitrogen and phosphorus nutrients per JGA by gsm 9/8/2011
-   sol_sumn03 = 0.
+   sol_sumno3 = 0.
    sol_sumsolp = 0.
    strsw = 1.
    strsw_sum = 0.
@@ -534,7 +534,7 @@ subroutine zero0
    tb_adj = 0.
    tdrain = 0.
    tdrain_bsn = 0.
-   tile_no3 = 0.
+   ! tile_no3 = 0. ! not defined
    tileq = 0.
    tile_ttime = 0.
    uh = 0.

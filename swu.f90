@@ -98,7 +98,8 @@ subroutine swu
 
    integer :: j, k, ir
    real*8, dimension(mlyr) :: wuse
-   real*8 :: sum, xx, gx, reduc, sump
+   real*8 :: sum, xx, gx, reduc, sump, satco, scparm
+   real*8, parameter :: pl_aerfac = .85
 
    j = 0
    j = ihru
@@ -128,7 +129,6 @@ subroutine swu
       if (sol_sw(j) > sol_sumfc(j)) then
          satco = (sol_sw(j) - sol_sumfc(j)) / (sol_sumul(j) -&
          &sol_sumfc(j))
-         pl_aerfac = .85
          scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
          if (scparm > 0.) then
             strsa(j) = 1. - (scparm / (scparm + Exp(2.9014 - .03867 *&

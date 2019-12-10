@@ -159,7 +159,7 @@ subroutine hruaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   integer :: j, sb, ii, iflag
+   integer :: j, sb, ii, iflag, idplant
    real*8, dimension (mhruo) :: pdvas, pdvs
    character (len=4) :: cropname
 

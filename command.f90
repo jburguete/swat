@@ -103,6 +103,8 @@ subroutine command
    use parm
    implicit none
 
+   integer :: ii, iru_sub
+
    idum = 0
 
    do ii = 1, mhyd_bsn

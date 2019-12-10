@@ -40,14 +40,13 @@ subroutine surface
    use parm
    implicit none
 
-   integer :: j,sb,kk
-   real*8 :: precip_fr
-   real*8 :: irfr,hruvirr
+   integer :: j, sb, kk, ib, ii
+   real*8 :: hruvirr, irfr
 
    j = 0
    j = ihru
    sb = hru_sub(j)
-   hruirrday = 0.
+   !hruirrday = 0. ! not used
    irmmdt = 0.
 
    !! compute canopy interception

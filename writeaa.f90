@@ -312,7 +312,7 @@ subroutine writeaa
    implicit none
 
    real*8 :: yrs, xx, xmm, sumno3, sumorgn, summinp, sumorgp
-   integer :: j, nnro, nicr, k, ly, ic, ii
+   integer :: j, nicr, k, ly, ic, ii, idmm
 
 !! calculate number of years simulated
    yrs = 0.

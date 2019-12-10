@@ -173,7 +173,9 @@ subroutine graze
 
    integer :: j, l, it
    real*8 :: dmi, dmii, gc, gc1, swf, frt_t, xx
-   real*8 :: LMF, LSF
+   real*8 :: LMF, LSF, BLG1, BLG2, CLG, resnew, resnew_n, resnew_ne, RLN, RLR,&
+   &sf, sol_min_n, X1, X10, X8, XXX, XZ, YY, YZ, ZZ
+   real*8, parameter :: orgc_f = 0.35, BLG3 = 0.10
 
    j = 0
    j = ihru
@@ -263,7 +265,6 @@ subroutine graze
 
             BLG1 = 0.01/0.10
             BLG2 = 0.99
-            BLG3 = 0.10
             XXX = log(0.5/BLG1-0.5)
             BLG2 = (XXX -log(1./BLG2-1.))/(1.-0.5)
             BLG1 = XXX + 0.5*BLG2
@@ -388,7 +389,6 @@ subroutine graze
             &(1. - fnh3n(it)) * fminn(it)&
             !sol_fon(l,j) = sol_fon(l,j) + manure_kg(j) *
             &!             forgn(it)
-            orgc_f = 0.35
             X1 = manure_kg(j)
             X8 = X1 * orgc_f
             RLN = .175 *(orgc_f)/(fminn(it) + forgn(it) + 1.e-5)

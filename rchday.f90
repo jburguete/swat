@@ -103,7 +103,7 @@ subroutine rchday
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, ii, kk, icl
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
 

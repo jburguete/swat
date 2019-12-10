@@ -135,11 +135,10 @@ subroutine readsub
    implicit none
 
    character (len=80) :: titldum, snofile
-   character (len=13) :: hrufile, chmfile, mgtfile, solfile, gwfile
-   character (len=13) :: opsfile, wgnfile, pndfile, wusfile, septfile
-   character (len=13) :: sdrfile, ltcfile
-   integer :: eof, mon, j, jj, ip, if, ir
-   real*8 :: ssnoeb(10), sno_sub, ch_ls, sumebfr
+   character (len=13) :: hrufile, chmfile, mgtfile, solfile,&
+   &gwfile, opsfile, wgnfile, pndfile, wusfile, septfile, sdrfile
+   integer :: eof, mon, j, jj, ip, if, ir, ib, ils, k, kk
+   real*8 :: ssnoeb(10), sno_sub, ch_ls, sumebfr, sdrift
 
    wgnfile = ""
    pndfile = ""

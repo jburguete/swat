@@ -55,7 +55,7 @@ subroutine readmgt
 !!                                 |number of the month) The dates are for
 !!                                 |leap years
 !! drainmod tile equations   06/2006
-!!   ranrns(:)  |mm      |random roughness of operation
+!!    ranrns(:)  |mm               |random roughness of operation
 !! drainmod tile equations   06/2006
 !!    urbcn2(:)  |none             |Moisture condition II curve number for
 !!                                 |impervious areas
@@ -298,11 +298,12 @@ subroutine readmgt
 
    character (len=80) :: titldum
    integer :: eof
-   integer :: ncrp, iro, npl, mon, day, mgt_op, mgt2i, mgt1i, lcr
-   integer :: nir, ifn, npst, j, nhv, inop, nhvo, nkill, newpest
-   integer :: igr, nairr, nafer, nsw, nrel, icf, mgt3i
+   integer :: ncrp, mon, day, mgt_op, mgt2i, mgt1i, mgt10i
+   integer :: j, newpest, iop, mgt_opprev
+   integer :: mgt3i
    real*8 :: husc, mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
    real*8 :: disc
+   integer :: Jdt
 
    eof = 0
    iop = 0
@@ -369,7 +370,7 @@ subroutine readmgt
 !!    set values for cover/crop already growing
    idplt(ihru) = ncrp
    if (igro(ihru) == 1) then
-      igrow = 1
+      !igrow = 1 !not used
       idplt(ihru) = ncrp
       phuacc(ihru) = .1
       icr(ihru) = 1

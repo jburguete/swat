@@ -114,7 +114,7 @@ subroutine rchmon(mdays)
    implicit none
 
    integer, intent (in) :: mdays
-   integer :: j
+   integer :: j, ii
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (11) :: srch_av
 

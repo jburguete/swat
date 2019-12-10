@@ -143,7 +143,7 @@ subroutine wetlan
    real*8 :: wetsani, wetsili, wetclai, wetsagi, wetlagi
    real*8 :: san, sil, cla, sag, lag, inised, finsed,setsed,remsetsed
    real*8 :: wetsano, wetsilo, wetclao, wetsago, wetlago
-   real*8 :: qdayi, latqi
+   real*8 :: qdayi, latqi, chlaco, fr_cur, yy
 
 
    j = 0

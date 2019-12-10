@@ -59,7 +59,7 @@ subroutine solp
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, ii
    real*8 :: xx, vap
 
    j = 0

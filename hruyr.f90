@@ -152,7 +152,7 @@ subroutine hruyr
    use parm
    implicit none
 
-   integer :: j, sb, ii, iflag
+   integer :: j, sb, ii, iflag, idplant
    real*8, dimension (mhruo) :: pdvas, pdvs
    character (len=4) :: cropname
 

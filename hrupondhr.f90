@@ -105,7 +105,7 @@ subroutine hrupondhr
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, k
    real*8 :: cnv, pndsa, xx, yy
 
    j = 0

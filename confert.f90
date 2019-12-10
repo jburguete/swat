@@ -156,7 +156,8 @@ subroutine confert
    implicit none
 
    integer :: j, l, it
-   real*8 :: gc, gc1, swf, frt_t, xx
+   real*8 :: gc, gc1, frt_t, RLN, X1, X10, X8, XXX, XZ, YY, YZ, ZZ
+   real*8, parameter :: orgc_f = 0.35
 
    j = 0
    j = ihru
@@ -195,7 +196,6 @@ subroutine confert
             sol_solp(l,j) = sol_solp(l,j) + cfrt_kg(j) *&
             &fminp(it)
 
-            orgc_f = 0.35
             !X1 fertilizer attributed to fresh carbon & nitrogen pool
             X1 = cfrt_kg(j)
             X8 = X1 * orgc_f
@@ -212,7 +212,7 @@ subroutine confert
             sol_LMC(l,j) = sol_LMC(l,j) + XXX
             YY = X1 * X10
             sol_LM(l,j) = sol_LM(l,j) + YY
-            ZZ = X1 *forgn(ifrt) * X10
+            ZZ = X1 *forgn(it) * X10
             sol_LMN(l,j) = sol_LMN(l,j) + ZZ
             sol_LSN(l,j) = sol_LSN(l,j) + X1&
             &*forgn(it) -ZZ

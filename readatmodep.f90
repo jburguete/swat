@@ -28,7 +28,7 @@ subroutine readatmodep
    use parm
    implicit none
    character (len=80) :: titldum
-   integer :: eof
+   integer :: eof, idap, iii, imo, iyp, mo_max
 
    eof = 0
 
@@ -63,7 +63,7 @@ subroutine readatmodep
     case (1)
       read (127,*,iostat=eof) mo_atmo1, iyr_atmo1, mo_max
       iii = 0
-      momax = 12 * nbyr
+      ! momax = 12 * nbyr ! has no effect. mo_max?
       do iii = 1, msub
          read (127,*) (rammo_mo(imo,iii),imo = 1,mo_max)
          read (127,*) (rcn_mo(imo,iii), imo = 1,mo_max)

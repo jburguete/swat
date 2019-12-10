@@ -172,7 +172,7 @@ subroutine sim_initday
    sub_dcla = 0.
    sub_dsag = 0.
    sub_dlag = 0.
-   sub_dgra = 0.
+   !sub_dgra = 0. ! not used
 
    sub_sep = 0.
    sub_snom = 0.
@@ -241,11 +241,11 @@ subroutine sim_initday
    sub_latc_d=0.
    sub_percc_d=0.
    sub_foc_d=0.
-   sub_NEPC_d=0.
+   !sub_NEPC_d=0. ! not used
    sub_rsdc_d=0.
    sub_grainc_d=0.
-   sub_stover_c_d=0.
-   sub_emit_c_d=0.
+   !sub_stover_c_d=0. ! not used
+   !sub_emit_c_d=0. ! not used
    sub_soc_d =0.
    sub_rspc_d =0.
    !!add by zhang

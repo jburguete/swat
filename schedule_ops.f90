@@ -31,9 +31,9 @@ subroutine schedule_ops
    use parm
    implicit none
 
-   integer :: j, plant_no , zz
-   real*8 :: b
-   j = 0
+   integer :: j, plant_no, jj
+   real*8 :: b, sin_sl, tch, tover, xm
+ 
    j = ihru
 
 
@@ -133,7 +133,7 @@ subroutine schedule_ops
          &(hru_km(ihru) ** .125 * grwat_s(ihru) ** .375)
          tc_gwat(ihru) = tch + t_ov(ihru)
 !! Set counter
-         k = mhru + ngrwat(ihru)
+         !k = mhru + ngrwat(j) ! not used
 !!Check the channel to make sure the enter width and depth will work with 8:1 trap channel, assume width is correct
          b = (grwat_w(ihru) - 2.) * grwat_d(ihru) * 8
 !! Depth and Width not possible with 8:1 sideslope and trapazoidal channel assume b =.25*width

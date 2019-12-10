@@ -59,8 +59,9 @@ subroutine sat_excess(j1)
    use parm
    implicit none
 
-   integer :: j, j1, ii, isp
-   real*8 :: ul_excess,qlyr,pormm,rtof
+   integer, intent(in) :: j1
+   integer :: j, ii, isp, ly, nn
+   real*8 :: ul_excess, qlyr, rtof, qvol, xx
 
    j = 0
    j = ihru

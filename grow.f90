@@ -156,9 +156,9 @@ subroutine grow
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, idp
    real*8 :: delg, par, ruedecl, beadj, reg, f, ff, deltalai
-   real*8 :: laimax, rto
+   real*8 :: laimax, rto, biomxyr
 
    j = 0
    j = ihru

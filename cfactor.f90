@@ -59,7 +59,7 @@ subroutine cfactor
    implicit none
 
    integer :: j
-   real*8 :: c, bio_frcov, rsd_frcov
+   real*8 :: c, bio_frcov, rsd_frcov, grcov_fr
 
    j = 0
    j = ihru

@@ -98,9 +98,7 @@ subroutine soil_phys
    implicit none
 
    integer :: nly, j
-   real*8 :: xx, sumpor, dg, pormm
-
-   nly = 0
+   real*8 :: xx, sumpor, dg, pormm, cl, drpor, sa, si
 
    nly = sol_nly(i)
 

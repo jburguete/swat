@@ -133,8 +133,9 @@ subroutine subbasin
    use parm
    implicit none
 
-   integer :: j,sb,kk
-   real*8 :: tmpk, d, gma, ho, pet_alpha, aphu, phuop
+   integer :: j, i_wtrhru, ihout1
+   real*8 :: ovs, ovsl, sumdaru, sumk, xx
+   integer, parameter :: iru_sub = 1 ! route across landscape unit
 
    ihru = 0
    ihru = hru1(inum1)
@@ -496,7 +497,6 @@ subroutine subbasin
       inum2 = ihout1                      ! inflow hyd=outlfow from hillslope
       inum3 = isub                        ! subbasin number
       rnum1 = 1.                          ! fraction overland flow
-      iru_sub = 1                         ! route across landscape unit
       !! compute weighted K factor for sediment transport capacity
       sumk = 0.
       ovsl = 0.

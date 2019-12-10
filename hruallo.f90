@@ -69,10 +69,10 @@ subroutine hruallo
 
    character (len=13) :: hrufile, mgtfile, solfile, chmfile
    character (len=80) ::  titldum
-   integer :: eof, j, k, lyrtot, rot, plt, ap_f, ap_p, ap_t, ap_i
-   integer :: grz, cut, mgt1i, pstnum, ii, ap_r, ap_s, kll, hkll
-   integer :: ap_ai, ap_af, mgt_op, ap_cf, ap_cc, ap_ci, jj
-   integer :: iopera_sub
+   integer :: eof, j, k, lyrtot
+   integer :: mgt1i, pstnum
+   integer :: mgt_op, mcri
+   integer :: iopera_sub, ilnds
    real*8 :: depth(25)
 
    do j= mhru1, mhru
@@ -110,11 +110,11 @@ subroutine hruallo
 !!  calculate max number of operations per hru
       iopera_sub = 1
       mcri = 0
-      do kk = 1, 30
+      do k = 1, 30
          read (10,6000) titldum
       end do
 
-      do kk = 1, 1000
+      do k = 1, 1000
          read (10,6300,iostat=eof) mgt_op, mgt1i
          if (eof < 0) exit
          if (mgt_op == 1) then

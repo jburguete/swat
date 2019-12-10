@@ -67,21 +67,21 @@ subroutine pminrl2
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    solp(:)  |mg/kg        |Solution pool phosphorous content
-!!    actp(:)  |mg/kg        |Active pool phosphorous content
-!!    stap(:)  |mg/kg        |Stable pool phosphorous content
-!!    vara            |Intermediate Variable
-!!    varb            |Intermediate Variable
-!!    varc            |Intermediate Variable
-!!    arate             |Intermediate Variable      |
-!!    j           |none            |HRU number
-!!    l           |none            |counter (soil layer)
-!!    rmn1        |kg P/ha         |amount of phosphorus moving from the solution
-!!                                 |mineral to the active mineral pool in the
-!!                                 |soil layer
-!!    roc         |kg P/ha         |amount of phosphorus moving from the active
-!!                                 |mineral to the stable mineral pool in the
-!!                                 |soil layer
+!!    solp(:)     |mg/kg         |Solution pool phosphorous content
+!!    actp(:)     |mg/kg         |Active pool phosphorous content
+!!    stap(:)     |mg/kg         |Stable pool phosphorous content
+!!    vara                       |Intermediate Variable
+!!    varb                       |Intermediate Variable
+!!    varc                       |Intermediate Variable
+!!    arate                      |Intermediate Variable
+!!    j           |none          |HRU number
+!!    l           |none          |counter (soil layer)
+!!    rmn1        |kg P/ha       |amount of phosphorus moving from the solution
+!!                               |mineral to the active mineral pool in the
+!!                               |soil layer
+!!    roc         |kg P/ha       |amount of phosphorus moving from the active
+!!                               |mineral to the stable mineral pool in the
+!!                               |soil layer
 !!    rto         |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -93,7 +93,7 @@ subroutine pminrl2
    use parm
    implicit none
    integer :: j, l
-   real*8 :: rto, rmn1, roc, wetness, base, vara,varb,varc,as_p_coeff
+   real*8 :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff, arate, ssp, xx
    real*8  solp(mlyr),actp(mlyr),stap(mlyr) !! locals for concentation based data
 
    j = 0

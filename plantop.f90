@@ -56,7 +56,8 @@ subroutine plantop
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, nly
+   real*8 :: plt_zmx
 
    j = 0
    j = ihru

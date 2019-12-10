@@ -27,7 +27,7 @@ subroutine rseday
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, ii
 
    do j = 1, subtot
       write (84,5000) j, subgis(j), iida, rch_dakm(j),&

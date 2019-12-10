@@ -34,9 +34,12 @@ subroutine readru
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
+   integer :: eof, j
+   real*8 :: chk_ru, chl_ru, chn_ru, chs_ru, chw_ru, da_ru, ix,&
+   &ovn_ru, ovs, ovsl, sumk, tck
 
    eof = 0
+   tck = 0.
    do
       read (113,5000,iostat=eof) titldum
       if (eof < 0) exit

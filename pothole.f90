@@ -168,9 +168,11 @@ subroutine pothole
    real*8, parameter :: pi = 3.1416
    integer :: j, ly
    real*8 :: potsep, sumo, potev, cnv, potpcp, no3in, qdayi
-   real*8 :: sedloss, no3loss, yy, dg, excess, stmax, sedsetl
+   real*8 :: sedloss, no3loss, yy
    real*8 :: sanloss, silloss, claloss, sagloss, lagloss
-   real*8 :: potmm,minpsloss,minpaloss, solploss, orgnloss, orgploss, rto
+   real*8 :: potmm, minpsloss, minpaloss, solploss, orgnloss, orgploss
+   real*8 :: qin, potvol_m3, drcla, drsil, drtot, pot_depth, potmpao, potmpso, potno3o, potorgno, potorgpo, potsa_ini,&
+     potsolpo, potvol_ini, potvol_sep, potvol_tile, solp_tileo, spillo, tileo, xx
 
    j = 0
    j = ihru
@@ -186,7 +188,7 @@ subroutine pothole
    potevmm = 0.
    potsepmm = 0.
    potflwo = 0.
-   potflwosp = 0.
+!   potflwosp = 0. ! not used
    potsedo = 0.
    potsano = 0.
    potsilo = 0.
@@ -218,7 +220,7 @@ subroutine pothole
 
 !!    conversion factors
    cnv = 10. * hru_ha(j)
-   rto = 1.
+   !rto = 1. !not used
 
 !     when water is impounding
    if (imp_trig(j) == 1) return

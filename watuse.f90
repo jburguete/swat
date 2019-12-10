@@ -42,7 +42,7 @@ subroutine watuse
    implicit none
 
    integer :: j
-   real*8 :: cnv
+   real*8 :: cnv, sub_ha
 
    j = 0
    j = ihru

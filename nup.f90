@@ -96,7 +96,7 @@ subroutine nup
    implicit none
 
    integer :: j, icrop, l, ir
-   real*8 :: un2, unmx, uno3l, gx
+   real*8 :: un2, unmx, uno3l, gx, tno3, xx
 
    j = 0
    j = ihru
@@ -106,7 +106,7 @@ subroutine nup
       tno3 = tno3 + sol_no3(l,j)
    end do
    tno3 = tno3 / n_reduc(j)
-   up_reduc = tno3 / (tno3 + Exp(1.56 - 4.5 * tno3))
+   !up_reduc = tno3 / (tno3 + Exp(1.56 - 4.5 * tno3)) !not used
 
    icrop = idplt(j)
    pltfr_n(j) = (pltnfr(1,icrop) - pltnfr(3,icrop)) * (1. - phuacc(j)&

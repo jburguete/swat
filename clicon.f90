@@ -137,7 +137,7 @@ subroutine clicon
    use parm
    implicit none
 
-   integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib
+   integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib, l
    real*8 :: tmxbsb, tmnbsb, rbsb, rhdbsb, rabsb, u10bsb, rmxbsb
    real*8 :: daylbsb,  fradbsb(nstep),tdif, pdif, ratio
 !     real*8, dimension (:), allocatable :: rhrbsb, rstpbsb

@@ -28,7 +28,7 @@ subroutine tillmix(jj,bmix)
 !!    nyskip        |none          |number of years to skip output printing/
 !!                                 |summarization
 !   Drainmod  07/2006
-!!   ranrns(:)     |mm            |random roughness of a given tillage operation
+!!    ranrns(:)     |mm            |random roughness of a given tillage operation
 !   Drainmod  07/2006
 !!    sol_actp(:,:) |kg P/ha       |amount of phosphorus stored in the
 !!                                 |active mineral phosphorus pool
@@ -109,7 +109,7 @@ subroutine tillmix(jj,bmix)
 !!    l           |none          |counter
 !!    nl          |none          |number of layers being mixed
 !   Drainmod  07/2006
-!!   ranrns_hru(:)|mm           |random roughness at time of a given tillage operation in HRU
+!!   ranrns_hru(:)|mm            |random roughness at time of a given tillage operation in HRU
 !   Drainmod  07/2006
 !!    smix(:)     |varies        |amount of substance in soil profile
 !!                               |that is being redistributed between
@@ -129,13 +129,13 @@ subroutine tillmix(jj,bmix)
    integer, intent (in) :: jj
    real*8, intent (in) :: bmix
    integer :: l, k, nl
-   real*8 :: emix, dtil, rrns
+   real*8 :: emix, dtil, dg
    real*8 :: thtill(mlyr), smix(11+npmx)
 
    emix = 0.
    dtil = 0.
 ! Drainmod  08/2006
-   rrns = 0.
+   !rrns = 0. ! not used
    if (bmix > 1.e-6) then
       !! biological mixing
       emix = bmix

@@ -97,7 +97,7 @@ subroutine reshr
    use parm
    implicit none
 
-   integer :: jres, inhyd
+   integer :: jres, inhyd, k
    real*8 :: vol, sed, vvr, targ, xx, flw
 
    jres = 0

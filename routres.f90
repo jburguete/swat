@@ -192,7 +192,7 @@ subroutine routres
    use parm
    implicit none
 
-   integer :: jres, k, ii
+   integer :: jres, k, ii, ires_code
    real*8 :: sepmm, resorgpc, ressolpc, sedcon, resorgnc, resno3c
    real*8 :: resno2c, resnh3c,zz
 

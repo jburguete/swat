@@ -156,7 +156,7 @@ subroutine hrumon
    use parm
    implicit none
 
-   integer :: j, sb, ii, days, iflag
+   integer :: j, sb, ii, days, iflag, idplant, ix
    real*8 :: dmt, yldt
    real*8, dimension (mhruo) :: pdvas, pdvs
    character (len=4) :: cropname

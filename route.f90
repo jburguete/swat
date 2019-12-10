@@ -74,7 +74,7 @@ subroutine route
    use parm
    implicit none
 
-   integer :: jrch, ii
+   integer :: jrch, ii, j
    real*8 :: subwtr
 
    jrch = 0

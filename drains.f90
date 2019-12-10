@@ -27,7 +27,7 @@ subroutine drains
 !!    sol_z(:,:)  |mm            |depth to bottom of each profile layer in a given HRU
 !!    stmaxd(:)   |mm            |maximum surface depressional storage for the day in a given HRU
 !!    stor        |mm            |surface storage for the day in a given HRU
-!!    storro     |mm            |surface storage that must b
+!!    storro	  |mm            |surface storage that must b
 !!                               |can move to the tile drain tube
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -78,10 +78,13 @@ subroutine drains
    use parm
    implicit none
 
-   integer :: j1, j, m
+   integer :: j1, j, m, nlayer
    real*8 :: cone, depth, dg, ad, ap
-   real*8 :: hdrain, gee, e, gee1, gee2, gee3, pi
+   real*8 :: hdrain, gee, gee1, gee2, gee3
    real*8 :: k2, k3, k4, k5, k6
+   real*8 :: above, ddranp, deep, dflux, dot, em, stor, storro
+   real*8 :: sum, x, xx, y1, hdmin
+   real*8, parameter :: pi = 22./7.
 
    !! initialize variables
 
@@ -91,7 +94,6 @@ subroutine drains
    y1 = dep_imp(j) - wt_shall
    if (y1 > dep_imp(j)) y1 = dep_imp(j)
    above = 0.
-   pi = 22./7.
    gee1 =0.
 
 !! find number of soil layers

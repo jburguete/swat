@@ -441,7 +441,7 @@ subroutine sumv
    use parm
    implicit none
 
-   integer :: j, k
+   integer :: j, k, ii
    real*8 :: cnv
 
    j = 0

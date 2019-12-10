@@ -77,22 +77,26 @@ subroutine rtsed_yangsand
 !!    SWAT: ttcoef
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-!! Modification to the original SWAT sediment routine
-!! By Balaji Narasimhan and Peter Allen
+!!    Modification to the original SWAT sediment routine
+!!    By Balaji Narasimhan and Peter Allen
 !!    Yang's Sand and gravel equation combined with Einsteins deposition equation
 !!    Plus particle size tracking.
 
    use parm
    implicit none
 
-   integer :: jrch, ch_d50type
+   integer :: jrch
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
-   real*8 :: depdeg, dot, vs, x, SC, Tcbnk, Tcbed,Tbank,Tbed,asinea,Tou
+   real*8 :: depdeg, dot, x, Tbank,Tbed,asinea,Tou
    real*8 :: sanin, silin, clain, sagin, lagin, grain, outfract
    real*8 :: depsan, depsil, depcla, depsag, deplag, depgra
    real*8 :: degsan, degsil, degcla, deggra, degrte
-   real*8 :: bnksan, bnksil, bnkcla, bnkgra, pdep, pdepbed, bedsize
-   real*8 :: USpower,bnkrte,adddep,fpratio,watdep,bnkrt,bedrt,effbnkbed
+   real*8 :: bnksan, bnksil, bnkcla, bnkgra, pdep, bedsize
+   real*8 :: bnkrte,adddep,fpratio,watdep,bnkrt,bedrt,effbnkbed
+   real*8 :: alog10cychppm, c, cychppm, cychv, cychw, dat2, deg1, deg1cla,&
+     &deg1gra, deg1lag, deg1sag, deg1san, deg1sil, degremain, pbank, pbed, rh,&
+     &SFbank, topw, var1, var2, var3, var4, var5, var56, var6, vcla, vgra, vlag,&
+     &vsag, vsan, vsh, vsil, w50
 
    jrch = 0
    jrch = inum1
@@ -117,7 +121,7 @@ subroutine rtsed_yangsand
       sagin = varoute(26,inum2) * (1. - rnum1) + sagst(jrch)
       lagin = varoute(27,inum2) * (1. - rnum1) + lagst(jrch)
       grain = varoute(28,inum2) * (1. - rnum1) + grast(jrch)
-      sedinorg = sedin
+      !sedinorg = sedin ! not used
 
 !! do not perform sediment routing if no water in reach
       if (qdin > 0.01) then

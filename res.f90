@@ -96,10 +96,11 @@ subroutine res
    use parm
    implicit none
 
-   integer :: jres
+   integer :: jres, jj
    real*8 :: vol, sed, vvr, targ, xx, flw
    real*8 :: san,sil,cla,sag,lag,gra,ndespill
    real*8 :: inised, finsed, setsed, remsetsed
+   real*8 :: res_h, res_h1, res_qi, susp, trapres, velofl, x1
 
    jres = 0
    jres = inum1

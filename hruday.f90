@@ -183,7 +183,10 @@ subroutine hruday
    use parm
    implicit none
 
-   integer :: j, sb, ii, iflag
+   integer :: j, sb, ii, iflag, idplant, k, icl
+   real*8 :: sol_mass, sol_cmass, sol_nmass, tot_mass, tot_cmass, tot_nmass,&
+   &tot_LSC, tot_LMC, tot_HSC, tot_HPC, tot_BMC, tot_pmass, tot_solp,&
+   &tot_no3_nh3
    real*8, dimension (mhruo) :: pdvas, pdvs
    character (len=4) :: cropname
 

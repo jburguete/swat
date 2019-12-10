@@ -440,7 +440,7 @@ module parm
    real*8, dimension (:), allocatable :: thalf,tnconc,tpconc,tno3conc
    real*8, dimension (:), allocatable :: fcimp,urbcn2
 ! mapp = max number of applications
-   real*8 :: sweepeff,frt_kg, pst_dep
+   real*8 :: sweepeff,frt_kg, pst_dep, fr_curb
 !! added pst_dep to statement below 3/31/08 gsm
 !!   burn 3/5/09
 ! mnr = max number years of rotation
@@ -978,6 +978,8 @@ module parm
    real*8, dimension(:), allocatable :: RCHX,RCSS,QCAP,CHXA,CHXP
    real*8, dimension(:,:,:), allocatable :: QHY
 
+   !!Variables for killop.f90 and harvkillop.f90 files
+   real*8 :: ff1, ff2
 
    ! tdc 2018-03-29 prototypes for some functions that returned REAL implicitly
    ! but which must now return REAL*8 explicitly

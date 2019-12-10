@@ -100,8 +100,8 @@ subroutine snom
    use parm
    implicit none
 
-   integer :: j, ib
-   real*8 :: sum, smp, smfac, smleb
+   integer :: j, ib, ii
+   real*8 :: sum, smp, smfac, smleb, ratio
    real*8 :: xx, snocov
 
    j = 0

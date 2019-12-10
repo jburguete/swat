@@ -8,7 +8,12 @@ subroutine rootfr
 
    real*8 :: sol_thick(sol_nly(ihru))
    real*8 :: cum_rd, cum_d, cum_rf, x1, x2
+   real*8 :: xx, xx1, xx2
    integer :: k, l, jj
+   ! Normalized Root Density = 1.15*exp[-11.7*NRD] + 0.022, where NRD = normalized rooting depth
+   ! Parameters of Normalized Root Density Function from Dwyer et al 19xx
+   real*8, parameter :: a = 1.15, b = 11.7, c = 0.022, d = 0.12029 ! Integral of Normalized Root Distribution Function
+   ! from 0 to 1 (normalized depth) = 0.12029
 
    jj = ihru
 
@@ -17,13 +22,6 @@ subroutine rootfr
       return
    endif
 
-   ! Normalized Root Density = 1.15*exp[-11.7*NRD] + 0.022, where NRD = normalized rooting depth
-   ! Parameters of Normalized Root Density Function from Dwyer et al 19xx
-   a = 1.15
-   b = 11.7
-   c = 0.022
-   d = 0.12029 ! Integral of Normalized Root Distribution Function
-   ! from 0 to 1 (normalized depth) = 0.12029
 
    l = 0
    k = 0

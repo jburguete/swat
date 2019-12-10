@@ -58,7 +58,7 @@ subroutine subday
    use parm
    implicit none
 
-   integer :: sb, ii
+   integer :: sb, ii, icl
    real*8 :: sub_ha
    real*8, dimension (msubo) :: pdvab, pdvb
 

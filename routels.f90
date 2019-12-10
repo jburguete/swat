@@ -29,10 +29,14 @@ subroutine routels(iru_sub)
 !!
    use parm
    implicit none
+   integer, intent(in) :: iru_sub
+   integer :: ii, jj, kk, lyr
+   real*8 :: cy, dakm, dep, dr, dr_er, dstor, frac, gwqrunon,&
+   &orgn, orgp, qs, sed, surfqout, trancap, trt, vs, xslat, xx
    real*8 :: latqout, gwqout, latqrunon, surfqrunon, latqlyr
 
 !!    compute infiltration from surface runon to next landscape unit
-   real*8 :: ls_overq, ls_latq, ls_tileq, ls_gwq
+   real*8 :: ls_overq, ls_latq, ls_gwq
 
 !!    water
 !      if (rnum1 > 1.e-4) return
@@ -94,20 +98,21 @@ subroutine routels(iru_sub)
       varoute(5,ihout) = orgp * dr_er
 
 !!    nitrate (& nitrite)
-      no3 = (varoute(6,inum2) + varoute(15,inum2)) * rnum1
+!            no3 = (varoute(6,inum2) + varoute(15,inum2)) * rnum1 ! not used
 !!    soluble phosphorus
-      slbp = varoute(7,inum2) * rnum1
+!            slbp = varoute(7,inum2) * rnum1 ! not used
 !!    soluble pesticide not routed
 !!    sorbed pesticide not routed
 !!    chlorophyll-a not routed
 !!    ammonium
-      nh3 = varoute(14,inum2) * rnum1
+!            nh3 = varoute(14,inum2) * rnum1 ! not used
 !!    CBOD not routed
 !!    dissolved oxygen not routed
 !!    persistent bacteria not routed
 !!    less persistent bacteria not routed
 
 !!    dstor = rnum1
+      dstor = 0. ! it is not initialized
 
 !!    compute infiltration from surface runon to next landscape unit
       if (ls_overq > 1.e-6) then

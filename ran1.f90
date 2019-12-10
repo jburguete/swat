@@ -3,11 +3,12 @@ real*8 function ran1(idum)
 !
 !  THIS SUBROUTINE IS FROM "NUMERICAL RECIPES" BY PRESS ET AL.
    implicit none
-   dimension rqq(97)
-   parameter (m1 = 259200, ia1 = 7141, ic1 = 54773, rm1 =&
-   &3.8580247e-6)
-   parameter (m2 = 134456, ia2 = 8121, ic2 = 28411, rm2 =&
-   &7.4373773e-6)
+   integer, intent(in) :: idum
+   real*8 :: rqq(97)
+   integer :: m1, m2, m3, ia1, ia2, ia3, ic1, ic2, ic3, iff, ix1, ix2, ix3, j
+   real*8 :: rm1, rm2
+   parameter (m1 = 259200, ia1 = 7141, ic1 = 54773, rm1 = 3.8580247e-6)
+   parameter (m2 = 134456, ia2 = 8121, ic2 = 28411, rm2 = 7.4373773e-6)
    parameter (m3 = 243000, ia3 = 4561, ic3 = 51349)
    save
    data iff / 0 /

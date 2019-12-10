@@ -154,12 +154,12 @@ subroutine readplant
    use parm
    implicit none
 
-   integer :: ic, eof, icnum, yrsmat
-   real*8 :: xx, usle_c, frgrw2, laimx2, co2hi, bioehi, vpdfr, blaic
-   real*8 :: b1, b2, b3, c1, frgrw1, laimx1, frgmax, bioe, hvstc, dlaic
-   real*8 :: chtmxc, rdmxc, topt, tbase, cnyldc, cpyldc, bn1, bn2, bn3
-   real*8 :: bp1c, bp2c, bp3c, wsyfc, gsic, wavpc, rsdcopl, alaimin
-   real*8 :: bioleaf
+   integer :: ic, eof, yrsmat, idtype
+   real*8 :: xx, usle_c, frgrw2, laimx2, co2hi, bioehi, vpdfr,&
+   &blaic, b1, b2, b3, c1, frgrw1, laimx1, frgmax, bioe, hvstc,&
+   &dlaic, chtmxc, rdmxc, topt, tbase, cnyldc, cpyldc, bn1, bn2,&
+   &bn3, bp1c, bp2c, bp3c, wsyfc, gsic, wavpc, rsdcopl, alaimin,&
+   &bioleaf, biomxtrees, bmdieoff, extcoef, rsr1c, rsr2c
    character (len=4) :: cname
 
    eof = 0

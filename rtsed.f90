@@ -82,7 +82,7 @@ subroutine rtsed
 
    integer :: jrch
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg1, deg2, dep
-   real*8 :: depdeg, dot, outfract, deg
+   real*8 :: depdeg, dot, outfract, deg, dat2
 
    jrch = 0
    jrch = inum1
@@ -100,7 +100,7 @@ subroutine rtsed
 !! initialize sediment in reach during time step
          sedin = 0.
          sedin = varoute(3,inum2) * (1. - rnum1) + sedst(jrch)
-         sedinorg = sedin
+         !sedinorg = sedin ! not used
 !! initialize reach peak runoff rate
          peakr = prf(jrch) * sdti
 
@@ -113,10 +113,10 @@ subroutine rtsed
          end if
          if (vc > 5.) vc = 5.
 
-         tbase = ch_l2(jrch) * 1000. / (3600. * 24. * vc)
+         !tbase = ch_l2(jrch) * 1000. / (3600. * 24. * vc) ! not used
          !     tbase = prf(jrch)                 !!!!!!!! commented to match r610
 
-         if (tbase > 1.) tbase = 1.
+         !if (tbase > 1.) tbase = 1. ! not used
 
 
 !! JIMMY'S NEW IMPROVED METHOD for sediment transport

@@ -44,7 +44,7 @@ subroutine readsno
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
+   integer :: eof, ib
    eof = 0
 
    do

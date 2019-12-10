@@ -87,7 +87,7 @@ subroutine readrte
 
    character (len=80) :: titldum
    integer :: eof
-   real*8 :: bnksize, bedsize
+   real*8 :: bnksize, bedsize, SC, sumerod
 
    eof = 0
    do

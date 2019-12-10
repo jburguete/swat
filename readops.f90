@@ -57,18 +57,18 @@ subroutine readops
 !!                               |entering the most concentrated 10% of the VFS.
 !!    vfsratio(:) |none          |Field area/VFS area ratio
 !!    vfsch(:)    |none          |Fraction of flow entering the most concentrated 10% of the VFS.
-!!                            |which is fully channelized
-!! grwat_n(:)      |none      |Mannings's n for grassed waterway
-!! grwat_i(:)      |none      |Flag for the simulation of grass waterways
-!!                                 | gwat_i = 0 inactive
-!!                                 |        = 1 active
-!! grwat_l(:)      |km    |Length of grass Waterway
-!! grwat_w(:)      |m         |Average width of grassed waterway
-!! grwat_d(:)      |m         |Depth of grassed waterway from top of bank
-!!                                 |  to bottom
-!! grwat_s(:)      |m         |Average slope of grassed waterway channel
-!! grwat_spcon(:)  |none      |Linear parameter for calculating sediment
-!!                                 |  in grassed waterways
+!!                               |which is fully channelized
+!!    grwat_n(:)  |none          |Mannings's n for grassed waterway
+!!    grwat_i(:)  |none          |Flag for the simulation of grass waterways
+!!                               | gwat_i = 0 inactive
+!!                               |        = 1 active
+!!    grwat_l(:)  |km            |Length of grass Waterway
+!!    grwat_w(:)  |m             |Average width of grassed waterway
+!!    grwat_d(:)  |m             |Depth of grassed waterway from top of bank
+!!                               |  to bottom
+!!    grwat_s(:)   |m            |Average slope of grassed waterway channel
+!!    grwat_spcon(:) |none       |Linear parameter for calculating sediment
+!!                               |  in grassed waterways
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -81,9 +81,10 @@ subroutine readops
 
    character (len=80) :: titldum
    integer :: eof
-   integer :: mon, day, mgt_op, mgt2i, mgt1i
+   integer :: mon, day, mgt_op, mgt2i, mgt1i, iyear
    real*8 :: mgt3,mgt4,mgt5,mgt6,mgt7,mgt8,mgt9,mgt10,mgt11,mgt12,&
    &mgt13,mgt14,mgt15,mgt16,mgt17,mgt18,mgt19,mgt20,mgt21,mgt22,mgt23
+   integer :: Jdt
 
 
 
@@ -96,7 +97,7 @@ subroutine readops
    do
       mon = 0
       day = 0
-      year = 0.
+      iyear = 0
       mgt_op = 0
       mgt1i = 0
       mgt2i = 0
@@ -204,7 +205,7 @@ subroutine readops
          ro_bmp_flos(iops,ihru) = mgt10  !! Flow
          ro_bmp_seds(iops,ihru) = mgt11  !! Sediment
          ro_bmp_pps(iops,ihru) = mgt12   !! Particulate P
-         ro_bmp_sps(iops,ihru) = mg13    !! Soluble P
+         ro_bmp_sps(iops,ihru) = mgt13   !! Soluble P
          ro_bmp_pns(iops,ihru) = mgt14   !! Particulate N
          ro_bmp_sns(iops,ihru) = mgt15   !! Soluble N
          ro_bmp_bacs(iops,ihru) = mgt16  !! Bacteria

@@ -75,13 +75,13 @@ subroutine ttcoef(k)
 
    integer, intent (in) :: k
    integer :: jj
-   real*8 :: fps, d, b, p, a, qq1, rh, tt1, tt2, aa
+   real*8 :: d, b, p, a, qq1, rh, tt1, tt2, chsslope
+   real*8, parameter :: aa = 1., fps = 4.
 
    do jj = 1, 13
       phi(jj,k) = 0.
    end do
 
-   aa = 1.
    b = 0.
    d = 0.
 !!    If side slope is not set in .rte file then assume this default
@@ -92,7 +92,6 @@ subroutine ttcoef(k)
       chsslope = chside(k)
    end if
 
-   fps = 4.
    d = ch_d(k)
    b = ch_w(2,k) - 2. * d * chsslope
 

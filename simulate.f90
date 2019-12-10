@@ -96,7 +96,7 @@ subroutine simulate
    use parm
    implicit none
 
-   integer :: idlst, j, iix, iiz, ic, mon, ii
+   integer :: idlst, j, ic, mon, ii, idap, isb, iyp, k, l, ly, mo_at, iyr_at
    real*8 :: xx
    integer :: eof
 

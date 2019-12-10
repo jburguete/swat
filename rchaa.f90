@@ -125,7 +125,7 @@ subroutine rchaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   integer :: j
+   integer :: j, ii
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
 

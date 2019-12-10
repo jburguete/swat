@@ -72,7 +72,7 @@ subroutine gw_no3
    implicit none
 
    integer :: j
-   real*8 :: rchrgn1, revapn, gwseepn
+   real*8 :: rchrgn1, revapn, gwseepn, xx
 
    j = 0
    j = ihru

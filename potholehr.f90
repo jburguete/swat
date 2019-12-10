@@ -55,8 +55,8 @@ subroutine potholehr()
 !!                                  |depression/impounded area
 !!    qday           |mm H2O        |surface runoff loading to main channel from
 !!                                  |HRU for day
-!!    rainsub(:,:)  |mm H2O        |precipitation for the time step during the
-!!         |day in HRU
+!!    rainsub(:,:)   |mm H2O        |precipitation for the time step during the
+!!                                  |day in HRU
 !!    sed_stl(:)     |kg/kg         |fraction of sediment remaining suspended in
 !!                                  |impoundment after settling for one day
 !!    sedyld(:)      |metric tons   |daily soil loss caused by water erosion
@@ -168,12 +168,12 @@ subroutine potholehr()
    implicit none
 
    real*8, parameter :: pi = 3.1416
-   integer :: j, ly,kk,ll,k
+   integer :: j, ly, k
    real*8 :: potsep, sumo, potev, cnv, potpcp, spillo,no3in
-   real*8 :: sedloss, no3loss, yy, dg, excess, stmax, sedsetl
+   real*8 :: sedloss, no3loss, yy, dg, excess, stmax
    real*8 :: sanloss, silloss, claloss, sagloss, lagloss, xx
-   real*8 :: potmm,minpsloss,minpaloss, solploss, orgnloss, orgploss, rto
-   j = 0
+   real*8 :: potmm,minpsloss,minpaloss, solploss, orgnloss, orgploss
+   real*8 :: drcla, drsil, drtot, pot_depth, potmpao, potmpso, potno3o, potorgno, potorgpo, potsolpo, qin, tileo
    j = ihru
 
 !! initialize variables
@@ -215,7 +215,7 @@ subroutine potholehr()
 !! conversion factors
    cnv = 0.
    cnv = 10. * hru_ha(j)
-   rto = 1.
+   !rto = 1. !not used
 
 !! iterate for time step calculation using 1hr rainfall values, hhsubp(mhru,24)
    do k=1,nstep
@@ -445,7 +445,7 @@ subroutine potholehr()
          if (iprint==3) then
             write (125,2000)i,j,curyr,k,pot_vol(j),potsa(j),spillo,potsep,&
             &potev,sol_sw(j),potpcpmm,potflwi(j) / cnv,&
-            &potsedi(j) / hru_ha(j),potflow,potsedo / hru_ha(j)
+            &potsedi(j) / hru_ha(j),potflwo,potsedo / hru_ha(j)
          endif
 
          if (pot_vol(j) > 1.e-6) then

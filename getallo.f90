@@ -100,7 +100,7 @@ subroutine getallo
    &fertdb, subfile, fcstfile, bsnfile
    character (len=1) ::  a
    character (len=80) ::  titldum
-   integer :: icd, inm1, inm2, inm3, iht, eof, numhru, ic
+   integer :: icd, inm1, inm2, inm3, iht, eof, numhru, ic, nlines
    integer :: ipnum, ifnum, iunum, itnum, j, ifcst, fcsttot, k
 !     septic database
    integer  :: isnum   !! CS
@@ -262,7 +262,7 @@ subroutine getallo
    mrecy = 0
    mtran = 0
    nsave = 0
-   nlsu = 0
+!   nlsu = 0 ! not used
 
 !! calculate number of records in plant growth database
    eof = 0
@@ -308,7 +308,7 @@ subroutine getallo
 !     septic database
    if (septdb /= '             ') then
       open (171,file=septdb) !! CS
-      do jj = 1,4
+      do j = 1,4
          read (171,6000) titldum
       end do
       do

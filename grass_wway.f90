@@ -6,46 +6,46 @@ subroutine grass_wway
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru            |none          |HRU number
-!!    surfq(:)     |mm H2O        |amount of water in surface runoff generated
-!! grwat_n(:)      |none          |Mannings's n for grassed waterway
-!! grwat_i(:)      |none          |On/off Flag for waterway simulation
-!! grwat_l(:)      |km            |Length of Grass Waterway
-!! grwat_w(:)      |none          |Width of grass waterway
-!! grwat_d(:)      |m             |Depth of Grassed waterway
-!! grwat_s(:)      |m/m           |Slope of grass waterway
-!! grwat_spcon(:)  |none          |sediment transport coefficant defined by user
-!! tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
-!! mhru
+!!    surfq(:)        |mm H2O        |amount of water in surface runoff generated
+!!    grwat_n(:)      |none          |Mannings's n for grassed waterway
+!!    grwat_i(:)      |none          |On/off Flag for waterway simulation
+!!    grwat_l(:)      |km            |Length of Grass Waterway
+!!    grwat_w(:)      |none          |Width of grass waterway
+!!    grwat_d(:)      |m             |Depth of Grassed waterway
+!!    grwat_s(:)      |m/m           |Slope of grass waterway
+!!    grwat_spcon(:)  |none          |sediment transport coefficant defined by user
+!!    tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
+!!    mhru
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 
-!!    wat_phi(1,:)        |m^2           |cross-sectional area of flow at bankfull
+!!    wat_phi(1,:)    |m^2           |cross-sectional area of flow at bankfull
 !!                                   |depth
-!!    wat_phi(2,:)        |none          |
-!!    wat_phi(3,:)        |none          |
-!!    wat_phi(4,:)        |none          |
-!!    wat_phi(5,:)        |m^3/s         |flow rate when reach is at bankfull depth
-!!    wat_phi(6,:)        |m             |bottom width of main channel
-!!    wat_phi(7,:)        |m             |depth of water when reach is at bankfull
+!!    wat_phi(2,:)    |none          |
+!!    wat_phi(3,:)    |none          |
+!!    wat_phi(4,:)    |none          |
+!!    wat_phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
+!!    wat_phi(6,:)    |m             |bottom width of main channel
+!!    wat_phi(7,:)    |m             |depth of water when reach is at bankfull
 !!                                   |depth
-!!    wat_phi(8,:)        |m/s           |average velocity when reach is at
+!!    wat_phi(8,:)    |m/s           |average velocity when reach is at
 !!                                   |bankfull depth
-!!    wat_phi(9,:)        |m/s           |wave celerity when reach is at
+!!    wat_phi(9,:)    |m/s           |wave celerity when reach is at
 !!                                   |bankfull depth
-!!    wat_phi(10,:)       |hr            |storage time constant for reach at
+!!    wat_phi(10,:)   |hr            |storage time constant for reach at
 !!                                   |bankfull depth (ratio of storage to
 !!                                   |discharge)
-!!    wat_phi(11,:)       |m/s           |average velocity when reach is at
+!!    wat_phi(11,:)   |m/s           |average velocity when reach is at
 !!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi(12,:)       |m/s           |wave celerity when reach is at
+!!    wat_phi(12,:)   |m/s           |wave celerity when reach is at
 !!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi(13,:)       |hr            |storage time constant for reach at
+!!    wat_phi(13,:)   |hr            |storage time constant for reach at
 !!                                   |0.1 bankfull depth (low flow) (ratio
 !!                                   |of storage to discharge)
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 !!    surfq(:)        |mm H2O        |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
+!!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -53,27 +53,30 @@ subroutine grass_wway
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    peakr       |m^3/s         |peak runoff rate for the day
-!! chflow_m3   |m^3/s         |Runoff in CMS
-!! chflow_day |m^3/day    |Runoff
-!! K           |m^3/s         |Total number of HRUs plus this HRU number
-!! rcharea     |m^2           |cross-sectional area of flow
+!!    chflow_m3   |m^3/s         |Runoff in CMS
+!!    chflow_day  |m^3/day       |Runoff
+!!    K           |m^3/s         |Total number of HRUs plus this HRU number
+!!    rcharea     |m^2           |cross-sectional area of flow
 !!    rchdep      |m             |depth of flow on day
 !!    sf_area     |m^2           |area of waterway sides in sheetflow
 !!    sf_sed      |kg/m^2        |sediment loads on sides of waterway
 !!    surq_remove |%             |percent of surface runoff capture in VFS
 !!    sed_remove  |%             |percent of sediment capture in VFS
 !!    vc          |m/s           |flow velocity in reach
-!! Sedin  |mg      | Sediment in waterway
-!! Sedint    |mg      | Sediment into waterway channel
-!! Sedout  |mg      | Sediment out of waterway channel
+!!    Sedin       |mg            | Sediment in waterway
+!!    Sedint      |mg            | Sediment into waterway channel
+!!    Sedout      |mg            | Sediment out of waterway channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
    implicit none
+   integer :: j, k
    real*8 :: chflow_m3, sf_area, surq_remove, sf_sed ,sed_remove,vc,&
-   &chflow_day, rh
+   &chflow_day, rh, cych, cyin, depnet, p, sed_frac, sedin, sedint, sedout,&
+   &sedtrap, sf_depth, surq_frac, xrem
+
 !! set variables
    j = ihru
 
@@ -156,8 +159,8 @@ subroutine grass_wway
       cyin = 0.
       cych = 0.
       depnet = 0.
-      deg = 0.
-      dep = 0.
+      !deg = 0. ! not used
+      !dep = 0. ! not used
 !! if there is significant flow calculate
       if (chflow_m3 > 1.e-4) then
 !! Calculate sediment concentration in inflow mg/m^3

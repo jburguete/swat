@@ -8,7 +8,7 @@ subroutine rewind_init
    implicit none
 
    character (len=80) :: titldum
-   integer :: ii
+   integer :: ii, j
 
 !! reset output arrays/variables
    aairr = 0.
@@ -172,7 +172,7 @@ subroutine rewind_init
    phu_plt = 0.
    phu_plt = orig_phu
    tnylda = 0.
-   tnylda = orig_tnylda
+!         tnylda = orig_tnylda ! orig_tnylda is not defined
    tnyld = 0.
    yldkg = 0.
    yldn = 0.

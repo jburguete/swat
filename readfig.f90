@@ -117,8 +117,8 @@ subroutine readfig
    character (len=13) :: month_in, day_in, annual_in, year_in
    character (len=13) :: apex_in
    character (len=13) :: hour_in, resfile, lwqfile, rtefile, swqfile
-   character (len=13) :: subfile, auto_in , rufile
-   integer :: ii, eof
+   character (len=13) :: subfile, rufile
+   integer :: ii, eof, iijj, jjii
 
    character (len=3), dimension (mhyd) :: char6, char7, char8
    char6 = "   "
@@ -160,7 +160,7 @@ subroutine readfig
          !     if (char8(idum) == "in:") inum8s = 0
 
          if (char6(idum) == "  1")  then
-            xyz = 0.
+            ! xyz = 0. ! not used
             write (char6(idum), fmt=' (i3)') jjii
             inum6s(idum) = jjii
          else
@@ -168,7 +168,7 @@ subroutine readfig
          end if
 
          if (char7(idum) == "  1")  then
-            xyz = 0.
+            ! xyz = 0. ! not used
             write (char7(idum), fmt=' (i3)') jjii
             inum7s(idum) = jjii
          else
@@ -176,7 +176,7 @@ subroutine readfig
          end if
 
          if (char8(idum) == "  0")  then
-            xyz = 0.
+            ! xyz = 0. ! not used
             write (char8(idum), fmt=' (i3)') iijj
             inum8s(idum) = iijj
          else

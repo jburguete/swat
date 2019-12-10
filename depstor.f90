@@ -7,18 +7,18 @@ subroutine depstor
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!! hru_slp(:) |m/m        |average slope steepness in HRU
-!! iida  |julian date   |day being simulated (current julian day)
+!!    hru_slp(:)  |m/m           |average slope steepness in HRU
+!!    iida        |julian date   |day being simulated (current julian day)
 !!    iop(:,:,:)  |julian date   |date of tillage operation
 !!    mgt_op      |none          |operation code number
 !!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    ranrns_hru(:)|mm           |random roughness for a given HRU
 !!    sol_bd(1,:) |Mg/m^3        |bulk density of top soil layer in HRU
 !!    sol_cbn(1,:)|%             |percent organic carbon in top soil layer in HRU
-!! sol_clay(1,:)|%      |percent clay content in top soil layer in HRU
+!!    sol_clay(1,:)|%            |percent clay content in top soil layer in HRU
 !!    sol_rsd(1,:)|kg/ha         |amount of organic matter in the top soil layer
 !!                               |classified as residue in HRU
-!! sol_ori(:) |mm      |oriented roughness (ridges) at time of a given tillage operation
+!!    sol_ori(:)  |mm            |oriented roughness (ridges) at time of a given tillage operation
 !!    sol_z(1,:)  |mm            |depth to bottom of top soil layer
 !!    usle_ei     |100(ft-tn in)/(acre-hr)|USLE rainfall erosion index
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -26,22 +26,22 @@ subroutine depstor
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!! stmaxd(:) |mm      |maximum surface depressional storage for day in a given HRU
+!!    stmaxd(:)   |mm            |maximum surface depressional storage for day in a given HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!! cumei(:) |Mj*mm/ha*hr   |cumulative USLE rainfall erosion index since last
-!!          |tillage operation
-!! cumrt(:) |mm H2O     |cumulative rainfall since last tillage operation
-!! df    |none     |oriented and random roughness decay factor - based
+!!    cumei(:)    |Mj*mm/ha*hr   |cumulative USLE rainfall erosion index since last
+!!                               |tillage operation
+!!    cumrt(:)    |mm H2O        |cumulative rainfall since last tillage operation
+!!    df          |none          |oriented and random roughness decay factor - based
 !!                               |on cumulative EI and cumulative precipday
 !!    ei          |Mj*mm/ha*hr   |USLE rainfall erosion index
-!! hru_slpp    |%            |average percent slope steepness
-!! sol_orgm    |%          |percent organic matter content in soil material
-!! sol_rrr     |cm      |random roughness after a rain event
-!! sol_orr     |cm      |oriented roughness (ridges) after a rain event
+!!    hru_slpp    |%             |average percent slope steepness
+!!    sol_orgm    |%             |percent organic matter content in soil material
+!!    sol_rrr     |cm            |random roughness after a rain event
+!!    sol_orr     |cm            |oriented roughness (ridges) after a rain event
 !!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -55,7 +55,7 @@ subroutine depstor
    implicit none
 
    integer ::j
-   real*8 :: df, hru_slpp, sol_orgm, sol_orr, sol_rrr, ei
+   real*8 :: df, hru_slpp, sol_orgm, sol_rrr, ei, xx
    j = 0
    j = ihru
 

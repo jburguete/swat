@@ -73,7 +73,8 @@ subroutine ttcoef_wway
 
 
    integer :: jj, k
-   real*8 :: fps, d, b, p, a, qq1, rh, tt1, tt2, aa
+   real*8 :: d, b, p, a, qq1, rh, tt1, tt2, chsslope
+   real*8, parameter :: aa = 1., fps = 4.
 
    k = ihru
 
@@ -81,7 +82,6 @@ subroutine ttcoef_wway
       wat_phi(jj,k) = 0.
    end do
 
-   aa = 1.
    b = 0.
    d = 0.
 
@@ -93,7 +93,6 @@ subroutine ttcoef_wway
    !   chsslope = chside(k)
    !end if
 
-   fps = 4.
    d = grwat_d(k)
    b = grwat_w(k) - 2. * d * chsslope
 

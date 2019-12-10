@@ -77,22 +77,25 @@ subroutine rtsed_bagnold
 !!    SWAT: ttcoef
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-!! Modification to the original SWAT sediment routine
-!! By Balaji Narasimhan and Peter Allen
+!!    Modification to the original SWAT sediment routine
+!!    By Balaji Narasimhan and Peter Allen
 !!    Bagnolds strempower approach combined with Einsteins deposition equation
 !!    Plus particle size tracking.
 
    use parm
    implicit none
 
-   integer :: jrch, ch_d50type
+   integer :: jrch
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
-   real*8 :: depdeg, dot, vs, x, SC, Tcbnk, Tcbed,Tbank,Tbed,asinea,Tou
+   real*8 :: depdeg, dot, x, Tbank, Tbed, asinea,Tou
    real*8 :: sanin, silin, clain, sagin, lagin, grain, outfract
    real*8 :: depsan, depsil, depcla, depsag, deplag, depgra
    real*8 :: degsan, degsil, degcla, deggra, degrte
-   real*8 :: bnksan, bnksil, bnkcla, bnkgra, pdep, pdepbed, bedsize
-   real*8 :: USpower,bnkrte,adddep,fpratio,watdep,bnkrt,bedrt,effbnkbed
+   real*8 :: bnksan, bnksil, bnkcla, bnkgra, pdep
+   real*8 :: bnkrte,adddep,fpratio,watdep,bnkrt,bedrt, effbnkbed
+   real*8 :: c, dat2, deg1, deg1cla, deg1gra, deg1lag, deg1sag,&
+   &deg1san, deg1sil, degremain, pbank, pbed, SFbank, topw,&
+   &vcla, vgra, vlag, vsag, vsan, vsil
 
    jrch = 0
    jrch = inum1
@@ -117,7 +120,7 @@ subroutine rtsed_bagnold
       sagin = varoute(26,inum2) * (1. - rnum1) + sagst(jrch)
       lagin = varoute(27,inum2) * (1. - rnum1) + lagst(jrch)
       grain = varoute(28,inum2) * (1. - rnum1) + grast(jrch)
-      sedinorg = sedin
+      !sedinorg = sedin ! not used
 
 !! do not perform sediment routing if no water in reach
       if (qdin > 0.01) then
@@ -179,7 +182,7 @@ subroutine rtsed_bagnold
          c = chside(jrch)
          pbed = phi(6,jrch)
          pbank = 2. * rchdep * Sqrt(1. + c * c)
-         rh = rcharea / (pbed + pbank)
+         !rh = rcharea / (pbed + pbank) ! not used
 
          topw = 0.
          if (rchdep <= ch_d(jrch)) then

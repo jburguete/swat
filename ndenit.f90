@@ -3,8 +3,10 @@ subroutine ndenit(k,j,cdg,wdn,void)
 
    use parm, only: cdn, sol_cbn, sol_no3
    implicit none
-   integer :: k,j
-   real*8 :: cdg, wdn, void
+   integer, intent(in) :: k,j
+   real*8, intent(in) :: cdg, void
+   real*8, intent(out) :: wdn
+   real*8 vof
 
    wdn = 0.
    vof = 1. / (1. + (void/0.04)**5)

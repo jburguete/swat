@@ -63,7 +63,7 @@ subroutine nlch
 
    integer :: j, jj
    real*8 :: sro, ssfnlyr, percnlyr, vv, vno3, co
-   real*8 :: cosurf, nloss
+   real*8 :: cosurf, nloss, tno3, tno3ln, vno3_c, ww, ww1
 
    j = 0
    j = ihru

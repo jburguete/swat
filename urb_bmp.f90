@@ -22,7 +22,9 @@ subroutine urb_bmp
    use parm
    implicit none
 
-   j = 0
+   integer :: j
+   real*8 :: sednppm, sedppm, sedpppm, solnppm, solpppm, xx
+
    j = ihru
 
 !! convert to ppm -> (kg/ha)*100./mm = ppm

@@ -32,7 +32,8 @@ subroutine readlup
    use parm
    implicit none
    character*13 fnam
-   integer :: eof
+   integer :: eof, iday, iyear
+   integer :: Jdt
 
 !!    read lup file
    do

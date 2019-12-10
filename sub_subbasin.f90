@@ -134,7 +134,7 @@ subroutine sub_subbasin
    implicit none
 
    real*8 :: hvol(10)
-   integer :: sb
+   integer :: sb, ii, kk
 
    sb = hru_sub(ihru)
    ri_pmpvol = 0; ri_totpvol = 0

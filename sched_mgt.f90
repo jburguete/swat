@@ -33,6 +33,9 @@ subroutine sched_mgt
    use parm
    implicit none
 
+   integer :: j, n, ncrp
+   real*8 :: biomass, husc
+
    j = ihru
 
    select case (mgtop(nop(j),j))
@@ -262,11 +265,15 @@ subroutine sched_mgt
 
     case (12)   !! street sweeping (only if iurban=2)
 
+      ! husc was not defined
+      husc = phu_op(nop(j),j) !?
       if (husc > 0.) then
-         if (igrow == 1) then
-            phusw(ihru) = husc
+         ! igrow is not defined
+         !if (igrow == 1) then
+         if (igro(j) == 1) then
+            phusw(j) = husc
          else
-            phusw_nocrop(ihru) = husc
+            phusw_nocrop(j) = husc
          endif
       endif
       sweepeff = mgt4op(nop(j),j)

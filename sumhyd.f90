@@ -29,6 +29,8 @@ subroutine sumhyd
    use parm
    implicit none
 
+   integer :: ivar
+
    do ivar = 1, 6
       shyd(ivar,ihout) = shyd(ivar,ihout) + varoute(ivar+1,ihout)
    end do

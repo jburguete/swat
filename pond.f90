@@ -128,9 +128,9 @@ subroutine pond(k)
    implicit none
 
    integer, intent (in) :: k
-   real*8 :: vol, sed, pndsa, xx, targ, tpco, phosk, nitrok, chlaco
+   real*8 :: vol, sed, pndsa, xx, targ, tpco, phosk, nitrok, chlaco, susp, trappnd, velofl
    integer :: iseas
-   real*8 :: san, sil, cla, sag, lag, inised, finsed,setsed,remsetsed
+   real*8 :: san, sil, cla, sag, lag, inised, finsed, setsed, remsetsed
 
 
    !! store initial values

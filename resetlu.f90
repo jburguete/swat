@@ -32,6 +32,8 @@ subroutine resetlu
    use parm
    implicit none
    character(len=80) :: titldum
+   integer :: j, mon
+   real*8 hru
 
    open (9123,file=fname(no_lup))
    read (9123, 5101) titldum

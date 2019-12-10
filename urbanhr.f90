@@ -104,8 +104,8 @@ subroutine urbanhr
    use parm
    implicit none
 
-   real*8 :: cod, sus_sol, tn, tp, urbk, dirto, qdt
-   real*8 :: dirt
+   real*8 :: sus_sol, tn, tp, urbk, dirto, qdt
+   real*8 :: dirt, tno3
    integer :: j, k
 
    j = 0

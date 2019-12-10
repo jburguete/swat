@@ -35,8 +35,10 @@ subroutine origtile(d)
    use parm
    implicit none
 
+   real*8, intent(in) :: d
    integer :: j
-   j = 0
+   real*8 :: dmod_m
+
    j = ihru
 
 !!    compute tile flow using the original tile equations
@@ -47,9 +49,9 @@ subroutine origtile(d)
       sw_excess = (dmod_m / wt_shall) * (sol_sw(j) -&
       &sol_sumfc(j))
       qtile = sw_excess * (1. - Exp(-24. / tdrain(j)))
-      if (qtile > 30.) then
-         xyz = 0.
-      end if
+      !if (qtile > 30.) then
+         !xyz = 0. !not used
+      !end if
       qtile = dmin1(qtile, drain_co_bsn)
    else
       qtile = 0.

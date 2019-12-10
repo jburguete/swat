@@ -261,9 +261,9 @@ subroutine virtual
    use parm
    implicit none
 
-   integer :: j, sb, kk, ii
-   real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr,hr
-   real*8 :: sub_hwyld(nstep), hqd(4*nstep), hsd(4*nstep),hqdtst(nstep)   ! hqd, hsd locally defined. J.Jeong 4/26/2009
+   integer :: j, sb, kk, ii, ib
+   real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr, hr, ratio
+   real*8 :: sub_hwyld(nstep), hqd(4*nstep), hsd(4*nstep)   ! hqd, hsd locally defined. J.Jeong 4/26/2009
 
    j = ihru
    sb = inum1

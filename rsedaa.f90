@@ -28,7 +28,7 @@ subroutine rsedaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   integer :: j
+   integer :: j, ii
 
    do j = 1, subtot
       write (84,5000) j, subgis(j), years, rch_dakm(j),&

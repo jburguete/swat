@@ -61,9 +61,9 @@ subroutine wattable
    use parm
    implicit none
 
-   integer :: j, j1
+   integer :: j, i30
 
-   real*8 :: w2
+   real*8 :: w2, eo_sum, rfqeo_sum, w1, wtl
 
    j = 0
    j = ihru

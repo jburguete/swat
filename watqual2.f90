@@ -4,7 +4,7 @@ subroutine watqual2
 !!    this subroutine performs in-stream nutrient transformations and water
 !!    quality calculations
 
-!! adapted by Ann van Griensven, Belgium
+!!    adapted by Ann van Griensven, Belgium
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -230,13 +230,13 @@ subroutine watqual2
    real*8 :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn, heatin
    real*8 :: uu, vv, cordo, f1, algcon, orgncon, nh3con, no2con, no3con
    real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot, bc1mod, bc2mod
-   real*8 :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
-   real*8 :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
-   real*8 :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
-   real*8 :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
+   real*8, parameter :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
+   real*8, parameter :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
+   real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
+   real*8, parameter :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
 !      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
    real*8 :: dalgae, dchla, dorgn, dnh4, dno2, dno3,dorgp,dsolp
-   real*8 :: dbod, ddisox
+   real*8 :: dbod, ddisox, setl
 
    jrch = 0
    jrch = inum1
@@ -304,10 +304,11 @@ subroutine watqual2
       !! oxygen QUAL2E equation III-21
       cordo = 0.
 !       write(104, *) o2con, 'o'
-      o2con2=o2con
-      if (o2con2.le.0.1) o2con2=0.1
-      if (o2con2.gt.30.) o2con2=30.
-      cordo = 1.0 - Exp(-0.6 * o2con2)
+      !! the following 3 lines are overwritten
+!      o2con2=o2con
+!      if (o2con2.le.0.1) o2con2=0.1
+!      if (o2con2.gt.30.) o2con2=30.
+!      cordo = 1.0 - Exp(-0.6 * o2con2)
 !       write(104, *) cordo, 'cordo'
       if (o2con.le.0.001) o2con=0.001
       if (o2con.gt.30.) o2con=30.
@@ -413,7 +414,7 @@ subroutine watqual2
       xx = 0.
       yy = 0.
       zz = 0.
-      hh=Theta(rk2(jrch),thrk2,wtmp)
+      !hh=Theta(rk2(jrch),thrk2,wtmp) ! not used
       uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
       if (algcon.gt.0.001) then
          vv = (ai3 * Theta(gra,thgra,wtmp) - ai4&
@@ -437,7 +438,7 @@ subroutine watqual2
          no2con=0.001
       end if
       ddisox = o2con + (uu + vv - ww - xx - yy - zz) * tday
-      o2proc=o2con-ddisox
+      !o2proc=o2con-ddisox ! not used
       if (ddisox < 0.00001) ddisox = 0.00001
 !! end oxygen calculations
 

@@ -82,6 +82,8 @@ subroutine readsol
 !      real*8 :: xx, plt_zmx, yy
    real*8 :: plt_zmx                   !Claire, xx and yy are not used 12/2/09
    real*8 :: dep_new
+   real*8, parameter :: a = 50.0, b = 20.0, c = 5.0, d = 2.0
+   integer, parameter :: nota = 10
 
 !!    initialize local variables
    nly = 0
@@ -232,11 +234,6 @@ subroutine readsol
    if (anion_excl(ihru) >= 1.) anion_excl(ihru) = 0.99
    if (rsdin(ihru) > 0.) sol_rsd(1,ihru) = rsdin(ihru)
    do j = 1, nly
-      a = 50.0
-      b = 20.0
-      c = 5.0
-      d = 2.0
-      nota = 10
       if (sol_k(j,ihru) <= 0.0) then
          if (hydgrp(ihru) == "A") then
             sol_k(j,ihru) = a

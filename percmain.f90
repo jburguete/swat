@@ -7,7 +7,7 @@ subroutine percmain
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    drainmod tile equations   08/2006
-!! dep_imp(:) |mm            |depth to impervious layer
+!!    dep_imp(:)  |mm            |depth to impervious layer
 !!    drainmod tile equations   08/2006
 
 !!    icrk        |none          |crack flow code
@@ -43,9 +43,9 @@ subroutine percmain
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    new water table depth  equations   01/2009
-!! c   |none     |a factor used to convert airvol to wtd
-!! deep_p      |mm      |total thickness of soil profile in HRU
-!!    dg          |mm      |soil layer thickness in HRU
+!!    c           |none          |a factor used to convert airvol to wtd
+!!    deep_p      |mm            |total thickness of soil profile in HRU
+!!    dg          |mm            |soil layer thickness in HRU
 !!    new water table depth  equations   01/2009
 !!    flat(:,:)   |mm H2O        |lateral flow storage array
 !!    latlyr      |mm H2O        |lateral flow in soil layer for the day
@@ -53,8 +53,8 @@ subroutine percmain
 !!                               |day in HRU
 !!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
 !!    new water table depth  equations   01/2009
-!! ne_p  |mm/hr     |effective porosity in HRU for all soil profile layers
-!! ne_w  |mm/hr     |effective porosity in HRU for soil layers above wtd
+!!    ne_p        |mm/hr         |effective porosity in HRU for all soil profile layers
+!!    ne_w        |mm/hr         |effective porosity in HRU for soil layers above wtd
 !!    new water table depth  equations   01/2009
 !!    qtile       |mm H2O        |drainage tile flow in soil profile for the day
 !!    sepday      |mm H2O        |micropore percolation from soil layer
@@ -68,7 +68,7 @@ subroutine percmain
 !!    sw_excess   |mm H2O        |amount of water in excess of field capacity
 !!                               |stored in soil layer on the current day
 !!    new water table depth  equations   01/2009
-!!    wat      |mm H2O        |shallow water table depth below the soil surface to up to impervious layer
+!!    wat         |mm H2O        |shallow water table depth below the soil surface to up to impervious layer
 !!    new water table depth  equations   01/2009
 !!    wt_shall    |mm H2O        |shallow water table depth above the impervious layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -78,8 +78,8 @@ subroutine percmain
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
 !!    j1          |none          |counter
-!! w2   |mm      |
-!! y1   |mm      |dummy variable for wat
+!!    w2          |mm            |
+!!    y1          |mm            |dummy variable for wat
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -91,8 +91,9 @@ subroutine percmain
    use parm
    implicit none
 
-   integer :: j, j1, nn, k, sb,isp, ii
-   real*8 :: lid_cuminf_total
+   integer :: j, j1, sb, isp, ii
+   real*8 :: lid_cuminf_total, hru_mm, qvol, sumqtile, swst_del, wtst_del, xx, yy, d
+   real*8, parameter :: por_air = 0.5
 
    lid_cuminf_total = 0.
 
@@ -110,9 +111,9 @@ subroutine percmain
    end if
 
 !!  add irrigation water
-   if (aird(j)>0) then
-      j=j
-   end if
+   !if (aird(j)>0) then ! redundant
+   !   j=j              ! redundant 
+   !end if              ! redundant
    sepday = inflpcp + aird(j) + pot_seep(j)
    pot_seep(j) = 0.
 
@@ -229,7 +230,6 @@ subroutine percmain
    wt_shall = dep_imp(j)
    !! drainmod tile equations   08/11/2006
    if (sol_tmp(2,j) > 0.) then   !Daniel 1/29/09
-      por_air = 0.5
       d = dep_imp(j) - ddrain(j)
       !! drainmod wt_shall equations   10/23/2006
       if (iwtdn == 0) then !compute wt_shall using original eq-Daniel 10/23/06
@@ -241,21 +241,21 @@ subroutine percmain
             xx = (sol_sw(j) - sol_sumfc(j)) / (yy - sol_sumfc(j))
             if (xx > 1.) xx = 1.
             wt_shall = xx * dep_imp(j)
-            wat = dep_imp(j) - wt_shall
-            if(wat > dep_imp(j)) wat = dep_imp(j)
+            !wat = dep_imp(j) - wt_shall !not used
+            !if(wat > dep_imp(j)) wat = dep_imp(j) !not used
          end if
       else
          !compute water table depth using Daniel's modifications
          !       Updated water table depth D.Moriasi 4/8/2014
          swst_del = 0.
-         sw_del = 0.
-         wt_del = 0.
+         !sw_del = 0. !not used
+         !wt_del = 0. !not used
          wtst_del = 0.
          do j1 = 1, sol_nly(j)
 !            if (wat_tbl(j) < sol_z(j1,j)) then
             swst_del = sol_stpwt(j1,j) - sol_st(j1,j)
-            sw_del = sol_swpwt(j) - sol_sw(j)
-            wt_del = sw_del * vwt(j1,j)
+            !sw_del = sol_swpwt(j) - sol_sw(j) !not used
+            !wt_del = sw_del * vwt(j1,j) !not used
             wtst_del = swst_del * vwt(j1,j)
             !            wat_tbl(j) = wat_tbl(j) + wt_del
             wat_tbl(j) = wat_tbl(j) + wtst_del

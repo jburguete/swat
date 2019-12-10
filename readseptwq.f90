@@ -64,15 +64,15 @@ subroutine readseptwq
    use parm
    implicit none
 
-   character* 4 sptnames(50)
+   character*4 sptnames(50)
    character*4 sptname
    character*80 titlesep
    character*70 sptfullname
 
-   integer :: ist, isnum, eof
+   integer :: ist, isnum, eof, idspttype, ii
 
-   real*8 :: sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,sptno3conc
-   real*8 :: sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
+   real*8 :: sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,&
+   &sptno3conc,sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
 
    isnum = 0
    eof = 0

@@ -108,7 +108,6 @@ subroutine harvgrainop
 !!    hiad1       |
 !!    j           |none          |HRU number
 !!    k           |none          |counter
-!!    resnew      |
 !!    wur         |
 !!    yield       |kg            |yield (dry weight)
 !!    yieldn      |
@@ -125,12 +124,12 @@ subroutine harvgrainop
    use parm
    implicit none
 
-   integer :: j, k
+   integer :: j
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
 !!      real*8 :: wur, hiad1, yield, yieldn, yieldp, yldpst
 
-   real*8 :: wur, hiad1, resnew, yldpst
-!      real*8 :: wur, hiad1, resnew, yield, yieldn, yieldp, yldpst
+   real*8 :: wur, hiad1, xx
+!      real*8 :: wur, hiad1, yield, yieldn, yieldp, yldpst
 
    j = 0
    j = ihru
@@ -159,7 +158,6 @@ subroutine harvgrainop
 
 !! check if yield is from above or below ground
    yield = 0.
-   resnew = 0.
    if (hvsti(idplt(j)) > 1.001) then
       yield = bio_ms(j) * (1. - 1. / (1. + hiad1))
    else

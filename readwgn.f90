@@ -136,7 +136,7 @@ subroutine readwgn
    real*8 :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv, pcp
    real*8, dimension (12) :: rainhhmx, rain_hhsm, pcpmm, pcpd
    real*8 :: tmpsoil, sffc, rndm1, dl
-   integer :: mon, mdays, j, m1, nda, xrnd
+   integer :: mon, mdays, j, m1, nda, xrnd, k
 
 
    pcpd = 0.

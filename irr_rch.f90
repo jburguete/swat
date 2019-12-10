@@ -114,7 +114,7 @@ subroutine irr_rch
    implicit none
 
    integer :: jrch, k, flag, ii
-   real*8 :: cnv, vmm, vminmm, vol, wtrin
+   real*8 :: cnv, vmm, vminmm, vol, wtrin, vmxi, wtr_avail, xx
 
    jrch = 0
    jrch = inum1

@@ -296,8 +296,8 @@ subroutine stdaa
    use parm
    implicit none
 
-   real*8 :: xirr
-   integer :: j, nnro, nicr, k, sumpady, ncrp
+   real*8 :: xirr, solpyldjga
+   integer :: j, nicr, k, ncrp
    character*4 cropname
 
    if (iscen == 1) then

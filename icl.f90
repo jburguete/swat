@@ -31,6 +31,7 @@ function icl(id)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
    implicit none
+   integer, intent(in) ::  id
    integer :: icl
    if (i_mo.le.2) then
       icl = id - ndays(i_mo)

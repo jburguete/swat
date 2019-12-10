@@ -100,7 +100,7 @@ subroutine writed
    use parm
    implicit none
 
-   integer :: j, k
+   integer :: j, k, j1
    real*8 :: pstsum
 
 

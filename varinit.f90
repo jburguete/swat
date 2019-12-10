@@ -195,7 +195,7 @@ subroutine varinit
    use parm
    implicit none
 
-   integer :: j, ly
+   integer :: j, ii
 
    j = 0
    j = ihru
