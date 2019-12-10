@@ -33,11 +33,13 @@ Generation of an executable to test
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
 system:
 > $ make clean
+>
 > $ prefix="i686-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 * Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
 system:
 > $ make clean
+>
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 
@@ -46,15 +48,18 @@ Generation of an optimized executable file
 
 * In UNIX type operative systems:
 > $ make clean
+>
 > $ CFLAGS="-march=native" make strip
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
 system:
 > $ make clean
+>
 > $ prefix="i686-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make strip
 
 * Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
 system:
 > $ make clean
+>
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make strip
 
