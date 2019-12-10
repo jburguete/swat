@@ -155,7 +155,7 @@ subroutine rtbact
       netwtr = 0.
       netwtr = varoute(2,inum2) * (1. - rnum1) + rchwtr
 
-!!	!! change made by CS while running region 4; date 2 jan 2006
+!! !! change made by CS while running region 4; date 2 jan 2006
       if (totbactp < 1.e-6) totbactp = 0.0
       if (totbactlp < 1.e-6) totbactlp = 0.0
       if (netwtr >= 1.) then

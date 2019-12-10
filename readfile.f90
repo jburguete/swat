@@ -508,7 +508,7 @@ subroutine readfile
    read (101,5000,iostat=eof) septdb
 !!      if (eof < 0) exit
    call caps(septdb)
-!!	end do
+!! end do
 
 !!    read from readlup (landuse update file)
    open (122,file='lup.dat')

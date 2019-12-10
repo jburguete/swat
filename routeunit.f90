@@ -53,7 +53,7 @@ subroutine routeunit
          varoute(9,ihout) = 0.
          varoute(10,ihout) = 0.
 !!          varoute(11,ihout) = varoute(11,ihout) + (hrupstd(irtpest,1,jj)
-!!     &	        + hrupstd(irtpest,4,jj)) * xx
+!!     &         + hrupstd(irtpest,4,jj)) * xx
 !!          varoute(12,ihout) = varoute(12,ihout) + (hrupstd(irtpest,2,jj)
 !!     &            ) * xx
          varoute(11,ihout) = 0.

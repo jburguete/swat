@@ -6,16 +6,16 @@ subroutine grass_wway
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihru            |none          |HRU number
-!!    surfq(:)	   	|mm H2O        |amount of water in surface runoff generated
-!!	grwat_n(:)      |none          |Mannings's n for grassed waterway
-!!	grwat_i(:)      |none          |On/off Flag for waterway simulation
-!!	grwat_l(:)      |km	           |Length of Grass Waterway
-!!	grwat_w(:)      |none          |Width of grass waterway
-!!	grwat_d(:)      |m             |Depth of Grassed waterway
-!!	grwat_s(:)      |m/m           |Slope of grass waterway
-!!	grwat_spcon(:)  |none          |sediment transport coefficant defined by user
-!!	tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
-!!	mhru
+!!    surfq(:)     |mm H2O        |amount of water in surface runoff generated
+!! grwat_n(:)      |none          |Mannings's n for grassed waterway
+!! grwat_i(:)      |none          |On/off Flag for waterway simulation
+!! grwat_l(:)      |km            |Length of Grass Waterway
+!! grwat_w(:)      |none          |Width of grass waterway
+!! grwat_d(:)      |m             |Depth of Grassed waterway
+!! grwat_s(:)      |m/m           |Slope of grass waterway
+!! grwat_spcon(:)  |none          |sediment transport coefficant defined by user
+!! tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
+!! mhru
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 
 !!    wat_phi(1,:)        |m^2           |cross-sectional area of flow at bankfull
@@ -53,19 +53,19 @@ subroutine grass_wway
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    peakr       |m^3/s         |peak runoff rate for the day
-!!	chflow_m3   |m^3/s         |Runoff in CMS
-!!	chflow_day	|m^3/day	   |Runoff
-!!	K           |m^3/s         |Total number of HRUs plus this HRU number
-!!	rcharea     |m^2           |cross-sectional area of flow
+!! chflow_m3   |m^3/s         |Runoff in CMS
+!! chflow_day |m^3/day    |Runoff
+!! K           |m^3/s         |Total number of HRUs plus this HRU number
+!! rcharea     |m^2           |cross-sectional area of flow
 !!    rchdep      |m             |depth of flow on day
 !!    sf_area     |m^2           |area of waterway sides in sheetflow
 !!    sf_sed      |kg/m^2        |sediment loads on sides of waterway
 !!    surq_remove |%             |percent of surface runoff capture in VFS
 !!    sed_remove  |%             |percent of sediment capture in VFS
 !!    vc          |m/s           |flow velocity in reach
-!!	Sedin		|mg			   | Sediment in waterway
-!!	Sedint   	|mg			   | Sediment into waterway channel
-!!	Sedout		|mg			   | Sediment out of waterway channel
+!! Sedin  |mg      | Sediment in waterway
+!! Sedint    |mg      | Sediment into waterway channel
+!! Sedout  |mg      | Sediment out of waterway channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
@@ -73,15 +73,15 @@ subroutine grass_wway
    use parm
    real*8 :: chflow_m3, sf_area, surq_remove, sf_sed ,sed_remove,vc,&
    &chflow_day, rh
-!!	set variables
+!! set variables
    j = ihru
 
 
-!!	do this only if there is surface runoff this day
+!! do this only if there is surface runoff this day
    if (surfq(j) > 0.001) then
 
 !!        compute channel peak rate using SCS triangular unit hydrograph
-!!		Calculate average flow based on 3 hours of runoff
+!!  Calculate average flow based on 3 hours of runoff
       chflow_day = 1000. * surfq(j) * hru_km(ihru)
       chflow_m3 = chflow_day/10800
       peakr = 2. * chflow_m3 / (1.5 * tc_gwat(j))
@@ -126,7 +126,7 @@ subroutine grass_wway
       end if
 
       if (sf_area > 0.) then
-!!		surq_remove = 75.8 - 10.8 * Log(sf_depth) + 25.9
+!!  surq_remove = 75.8 - 10.8 * Log(sf_depth) + 25.9
 !!     &    * Log(sol_k(1,j))
          !! Simpler form derived from vfsmod simulations. r2 = 0.57 Publication pending white and arnold 2008
 

@@ -208,7 +208,7 @@ subroutine rthsed
                   coefb = 2.05
                else
                   write(*,*) 'Error in implementing Yang erosion model'
-!!		     stop
+!!       stop
                endif
 
                coefc = vshear / vfall

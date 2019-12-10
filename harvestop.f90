@@ -186,7 +186,7 @@ subroutine harvestop
    yieldrsd = 0.
 
    ssb = bio_ms(j)                            ! Armen 16 Jan 2009 storing info
-   ssabg = bio_ms(j) * (1.- rwt(j))	    ! Armen 16 Jan 2009 storing info
+   ssabg = bio_ms(j) * (1.- rwt(j))     ! Armen 16 Jan 2009 storing info
    ssr = ssb * rwt(j)                         ! Armen 16 Jan 2009 storing info
    ssn = plantn(j)                            ! Armen 20 May 2006 storing info
    ssp = plantp(j)                            ! Armen 20 May 2006 storing info
@@ -373,7 +373,7 @@ subroutine harvestop
 
    !! Calculation for dead roots allocations, resetting phenology, updating other pools
    if (ssabg > 1.e-6) then
-      ff3 = (yield + clip) / ssabg	! Armen 20 May 2008 and 16 Jan 2009
+      ff3 = (yield + clip) / ssabg ! Armen 20 May 2008 and 16 Jan 2009
    else
       ff3 = 1.
    endif
@@ -385,7 +385,7 @@ subroutine harvestop
 !      if (ssr > 1.e-6) then
 !       ff4 = rtresnew / ssr
 !      else!
-!	   ff4 = 0.
+!    ff4 = 0.
 !      end if
 !      rtresn = ff4 * ssn
 !      rtresp = ff4 * ssp
@@ -406,10 +406,10 @@ subroutine harvestop
    endif
 
 
-!      !! compute fraction of roots in each layer	! Armen 20 May 2008
+!      !! compute fraction of roots in each layer ! Armen 20 May 2008
 !      call rootfr
 !
-!      !! allocate roots, N, and P to soil pools	! Armen 20 May 2008
+!      !! allocate roots, N, and P to soil pools ! Armen 20 May 2008
 !      do l=1, sol_nly(j)
 !            sol_rsd(l,j) = sol_rsd(l,j) + rtfr(l) * rtresnew
 !            sol_fon(l,j) = sol_fon(l,j) + rtfr(l) * rtresn
@@ -417,7 +417,7 @@ subroutine harvestop
 !      end do
 !
 !     rtfr = 0.
-   !! allocate roots, N, and P to soil pools	! Armen 20 May 2008
+   !! allocate roots, N, and P to soil pools ! Armen 20 May 2008
    do l=1, sol_nly(j)
       sol_rsd(l,j) = sol_rsd(l,j) + rtfr(l) * rtresnew
       sol_fon(l,j) = sol_fon(l,j) + rtfr(l) * rtresn
@@ -524,7 +524,7 @@ subroutine harvestop
       !   case default
       bio_hv(icr(j),j) = (yield + clip + rtresnew) +&
       &bio_hv(icr(j),j)                       !! Jeff, is this the intention
-      bio_yrms(j) = bio_yrms(j) + (yield + clip + rtresnew) / 1000.		            !! Jeff, is this the intention
+      bio_yrms(j) = bio_yrms(j) + (yield + clip + rtresnew) / 1000.              !! Jeff, is this the intention
       ! end select
    endif
 

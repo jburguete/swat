@@ -122,7 +122,7 @@ subroutine readseptwq
             sptorgp = 0.9
          endif
 
-!	assign a flag to identify which septic system (1-26) should be selected
+! assign a flag to identify which septic system (1-26) should be selected
 
          sptnames(ist) = sptname
          sptqs(ist) = sptq

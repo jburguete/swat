@@ -294,7 +294,7 @@ subroutine res
       if (ressedi < 1.e-6) ressedi = 0.0      !!nbs 02/05/07
       if (ressa == 0.) ressa = 1.e-6     !! MJW added 040711
       velofl = (resflwo / ressa) / 10000.  !!m3/d / ha * 10000. = m/d
-!!	  velsetl = 1.35      !! for clay particle m/d
+!!   velsetl = 1.35      !! for clay particle m/d
       if (velofl > 1.e-6) then
          trapres = velsetlr(jres) / velofl
          if (trapres > 1.) trapres = 1.  !! set to nres

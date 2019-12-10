@@ -148,7 +148,7 @@ subroutine soil_phys
    det_lag(i) = 1. - det_san(i) - det_sil(i) - det_cla(i)&
    &- det_sag(i)                                           !! Large Aggregate fraction
 
-!!	Error check. May happen for soils with more sand
+!! Error check. May happen for soils with more sand
 !!    Soil not typical of mid-western USA
 !!    The fraction wont add upto 1.0
    if (det_lag(i) < 0.) then

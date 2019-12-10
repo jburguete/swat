@@ -67,13 +67,13 @@ subroutine pminrl2
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    solp(:)		|mg/kg	       |Solution pool phosphorous content
-!!    actp(:)		|mg/kg	       |Active pool phosphorous content
-!!    stap(:)		|mg/kg	       |Stable pool phosphorous content
-!!    vara					       |Intermediate Variable
-!!    varb					       |Intermediate Variable
-!!    varc					       |Intermediate Variable
-!!    arate 					       |Intermediate Variable      |
+!!    solp(:)  |mg/kg        |Solution pool phosphorous content
+!!    actp(:)  |mg/kg        |Active pool phosphorous content
+!!    stap(:)  |mg/kg        |Stable pool phosphorous content
+!!    vara            |Intermediate Variable
+!!    varb            |Intermediate Variable
+!!    varc            |Intermediate Variable
+!!    arate             |Intermediate Variable      |
 !!    j           |none            |HRU number
 !!    l           |none            |counter (soil layer)
 !!    rmn1        |kg P/ha         |amount of phosphorus moving from the solution

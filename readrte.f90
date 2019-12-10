@@ -255,8 +255,8 @@ subroutine readrte
 
 
 !!    An estimate of Critical shear stress if it is not given (N/m^2)
-!!	Critical shear stress based on silt and clay %
-!!	Critical Shear Stress based on Julian and Torres (2005)
+!! Critical shear stress based on silt and clay %
+!! Critical Shear Stress based on Julian and Torres (2005)
 !!    Units of critical shear stress (N/m^2)
    SC = 0.
    if  (tc_bnk(irch) <= 1.e-6) then

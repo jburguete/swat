@@ -63,7 +63,7 @@ subroutine surfst_h2o
 
    else
       !subdaily runoff lag (applies only to runoff from pervious surface)
-      bsprev = hhsurf_bs(1,j,nstep)		! lag from previous day J.Jeong 4/06/2009
+      bsprev = hhsurf_bs(1,j,nstep)  ! lag from previous day J.Jeong 4/06/2009
 
       do k=1,nstep
 

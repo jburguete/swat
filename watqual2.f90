@@ -4,7 +4,7 @@ subroutine watqual2
 !!    this subroutine performs in-stream nutrient transformations and water
 !!    quality calculations
 
-!!	adapted by Ann van Griensven, Belgium
+!! adapted by Ann van Griensven, Belgium
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -270,7 +270,7 @@ subroutine watqual2
       o2con  = rch_dox(jrch)
       wtmp = wattemp(jrch)
 
-!	write(104,*) 't',jrch,disoxin, wtrin, rch_dox(jrch)
+! write(104,*) 't',jrch,disoxin, wtrin, rch_dox(jrch)
 !         o2con = (disoxin * wtrin + rch_dox(jrch) * rchwtr) / wtrtot
 
       !! calculate temperature in stream
@@ -320,7 +320,7 @@ subroutine watqual2
       bc2mod = bc2(jrch) * cordo
 !! end O2 impact calculations
 
-!	tday is the calculation time step = 1 day
+! tday is the calculation time step = 1 day
       tday = 1.0
 
 !! algal growth

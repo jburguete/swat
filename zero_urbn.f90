@@ -16,7 +16,7 @@ subroutine zero_urbn
    abstinit = 0.
    iabstr = 0.
 
-!!	subdaily sediment modeling by J.Jeong
+!! subdaily sediment modeling by J.Jeong
    hhsedy=0.
    spl_eros = 0.
    rill_mult = 0.

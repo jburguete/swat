@@ -321,10 +321,10 @@ subroutine readres
    if(ievent== 0) then
       sed_stlr(i) = Exp(-.184 * res_d50)
    else
-      sed_stlr(i) = Exp(-.184 * res_d50 / nstep)	!! urban modeling by J.Jeong
+      sed_stlr(i) = Exp(-.184 * res_d50 / nstep) !! urban modeling by J.Jeong
    endif
 !!     xx = res_stlr_co * res_d50
-!!	if (xx > 20.) xx = 20.
+!! if (xx > 20.) xx = 20.
 !!    sed_stlr(i) = Exp(-xx)
 
 !! read in monthly release data

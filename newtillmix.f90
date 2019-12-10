@@ -92,7 +92,7 @@ subroutine newtillmix(jj,bmix)
 !!    sol_stap(:,:) |kg P/ha       |amount of phosphorus in the soil layer
 !!                                 |stored in the stable mineral phosphorus pool
 !!    sumix(:)      |none          |sum of mixing efficiencies in HRU
-!!    min_res(:)	|kg/ha		   |Min residue allowed due to implementation of
+!!    min_res(:) |kg/ha     |Min residue allowed due to implementation of
 !!                                 |residue managment in the OPS file.
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -112,8 +112,8 @@ subroutine newtillmix(jj,bmix)
 !!                               |that is being redistributed between
 !!                               |mixed layers
 !!    thtill(:)   |none          |fraction of soil layer that is mixed
-!!    sol_msm					 | sol_mass mixed
-!!    sol_msn					 | sol_mass not mixed
+!!    sol_msm      | sol_mass mixed
+!!    sol_msn      | sol_mass not mixed
 !!    maxmix      |none          | maximum mixing eff to preserve specified minimum residue cover
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -159,13 +159,13 @@ subroutine newtillmix(jj,bmix)
       dtil = deptil(idtill)
    end if
    ! -------------------------------- Original D. Moriasi code replaced by code below
-!	Drainmod  07/2006
+! Drainmod  07/2006
 !      if(itill(jj) == 1) then
-!	  cumei(jj) = 0.
-!	  cumeira(jj) = 0.
-!	  cumrt(jj) = 0.
+!   cumei(jj) = 0.
+!   cumeira(jj) = 0.
+!   cumrt(jj) = 0.
 !        cumrai(jj) = 0.
-!	  ranrns_hru(jj) = ranrns(idtill)
+!   ranrns_hru(jj) = ranrns(idtill)
 !      end if
 !!    Drainmod 7/2006
 ! --------------------------------------------------------------------
@@ -338,7 +338,7 @@ subroutine newtillmix(jj,bmix)
          &* sol_msm(l)) / sol_mass(l)
          sol_sand(l,jj) = (sol_sand(l,jj) * sol_msn(l) + smix(19)&
          &* sol_msm(l)) / sol_mass(l)
-!		sol_rock(l,jj) = (sol_rock(l,jj) * sol_msn(l) + smix(20) * sol_msm(l)) / sol_mass(l)
+!  sol_rock(l,jj) = (sol_rock(l,jj) * sol_msn(l) + smix(20) * sol_msm(l)) / sol_mass(l)
 !            sol_ph(l,jj) = (sol_ph(l,jj) * sol_msn(l) + smix(21)        &
 !     &           * sol_msm(l)) / sol_mass(l) !! mjw rev 490 simplified, PH not linear
 !            sol_cal(l,jj) = (sol_cal(l,jj) * sol_msn(l) + smix(22)      &

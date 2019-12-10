@@ -146,7 +146,7 @@ subroutine rtday
       topw = 5 * ch_w(2,jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
    end if
 
-!!	Time step of simulation (in hour)
+!! Time step of simulation (in hour)
    det = 24.
 
    if (sdti > 0.) then
@@ -267,7 +267,7 @@ subroutine rtday
 !! area) so precipitation is accounted for in subbasin loop
 
 !!      volinprev(jrch) = wtrin
-!!	qoutprev(jrch) = rtwtr
+!! qoutprev(jrch) = rtwtr
 
    if (rtwtr < 0.) rtwtr = 0.
    if (rchstor(jrch) < 0.) rchstor(jrch) = 0.

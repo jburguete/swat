@@ -369,7 +369,7 @@ subroutine rtmusk
 !! area) so precipitation is accounted for in subbasin loop
 
 !!      volinprev(jrch) = wtrin
-!!	qoutprev(jrch) = rtwtr
+!! qoutprev(jrch) = rtwtr
 
    if (rtwtr < 0.) rtwtr = 0.
    if (rchstor(jrch) < 0.) rchstor(jrch) = 0.

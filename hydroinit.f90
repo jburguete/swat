@@ -112,7 +112,7 @@ subroutine hydroinit
 
 !!    compute fraction of surface runoff that is reaching the main channel
       if (ievent > 0) then
-         brt(j) = 1. - Exp(-surlag(j) / (tconc(j) / (idt / 60.)))	!! urban modeling by J.Jeong
+         brt(j) = 1. - Exp(-surlag(j) / (tconc(j) / (idt / 60.))) !! urban modeling by J.Jeong
       else
          brt(j) = 1. - Exp(-surlag(j) / tconc(j))
       endif
@@ -162,8 +162,8 @@ subroutine hydroinit
 
          tb = .5 + .6 * sub_tc(isb) + tb_adj  !baseflow time, hr
 
-         if (tb > 96.) tb = 96.			   !maximum 48hrs
-         tp = .375 * tb						! time to peak flow
+         if (tb > 96.) tb = 96.      !maximum 48hrs
+         tp = .375 * tb      ! time to peak flow
 
          !! convert to time step (from hr), J.Jeong March 2009
          tb = ceiling(tb * 60./ dfloat(idt))

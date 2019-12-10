@@ -99,7 +99,7 @@ subroutine bmp_wet_pond
    qpnd = wtp_qi(sb) !m^3
    sedpnd = wtp_sedi(sb) * qpnd / 1.e6  !tons
 
-!!	   iterate for subdaily flow/sediment routing
+!!    iterate for subdaily flow/sediment routing
    do ii=1,nstep
 
       qout = 0.; spndconc = 0.

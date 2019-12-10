@@ -203,7 +203,7 @@ subroutine irr_rch
                         if (hrtwtr(ii) < 0.) hrtwtr(ii) = 0.
                      end do
                   end if
-!!                xx = vol     							                           !! BN: replaced "wtrin" with "vol"
+!!                xx = vol                                       !! BN: replaced "wtrin" with "vol"
                   vol = vol / irr_eff(k)   !! BN: inserted to account for irr. efficiency
                   xx = (wtr_avail - flowmin(k) * 86400.) * flowfr(k)                 !! BN: inserted: xx = available/allowed amount in m3/s
                   xx = Min(xx, vol)                                                  !! BN: inserted dabstracted water cannot be more than allowed/available amount

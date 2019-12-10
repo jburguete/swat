@@ -78,7 +78,7 @@ subroutine bmpfixed
 
    use parm
 
-!!	set variables
+!! set variables
    j = ihru
 
 

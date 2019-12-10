@@ -27,7 +27,7 @@ subroutine drains
 !!    sol_z(:,:)  |mm            |depth to bottom of each profile layer in a given HRU
 !!    stmaxd(:)   |mm            |maximum surface depressional storage for the day in a given HRU
 !!    stor        |mm            |surface storage for the day in a given HRU
-!!    storro	    |mm            |surface storage that must b
+!!    storro     |mm            |surface storage that must b
 !!                               |can move to the tile drain tube
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -136,7 +136,7 @@ subroutine drains
       cone=sum/deep
    end if
 
-   !!	calculate parameters hdrain and gee1
+   !! calculate parameters hdrain and gee1
    ad = dep_imp(j) - ddrain(j)
    ap = 3.55 - ((1.6 * ad) / sdrain(j)) + 2 * ((2 / sdrain(j))**2)
    if (ad/sdrain(j) < 0.3) then
@@ -145,7 +145,7 @@ subroutine drains
    else
       hdrain = ad
 !          hdrain = (sdrain(j) * pi) / (8 * ((log(sdrain(j) / re(j))/
-!     & 	  log(e)) - 1.15))
+!     &    log(e)) - 1.15))
    end if
    !! calculate Kirkham G-Factor, gee
    k2 = tan((pi * ((2. * ad) - re(j))) / (4. * dep_imp(j)))
@@ -168,7 +168,7 @@ subroutine drains
    if (gee > 12.) gee = 12.
 
    !! calculate drainage and subirrigation flux section
-   !	drainage flux for ponded surface
+   ! drainage flux for ponded surface
    depth = ddrain(j) + hdrain
    hdmin = depth - ddrain(j)
    if (ismax == 1) then
@@ -196,7 +196,7 @@ subroutine drains
       &(gee*sdrain(j)) !eq.10
       if(dflux > drain_co(j)) dflux = drain_co(j) !eq.11
    else
-!	subirrigation flux
+! subirrigation flux
       em=depth-y1-hdrain
       if(em < -1.0) then
          ddranp=ddrain(j)-1.0
@@ -206,7 +206,7 @@ subroutine drains
          if(abs(dflux) > pc(j)) then
             dflux = -pc(j)*24.0
          end if
-!	drainage flux - for WT below the surface and for ponded depths < storro (S1)
+! drainage flux - for WT below the surface and for ponded depths < storro (S1)
       else
          dflux=4.0*24.0*cone*em*(2.0*hdrain+em)/sdrain(j)**2 !eq.5
          if(dflux > drain_co(j)) dflux=drain_co(j) !eq.11

@@ -688,7 +688,7 @@ subroutine readbsn
    endif
    if(sed_ch>2) then
       write(*,*) 'Error in choosing channel erosion model:&
-      &	0-Bagnold, 1-Brownlie, 2-Yang'
+      & 0-Bagnold, 1-Brownlie, 2-Yang'
       write(*,*) 'Check *.bsn file to correct the error'
       !  stop
    endif
@@ -763,8 +763,8 @@ subroutine readbsn
    !!add by zhang
    !!=====================
 
-!	open (111, file="final_n_balance.txt")
-!	open (112, file="final_yields.txt")
+! open (111, file="final_n_balance.txt")
+! open (112, file="final_yields.txt")
    !! carbon output ends
 
 

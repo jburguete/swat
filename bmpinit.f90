@@ -86,7 +86,7 @@ subroutine bmpinit
          end do
       endif
 
-      !!	Estimating design flow rate if not entered by user
+      !! Estimating design flow rate if not entered by user
       do k=1,dtp_numstage(i)
          if (dtp_flowrate(i,k)<=0.0) then
             dtp_flowrate(i,k) = 0.5 * 1000.0 * dtp_pcpret(i,k)&
@@ -101,7 +101,7 @@ subroutine bmpinit
          end if
       end do
 
-      !!	Separate cumulative flow information to individual weir
+      !! Separate cumulative flow information to individual weir
       do k=2,dtp_numstage(i)
          dtp_flowrate(i,k) = dtp_flowrate(i,k) / dtp_numweir(i)
       end do
@@ -109,7 +109,7 @@ subroutine bmpinit
       !!Estimate weir dimensions based on existing data
       do k=1,dtp_numstage(i)
          if (dtp_weirdim(i,k)==0) then  !! Estimating weir dimensions
-            if (dtp_weirtype(i,k)==2) then	!! choosing weir type
+            if (dtp_weirtype(i,k)==2) then !! choosing weir type
                dtp_diaweir(i,k)=(0.479081 * dtp_flowrate(i,k)&
                &/ dtp_cdis(i,k))**0.4
             else !rectangular weir

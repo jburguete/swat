@@ -224,7 +224,7 @@ subroutine harvkillop
 
    if (yield < 0.) yield = 0.
    if (resnew < 0.) resnew = 0.
-   if (rtresnew < 0.) rtresnew = 0.	! Armen 19 May 2008
+   if (rtresnew < 0.) rtresnew = 0. ! Armen 19 May 2008
    ! I would avoid this check, it is
    ! safer to know if variable is negative
 

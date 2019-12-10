@@ -310,8 +310,8 @@ subroutine nminrl
          end if
 ! septic changes 1/28/09 gsm
 
-!			call ndenit(k,j,cdg,wdn,0.05)
-         !!	end if
+!   call ndenit(k,j,cdg,wdn,0.05)
+         !! end if
 
          !! summary calculations
          if (curyr > nyskip) then

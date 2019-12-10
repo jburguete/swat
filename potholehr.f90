@@ -55,8 +55,8 @@ subroutine potholehr()
 !!                                  |depression/impounded area
 !!    qday           |mm H2O        |surface runoff loading to main channel from
 !!                                  |HRU for day
-!!    rainsub(:,:)	 |mm H2O        |precipitation for the time step during the
-!!									|day in HRU
+!!    rainsub(:,:)  |mm H2O        |precipitation for the time step during the
+!!         |day in HRU
 !!    sed_stl(:)     |kg/kg         |fraction of sediment remaining suspended in
 !!                                  |impoundment after settling for one day
 !!    sedyld(:)      |metric tons   |daily soil loss caused by water erosion

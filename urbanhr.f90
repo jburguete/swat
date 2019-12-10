@@ -129,7 +129,7 @@ subroutine urbanhr
             &(thalf(urblu(j)) + twash(j))
 
             !! calculate wash-off of solids
-            urbk = 0.				! peakr -> hhqday for subdaily time steps 6/19/09 JJ
+            urbk = 0.    ! peakr -> hhqday for subdaily time steps 6/19/09 JJ
             urbk = urbcoef(urblu(j)) * qdt
 
             dirt = dirto * Exp (- urbk * dfloat(idt) / 60.)

@@ -173,8 +173,8 @@ subroutine rtsed
          if (sedst(jrch) < 1.e-6) sedst(jrch) = 0.
 
 !!    Mass balance tests
-!!	ambalsed = sedinorg + deg1 + deg2 - dep - sedrch - sedst(jrch)
-!!	if (ambalsed .gt. 1e-3) write (*,*) iida, jrch, ambalsed
+!! ambalsed = sedinorg + deg1 + deg2 - dep - sedrch - sedst(jrch)
+!! if (ambalsed .gt. 1e-3) write (*,*) iida, jrch, ambalsed
 
 !!  In this default sediment routing sediment is not tracked by particle size
          rch_san = 0.

@@ -57,17 +57,17 @@ subroutine readops
 !!                               |entering the most concentrated 10% of the VFS.
 !!    vfsratio(:) |none          |Field area/VFS area ratio
 !!    vfsch(:)    |none          |Fraction of flow entering the most concentrated 10% of the VFS.
-!!	                           |which is fully channelized
-!!	grwat_n(:)      |none      |Mannings's n for grassed waterway
-!!	grwat_i(:)      |none      |Flag for the simulation of grass waterways
+!!                            |which is fully channelized
+!! grwat_n(:)      |none      |Mannings's n for grassed waterway
+!! grwat_i(:)      |none      |Flag for the simulation of grass waterways
 !!                                 | gwat_i = 0 inactive
 !!                                 |        = 1 active
-!!	grwat_l(:)      |km	   |Length of grass Waterway
-!!	grwat_w(:)      |m         |Average width of grassed waterway
-!!	grwat_d(:)      |m         |Depth of grassed waterway from top of bank
+!! grwat_l(:)      |km    |Length of grass Waterway
+!! grwat_w(:)      |m         |Average width of grassed waterway
+!! grwat_d(:)      |m         |Depth of grassed waterway from top of bank
 !!                                 |  to bottom
-!!	grwat_s(:)      |m         |Average slope of grassed waterway channel
-!!	grwat_spcon(:)  |none      |Linear parameter for calculating sediment
+!! grwat_s(:)      |m         |Average slope of grassed waterway channel
+!! grwat_spcon(:)  |none      |Linear parameter for calculating sediment
 !!                                 |  in grassed waterways
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -182,13 +182,13 @@ subroutine readops
          laimx_upd(iops,ihru) = mgt5
 
 
-         !!	case (9) !! Residue Managment  mjw
-         !! Force residue to a minimum value regardless of tillage.		mjw
-         !!	so_res_flag(iops,ihru) = mgt1i !!mjw
-         !!	so_res(iops,ihru) = mgt4 !!mjw
+         !! case (9) !! Residue Managment  mjw
+         !! Force residue to a minimum value regardless of tillage.  mjw
+         !! so_res_flag(iops,ihru) = mgt1i !!mjw
+         !! so_res(iops,ihru) = mgt4 !!mjw
 
        case (10) !! Generic Conservation Practice  mjw
-         !! Get user defined removal eff and use these		mjw
+         !! Get user defined removal eff and use these  mjw
          ro_bmp_flag(iops,ihru) = mgt1i  !! Flag to turn on or off user BMP
 
          !! surface runoff removal efficiency

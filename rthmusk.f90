@@ -114,7 +114,7 @@ subroutine rthmusk
 
 !!    code provided by Dr. Valentina Krysanova, Pottsdam Institute for
 !!    Climate Impact Research, Germany
-!!	Modified by N.Kannan, Blackland Research Center, Temple, USA
+!! Modified by N.Kannan, Blackland Research Center, Temple, USA
 
    use parm
 

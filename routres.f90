@@ -238,7 +238,7 @@ subroutine routres
          call irr_res
          zz=varoute(19,inum2)
          !! perform reservoir water/sediment balance
-         if(ievent == 0) then		!! urban modeling by J.Jeong
+         if(ievent == 0) then  !! urban modeling by J.Jeong
             call res
          else
             call reshr

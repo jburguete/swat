@@ -383,11 +383,11 @@ subroutine readsub
 !!    set default values
 !      do ihru = jj, hrutot(i)
 !        if (re(ihru) <= 0.) re(ihru) = re_bsn
-!	  if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
-!	  if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
-!	  if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
+!   if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
+!   if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
+!   if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
 !        if (latksatf(ihru) <= 0.) latksatf(ihru) = latksatf_bsn
-!	  if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
+!   if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
 !     end do
 
    !     estimate drainage area for urban on-line bmps in square km

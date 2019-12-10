@@ -70,7 +70,7 @@ subroutine orgncswat(iwave)
 
    xx = 0.
    wt1 = 0.  !! conversion factor
-   er = 0.	!! enrichment ratio
+   er = 0. !! enrichment ratio
    if (iwave <= 0) then
       !! HRU calculations
       xx = sol_n(1,j) + sol_fon(1,j) + sol_mn(1,j)

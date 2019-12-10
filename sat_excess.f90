@@ -63,7 +63,7 @@ subroutine sat_excess(j1)
 
    j = 0
    j = ihru
-   isp = isep_typ(j) 	   !! J.Jeong 3/09/09
+   isp = isep_typ(j)     !! J.Jeong 3/09/09
    rtof = 0.5
 
 
@@ -78,7 +78,7 @@ subroutine sat_excess(j1)
          ! distribute STE to soil layers above biozone layer
          if (sol_st(ii,j) > sol_ul(ii,j)) then
 
-            qlyr = max(sol_st(ii,j) - sol_ul(ii,j),0.) 	! excess water moving to upper layer
+            qlyr = max(sol_st(ii,j) - sol_ul(ii,j),0.)  ! excess water moving to upper layer
             sol_st(ii,j) = sol_st(ii,j) - qlyr
 
             qvol = qlyr * hru_ha(j) * 10.         ! volume water m^3

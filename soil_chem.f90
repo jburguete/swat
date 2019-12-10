@@ -101,7 +101,7 @@ subroutine soil_chem
 !!    xx          |none          |variable to hold value
 !!    zdst        |none          |variable to hold value
 !!    labfrac     |none          |fraction of total soil mineral P which is labile
-!!    soil_TP	  |kg/ha         |Total Soil Mineral P
+!!    soil_TP   |kg/ha         |Total Soil Mineral P
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
@@ -298,15 +298,15 @@ subroutine soil_chem
          !!kg/ha sol mass in each layer
          if (j == 1) then
             sol_mass = (sol_z(j,i)) / 1000.
-            !&						10000. * sol_bd(j,ihru)* 1000. *
-            !&							(1- sol_rock(j,ihru) / 100.)
+            !&      10000. * sol_bd(j,ihru)* 1000. *
+            !&       (1- sol_rock(j,ihru) / 100.)
             sol_mass = sol_mass * 10000. * sol_bd(j,i)* 1000.
             sol_mass = sol_mass * (1- sol_rock(j,i) / 100.)
 
          else
             sol_mass = (sol_z(j,i) - sol_z(j-1,i)) / 1000.
-            !&						10000. * sol_bd(j,ihru)* 1000. *
-            !&							(1- sol_rock(j,ihru) / 100.)
+            !&      10000. * sol_bd(j,ihru)* 1000. *
+            !&       (1- sol_rock(j,ihru) / 100.)
             sol_mass = sol_mass * 10000. * sol_bd(j,i)* 1000.
             sol_mass = sol_mass * (1- sol_rock(j,i) / 100.)
          end if

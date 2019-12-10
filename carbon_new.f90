@@ -208,7 +208,7 @@ subroutine carbon
 
          !! compute combined factor
          xx = 0.
-!!		xx = sqrt(cdg * sut)
+!!  xx = sqrt(cdg * sut)
          xx = (cdg * sut) ** cf(j)
          if (xx < 0.) xx = 0.
          if (xx > 1.) xx = 1.
@@ -392,7 +392,7 @@ subroutine carbon
          sol_mp(k,j) = sol_mp(k,j) * (1. - ffman)&
 
          !sol_no3(k,j) = sol_no3(k,j) + net_N +
-         &!	sol_cdec * (1. / CNsoil)
+         &! sol_cdec * (1. / CNsoil)
 
          ! add positive n-mineralization to ammonia pool in the layer
          if (rnet_N>0.) sol_nh3(k,j) = sol_nh3(k,j) + rnet_N
@@ -450,13 +450,13 @@ subroutine carbon
 
       !! writing daily output by layer for testing purposes of the routine SJ and AK 2010
       !!if (i==365) then
-!!	   write (98,9000) iyr, i, k, j, sol_cmass, sol_cbn(k,j),
-!!     &	sol_nmass, sol_n(k,j), sol_orgp(k,j), sol_rsd(k,j),
-!!     &	sol_fon(k,j), sol_fop(k,j), sol_solp(k,j), sol_mc(k,j),
-!!     &	sol_mn(k,j), sol_mp(k,j), sol_no3(k,j),
-!!     &	sol_cmass/sol_nmass, sol_nmass/sol_orgp(k,j), sol_nh3(k,j),
+!!    write (98,9000) iyr, i, k, j, sol_cmass, sol_cbn(k,j),
+!!     & sol_nmass, sol_n(k,j), sol_orgp(k,j), sol_rsd(k,j),
+!!     & sol_fon(k,j), sol_fop(k,j), sol_solp(k,j), sol_mc(k,j),
+!!     & sol_mn(k,j), sol_mp(k,j), sol_no3(k,j),
+!!     & sol_cmass/sol_nmass, sol_nmass/sol_orgp(k,j), sol_nh3(k,j),
 !!     &    tilf, sol_cdec, wdn, net_N
-!!      	 write (99,9001) iyr, i, k, j, bal_c, sum_c_i, sum_c_f,
+!!        write (99,9001) iyr, i, k, j, bal_c, sum_c_i, sum_c_f,
 !!     &     bal_n,sum_n_i, sum_n_f, bal_p, sum_p_i, sum_p_f
       !!end if
 

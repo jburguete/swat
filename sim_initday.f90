@@ -245,7 +245,7 @@ subroutine sim_initday
    sub_grainc_d=0.
    sub_stover_c_d=0.
    sub_emit_c_d=0.
-   sub_soc_d	=0.
+   sub_soc_d =0.
    sub_rspc_d =0.
    !!add by zhang
    !!==========================

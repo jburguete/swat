@@ -125,7 +125,7 @@ subroutine biozone()
    use parm
    implicit none
 
-!	real*8 ntr_rt
+! real*8 ntr_rt
    integer bz_lyr, isp, ii,j,nly
    real*8 bz_vol, rtrate,bodconc, qin, qout,qmm,qvol,pormm,rplqm
    real*8 ntr_rt,dentr_rt, bod_rt, fcoli_rt,rtof,xx,bodi,bode
@@ -138,7 +138,7 @@ subroutine biozone()
 
    j = ihru
    nly = sol_nly(j)
-   isp = isep_typ(j) 	   !! J.Jeong 3/09/09
+   isp = isep_typ(j)     !! J.Jeong 3/09/09
    bz_lyr = i_sep(j)
    bza = hru_ha(j)
    bz_vol = bz_thk(j) * bza * 10. !m^3
@@ -227,8 +227,8 @@ subroutine biozone()
    !! Add build up to plqm  ! kg/ha = kg/ha + kg/ha
    plqm(j) = plqm(j) + rplqm
 
-!	bio_steintobz = coeff_bod_conv(j) * qvol * sptbodconcs(isp) / (1000. * bza)
-!	bio_outbz = coeff_bod_conv(j) * qout * bodconc / (1000. * bza) + (rrsp + rmort + rslg)
+! bio_steintobz = coeff_bod_conv(j) * qvol * sptbodconcs(isp) / (1000. * bza)
+! bio_outbz = coeff_bod_conv(j) * qout * bodconc / (1000. * bza) + (rrsp + rmort + rslg)
    nh3_inflw_ste = xx * sptnh4concs(isp)
    no3_inflow_ste = xx * (sptno3concs(isp) + sptno2concs(isp))
    nh3_begin = sol_nh3(bz_lyr,j)
@@ -244,22 +244,22 @@ subroutine biozone()
    rtrate =  biom(j) * bza / (bz_vol * sol_por(bz_lyr,j))
 
    !! BOD (kg/ha) 4-14 !
-   bod_rt = max(0.,coeff_bod_dc(j) * rtrate)		!bod
+   bod_rt = max(0.,coeff_bod_dc(j) * rtrate)  !bod
    if (bod_rt>4) bod_rt=4
    rbod = bodi * (1.- Exp(-bod_rt))
-   bode = bodi - rbod					!mg/l
+   bode = bodi - rbod     !mg/l
    bio_bod(j) = bode * (sol_st(bz_lyr,j)*10)/1000. !kg/ha
 
    !! Fecal coliform(cfu/100ml) Eq 4-14, J.Jeong 3/09/09
-   fcoli_rt = max(0.,coeff_fecal(j) * rtrate)		!fecal coliform
+   fcoli_rt = max(0.,coeff_fecal(j) * rtrate)  !fecal coliform
    rfcoli = fcoli(j) * (1.- exp(-fcoli_rt))
    fcoli(j) = fcoli(j) - rfcoli
 
    !! change in nh3 & no3 in soil pools due to nitrification(kg/ha) Eq.4-13, 4-14
-   ntr_rt = max(0.,coeff_nitr(j) * rtrate)			!nitrification
+   ntr_rt = max(0.,coeff_nitr(j) * rtrate)   !nitrification
    rnit = sol_nh3(bz_lyr,j) * (1. - Exp(-ntr_rt)) !! J.Jeong 4/03/09
-   sol_nh3(bz_lyr,j) = sol_nh3(bz_lyr,j) - rnit	!J.Jeong 3/09/09
-   sol_no3(bz_lyr,j) = sol_no3(bz_lyr,j) + rnit	!J.Jeong 3/09/09
+   sol_nh3(bz_lyr,j) = sol_nh3(bz_lyr,j) - rnit !J.Jeong 3/09/09
+   sol_no3(bz_lyr,j) = sol_no3(bz_lyr,j) + rnit !J.Jeong 3/09/09
 
    !ammonium percolation
    nperc = 0.2 * qout / qi * sol_nh3(bz_lyr,j)
@@ -268,9 +268,9 @@ subroutine biozone()
    sol_nh3(bz_lyr+1,j) = sol_nh3(bz_lyr+1,j) + nperc
 
    !! denitrification,(kg/ha) Eq 4-14
-   dentr_rt = max(0.,coeff_denitr(j) * rtrate)		!denitrification
-   rdenit = sol_no3(bz_lyr,j) * (1. - Exp(-dentr_rt))	!J.Jeong 3/09/09
-   sol_no3(bz_lyr,j) = sol_no3(bz_lyr,j) - rdenit		!J.Jeong 3/09/09
+   dentr_rt = max(0.,coeff_denitr(j) * rtrate)  !denitrification
+   rdenit = sol_no3(bz_lyr,j) * (1. - Exp(-dentr_rt)) !J.Jeong 3/09/09
+   sol_no3(bz_lyr,j) = sol_no3(bz_lyr,j) - rdenit  !J.Jeong 3/09/09
 
    !soil volume for sorption: soil thickness below biozone
    svolp = (sol_z(nly,j) - bz_z(j)) * bza * 10.*(1-sol_por(bz_lyr,j))!m3,

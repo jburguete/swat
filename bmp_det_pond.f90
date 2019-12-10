@@ -72,7 +72,7 @@ subroutine bmp_det_pond
    !! Storage capacity under addon
    qaddon = dtp_addon(sb,1)**3./(3.*dtp_lwratio(sb)*ch_s(2,sb)**2.) !m3 Note: V = d^3 / (3*R*S^2) |Modify by J. Osorio (3/19/2013)
 
-   !!	iterate for subdaily flow/sediment routing
+   !! iterate for subdaily flow/sediment routing
    do ii=1,nstep
 
       if (ii==1) qpnd_last=dtp_ivol(sb)
@@ -85,7 +85,7 @@ subroutine bmp_det_pond
       qdepth = (3.*qpnd*dtp_lwratio(sb)*ch_s(2,sb)**2)**0.33333
 
       !! skip to next time step if no ponding occurs
-!	   if (qdepth<=0.0001) cycle
+!    if (qdepth<=0.0001) cycle
 
       if (dtp_stagdis(sb)==0) then
          !! Calculate weir outflow
@@ -172,7 +172,7 @@ subroutine bmp_det_pond
          qout = qpnd
          qpnd = 0.
       else !detention occurs
-         !!	Estimating surface area of water
+         !! Estimating surface area of water
          backup_length = qdepth / ch_s(2,sb)
          seep_sa = backup_length/dtp_lwratio(sb)&
          &+ (4. * dtp_lwratio(sb) * qdepth**2) / 3.      !! Note: SSA = w + (4*l*d^2)/(3*w) |Modify by J. Osorio (3/20/2013)
@@ -182,12 +182,12 @@ subroutine bmp_det_pond
          seep_sa = seep_sa / 10000.0
          evap_sa = evap_sa / 10000.0
 
-         !!	Estimate rainfall, evapotranspiration, and seepage
+         !! Estimate rainfall, evapotranspiration, and seepage
          pcp_vol  = 10.0 * sub_subp_dt(sb,ii) * evap_sa !m^3
          evap_vol = 10.0 * dtp_evrsv(sb) * pet_day * evap_sa !m^3
          seep_vol = 10.0 * ch_k(2,sb) * seep_sa * idt / 60. !m^3
 
-         !!	Check mass balance for water in the pond
+         !! Check mass balance for water in the pond
          qpnd = qpnd_last + qin + pcp_vol - qout - evap_vol&
          &- seep_vol
          if (qpnd<0) qpnd = 0.

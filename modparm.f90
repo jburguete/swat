@@ -884,20 +884,20 @@ module parm
    !!SOM-residue C/N state variables -- currently included
    real*8, dimension(:,:), allocatable :: sol_BMC, sol_BMN, sol_HSC,&
    &sol_HSN, sol_HPC, sol_HPN, sol_LM,&
-   &sol_LMC, sol_LMN, sol_LS, sol_LSL, sol_LSC, sol_LSN	, sol_RNMN,&
+   &sol_LMC, sol_LMN, sol_LS, sol_LSL, sol_LSC, sol_LSN , sol_RNMN,&
    &sol_LSLC, sol_LSLNC, sol_RSPC, sol_WOC, sol_WON, sol_HP, sol_HS,&
    &sol_BM
-   !	HSC mass of C present in slow humus (kg ha-1)
-   !	HSN mass of N present in slow humus (kg ha-1)
-   !	HPC mass of C present in passive humus (kg ha-1)
-   !	HPN mass of N present in passive humus (kg ha-1)
-   !	LM mass of metabolic litter (kg ha-1)
-   !	LMC mass of C in metabolic litter (kg ha-1)
-   !	LMN mass of N in metabolic litter (kg ha-1)
-   !	LS mass of structural litter (kg ha-1)
-   !	LSC mass of C in structural litter (kg ha-1)
-   !	LSL mass of lignin in structural litter (kg ha-1)
-   !	LSN mass of N in structural litter (kg ha-1)
+   ! HSC mass of C present in slow humus (kg ha-1)
+   ! HSN mass of N present in slow humus (kg ha-1)
+   ! HPC mass of C present in passive humus (kg ha-1)
+   ! HPN mass of N present in passive humus (kg ha-1)
+   ! LM mass of metabolic litter (kg ha-1)
+   ! LMC mass of C in metabolic litter (kg ha-1)
+   ! LMN mass of N in metabolic litter (kg ha-1)
+   ! LS mass of structural litter (kg ha-1)
+   ! LSC mass of C in structural litter (kg ha-1)
+   ! LSL mass of lignin in structural litter (kg ha-1)
+   ! LSN mass of N in structural litter (kg ha-1)
 
    !!SOM-residue C/N state variables -- may need to be included
    real*8, dimension(:,:), allocatable :: sol_CAC, sol_CEC
@@ -916,7 +916,7 @@ module parm
    !!Daily carbon change by different means (entire soil profile for each Subbasin)
    !!Only defined the variables, but not used them in the code
    real*8, dimension(:), allocatable :: sub_sedc_d, sub_surfqc_d,&
-   &sub_latc_d,	sub_percc_d, sub_foc_d, sub_NPPC_d, sub_rsdc_d,&
+   &sub_latc_d, sub_percc_d, sub_foc_d, sub_NPPC_d, sub_rsdc_d,&
    &sub_grainc_d, sub_stoverc_d, sub_emitc_d, sub_soc_d, sub_rspc_d
 
 
@@ -933,35 +933,35 @@ module parm
 
    !! The following variables are defined and calculated locally
    !! ==================================================================
-   !	HSCTP potential transformation of C in slow humus (kg ha-1 day-1)
-   !	HSNTP potential transformation of N in slow humus (kg ha.1 day-1)
-   !	HPCTP potential transformation of C in passive humus (kg ha-1 day-1)
-   !	HPNTP potential transformation of N in passive humus (kg ha-1 day-1)
-   !	HPR rate of transformation of passive humus under optimal conditions (subsurface
-   !	layers = 0.000012 day-1) (Parton et al.,1993, 1994)
-   !	HSR rate of transformation of slow humus under optimal conditions (all layers
-   !	= 0.0005 day.1) (Parton et al., 1993, 1994; Vitousek et al., 1993)
-   !	KOC liquid C solid partition coefficient for microbial biomass (10^3 m3 Mg-1)
-   !	LMF fraction of the litter that is metabolic
-   !	LMNF fraction of metabolic litter that is N (kg kg-1)
-   !	LMR rate of transformation of metabolic litter under optimal conditions (surface =
-   !	 0.0405 day-1; all other layers = 0.0507 day-1) (Parton et al., 1994)
-   !	LMCTP potential transformation of C in metabolic litter (kg ha-1 day-1)
-   !	LMNTP potential transformation of N in metabolic litter (kg ha-1 day-1)
-   !	LSCTP potential transformation of C in structural litter (kg ha-1 day-1)
-   !	LSF fraction of the litter that is structural
-   !	LSLF fraction of structural litter that is lignin (kg kg-1)
-   !	LSNF fraction of structural litter that is N (kg kg-1)
-   !	LSLCTP potential transformation of C in lignin of structural litter (kg ha-1 day-1)
-   !	LSLNCTP potential transformation of C in nonlignin structural litter (kg ha-1 day-1)
-   !	LSNTP potential transformation of N in structural litter (kg ha-1 day-1)
-   !	LSR rate of potential transformation of structural litter under optimal conditions
-   !	(surface = 0.0107 day.1; all other layers = 0.0132 day.1) (Parton et al., 1994)
-   !	NCBM N/C ratio of biomass
-   !	NCHP N/C ratio passive humus
-   !	NCHS N/C ratio of the slow humus
-   !	OX oxygen control on biological processes with soil depth
-   !	Sf fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter
+   ! HSCTP potential transformation of C in slow humus (kg ha-1 day-1)
+   ! HSNTP potential transformation of N in slow humus (kg ha.1 day-1)
+   ! HPCTP potential transformation of C in passive humus (kg ha-1 day-1)
+   ! HPNTP potential transformation of N in passive humus (kg ha-1 day-1)
+   ! HPR rate of transformation of passive humus under optimal conditions (subsurface
+   ! layers = 0.000012 day-1) (Parton et al.,1993, 1994)
+   ! HSR rate of transformation of slow humus under optimal conditions (all layers
+   ! = 0.0005 day.1) (Parton et al., 1993, 1994; Vitousek et al., 1993)
+   ! KOC liquid C solid partition coefficient for microbial biomass (10^3 m3 Mg-1)
+   ! LMF fraction of the litter that is metabolic
+   ! LMNF fraction of metabolic litter that is N (kg kg-1)
+   ! LMR rate of transformation of metabolic litter under optimal conditions (surface =
+   !  0.0405 day-1; all other layers = 0.0507 day-1) (Parton et al., 1994)
+   ! LMCTP potential transformation of C in metabolic litter (kg ha-1 day-1)
+   ! LMNTP potential transformation of N in metabolic litter (kg ha-1 day-1)
+   ! LSCTP potential transformation of C in structural litter (kg ha-1 day-1)
+   ! LSF fraction of the litter that is structural
+   ! LSLF fraction of structural litter that is lignin (kg kg-1)
+   ! LSNF fraction of structural litter that is N (kg kg-1)
+   ! LSLCTP potential transformation of C in lignin of structural litter (kg ha-1 day-1)
+   ! LSLNCTP potential transformation of C in nonlignin structural litter (kg ha-1 day-1)
+   ! LSNTP potential transformation of N in structural litter (kg ha-1 day-1)
+   ! LSR rate of potential transformation of structural litter under optimal conditions
+   ! (surface = 0.0107 day.1; all other layers = 0.0132 day.1) (Parton et al., 1994)
+   ! NCBM N/C ratio of biomass
+   ! NCHP N/C ratio passive humus
+   ! NCHS N/C ratio of the slow humus
+   ! OX oxygen control on biological processes with soil depth
+   ! Sf fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter
 
    !!Tillage factor on SOM decomposition
    integer, dimension(:), allocatable :: tillage_switch

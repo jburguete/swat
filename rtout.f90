@@ -372,7 +372,7 @@ subroutine rtout
          rchhr(4,jrch,ii) = hrttlc(ii) / (idt * 60.)            !!tloss (m^3/s)
          rchhr(5,jrch,ii) = hhvaroute(3,inum2,ii) * (1. - rnum1)   !!sed in (tons)
          rchhr(6,jrch,ii) = hsedyld(ii)                         !!sed out (tons)
-         rchhr(7,jrch,ii) = sedcon						       !!sed conc (mg/L)
+         rchhr(7,jrch,ii) = sedcon             !!sed conc (mg/L)
       end do
    endif
 

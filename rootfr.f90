@@ -59,7 +59,7 @@ subroutine rootfr
 
    end do
 
-   !!	 ensures that cumulative fractional root distribution = 1
+   !!  ensures that cumulative fractional root distribution = 1
    do l=1, sol_nly(jj)
       rtfr(l) = rtfr(l) / cum_rf
       If (l == k) Exit ! exits loop on the same layer as the previous loop

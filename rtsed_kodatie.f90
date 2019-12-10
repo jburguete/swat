@@ -77,8 +77,8 @@ subroutine rtsed_kodatie
 !!    SWAT: ttcoef
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-!!	Modification to the original SWAT sediment routine
-!!	By Balaji Narasimhan and Peter Allen
+!! Modification to the original SWAT sediment routine
+!! By Balaji Narasimhan and Peter Allen
 !!    Kodatie (Modified Simons-Li associates) approach combined with Einsteins deposition equation
 !!    Plus particle size tracking.
 
@@ -194,7 +194,7 @@ subroutine rtsed_kodatie
             watdep = ch_d(jrch)
          end if
 
-!!	Applied Bank Shear Stress
+!! Applied Bank Shear Stress
 !!    Equations from Eaton and Millar (2004)
          SFbank = 10**(-1.4026 * log10((pbed/pbank) + 1.5) + 2.247)
 
@@ -398,7 +398,7 @@ subroutine rtsed_kodatie
             depgrach(jrch) = 0.
          end if
 
-!!	Fall velocity Based on equation 1.36 from SWRRB manual
+!! Fall velocity Based on equation 1.36 from SWRRB manual
          vgra = 411.0 * ((2.00)**2.) / (3600.)
          vsan = 411.0 * ((0.20)**2.) / (3600.)
          vsil = 411.0 * ((0.01)**2.) / (3600.)
@@ -406,43 +406,43 @@ subroutine rtsed_kodatie
          vsag = 411.0 * ((0.03)**2.) / (3600.)
          vlag = 411.0 * ((0.50)**2.) / (3600.)
 
-!!	Deposition calculated based on Einstein Equation
+!! Deposition calculated based on Einstein Equation
          x = 0.
 
-!!	Gravel deposition
+!! Gravel deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vgra / (vc * rchdep)
          if (x > 20.) x = 20.
          pdep = min((1. - exp(-x)), 1.)
          depgra = grain * pdep
 
-!!	sand deposition
+!! sand deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vsan / (vc * rchdep)
          if (x > 20.) x = 20.
          pdep = min((1. - exp(-x)), 1.)
          depsan = sanin * pdep
 
-!!	Silt deposition
+!! Silt deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vsil / (vc * rchdep)
          if (x > 20.) x = 20.
          pdep = min((1. - exp(-x)), 1.)
 
          depsil = silin * pdep
 
-!!	Clay deposition
+!! Clay deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vcla / (vc * rchdep)
          if (x > 20.) x = 20.
          pdep = min((1. - exp(-x)), 1.)
 
          depcla = clain * pdep
 
-!!	Small aggregates deposition
+!! Small aggregates deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vsag / (vc * rchdep)
          if (x > 20.) x = 20.
          pdep = min((1. - exp(-x)), 1.)
 
          depsag = sagin * pdep
 
-!!	Large aggregates deposition
+!! Large aggregates deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vlag / (vc * rchdep)
          if (x > 20.) x = 20.
          pdep = min((1. - exp(-x)), 1.)

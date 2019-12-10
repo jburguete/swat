@@ -55,7 +55,7 @@ subroutine readmgt
 !!                                 |number of the month) The dates are for
 !!                                 |leap years
 !! drainmod tile equations   06/2006
-!!	  ranrns(:)  |mm			   |random roughness of operation
+!!   ranrns(:)  |mm      |random roughness of operation
 !! drainmod tile equations   06/2006
 !!    urbcn2(:)  |none             |Moisture condition II curve number for
 !!                                 |impervious areas

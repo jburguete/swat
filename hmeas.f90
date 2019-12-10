@@ -91,7 +91,7 @@ subroutine hmeas
             rhdbsb = rhd(k)
          end if
       else
-!!	      if (i == 1) then
+!!       if (i == 1) then
          if (rhmeas(ihgage(hru_sub(k))) < 1. .and.&
          &rhmeas(ihgage(hru_sub(k))) > 0.) then
             rhd(k) = rhmeas(ihgage(hru_sub(k)))

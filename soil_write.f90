@@ -33,9 +33,9 @@ subroutine soil_write
          solp_t = solp_t + sol_solp(l,j)
          solno3_t = solno3_t + sol_no3(l,j)
          !if (cswat == 0) then
-         !	solorgn_t = solorgn_t + sol_orgn(l,j)
+         ! solorgn_t = solorgn_t + sol_orgn(l,j)
          !else
-         !	solorgn_t = solorgn_t + sol_n(l,j)
+         ! solorgn_t = solorgn_t + sol_n(l,j)
          !end if
 
          !!By Zhang

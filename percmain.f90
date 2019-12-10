@@ -7,7 +7,7 @@ subroutine percmain
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    drainmod tile equations   08/2006
-!!	dep_imp(:)	|mm            |depth to impervious layer
+!! dep_imp(:) |mm            |depth to impervious layer
 !!    drainmod tile equations   08/2006
 
 !!    icrk        |none          |crack flow code
@@ -43,9 +43,9 @@ subroutine percmain
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    new water table depth  equations   01/2009
-!!	c			|none		   |a factor used to convert airvol to wtd
-!!	deep_p      |mm			   |total thickness of soil profile in HRU
-!!    dg          |mm			   |soil layer thickness in HRU
+!! c   |none     |a factor used to convert airvol to wtd
+!! deep_p      |mm      |total thickness of soil profile in HRU
+!!    dg          |mm      |soil layer thickness in HRU
 !!    new water table depth  equations   01/2009
 !!    flat(:,:)   |mm H2O        |lateral flow storage array
 !!    latlyr      |mm H2O        |lateral flow in soil layer for the day
@@ -53,8 +53,8 @@ subroutine percmain
 !!                               |day in HRU
 !!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
 !!    new water table depth  equations   01/2009
-!!	ne_p		|mm/hr		   |effective porosity in HRU for all soil profile layers
-!!	ne_w		|mm/hr		   |effective porosity in HRU for soil layers above wtd
+!! ne_p  |mm/hr     |effective porosity in HRU for all soil profile layers
+!! ne_w  |mm/hr     |effective porosity in HRU for soil layers above wtd
 !!    new water table depth  equations   01/2009
 !!    qtile       |mm H2O        |drainage tile flow in soil profile for the day
 !!    sepday      |mm H2O        |micropore percolation from soil layer
@@ -68,7 +68,7 @@ subroutine percmain
 !!    sw_excess   |mm H2O        |amount of water in excess of field capacity
 !!                               |stored in soil layer on the current day
 !!    new water table depth  equations   01/2009
-!!    wat		    |mm H2O        |shallow water table depth below the soil surface to up to impervious layer
+!!    wat      |mm H2O        |shallow water table depth below the soil surface to up to impervious layer
 !!    new water table depth  equations   01/2009
 !!    wt_shall    |mm H2O        |shallow water table depth above the impervious layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -78,8 +78,8 @@ subroutine percmain
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
 !!    j1          |none          |counter
-!!	w2			|mm			   |
-!!	y1			|mm 		   |dummy variable for wat
+!! w2   |mm      |
+!! y1   |mm      |dummy variable for wat
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -98,7 +98,7 @@ subroutine percmain
    j = 0
    j = ihru
    sb = inum1
-   isp = isep_typ(j) 	   !! J.Jeong 6/25/14
+   isp = isep_typ(j)     !! J.Jeong 6/25/14
 
    !! initialize water entering first soil layer
 
@@ -117,7 +117,7 @@ subroutine percmain
 
 !! if unlimted, or groundwater source reset aird here (otherwise in virtual)
 !!  change per JGA 10/12/11 irrigation problem with reach
-!!	if (irrsc(j) > 2)  aird(j) = 0.
+!! if (irrsc(j) > 2)  aird(j) = 0.
 !!      aird(j) = 0.
 
    !! calculate crack flow
@@ -263,8 +263,8 @@ subroutine percmain
             wt_shall = dep_imp(j) - wat_tbl(j)
             sol_swpwt(j) = sol_sw(j)
             sol_stpwt(j1,j) = sol_st(j1,j)
-!	        exit
-!	      end if
+!         exit
+!       end if
 !       Updated water table depth D.Moriasi 4/8/2014
          end do
       end if
