@@ -10,9 +10,14 @@ Objectives
 [findent](https://sourceforge.net/projects/findent). See the
 translate-fortran90.pl perl script file
 * Exhaustive use of the "implicit none" directive to detect bad variable usage
-* Generation of a GNU [make](http://www.gnu.org/software/make) makefile and
-compilation with GNU [gfortran](https://gcc.gnu.org/fortran)
-* Remove non-used variables
+* Generate a GNU [make](http://www.gnu.org/software/make) makefile and compile
+with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl perl script file
+* Remove non-used variables and format labels
+* Detect and solve all uninitialized variables
+* Remove unneeded variable initializations as:
+> j=0 ! this line is not necessary
+>
+> j=ihru
 
 Required tools
 --------------
