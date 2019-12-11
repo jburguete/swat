@@ -15,8 +15,8 @@ translate-fortran90.pl perl script file (:heavy_check_mark:)
 with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl
 perl script file (:heavy_check_mark:)
 * Remove non-used variables and format labels (:heavy_check_mark:)
-* Detect and solve all uninitialized variables (:heavy_check_mark:, but some
-solutions can be incorrect) 
+* Detect and solve all uninitialized variables (:heavy_check_mark:
+:construction:, some proposed solutions could be incorrect) 
 * Remove unneeded variable initializations (:heavy_check_mark:) as:
 
 `j=0 ! this line is not necessary`
