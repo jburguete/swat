@@ -26,7 +26,7 @@ perl script file (:heavy_check_mark:)
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
 * Generate a detailed list of issues detected in the original code
-(:heavy_check_mark:, see issues.txt file or at the end of this README)
+(:heavy_check_mark:, see at the end of this README)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:x:)
 * Standardize comments by using Doxygen style on order to generate documentation
