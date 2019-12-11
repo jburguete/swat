@@ -86,7 +86,7 @@ could not arise because the logic of the variables is not possible.
 
 * In biofilm.f:
   - "dcoef" is not defined.
-    dcoef=3 as in watqual.f?
+    `dcoef=3` as in watqual.f?
     Then, I propose at beginning:
     `real*8, parameter :: dcoef = 3.`
 
@@ -108,7 +108,7 @@ could not arise because the logic of the variables is not possible.
 
 * In conapply.f:
   - "k" and "kk" could be used not initialized at 121-122 lines if
-    `iday\_pest(j)/=ipst\_freq(j)` and `curyr>nyskip`
+    `iday_pest(j)/=ipst_freq(j)` and `curyr>nyskip`
 
 * In confert.f:
   - "ifrt" seems to be "it" at line 214
@@ -120,7 +120,7 @@ could not arise because the logic of the variables is not possible.
 * In drains.f:
   - "nlayer" could be used not initialized at line 23. However, yhe problem only
     arises if it is not set in the previous bucle (`mlyr<=1` or
-    `sol\_z(j1,j)<=0`)
+    `sol_z(j1,j)<=0`)
 
 * In etact.f:
   - "sev" can be used not initialized at line 286 if `dep>=esd` and `ly==2`
@@ -130,14 +130,14 @@ could not arise because the logic of the variables is not possible.
 
 * In grass\_wway.f:
   - "sf\_depth" and "sf\_sed" could be used not initialized at lines 133 and 137
-    if "sf\_area>0 and sf\_area<=1.e-6"
+    if `sf_area>0` and `sf_area<=1.e-6`
 
 * In hhnoqual.f:
   - "algon" seems to be "algcon" at line 190
 
 * In hhwatqual.f
   - "orgnpin" seems to be "orgpin" at line 278
-  - "thour=1.0" at line 377 overwrites previous "thour" calculation. It is wrong
+  - `thour=1.0` at line 377 overwrites previous "thour" calculation. It is wrong
 
 * In hmeas.f:
   - "rhdbsb" could be used not initialized at line 84
@@ -149,32 +149,32 @@ could not arise because the logic of the variables is not possible.
     or they have to be redefined as in harvkillop.f?
 
 * In NCsed\_leach.f90:
-  - "perc\_clyr" could be used not initialized at line 221 if "sol\_nly(j)<2"
+  - "perc\_clyr" could be used not initialized at line 221 if `sol_nly(j)<2`
 
 * In nrain.f:
   - "no2pcp" seems to be "no3pcp" at line 72
 
 * In pmeas.f:
   - "rbsb" could be used not initialized at line 143
-  - "flag" could be used not initialized if "a==' ' at line 210
-  - "rainsb" could be used not initialized, however only if "nstep<=0"
+  - "flag" could be used not initialized if `a==' '` at line 210
+  - "rainsb" could be used not initialized, however only if `nstep<=0`
 
 * In pminrl2.f:
-  - "ssp" can be used not initialized at line 196 if "xx<=1.e-6"
+  - "ssp" can be used not initialized at line 196 if `xx<=1.e-6`
 
 * In pothole.f:
   - "solp\_tileo" could be used not initialized at line 593 if
-    "pot\_vol(j)<=1.e-6 or potvol\_tile<=1.e-6"
+    `pot\_vol(j)<=1.e-6` or `potvol\_tile<=1.e-6`
 
 * In potholehr.f:
   - "potflow" seems to be "potflwo" at line 447
 
 * In readatmodep.f:
-  - "momax=12*nbyr" is defined at line 65 but not used.
+  - `momax=12*nbyr` is defined at line 65 but not used.
     It has to be "mo\_max"? but then, it overwrites the file read
 
 * In readops.f:
-  - "year = 0." seems to be "iyear = 0" at line 98
+  - `year = 0.` seems to be `iyear = 0` at line 98
   - "mg13" seems to be "mgt13" at line 206
 
 * In readpnd.f:
@@ -193,21 +193,21 @@ could not arise because the logic of the variables is not possible.
   - "latqout" and "gwqout" could be used not initialized at lines 142-143
 
 * In rtbact.f:
-  - "netwtr" could be used not initialized at line 124, however only in
-    "nstep<1"
+  - "netwtr" could be used not initialized at line 124, however only if
+    `nstep<1`
 
 * In rthpest.f:
-  - "thour=1.0" at line 183 overwrites previous "thour" calculation. It is wrong
+  - `thour=1.0` at line 183 overwrites previous "thour" calculation. It is wrong
   - "frsol" and "frsrb" could be used not initialized at lines 289-290 if
-    "hrtwtr(ii)>0.001 and hrtwtr(ii)/(idt*60)<=0.01"
+    `hrtwtr(ii)>0.001` and `hrtwtr(ii)/(idt*60)<=0.01`
 
 * In rtpest.f:
-  - "tday=1.0" at line 180 overwrites previous "tday" calculation. It is wrong
+  - `tday=1.0` at line 180 overwrites previous "tday" calculation. It is wrong
 
 * In sched\_mgt.f:
   - "husc" and "igrow" at lines 264-265 are used but not initialized.
-    "husc" has to be "phu\_op(iop,ihru)" has in readmgt.f?
-    "igrow" has to be "igro(ihru)" has in readmgt.f?
+    "husc" has to be `phu\_op(iop,ihru)` has in readmgt.f?
+    "igrow" has to be `igro(ihru)` has in readmgt.f?
 
 * In smeas.f:
   - "rabsb" could be used not initialized at line 86
@@ -215,14 +215,14 @@ could not arise because the logic of the variables is not possible.
 * In sweep.f:
   - "fr\_curb" is used but not initialized at line 56.
     It has to be added to modparm.f to share result with sched\_mgt.f?
-    or it has to be "mgt5op(nop(ihru),ihru)" as in sched\_mgt.f?
+    or it has to be `mgt5op(nop(ihru),ihru)` as in sched\_mgt.f?
 
 * In tmeas.f:
   - "tmxbsb" and "tmnbsb" could be used not initialized at lines 109-110
 
 * In transfer.f:
   - "ratio", "xx" and "ratio1" could be used not initialized at lines 236, 239
-    and 241 if "ihout==2"
+    and 241 if `ihout==2`
 
 * In wmeas.f:
   - "u10bsb" could be used not initialized at line 85
