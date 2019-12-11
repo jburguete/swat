@@ -10,21 +10,27 @@ Objectives
 [findent](https://sourceforge.net/projects/findent). See the
 translate-fortran90.pl perl script file (:heavy_check_mark:)
 * Exhaustive use of the "implicit none" directive to detect bad variable usage
+(:heavy_check_mark:)
 * Generate a GNU [make](http://www.gnu.org/software/make) makefile and compile
-with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl perl script file
-* Remove non-used variables and format labels
-* Detect and solve all uninitialized variables
+with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl
+perl script file (:heavy_check_mark:)
+* Remove non-used variables and format labels (:heavy_check_mark:)
+* Detect and solve all uninitialized variables (:heavy_check_mark:, but some
+solutions can be incorrect) 
 * Remove unneeded variable initializations as:
 
 `j=0 ! this line is not necessary`
 
 `j=ihru`
 
-* Remove redundant code
-* Exhaustive use of the "parameter" directive on constants
-* Remove obsolete commented code
-* Update variable descriptions in comments
+(:heavy_check_mark:)
+
+* Remove redundant code (:heavy_check_mark:)
+* Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
+* Remove obsolete commented code (:x:)
+* Update variable descriptions in comments (:x:)
 * Standardize comments by using Doxygen style on order to generate documentation
+(:x:)
 
 Required tools
 --------------
