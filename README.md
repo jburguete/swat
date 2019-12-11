@@ -25,6 +25,8 @@ solutions can be incorrect)
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
+* Generate an exhausive list of issues detected in the original code
+(:construction:, see issues file)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:x:)
 * Standardize comments by using Doxygen style on order to generate documentation
