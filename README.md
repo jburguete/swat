@@ -11,8 +11,8 @@ Objectives
 translate-fortran90.pl perl script file (:heavy_check_mark:)
 * Exhaustive use of the "implicit none" directive to detect bad variable usage
 (:heavy_check_mark:)
-* Generate a GNU [make](http://www.gnu.org/software/make) makefile and compile
-with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl
+* Generate a GNU [Make](http://www.gnu.org/software/make) makefile and compile
+with GNU [GFortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl
 perl script file (:heavy_check_mark:)
 * Remove non-used variables and format labels (:heavy_check_mark:)
 * Detect and solve all uninitialized variables (:heavy_check_mark:
@@ -35,15 +35,15 @@ perl script file (:heavy_check_mark:)
 Required tools
 --------------
 
-* [gfortran](https://gcc.gnu.org/fortran) (to compile the source code)
-* [make](https://www.gnu.org/software/make) (to build the executable file)
-* [perl](https://www.perl.org) (optional: to execute the perl scripts to 
+* [GFortran](https://gcc.gnu.org/fortran) (to compile the source code)
+* [Make](https://www.gnu.org/software/make) (to build the executable file)
+* [Perl](https://www.perl.org) (optional: to execute the perl scripts to 
 update the makefile or to translate original files to Fortran 90)
-* [findent](https://sourceforge.net/projects/findent) (optional: to translate
+* [Findent](https://sourceforge.net/projects/findent) (optional: to translate
 original files to Fortran 90 with a standard indentation)
 * On Microsoft Windows systems you have to install
 [MSYS2](http://sourceforge.net/projects/msys2) and the required utilities
-(gfortran and make). You can follow detailed instructions in
+(GFortran and Make). You can follow detailed instructions in
 [install-unix](https://github.com/jburguete/install-unix/blob/master/tutorial.pdf)
 
 Instructions to generate an executable to test
