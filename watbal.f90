@@ -131,7 +131,7 @@ subroutine watbal
 !     endif
 
 !$ $$$$$  100  format (i4, 20f8.3)
-101 format (' Water Balance Problem - Subbassin', i6,' Day/Year',2i4,&
-   &f10.5,' mm')
+!101 format (' Water Balance Problem - Subbassin', i6,' Day/Year',2i4,&
+!   &f10.5,' mm')
    return
 end

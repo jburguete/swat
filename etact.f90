@@ -253,10 +253,10 @@ subroutine etact
             dep = sol_z(ly-1,j)
          endif
 
+         sev = 0.
          if (dep < esd) then
             !! calculate evaporation from soil layer
             evz = 0.
-            sev = 0.
             xx = 0.
             evz = eosl * sol_z(ly,j) / (sol_z(ly,j) + Exp(2.374 -&
             &.00713 * sol_z(ly,j)))

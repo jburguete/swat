@@ -210,6 +210,7 @@ subroutine rthsed
                else
                   write(*,*) 'Error in implementing Yang erosion model'
 !!       stop
+                  coefb = 0.
                endif
 
                coefc = vshear / vfall
@@ -222,7 +223,7 @@ subroutine rthsed
                   &log10(coefc) +(1.799 - 0.409 *log10(coefa) - 0.314 *&
                   &log10(coefc)) * log10(coefd)
 
-               elseif(ch_d50>2.0) then
+               else !if(ch_d50>2.0) then !redundant
                   !! use gravel equation (1984)
                   log10sedcon = 6.681 - 0.633 * log10(coefa) - 4.816 *&
                   &log10(coefc) +(2.784 - 0.305 *log10(coefa) - 0.282 *&

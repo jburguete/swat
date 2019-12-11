@@ -401,14 +401,12 @@ subroutine readfig
 !! isproj = 0
 !! 5000 format (a1,9x,5i6,f6.3,i9,4i3)
 5000 format (a1,9x,5i6,f6.3,i9,i3,3a3)
-5001 format (7x,i3,4x,6f12.3)
 5002 format(a)
 5004 format (10x,3i4)
 !! isproj = 2 (CEAP)
 5003 format (a1,9x,4i6,i5,f8.0,i8)
 5100 format (10x,2a13)
 5200 format (a80)
-5300 format (2i6)
 5400 format (20a4)
 5500 format (//," DAY YEAR HR ","  WATER m^3 ","   SED tons ",&
    &"    ORGN kg ","    ORGP kg ","   NO3-N kg ",&

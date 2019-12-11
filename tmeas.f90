@@ -98,6 +98,8 @@ subroutine tmeas
 
    !! assign temperature data to HRUs
    inum3sprev = 0
+   tmxbsb = 0.
+   tmnbsb = 0.
    do k = 1, nhru
       call weatgn(k)
       tmx(k) = txmeas(itgage(hru_sub(k)))

@@ -168,6 +168,9 @@ subroutine transfer
 !        end select
 
       !! SUBTRACT AMOUNT TRANSFERED FROM SOURCE
+      xx = 0.
+      ratio = 0.
+      ratio1 = 1.
       if (ihout == 2) then
          res_vol(inum1) = res_vol(inum1) - tranmx
       else

@@ -77,6 +77,7 @@ subroutine hmeas
 
    !! assign relative humidity data to HRUs
    inum3sprev = 0
+   rhdbsb = 0.
    do k = 1, nhru
       !! generate values to replace missing data
       if (rhmeas(ihgage(hru_sub(k))) <  -97.) then
@@ -86,8 +87,6 @@ subroutine hmeas
          else
             call rhgen(k)
             !! set subbasin generated values
-            inum3sprev = 0
-            rhdbsb = 0.
             inum3sprev = hru_sub(k)
             rhdbsb = rhd(k)
          end if

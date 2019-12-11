@@ -116,6 +116,8 @@ subroutine routels(iru_sub)
 
 !!    compute infiltration from surface runon to next landscape unit
       if (ls_overq > 1.e-6) then
+         latqout = 0.
+         gwqout = 0.
          do kk = 1, hrutot(inum3)
             jj= hru1(inum3) + kk - 1
             if (iru_sub == 0) then

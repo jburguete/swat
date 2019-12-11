@@ -149,7 +149,7 @@ subroutine fert
 
    real*8, parameter :: rtof=0.5
    integer :: j, l, ifrt
-   real*8 :: xx, gc, gc1, swf, frt_t
+   real*8 :: xx, gc, gc1, frt_t
 
    !!added by zhang
    !!======================

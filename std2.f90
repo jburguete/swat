@@ -170,7 +170,7 @@ subroutine std2
       kdrn = " "
       kpot = " "
       kpst = " "
-      ksep = "   "
+      ksep = " "
       if (iurban(j) > 0) kubn = "x"
       !!   if (ipot(j) == j) kpot = "x"
       if (pot_fr(j) > 0.) kpot = "x"
@@ -270,7 +270,6 @@ subroutine std2
    &15x,f6.1)
 1030 format (t10,i4,1x,i6,f11.2,2x,'BARR',2x,a8,3f7.1,18x,f6.1,19x,f6.1&
    &,15x,f6.1)
-2000 format (//,' AREA DOES NOT SUM TO ONE   ', f8.6,//)
+!2000 format (//,' AREA DOES NOT SUM TO ONE   ', f8.6,//)
 3000 format (i4,3f12.4)
-5000 format (/t5,a80,t105,2(a2,'/'),a2,5x,2(i2,':'),i2)
 end

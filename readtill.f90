@@ -32,7 +32,6 @@ subroutine readtill
 !!                               |the array storage number is used by the
 !!                               |model to access data for a specific
 !!                               |tillage operation
-!!    itnum       |none          |tillage code number (reference only)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -40,7 +39,7 @@ subroutine readtill
    use parm
    implicit none
 
-   integer :: it, eof, itnum, j
+   integer :: it, eof, j
 !! drainmod tile equations  - addition random roughness 06/2006
    real*8 :: emix, dtil,   rrns
 !! drainmod tile equations  - addition random roughness 06/2006

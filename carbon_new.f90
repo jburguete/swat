@@ -69,10 +69,10 @@ subroutine carbon
    END INTERFACE
 
 
-   !! private variables
-   real*8 :: cx, decf, rhc, mhc, sol_cdec, tilf
+!! private variables
+   real*8 :: cx, rhc, mhc, sol_cdec, tilf
    real*8 :: resc_hum, manc_hum
-   real*8 :: xx, xx1, xx2, xx3, xx4, csf
+   real*8 :: xx, xx1, xx2, xx4, csf
    real*8 :: rdc, mdc, wdn, cdg, sut
    real*8 :: CNsoil, CPsoil, NPsoil
    real*8 :: CNres, CPres, CNman, CPman, rCNnew, mCNnew

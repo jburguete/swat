@@ -70,7 +70,7 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
    implicit none
 
    integer :: jj,sb,j,k
-   real*8 :: lid_ksat,lid_por,lid_fc,lid_wp,lid_wetfsh,whd,&
+   real*8 :: lid_ksat,lid_por,lid_fc,lid_wp,whd,&
    &tst,cvwc,lid_usat_ratio,lid_qinf,lid_perc,lid_qperc,lid_qdrain,&
    &dt,lid_re_sw,lid_adj_ksat,lid_sw,lid_f,lid_cuminf,lid_soldpt,&
    &lid_f1,lid_str,lid_vinf,lid_str_depth,&

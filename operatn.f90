@@ -58,7 +58,7 @@ subroutine operatn
    implicit none
 
    integer :: j
-   real*8 :: aphu, tillphu
+   real*8 :: aphu
 
    j = 0
    j = ihru
@@ -95,5 +95,4 @@ subroutine operatn
    end do
 
    return
-1000 format (4i10,a10)
 end

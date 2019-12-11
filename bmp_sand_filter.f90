@@ -35,8 +35,8 @@ subroutine bmp_sand_filter(kk,flw,sed)
    integer :: sb, ii
    integer, intent(in) :: kk
    real*8 :: tsa,ffsa,vfiltr,mxvol,pdia,ksat,por,dp,dc,pden,alp,&
-   &wetfsh,whd,sub_ha,dt,qcms,effct,effl,effg,effbr,vpipe,phead,hpnd,&
-   &tmpw,qloss,fsat,qpipe,mu,pipeflow,splw,hweir,tst,kb,qintns,qq,&
+   &wetfsh,whd,sub_ha,dt,qcms,effct,effl,effg,effbr,phead,hpnd,&
+   &tmpw,qloss,qpipe,mu,pipeflow,splw,tst,kb,&
    &qfiltr,sloss,spndconc,sedpnd,qpndi,qpnde,sedrmeff,sed_removed,&
    &sedconc,qevap,hrd,qrchg
    real*8, dimension(:) :: qpnd(0:nstep),qsw(0:nstep),qin(0:nstep),&
@@ -288,6 +288,7 @@ subroutine bmp_sand_filter(kk,flw,sed)
          ! no outflow through filter media
          sed(2,ii) = 0.
       Else
+         sed_removed = 0.
          if (sfsedstdev>0) then
             !calculate sediment yield using effluent probability method
             call log_normal(sfsedmean,sfsedstdev,sedoutc)

@@ -148,14 +148,8 @@ subroutine hruallo
    end do    ! hru loop
 
    return
-5000 format (6a)
-5001 format (a1,9x,5i6)
-5002 format(a)
-5100 format (20a4)
-5200 format (10i4)
 5300 format (4a13,52x,i6)
 6000 format (a80)
 6100 format (27x,25f12.2)
-6200 format (1x,i3)
 6300 format (16x,i2,1x,i4)
 end

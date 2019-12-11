@@ -118,7 +118,7 @@ subroutine soil_chem
    !!by zhang
    !!=============
    real*8 :: sol_mass
-   real*8 :: FBM, FHP, RTNO, FHS, X1, RTO, sol_min_n
+   real*8 :: FBM, FHP, FHS, X1, RTO, sol_min_n
    sol_mass = 0.
    DG = 0.
    FBM = 0.

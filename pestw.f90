@@ -119,9 +119,4 @@ subroutine pestw
 5100 format (/,t20,'FINAL AMOUNT OF PESTICIDE ON PLANT = ',f15.4,&
    &' mg/ha',/,t20,'FINAL AMOUNT OF PESTICIDE IN GROUND = ',f15.4,&
    &' mg/ha')
-5200 format (//,'PESTICIDE RISK BY ROUTING REACH',/,'REACH',t12,&
-   &'4 DAY',t30,'21 DAY',t49,'60 DAY',t69,'90 DAY',/,t6,&
-   &'DAY YEAR CON(PPB)',t24,'DAY YEAR CON(PPB)',t42,&
-   &'DAY YEAR CON(PPB)',t60,'DAY YEAR CON(PPB)',t80,'% FLOW')
-5300 format (i4,4(2i4,e10.3),f8.2)
 end

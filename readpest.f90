@@ -38,7 +38,6 @@ subroutine readpest
 !!                               |the array storage number is used by the
 !!                               |model to access data for a specific
 !!                               |pesticide
-!!    ipnum       |none          |number of pesticide/toxin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -46,7 +45,7 @@ subroutine readpest
    use parm
    implicit none
 
-   integer :: ip, ipnum, eof
+   integer :: ip, eof
    character (len=17) :: pstnm
    real*8 :: skocp, wofp, hlff, hlfs, apefp, pwsol
    eof = 0

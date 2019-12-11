@@ -110,13 +110,7 @@ subroutine subbasin
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    d           |
-!!    gma         |kPa/deg C     |psychrometric constant
-!!    ho          |              |net radiation
 !!    j           |none          |HRU number
-!!    pet_alpha   |none          |alpha factor in Priestley-Taylor ET
-!!                               |equation
-!!    tmpk        |deg K         |average temperature for the day in the HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -534,6 +528,5 @@ subroutine subbasin
       varoute(isub,:) = varoute(ihout,:)
    end if
 
-1000 format(4i10,a10)
    return
 end

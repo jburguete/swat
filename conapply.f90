@@ -66,6 +66,10 @@ subroutine conapply
    integer :: j, kk, k, jj
    real*8 :: xx, gc
 
+   !! initialize local variables
+   kk = 0
+   k = 0
+
    j = 0
    j = ihru
 
@@ -78,8 +82,6 @@ subroutine conapply
       iday_pest(j) = 1
 
       !! initialize local variables
-      kk = 0
-      k = 0
       jj = 0
       xx = 0.
 

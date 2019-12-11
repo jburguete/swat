@@ -20,7 +20,7 @@ subroutine bmp_det_pond
 !!    hhvaroute(2,:,:) |m^3 H2O     |water
 !!    hhvaroute(3,:,:) |metric tons |sediment or suspended solid load
 !!    i_mo           |none          |current month of simulation
-!!    sub_subp_dt(:,:)  |mm H2O      |precipitation for time step in subbasin
+!!    sub_subp_dt(:,:) |mm H2O      |precipitation for time step in subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -36,7 +36,6 @@ subroutine bmp_det_pond
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |time step counter
 !!    k           |none          |weir stage counter
-!!    titldum     |NA            |dummy string
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -49,14 +48,12 @@ subroutine bmp_det_pond
    use parm
    implicit none
 
-   character (len=80) :: titldum
    integer :: ii, k, sb
    real*8 :: qin,qout,qpnd,qpnd_last,sedin,sedout,sedpnd,spndconc,&
    &qdepth,sedpnd_last,&
    &watdepact,qstage,backup_length,seep_sa,evap_sa,pcp_vol,&
-   &evap_vol,seep_vol,warea,pi,qovmax,qaddon,depaddon
-
-   pi = 3.14159
+   &evap_vol,seep_vol,warea,qovmax,qaddon,depaddon
+   real*8, parameter :: pi = 3.14159
    sb = inum1
    qout=0.;qpnd_last=0.;sedout=0.;depaddon=0.;sedpnd_last=0.
 
@@ -102,7 +99,7 @@ subroutine bmp_det_pond
                   !! Fully submerged
                   qdepth = qdepth - dtp_depweir(sb,k)
                   watdepact = qdepth + dtp_diaweir(sb,k) / 2
-                  warea = 3.14159 * dtp_diaweir(sb,k) ** 2 / 4.
+                  warea = pi * dtp_diaweir(sb,k) ** 2 / 4.
 
                   !! orifice equation
                   qstage = dtp_cdis(sb,k) * 0.6 * warea *&

@@ -194,7 +194,6 @@ subroutine hruday
    !!===============================
    integer :: ly
    real*8 :: sumwater, sumwfsc, sumdepth, sat, wc, dp
-   real*8 :: ssoilwater(100), swfsc(100)
    real*8 :: soilwater(11), wfsc(11), sum_depth(11) !10, 100, 200, 300, 400, ..., 1000 mm
    !!by zhang print out soil water
    !!===============================

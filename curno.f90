@@ -63,6 +63,7 @@ subroutine curno(cnn,h)
    real*8 :: c2, s3, rto3, rtos, sumfc_ul, smxold
 
    cn2(h) = cnn
+   smxold = 0.
    if (cn1(h) > 1.e-6) smxold = 254.* (100. / cn1(h) - 1.)
    c2 = 0.
    cn3(h) = 0.

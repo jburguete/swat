@@ -338,13 +338,10 @@ subroutine writea
    end if
 
    return
-777 format (i4,500e12.4)
 779 format (i4,3f12.4)
 780 format (/,' Year End',i5,' Channel Dimensions ',/,' Reach',&
    &'    Depth (m)','  Width (m)','  Slope (m/m)')
 5100 format (1x,a5,a4,1x,i4,4x,1x,250(e16.4,1x))
-5200 format (/,1x,i4,a4,1x,10f12.2)
-5300 format (1x,i4,a4,1x,10f12.2,/)
 5800 format ('RES   ',i8,1x,i4,41e12.4)
 6800 format ('RES   ',i8,1x,i4,41e12.4,1x,i4)
 6300 format (/i5,15f8.2,1x,5f8.2//)

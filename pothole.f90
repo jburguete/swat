@@ -132,7 +132,6 @@ subroutine pothole
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    dg          |mm            |depth of soil layer
 !!    excess      |mm H2O        |amount of water moving into soil that exceeds
 !!                               |storage of layer
 !!    j           |none          |HRU number
@@ -145,11 +144,8 @@ subroutine pothole
 !!    potpcp      |m^3 H2O       |precipitation falling on water body
 !!    potsep      |m^3 H2O       |seepage from impounded water body
 !!    sedloss     |metric tons   |amount of sediment lost from water body
-!!    sedsetl     |metric tons   |amount of sediment settling out of water
-!!                               |during day
 !!    spillo      |m^3 H2O       |amount of water released to main channel from
 !!                               |impounded water body due to spill-over
-!!    stmax       |mm H2O        |maximum water storage in soil layer
 !!    sumo        |m^3 H2O       |sum of all releases from water body on
 !!                               |current day
 !!    tileo       |m^3 H2O       |amount of water released to the main channel
@@ -210,6 +206,7 @@ subroutine pothole
    orgploss = 0.
    minpsloss = 0.
    minpaloss = 0.
+   solp_tileo = 0.
 
    qin = qday * pot_fr(j)   !inflow = surface flow
    qdayi = qday
@@ -618,6 +615,5 @@ subroutine pothole
    endif
 
    return
-1000 format (1x,i4,2x,9(f8.2,2x))
 2000 format (a5,a4,1x,2i5,9f10.2)
 end

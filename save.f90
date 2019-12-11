@@ -140,7 +140,6 @@ subroutine save
 
    return
 5000 format (1x,i3,1x,i4,1x,i2,1x,18(e11.5,1x),f11.1)
-5001 format (18(e11.5,","),f11.1)
 5002 format (1x,i3,1x,i4,4x,18(e11.5,1x),f11.1)
 5003 format (18(e11.5,","),f11.1)
 end

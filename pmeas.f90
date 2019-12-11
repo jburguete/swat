@@ -135,6 +135,7 @@ subroutine pmeas
       !! assign precipitation data to HRUsoutput.std
 
       inum3sprev = 0
+      rbsb = 0.
       do k = 1, nhru
          subp(k) = rmeas(irgage(hru_sub(k)))
          !! generate data to replace missing values
@@ -151,7 +152,6 @@ subroutine pmeas
                call pgen(k)
                !! set subbasin generated values
                inum3sprev = 0
-               rbsb = 0.
                inum3sprev = hru_sub(k)
                rbsb = subp(k)
                if (ievent == 1) then
@@ -181,6 +181,7 @@ subroutine pmeas
          end if
 
          !! read data from file
+         flag = 0
          if (ifirstpcp(k) == 0) then
             read (100+k,5300) a
             backspace (100+k)
@@ -221,7 +222,6 @@ subroutine pmeas
             end if
          else
             ifirstpcp(k) = 0
-            flag = 0
             do
                iyp = 0
                idap = 0

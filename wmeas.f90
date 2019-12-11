@@ -77,6 +77,7 @@ subroutine wmeas
 
    !! assign wind speed data to HRUs
    inum3sprev = 0
+   u10bsb = 0.
    do k = 1, nhru
       u10(k) = wndmeas(iwgage(hru_sub(k)))
       !! generate values to replace missing data

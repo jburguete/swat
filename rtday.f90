@@ -72,7 +72,7 @@ subroutine rtday
    implicit none
 
    integer :: jrch
-   real*8 :: wtrin, scoef, p, tbase, topw, vol, c, rh
+   real*8 :: wtrin, scoef, p, topw, vol, c, rh
    real*8 :: volrt, maxrt, adddep, addp, addarea, vc, aaa
    real*8 :: rttlc1, rttlc2, rtevp1, rtevp2, det
 

@@ -85,7 +85,7 @@ subroutine irrsub
    use parm
    implicit none
 
-   integer :: j, k, flag
+   integer :: j, k
    real*8 :: vmma, vmm, cnv, vmxi, vol, vmms, vmmd
 
    j = 0

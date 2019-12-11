@@ -33,7 +33,7 @@ subroutine sched_mgt
    use parm
    implicit none
 
-   integer :: j, n, ncrp
+   integer :: j, ncrp
    real*8 :: biomass, husc
 
    j = ihru

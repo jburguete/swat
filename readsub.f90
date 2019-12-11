@@ -104,7 +104,6 @@ subroutine readsub
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    gwfile      |NA            |HRU groundwater data
 !!    hrufile     |NA            |name of HRU general data file
-!!    ltcfile     |NA            |name of land transport capacity input file
 !!    opsfile     |NA            |name of operation schedule file for Phil G.
 !!    gsm 7/24/08 for tile drainage
 !!    sdrfile     |NA            |name of subbasin drainage file
@@ -460,7 +459,7 @@ subroutine readsub
    call readwus
 
 !! sediment delivery ration for the subbasin..... urban modeling by J.Jeong
-   dratio(i) = 0.42 * sub_km(i) ** -0.125
+   dratio(i) = 0.42 * sub_km(i) ** (-0.125)
    if(dratio(i)>0.9) dratio(i) = 0.9
 
    close (101)
@@ -471,6 +470,4 @@ subroutine readsub
 5101 format (f8.4,f4.2,5f8.3)
 5200 format (10f8.1)
 5300 format (8a13,i6)
-5400 format (i4,6f8.3)
-5500 format (2i4)
 end

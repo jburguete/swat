@@ -87,7 +87,7 @@ subroutine rtsed_Molinas_Wu
 
    integer :: jrch
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
-   real*8 :: depdeg, dot, vs, x, Tbank, Tbed, asinea, Tou
+   real*8 :: depdeg, dot, x, Tbank, Tbed, asinea, Tou
    real*8 :: sanin, silin, clain, sagin, lagin, grain, outfract
    real*8 :: depsan, depsil, depcla, depsag, deplag, depgra
    real*8 :: degsan, degsil, degcla, deggra, degrte

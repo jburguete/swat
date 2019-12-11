@@ -92,6 +92,7 @@ subroutine rtbact
       initp = 0.
       initlp = rch_bactlp(jrch)
       initp = rch_bactp(jrch)
+      netwtr = 0.
       do ii = 1, nstep
          !! total bacteria mass in reach
          totbactp = 0.
@@ -108,7 +109,6 @@ subroutine rtbact
          totbactlp = Max(0., totbactlp)
 
          !! new concentration
-         netwtr = 0.
          netwtr = hhvaroute(2,inum2,ii) * (1. - rnum1) + hrchwtr(ii)
          if (netwtr >= 1.) then
             hbactp(ii) = totbactp / netwtr

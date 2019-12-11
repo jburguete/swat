@@ -18,7 +18,7 @@ subroutine irrigate(jj,volmm)
 !!    sol_nly(:)  |none          |number of soil layers
 !!    sol_st(:,:) |mm H2O        |amount of water stored in the soil layer
 !!                               |on any given day (less wp water)
-!!    hrumono(22,:)|mm H2O        |amount of irrigation water applied to HRU
+!!    hrumono(22,:)|mm H2O       |amount of irrigation water applied to HRU
 !!                               |during month
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -35,21 +35,15 @@ subroutine irrigate(jj,volmm)
 !!                               |on any given day (less wp water)
 !!    sol_sw(:)   |mm H2O        |amount of water stored in the soil profile
 !!                               |on any given day
-!!    hrumono(22,:)|mm H2O        |amount of irrigation water applied to HRU
+!!    hrumono(22,:)|mm H2O       |amount of irrigation water applied to HRU
 !!                               |during month
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fcx         |mm H2O        |amount of water stored in soil layer when
-!!                               |moisture content is at field capacity
 !!    jj          |none          |HRU number
-!!    k           |none          |counter (soil layers)
-!!    stx         |mm H2O        |amount of water stored in soil layer on
-!!                               |current day
 !!    volmm       |mm H2O        |depth irrigation water applied to HRU
-!!    yy          |mm H2O        |amount of water added to soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -59,8 +53,6 @@ subroutine irrigate(jj,volmm)
 
    integer, intent (in) :: jj
    real*8, intent (in out) :: volmm
-   integer :: k
-   real*8 :: fcx, stx, yy
 
 !! initialize variable for HRU
 !! (because irrigation can be applied in different command loops

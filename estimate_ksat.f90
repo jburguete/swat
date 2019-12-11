@@ -13,9 +13,8 @@ subroutine estimate_ksat(perc_clay,esti_ksat)
 
    implicit none
 
-   integer :: i,eof
-   real*8 :: esti_ksat,perc_clay,xc,exksat
-   exksat = 5.0
+   real*8 :: esti_ksat,perc_clay,xc!,exksat
+!         exksat = 5.0
 
 ! print *,"Enter the % clay in the soil layer"
 ! read *,perc_clay

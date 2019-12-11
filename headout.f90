@@ -41,7 +41,6 @@ subroutine headout
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ilen        |none          |width of data columns in output file
 !!    j           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -54,7 +53,7 @@ subroutine headout
    use parm
    implicit none
 
-   integer :: j, ilen
+   integer :: j
 
    call header
 
@@ -195,8 +194,6 @@ subroutine headout
 1040 format (//7x,'RCH      GIS   MON     AREAkm2',56a12)
 1041 format (//7x,'RCH      GIS   DAY   DET     AREAkm2',56a12)
 1050 format (//6x,'     RES  MON',41a12)
-1060 format (//6x,'RCH GIS  MON',26a12)
-2000 format (a12,12x,i4,4x,i4)
 3000 format ("Pesticide loadings to main channel by HRU",/)
 3001 format ("Pesticide #",250(18x,i3,1x))
 3002 format ("Pesticide name:      ",250(a16,1x))

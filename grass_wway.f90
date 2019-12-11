@@ -120,6 +120,8 @@ subroutine grass_wway
       sf_area = (grwat_d(j) - rchdep) * 8.06 * grwat_l(j) * 1000
 !! Adjust Area to account for flow nonuniformities White and Arnold 2009 found half of flow in VFS
 !!handled by 10% of VFS area. Waterways likely even more concentrated Assume only 20% of sideslope acts as filters
+      sf_depth = 0.
+      sf_sed = 0.
       if (sf_area > 1.e-6) then
          sf_area = sf_area * 0.20
 !! calculate runoff depth over sheetflow area in mm

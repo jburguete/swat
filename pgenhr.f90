@@ -36,11 +36,9 @@ subroutine pgenhr(jj)
 !!    altc         |none          |equation coefficient
 !!    blm          |none          |lowest random number value allowed
 !!    dur          |hours         |duration of storm during day
-!!    ihour        |none          |counter
 !!    itime        |none          |time step during day
 !!    j            |none          |HRU number
 !!    k            |none          |random number seed, counter
-!!    nhour        |none          |number of time steps per hour
 !!    pkrain       |mm H2O        |volume of rain at time of peak rainfall
 !!    pkrr         |mm/hr         |peak rainfall rate
 !!    pt           |min           |time during day
@@ -73,13 +71,13 @@ subroutine pgenhr(jj)
    implicit none
 
    integer, intent (in) :: jj
-   integer :: itime, pt, ihour, nhour, k
-   real*8 :: vv, blm, qmn, uplm, dur, ab, ajp, altc, pkrain, rtp
+   integer :: itime, pt, k
+   real*8 :: vv, dur, ajp, altc, pkrain, rtp
    real*8 :: xk1, xk2, xkp1, xkp2, rx, pkrr, sumrain
+   real*8, parameter :: ab = 0.02083, blm = 0.05, qmn = 0.25, uplm = 0.95
 
 
    !! calculate maximum half-hour rainfall
-   ab = 0.02083
    ajp = 0.
    al5 = 0.
    ajp = 1. - Expo(-125. / (subp(jj) + 5.))
@@ -97,9 +95,6 @@ subroutine pgenhr(jj)
    !! because all input set to constant value, vv always the same
    !! vv => time to peak expressed as fraction of total storm duration
    vv = 0.
-   blm = 0.05
-   qmn = 0.25
-   uplm = 0.95
    k = 8
    vv = Atri(blm, qmn, uplm, k)
    !vv = 0.03

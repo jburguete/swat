@@ -55,7 +55,6 @@ subroutine surq_greenampt
 !!    f1          |mm H2O        |test value for cumulative infiltration
 !!    j           |none          |HRU number
 !!    k           |none          |counter
-!!    kk          |hour          |hour of day in which runoff is generated
 !!    psidt       |mm            |suction at wetting front*initial moisture
 !!                               |deficit
 !!    rateinf(:)  |mm/hr         |infiltration rate for time step
@@ -73,9 +72,9 @@ subroutine surq_greenampt
    use parm
    implicit none
 
-   integer :: j, k, kk, sb, ii,ida
+   integer :: j, k, sb, ii,ida
    real*8 :: adj_hc, dthet, soilw, psidt, tst, f1
-   real*8 :: lid_prec, lid_cumr, urban_prec
+   real*8 :: lid_prec, urban_prec
    real*8, dimension (nstep+1) :: cumr, cuminf, excum, exinc, rateinf
    real*8, dimension (nstep+1) :: rintns
    !! array location #1 is for last time step of prev day
@@ -221,14 +220,4 @@ subroutine surq_greenampt
    end if
 
    return
-5000 format(//,'Excess rainfall calculation for day ',i3,' of year ',&
-   &i4,' for sub-basin',i4,'.',/)
-5001 format(t2,'Time',t9,'Incremental',t22,'Cumulative',t35,'Rainfall',&
-   &t45,'Infiltration',t59,'Cumulative',t71,'Cumulative',t82,&
-   &'Incremental',/,t2,'Step',t10,'Rainfall',t23,'Rainfall',&
-   &t35,'Intensity',t49,'Rate',t58,'Infiltration',t73,'Runoff',&
-   &t84,'Runoff',/,t12,'(mm)',t25,'(mm)',t36,'(mm/h)',t48,&
-   &'(mm/h)',t62,'(mm)',t74,'(mm)',t85,'(mm)',/)
-5002 format(i5,t12,f5.2,t24,f6.2,t36,f6.2,t47,f7.2,t61,f6.2,t73,f6.2,&
-   &t84,f6.2)
 end

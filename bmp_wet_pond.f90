@@ -10,7 +10,7 @@ subroutine bmp_wet_pond
 !!    hhvaroute(2,:,:) |m^3 H2O      |water
 !!    hhvaroute(3,:,:) |metric tons  |sediment or suspended solid load
 !!    i_mo             |none         |current month of simulation
-!!    sub_subp_dt(:,:)  |mm H2O      |precipitation for time step in subbasin
+!!    sub_subp_dt(:,:) |mm H2O       |precipitation for time step in subbasin
 !!    wtp_pvol(:       |m^3 H2O      |volume of permanent pool including forebay
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -26,8 +26,6 @@ subroutine bmp_wet_pond
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |time step counter
-!!    k           |none          |weir stage counter
-!!    titldum     |NA            |dummy string
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -40,8 +38,7 @@ subroutine bmp_wet_pond
    use parm
    implicit none
 
-   character (len=80) :: titldum
-   integer :: ii, k, sb
+   integer :: ii, sb
    real*8 :: qin,qout,qpnd,sedin,sedout,sedpnd,spndconc
    real*8 :: rf,imc,pndwdth,seep,evap,rain,seepa,surfa
    real*8 :: a1,b1,qdepth,hdep_ext,usettle,tmpw,mu,qhyd,dp
@@ -242,8 +239,8 @@ subroutine ext_dpth(hmax)
    &0.542,0.802,1.262,1.462,1.587,1.688,1.746,1.784,1.811,1.832,&
    &1.849,1.863,1.875,1.885,1.894,1.902,1.91,1.917,1.924,1.93,1.93,&
    &1.93,1.93/)
-   real*8 :: ia, ss, plen,inflow,outflow,pndvol,wdth,pndarea,vtmp,hdep
-   real*8 :: aa,bb,pdia,hvol,alpha
+   real*8 :: ia, ss, plen,inflow,outflow,pndvol,wdth,pndarea,hdep
+   real*8 :: pdia,hvol,alpha
    real*8, dimension(40):: fa
    real*8, intent(out) :: hmax
    integer :: ii,sb
@@ -263,6 +260,7 @@ subroutine ext_dpth(hmax)
    alpha = wtp_lenwdth(sb)
 
    hmax=0.
+   hvol=0.
    do ii=1,40
       if(hvol<0) hvol = 0.
       ! calculate surface runoff

@@ -46,7 +46,7 @@ subroutine lid_cistern(sb,j,k,lid_prec)
    use parm
    implicit none
 
-   integer :: jj,sb,j,k,temp_count
+   integer :: jj,sb,j,k
    real*8 :: lid_str,lid_vbypass,lid_bypass,lid_irr,lid_vol,&
    &lid_cumirr
    real*8 :: lid_prec

@@ -108,6 +108,9 @@ subroutine rthpest
    bedvol = ch_w(2,jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
 
    do ii = 1, nstep
+      frsrb = 0.
+      frsol = 0.
+
 !! initialize depth of water for pesticide calculations
       depth = 0.
       if (hdepth(ii) < 0.1) then
@@ -157,8 +160,6 @@ subroutine rthpest
          sedcon = hsedyld(ii) / hrtwtr(ii) * 1.e6
 
          !! calculate fraction of soluble and sorbed pesticide
-         frsol = 0.
-         frsrb = 0.
          if (solpstin + sorpstin > 1.e-6) then
             if (chpst_koc(jrch) > 0.) then
                frsol = 1. / (1. + chpst_koc(jrch))

@@ -100,7 +100,6 @@ subroutine saveconc
 
    real*8, dimension (19) :: varii
    integer :: ii, j
-   real*8 :: inflow
 
    if (inum1 <= 50 .and. inum1 > 0) then
       if (ievent == 1 .and. inum2 == 1) then

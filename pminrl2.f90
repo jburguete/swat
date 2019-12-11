@@ -189,8 +189,9 @@ subroutine pminrl2
       !! Generated from sharpley 2003
 
       xx = actp(l) + (actp(l) * rto)
+      ssp = 0.7
       if (xx > 1.e-6) then
-         ssp = 25.044 * xx ** -0.3833
+         ssp = 25.044 * xx ** (-0.3833)
       end if
 
       ! limit ssp to range in measured data

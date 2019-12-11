@@ -44,16 +44,9 @@ subroutine subwq
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    flow_cms    |m^3/s H2O     |rate of flow to main channel generated on
-!!                               |day in HRU
 !!    j           |none          |HRU number
 !!    org_c       |kg            |organic carbon content of surface runoff on
 !!                               |day in HRU
-!!    qtot        |mm H2O        |total loadings to main channel generated on
-!!                               |day in HRU
-!!    tn          |kmoles N      |kilomoles of nitrogen in nutrient loading to
-!!                               |main channel
-!!    tn_tp       |mol N/mol P   |atomic ratio of N to P in surface runoff
 !!    tp          |kmoles P      |kilomoles of phosphorus in nutrient loading to
 !!                               |main channel
 !!    wtmp        |deg K         |temperature of surface runoff
@@ -76,7 +69,7 @@ subroutine subwq
    implicit none
 
    integer :: j
-   real*8 :: tn, tp, qtot, org_c, tn_tp, wtmp, ww, xx, yy, zz, flow_cms
+   real*8 :: tp, org_c, wtmp, ww, xx, yy, zz
 
    j = 0
    j = ihru

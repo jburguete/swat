@@ -77,6 +77,7 @@ subroutine smeas
 
    !! assign solar radiation data to HRUs
    inum3sprev = 0
+   rabsb = 0.
    do k = 1, nhru
       call clgen(k)
       hru_ra(k) = slrmeas(isgage(hru_sub(k)))
@@ -89,7 +90,6 @@ subroutine smeas
             call slrgen(k)
             !! set subbasin generated values
             inum3sprev = 0
-            rabsb = 0.
             inum3sprev = hru_sub(k)
             rabsb = hru_ra(k)
          end if

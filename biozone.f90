@@ -124,14 +124,13 @@ subroutine biozone()
 
    use parm
    implicit none
- 
-! real*8 ntr_rt
-   integer bz_lyr, isp, ii,j,nly
-   real*8 bz_vol, rtrate,bodconc, qin, qout,qmm,qvol,pormm,rplqm
+
+   integer bz_lyr, isp, j,nly
+   real*8 bz_vol, rtrate, qin, qout, rplqm
    real*8 ntr_rt,dentr_rt, bod_rt, fcoli_rt,rtof,xx,bodi,bode
-   real*8 rnit, rdenit, rbio, rmort, rrsp, rslg, rbod, rfcoli
+   real*8 rnit, rdenit, rmort, rrsp, rslg, rbod, rfcoli
    real*8 nh3_begin, nh3_end, nh3_inflw_ste, no3_begin, no3_end
-   real*8 no3_inflow_ste, bio_steintobz,bio_outbz,bza,qi,nperc
+   real*8 no3_inflow_ste, bza,qi,nperc
    real*8 hvol, solpconc, solpsorb, qlyr,qsrf
    real*8 n2,n3,n5,n6,n7,n8,p2,p3,p4
    real*8 solp_begin,solp_end,svolp,totalp,ctmp,plch

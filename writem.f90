@@ -201,7 +201,7 @@ subroutine writem
    use parm
    implicit none
 
-   integer ::  j, k
+   integer :: j, k
    real*8 :: sum
 
 !! if last day of month or last day in last year
@@ -400,8 +400,6 @@ subroutine writem
 
    return
 5100 format (1x,a5,a4,1x,i4,1x,i3,1x,250(e16.4,1x))
-5200 format (/,1x,i4,a4,1x,10f12.2)
-5300 format (1x,i4,a4,1x,10f12.2,/)
 5800 format ('RES   ',i8,1x,i4,41e12.4)
 6800 format ('RES   ',i8,1x,i4,41e12.4,1x,i4)
 6200 format (i5,15f8.2,1x,4f8.2)

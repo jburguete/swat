@@ -181,6 +181,16 @@ subroutine clicon
 !! Precipitation and Temperature if = 2
    inum3sprev = 0
    do k = 1, nhru
+      tmxbsb = 0.
+      tmnbsb = 0.
+      rbsb = 0.
+      rhdbsb = 0.
+      rabsb = 0.
+      rmxbsb = 0.
+      daylbsb = 0.
+      npcpbsb = 0
+      u10bsb = 0.
+      fradbsb = 0.
       !! use same generated data for all HRUs in a subbasin
       if (hru_sub(k) == inum3sprev .and. hru_sub(k) /= 0) then
          if (tmpsim == 2) then
@@ -221,17 +231,6 @@ subroutine clicon
             if (wndsim == 2) call wndgen(k)
          end if
          !! set subbasin generated values
-         inum3sprev = 0
-         tmxbsb = 0.
-         tmnbsb = 0.
-         rbsb = 0.
-         rhdbsb = 0.
-         rabsb = 0.
-         rmxbsb = 0.
-         daylbsb = 0.
-         npcpbsb = 0
-         u10bsb = 0.
-         fradbsb = 0.
          inum3sprev = hru_sub(k)
          tmxbsb = tmx(k)
          tmnbsb = tmn(k)

@@ -60,7 +60,6 @@ subroutine soil_par
 !!    nly         |none          |number of soil layers
 !!    plt_zmx     |mm            |rooting depth of plant
 !!    sand        |%             |percent sand content of soil material
-!!    titldum     |NA            |title line/skipped line in .sol file
 !!    xx          |none          |variable to hold value
 !!    yy          |none          |variable to hold value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -73,7 +72,6 @@ subroutine soil_par
    use parm
    implicit none
 
-   character (len=80) :: titldum
    integer :: j, nly, n, jj, flag
    real*8 ::  xx, plt_zmx, yy
 
@@ -163,11 +161,4 @@ subroutine soil_par
    end do
 
    return
-5000 format (27x,10f12.2)
-5100 format (12x,a16)
-5200 format (24x,a1)
-5300 format (28x,f12.2)
-5400 format (51x,f5.3)
-5500 format (a80)
-5600 format (33x,f5.3)
 end

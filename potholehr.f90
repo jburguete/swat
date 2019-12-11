@@ -147,8 +147,6 @@ subroutine potholehr()
 !!    potpcp      |m^3 H2O       |precipitation falling on water body
 !!    potsep      |m^3 H2O       |seepage from impounded water body
 !!    sedloss     |metric tons   |amount of sediment lost from water body
-!!    sedsetl     |metric tons   |amount of sediment settling out of water
-!!                               |during day
 !!    spillo      |m^3 H2O       |amount of water released to main channel from
 !!                               |impounded water body due to spill-over
 !!    stmax       |mm H2O        |maximum water storage in soil layer
@@ -552,6 +550,5 @@ subroutine potholehr()
    end if
 
    return
-1000 format (1x,i4,2x,9(f8.2,2x))
 2000 format (4i4,11f10.2)
 end
