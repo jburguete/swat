@@ -136,13 +136,10 @@ subroutine pondhr(j,k)
 
 
    !! store initial values
-   vol = 0.
-   sed = 0.
    vol = pnd_vol(j)
    sed = pnd_sed(j)
 
    !! calculate water balance for day
-   pndsa = 0.
    pndsa = bp1(j) * pnd_vol(j) ** bp2(j)
    !       pndev = 6. * pet_day * pndsa
    !       pndsep = pnd_k(j) * pndsa * 240.
@@ -195,7 +192,6 @@ subroutine pondhr(j,k)
       else
          !! target storage based on flood season and soil water
          xx = 0.
-         targ = 0.
          if (iflod2(j) > iflod1(j)) then
             if (i_mo > iflod1(j) .and. i_mo < iflod2(j)) then
                targ = pnd_evol(j)
@@ -247,8 +243,6 @@ subroutine pondhr(j,k)
       else
          iseas = 2
       endif
-      phosk = 0.
-      nitrok = 0.
       phosk = psetlp(iseas,j) * pndsa * 10000. /&
       &pnd_vol(j)  !setl/mean depth
       phosk = Min(phosk, 1.)
@@ -258,16 +252,17 @@ subroutine pondhr(j,k)
 
       !! remove nutrients by settling
       !! other part of equation 29.1.3 in SWAT manual
-      pnd_solp(j) = pnd_solp(j) * (1. - phosk)
-      pnd_psed(j) = pnd_psed(j) * (1. - phosk)
-      pnd_orgp(j) = pnd_orgp(j) * (1. - phosk)
-      pnd_solpg(j) = pnd_solpg(j) * (1. - phosk)
-      pnd_orgn(j) = pnd_orgn(j) * (1. - nitrok)
-      pnd_no3(j) = pnd_no3(j) * (1. - nitrok)
-      pnd_no3s(j) = pnd_no3s(j) * (1. - nitrok)
-      pnd_no3g(j) = pnd_no3g(j) * (1. - nitrok)
+      xx = 1. - phosk
+      pnd_solp(j) = pnd_solp(j) * xx
+      pnd_psed(j) = pnd_psed(j) * xx
+      pnd_orgp(j) = pnd_orgp(j) * xx
+      pnd_solpg(j) = pnd_solpg(j) * xx
+      xx = 1. - nitrok
+      pnd_orgn(j) = pnd_orgn(j) * xx
+      pnd_no3(j) = pnd_no3(j) * xx
+      pnd_no3s(j) = pnd_no3s(j) * xx
+      pnd_no3g(j) = pnd_no3g(j) * xx
 
-      tpco = 0.
       if (pnd_vol(j) + pndflwo > 0.1) then
          tpco = 1.e+6 * (pnd_solp(j) + pnd_orgp(j) + pnd_psed(j) +&
          &pnd_solpg(j)) / (pnd_vol(j) + pndflwo)

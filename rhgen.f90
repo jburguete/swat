@@ -62,13 +62,6 @@ subroutine rhgen(j)
    !! Climate Paramenters required for Penman-Monteith !!
 
    !! Generate relative humidity !!
-   rhmo = 0.
-   yy = 0.
-   rhm = 0.
-   vv = 0.
-   uplm = 0.
-   blm = 0.
-   tmpmean = 0.
    tmpmean = (tmpmx(i_mo,hru_sub(j)) + tmpmn(i_mo,hru_sub(j))) / 2.
 
 !!   dewpoint or relative humidity --

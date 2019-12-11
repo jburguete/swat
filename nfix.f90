@@ -57,12 +57,10 @@ subroutine nfix
    integer :: j, l
    real*8 :: uno3l, fxw, sumn, fxn, fxg, fxr
 
-   j = 0
    j = ihru
 
 !! compute the difference between supply and demand
    if (uno3d > nplnt(j)) then
-      uno3l = 0.
       uno3l = uno3d - nplnt(j)
    else
       !! if supply is being met, fixation=0 and return
@@ -74,7 +72,6 @@ subroutine nfix
 !! compute fixation as a function of no3, soil water, and growth stage
 
    !! compute soil water factor
-   fxw = 0.
    fxw = sol_sw(j) / (.85 * sol_sumfc(j))
 
    !! compute no3 factor
@@ -83,7 +80,7 @@ subroutine nfix
    do l = 1, sol_nly(j)
       sumn = sumn + sol_no3(l,j)
    end do
-   if (sumn > 300.) fxn = 0.
+   !if (sumn > 300.) fxn = 0. ! unneeded
    if (sumn > 100. .and. sumn <= 300.) fxn = 1.5 - .0005 * sumn
    if (sumn <= 100.) fxn = 1.
 

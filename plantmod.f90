@@ -48,7 +48,6 @@ subroutine plantmod
 
    integer :: j
 
-   j = 0
    j = ihru
 
 !$ $$$$$       !! update base zero total heat units
@@ -65,9 +64,10 @@ subroutine plantmod
 
    !! compute plant water use and water stress
    !! compute actual plant transpiration
-   if (igro(j) == 1) call swu
-
-   if (igro(j) == 1) call grow
+   if (igro(j) == 1) then
+      call swu
+      call grow
+   endif
 !     write (99,9994) i, hru_ra(j), bio_ms(j), laiday(j),
 !    * strsw(j), strstmp(j), strsn(j), strsp(j)
 !9994  format (i4,7f10.2)

@@ -65,7 +65,6 @@ subroutine nlch
    real*8 :: sro, ssfnlyr, percnlyr, vv, vno3, co
    real*8 :: cosurf, nloss, tno3, tno3ln, vno3_c, ww, ww1
 
-   j = 0
    j = ihru
 
    percnlyr = 0.
@@ -82,9 +81,6 @@ subroutine nlch
       if (sol_no3(jj,j) < 1.e-6) sol_no3(jj,j) = 0.0
 
       !! determine concentration of nitrate in mobile water
-      sro = 0.
-      vv = 0.
-      vno3 = 0.
       co = 0.
       if (jj == 1) then
          sro = surfq(j)
@@ -98,7 +94,6 @@ subroutine nlch
       if (vv > 1.e-10)  co = Max(vno3 / vv, 0.)
 
       !! calculate nitrate in surface runoff
-      cosurf = 0.
       if (isep_opt(j)==2) then
          cosurf = 1.0 * co ! N percolation does not apply to failing septic HRUs
       else
@@ -116,7 +111,7 @@ subroutine nlch
       if (ldrain(j) == jj) then
          alph_e(j) = Exp(-1./(n_lag(j) + 1.e-6))
          ww1 = -1./ ((1. - anion_excl(j)) * sol_ul(jj,j))
-         vno3_c = sol_no3(jj,j) * (1. - Exp(ww1))
+         ! vno3_c = sol_no3(jj,j) * (1. - Exp(ww1)) !overwritten by the following lines
          if (tno3 > 1.001) then
             tno3ln = n_lnco(j) * (Log(tno3)) ** n_ln(j)
          else
@@ -133,7 +128,6 @@ subroutine nlch
       !Daniel 1/2012
 
       !! calculate nitrate in lateral flow
-      ssfnlyr = 0.
       if (jj == 1) then
          ssfnlyr = cosurf * flat(jj,j)
       else
@@ -146,7 +140,6 @@ subroutine nlch
       sol_no3(jj,j) = sol_no3(jj,j) - ssfnlyr
 
       !! calculate nitrate in percolate
-      percnlyr = 0.
       percnlyr = co * sol_prk(jj,j)
       percnlyr = Min(percnlyr, sol_no3(jj,j))
       sol_no3(jj,j) = sol_no3(jj,j) - percnlyr

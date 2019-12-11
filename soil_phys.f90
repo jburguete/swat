@@ -163,8 +163,6 @@ subroutine soil_phys
    xx = 0.
    sumpor = 0.
    do j = 1, nly
-      dg = 0.
-      pormm = 0.
       dg = sol_z(j,i) - xx
       pormm = sol_por(j,i) * dg
       sumpor = sumpor + pormm

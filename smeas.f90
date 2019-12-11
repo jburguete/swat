@@ -89,7 +89,6 @@ subroutine smeas
          else
             call slrgen(k)
             !! set subbasin generated values
-            inum3sprev = 0
             inum3sprev = hru_sub(k)
             rabsb = hru_ra(k)
          end if

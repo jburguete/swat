@@ -93,27 +93,14 @@ subroutine noqual
    real*8 :: algcon, orgncon, nh3con, no2con, no3con
    real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot
 
-   jrch = 0
    jrch = inum1
 
    !! initialize water flowing into reach
-   wtrin = 0.
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
    if (rtwtr / 86400. > 0.01 .and. wtrin > 0.01) then
 !! concentrations
       !! initialize inflow concentrations
-      chlin = 0.
-      algin = 0.
-      orgnin = 0.
-      ammoin = 0.
-      nitritin = 0.
-      nitratin = 0.
-      orgpin = 0.
-      dispin = 0.
-      cbodin = 0.
-      disoxin = 0.
-      ! cinn = 0. ! not used
       if (varoute(13,inum2) < 1.e-6) varoute(13,inum2) = 0.0
       chlin = 1000. * varoute(13,inum2) * (1. - rnum1) / wtrin
       algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
@@ -129,16 +116,6 @@ subroutine noqual
       disoxin= 1000. * varoute(17,inum2) * (1. - rnum1) / wtrin
 
       !! initialize concentration of nutrient in reach
-      wtrtot = 0.
-      algcon = 0.
-      orgncon = 0.
-      nh3con = 0.
-      no2con = 0.
-      no3con = 0.
-      orgpcon = 0.
-      solpcon = 0.
-      cbodcon = 0.
-      o2con = 0.
       if (algae(jrch) < 1.e-6) algae(jrch) = 0.0
       if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.0
       if (ammonian(jrch) < 1.e-6) ammonian(jrch) = 0.0
@@ -160,46 +137,39 @@ subroutine noqual
       o2con = (disoxin * wtrin + rch_dox(jrch) * rchwtr) / wtrtot
 
       !! calculate algal biomass concentration at end of day
-      algae(jrch) = 0.
       algae(jrch) = algcon
       if (algae(jrch) < 1.e-6) algae(jrch) = 0.
 
       !! calculate chlorophyll-a concentration at end of day
-      chlora(jrch) = 0.
       chlora(jrch) = algae(jrch) * ai0 / 1000.
+      if (chlora(jrch) < 1.e-6) chlora(jrch) = 0.
 
 !! oxygen calculations
       !! calculate carbonaceous biological oxygen demand at end
       !! of day
-      rch_cbod(jrch) = 0.
       rch_cbod(jrch) = cbodcon
       if (rch_cbod(jrch) < 1.e-6) rch_cbod(jrch) = 0.
 
       !! calculate dissolved oxygen concentration if reach at
       !! end of day
-      rch_dox(jrch) = 0.
       rch_dox(jrch) = o2con
       if (rch_dox(jrch) < 1.e-6) rch_dox(jrch) = 0.
 !! end oxygen calculations
 
 !! nitrogen calculations
       !! calculate organic N concentration at end of day
-      organicn(jrch) = 0.
       organicn(jrch) = orgncon
       if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.
 
       !! calculate ammonia nitrogen concentration at end of day
-      ammonian(jrch) = 0.
       ammonian(jrch) = nh3con
       if (ammonian(jrch) < 1.e-6) ammonian(jrch) = 0.
 
       !! calculate concentration of nitrite at end of day
-      nitriten(jrch) = 0.
       nitriten(jrch) = no2con
       if (nitriten(jrch) < 1.e-6) nitriten(jrch) = 0.
 
       !! calculate nitrate concentration at end of day
-      nitraten(jrch) = 0.
       nitraten(jrch) = no3con
       if (nitraten(jrch) < 1.e-6) nitraten(jrch) = 0.
 !! end nitrogen calculations
@@ -207,29 +177,17 @@ subroutine noqual
 !! phosphorus calculations
       !! calculate organic phosphorus concentration at end of
       !! day
-      organicp(jrch) = 0.
       organicp(jrch) = orgpcon
       if (organicp(jrch) < 1.e-6) organicp(jrch) = 0.
 
       !! calculate dissolved phosphorus concentration at end
       !! of day (mineral P)
-      disolvp(jrch) = 0.
       disolvp(jrch) = solpcon
       if (disolvp(jrch) < 1.e-6) disolvp(jrch) = 0.
 !! end phosphorus calculations
 
    else
       !! all water quality variables set to zero when no flow
-      algin = 0.0
-      chlin = 0.0
-      orgnin = 0.0
-      ammoin = 0.0
-      nitritin = 0.0
-      nitratin = 0.0
-      orgpin = 0.0
-      dispin = 0.0
-      cbodin = 0.0
-      disoxin = 0.0
       algae(jrch) = 0.0
       chlora(jrch) = 0.0
       organicn(jrch) = 0.0

@@ -131,14 +131,12 @@ subroutine subbasin
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
    integer, parameter :: iru_sub = 1 ! route across landscape unit
 
-   ihru = 0
    ihru = hru1(inum1)
 
    call sub_subbasin
 
    do iihru = 1, hrutot(inum1)
 
-      j = 0
       j = ihru
 
 
@@ -147,15 +145,15 @@ subroutine subbasin
       !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
       !jj is hru number
       if (cswat == 2) then
-         if (tillage_switch(ihru) .eq. 1) then
-            if (tillage_days(ihru) .ge. 30) then
-               tillage_switch(ihru) = 0
-               tillage_days(ihru) = 0
+         if (tillage_switch(j) .eq. 1) then
+            if (tillage_days(j) .ge. 30) then
+               tillage_switch(j) = 0
+               tillage_days(j) = 0
             else
-               tillage_days(ihru) = tillage_days(ihru) + 1
+               tillage_days(j) = tillage_days(j) + 1
             end if
-            !tillage_depth(ihru) = dtil
-            !tillage_switch(ihru) = .TRUE.
+            !tillage_depth(j) = dtil
+            !tillage_switch(j) = .TRUE.
          end if
       end if
       !!by zhang DSSAT tillage
@@ -167,7 +165,7 @@ subroutine subbasin
       if (icr(j) <= 0) icr(j) = 1
 
       i_wtrhru = 0
-      idplrot(icr(j),ihru) = idplt(j)
+      idplrot(icr(j),j) = idplt(j)
       if (idplt(j) /= 0) then
          if (cpnm(idplt(j)) == "WATR") then
             i_wtrhru = 1

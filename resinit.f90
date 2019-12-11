@@ -77,7 +77,6 @@ subroutine resinit
 
    integer :: ii, jres
 
-   jres = 0
    jres = inum1
 
 !! add transfer amounts
@@ -101,7 +100,6 @@ subroutine resinit
    reactw = 0.
    reschlao = 0.
    resev = 0.
-   resflwi = 0.
    if(ievent == 0) then  !!urban modeling by J.Jeong
       resflwi = varoute(2,inum2)
    else
@@ -118,7 +116,6 @@ subroutine resinit
    respesti = 0.
    ressa = 0.
    ressedc = 0.
-   ressedi = 0.
    if (varoute(3,inum2) < 1.e-6) varoute(3,inum2) = 0.0
    ressedi = varoute(3,inum2)
    ressani = varoute(23,inum2)
@@ -147,10 +144,8 @@ subroutine resinit
    ressolpo = 0.
    resuspst = 0.
    setlpst = 0.
-   solpesti = 0.
    solpesti = varoute(11,inum2)
    solpesto = 0.
-   sorpesti = 0.
    sorpesti = varoute(12,inum2)
    sorpesto = 0.
    volatpst = 0.

@@ -714,7 +714,6 @@ subroutine readpnd
 
 !! assign values to HRUs
    do j = 1, hrutot(i)
-      ihru = 0
       ihru = nhru + j
       pnd_fr(ihru) = spndfr
       pnd_psa(ihru) = spndpsa

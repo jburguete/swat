@@ -66,12 +66,8 @@ subroutine orgncswat(iwave)
    integer :: j
    real*8 :: xx, wt1, er, conc, xx1
 
-   j = 0
    j = ihru
 
-   xx = 0.
-   wt1 = 0.  !! conversion factor
-   er = 0. !! enrichment ratio
    if (iwave <= 0) then
       !! HRU calculations
       xx = sol_n(1,j) + sol_fon(1,j) + sol_mn(1,j)
@@ -90,7 +86,6 @@ subroutine orgncswat(iwave)
       er = enratio
    end if
 
-   conc = 0.
    conc = xx * er / wt1
 
    if (iwave <= 0) then

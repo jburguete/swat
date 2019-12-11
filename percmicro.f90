@@ -69,7 +69,6 @@ subroutine percmicro(ly1)
    integer :: j
    real*8 :: adjf, yy, dg, ho, ratio, sol_k_sep, xx
 
-   j = 0
    j = ihru
 
    adjf = 1.
@@ -85,13 +84,9 @@ subroutine percmicro(ly1)
    if (ly1 == 1) then
       yy = 0.
    else
-      yy = 0.
       yy = sol_z(ly1-1,j)
    end if
 
-   dg = 0.
-   ho = 0.
-   latlyr = 0.
    dg = sol_z(ly1,j) - yy
    if (sol_ul(ly1,j) - sol_fc(ly1,j)==0.) then
       ho=0.
@@ -127,7 +122,6 @@ subroutine percmicro(ly1)
    sol_hk(ly1,j) = Max(2., sol_hk(ly1,j))
 
    !! compute seepage to the next layer
-   sepday = 0.
    sepday = sw_excess * (1. - Exp(-24. / sol_hk(ly1,j)))
 
    !! limit maximum seepage from biozone layer below potential perc amount
@@ -148,15 +142,11 @@ subroutine percmicro(ly1)
 
    !! check mass balance
    if (sepday + latlyr > sw_excess) then
-      ratio = 0.
       ratio = sepday / (latlyr + sepday)
-      sepday = 0.
-      latlyr = 0.
       sepday = sw_excess * ratio
       latlyr = sw_excess * (1. - ratio)
    endif
    if (sepday + lyrtile > sw_excess) then
-      sepday = 0.
       sepday = sw_excess - lyrtile
    endif
 

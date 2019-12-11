@@ -73,7 +73,6 @@ subroutine readwus
    end do
 
    do j = 1, hrutot(i)
-      ihru = 0
       ihru = nhru + j
       do mon = 1, 12
          wupnd(mon,ihru) = swupnd(mon)

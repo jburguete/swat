@@ -80,20 +80,15 @@ subroutine nitvol
    real*8 :: tf
    real*8 :: cecf = 0.15
 
-   j = 0
    j = ihru
 
    do k = 1, sol_nly(j)
-      tf = 0.
       tf = .41 * (sol_tmp(k,j) - 5.) / 10.
 
       if (sol_nh3(k,j) > 0. .and. tf >= 0.001) then
-         sw25 = 0.
-         swwp = 0.
          sw25 = sol_wpmm(k,j) + 0.25 * sol_fc(k,j)
          swwp = sol_wpmm(k,j) + sol_st(k,j)
          if (swwp < sw25) then
-            swf = 0.
             swf = (swwp - sol_wpmm(k,j)) /(sw25 - sol_wpmm(k,j))
          else
             swf = 1.
@@ -102,17 +97,9 @@ subroutine nitvol
          if (k == 1) then
             xx = 0.
          else
-            xx = 0.
             xx = sol_z(k-1,j)
          endif
 
-         dmidl = 0.
-         dpf = 0.
-         akn = 0.
-         akv = 0.
-         rnv = 0.
-         rnit = 0.
-         rvol = 0.
          dmidl = (sol_z(k,j) + xx) / 2.
          dpf = 1. - dmidl / (dmidl + Exp(4.706 - .0305 * dmidl))
          akn = tf * swf

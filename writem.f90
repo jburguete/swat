@@ -213,7 +213,6 @@ subroutine writem
 !       immo = immo + 1
 
       !! calculate number of days in month
-      idlast = 0
       if (immo == 1 .and. idaf > 0) then
          idlast = ndays(mo_chk+1) - (idaf - 1)
          if (leapyr == 1 .and. mo_chk == 2) idlast = idlast - 1

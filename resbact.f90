@@ -57,22 +57,18 @@ subroutine resbact
    real*8 :: totbactp, totbactlp, netwtr
    real*8 :: wtmp
 
-   jres = 0
    jres = inum1
 
    !! calculate temperature in stream
    !! Stefan and Preudhomme. 1993.  Stream temperature estimation
    !! from air temperature.  Water Res. Bull. p. 27-45
    !! SWAT manual equation 2.3.13
-   wtmp = 0.
    wtmp = 5.0 + 0.75 * tmpav(jres)
    if (wtmp <= 0.) wtmp = 0.1
 
 
 !! daily mass balance
    !! total bacteria mass in reservoir
-   totbactp = 0.
-   totbactlp = 0.
    totbactp = varoute(18,inum2) * varoute(2,inum2)&
    &+ res_bactp(jres) * reswtr
    totbactlp = varoute(19,inum2) * varoute(2,inum2)&
@@ -85,7 +81,6 @@ subroutine resbact
    totbactlp = Max(0., totbactlp)
 
    !! new concentration
-   netwtr = 0.
    netwtr = varoute(2,inum2) + reswtr
    if (netwtr >= 1.) then
       res_bactp(jres) = totbactp / netwtr

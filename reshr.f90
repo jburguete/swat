@@ -100,14 +100,11 @@ subroutine reshr
    integer :: jres, inhyd, k
    real*8 :: vol, sed, vvr, targ, xx, flw
 
-   jres = 0
    jres = inum1
    inhyd = inum2
 
 !! store initial values
    flw = 0.
-   vol = 0.
-   sed = 0.
    vol = res_vol(jres)
    sed = res_sed(jres)
    hhresflwi = 0.
@@ -232,7 +229,6 @@ subroutine reshr
          end if
 
          !! subtract consumptive water use from reservoir storage
-         xx = 0.
          xx = wuresn(i_mo,jres) / nstep  !! urban modeling by J.Jeong
          res_vol(jres) = res_vol(jres) - xx
          if (res_vol(jres) < 0.) then

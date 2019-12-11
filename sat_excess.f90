@@ -63,7 +63,6 @@ subroutine sat_excess(j1)
    integer :: j, ii, isp, ly, nn
    real*8 :: ul_excess, qlyr, rtof, qvol, xx
 
-   j = 0
    j = ihru
    isp = isep_typ(j)     !! J.Jeong 3/09/09
    rtof = 0.5

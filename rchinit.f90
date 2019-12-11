@@ -84,7 +84,6 @@ subroutine rchinit
 
    integer :: ii, jrch, kk
 
-   jrch = 0
    jrch = inum1
 
 !! add transfer amounts
@@ -129,12 +128,10 @@ subroutine rchinit
    hsolpst = 0.
    hsorpst = 0.
    peakr = 0.
-   pet_day = 0.
    pet_day = sub_pet(jrch)
    qdbank = 0.
    rcharea = 0.
    rchdep = 0.
-   rchwtr = 0.
    rchwtr = rchstor(jrch)
    reactb = 0.
    reactw = 0.

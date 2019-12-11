@@ -218,14 +218,7 @@ subroutine readmgt
 !!    husc        |none          |heat unit scheduling for operation expressed
 !!                               |as fraction of total heat units of crop
 !!                               |at maturity
-!!    icf         |none          |number of continuous fertilizer operation
-!!                               |in year
-!!    ifn         |none          |number of fertilizer application in year
-!!    igr         |none          |number of grazing operation in year
-!!    inop        |none          |number of tillage operation in year
-!!    iro         |none          |counter for years of rotation
 !!    j           |none          |counter
-!!    lcr         |none          |crop id number
 !!    mgt_op      |none          |operation code number
 !!                               |0 end of rotation year
 !!                               |1 plant/beginning of growing season
@@ -270,21 +263,9 @@ subroutine readmgt
 !!                               |file (definition changes depending on
 !!                               |mgt_op)
 !!    mon         |none          |month operation occurs
-!!    nafer       |none          |number of auto fertilization operation in
-!!                               |year
-!!    nairr       |none          |number of auto irrigation operation in year
 !!    ncrp        |none          |land cover identification number
 !!                               |(from crop.dat). Need only if IGRO=1.
 !!    newpest     |none          |pesticide flag
-!!    nhv         |none          |number of harvest and kill operation in
-!!                               |year
-!!    nhvo        |none          |number of harvest operation in year
-!!    nir         |none          |number of irrigation operation in year
-!!    nkill       |none          |number of kill operation in year
-!!    npl         |none          |number of planting operation in year
-!!    npst        |none          |number of pesticide application in year
-!!    nrel        |none          |number of release/impound operations in year
-!!    nsw         |none          |number of street sweeping operation in year
 !!    titldum     |NA            |title line from input dataset
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -389,7 +370,6 @@ subroutine readmgt
 !!    Set curve number for urban disconnected impervious areas and pervious
 !!    areas. This assumes CN2 given in mgt file is for pervious area only
    if (iurban(ihru) > 0) then
-      disc = 0.
       disc = fimp(urblu(ihru)) - fcimp(urblu(ihru))
       if (fimp(urblu(ihru)) < 0.30) then
          cn2(ihru) = cn2(ihru) + fimp(urblu(ihru)) *&

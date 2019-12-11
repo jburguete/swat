@@ -78,7 +78,6 @@ subroutine pestlch
    integer :: j, ly, k, kk
    real*8 :: dg, yy, qsurf, vf, zdb1, xx, co, csurf, cocalc
 
-   j = 0
    j = ihru
 
    if (hrupest(j) /= 0) then
@@ -87,37 +86,28 @@ subroutine pestlch
          if (ly == 1) then
             yy = 0.
          else
-            yy = 0.
             yy = sol_z(ly-1,j)
          end if
-         dg = 0.
          dg = sol_z(ly,j) - yy
 
          do k = 1, npmx
-            kk = 0
             kk = npno(k)
 
             if (kk > 0) then
-               qsurf = 0.
                if (ly == 1) then
                   qsurf = surfq(j)
                else
                   qsurf = 0.
                endif
 
-               zdb1 = 0.
                zdb1 = sol_ul(ly,j) + sol_kp(k,j,ly) * sol_bd(1,j) * dg
                !! units: mm + (m^3/ton)*(ton/m^3)*mm = mm
                if (ly == 1) zdb(k,j) = zdb1
 
-               vf = 0.
                vf = qsurf + sol_prk(ly,j) + flat(ly,j)
 
                if (sol_pst(k,j,ly) >= 0.0001 .and. vf > 0.) then
-                  xx = 0.
                   xx = sol_pst(k,j,ly) * (1. - Exp(-vf / (zdb1 + 1.e-6)))
-                  cocalc = 0.
-                  co = 0.
                   if (ly == 1) then
                      cocalc = xx /&
                      &(sol_prk(ly,j) + percop * (qsurf + flat(ly,j)) + 1.e-6)
@@ -128,7 +118,6 @@ subroutine pestlch
 
                   !! calculate concentration of pesticide in surface
                   !! runoff and lateral flow
-                  csurf = 0.
                   if (ly == 1) then
                      csurf = percop * co
                   else
@@ -136,7 +125,6 @@ subroutine pestlch
                   end if
 
                   !! calculate pesticide leaching
-                  xx = 0.
                   xx = co * sol_prk(ly,j)
                   if (xx > sol_pst(k,j,ly)) xx = sol_pst(k,j,ly)
                   sol_pst(k,j,ly) = sol_pst(k,j,ly) - xx
@@ -149,7 +137,6 @@ subroutine pestlch
 
                   !! calculate pesticide lost in surface runoff
                   if (ly == 1) then
-                     yy = 0.
                      yy = csurf * surfq(j)
                      if (yy > sol_pst(k,j,ly)) yy = sol_pst(k,j,ly)
                      sol_pst(k,j,ly) = sol_pst(k,j,ly) - yy
@@ -158,7 +145,6 @@ subroutine pestlch
 
 
                   !! calculate pesticide lost in lateral flow
-                  yy = 0.
                   yy = csurf * flat(ly,j)
                   if (yy > sol_pst(k,j,ly)) yy = sol_pst(k,j,ly)
                   sol_pst(k,j,ly) = sol_pst(k,j,ly) - yy

@@ -28,7 +28,6 @@ real*8 function qman(x1,x2,x3,x4) result (r_qman)
    implicit none
    real*8, intent (in) :: x1, x2, x3, x4
 
-   r_qman = 0.
    r_qman = x1 * x2 ** .6666 * Sqrt(x4) / x3
 
    return

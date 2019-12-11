@@ -67,18 +67,13 @@ subroutine pgen(j)
 
    real*8 :: vv, pcpgen, v8, r6, xlv
 
-   pcpgen = 0.
-   vv = 0.
    vv = Aunif(rndseed(idg(1),j))
    if (vv > pr_w(npcp(j),i_mo,hru_sub(j))) then
       pcpgen = 0.
    else
-      v8 = 0.
       v8 = Aunif(rndseed(idg(3),j))
       if (idist == 0) then
          !!skewed rainfall distribution
-         r6 = 0.
-         xlv = 0.
          r6 = pcp_stat(i_mo,3,hru_sub(j)) / 6.
          xlv = (Dstn1(rnd3(j),v8) - r6) * r6 + 1.
          xlv = (xlv**3 - 1.) * 2. / pcp_stat(i_mo,3,hru_sub(j))

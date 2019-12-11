@@ -57,15 +57,12 @@ subroutine pesty(iwave)
    integer :: j, k, kk
    real*8 :: xx, conc, er
 
-   j = 0
    j = ihru
 
    if (hrupest(j) == 0) return
    do k = 1, npmx
-      kk = 0
       kk = npno(k)
       if (kk > 0) then
-         xx = 0.
          if (iwave <= 0) then
             xx = sol_pst(k,j,1)
          else
@@ -73,8 +70,6 @@ subroutine pesty(iwave)
          end if
 
          if (xx >= .0001) then
-            conc = 0.
-            er = 0.
             conc = 100. * sol_kp(k,j,1) * xx / (zdb(k,j)+1.e-10)
             if (pst_enr(k,j) > 0.) then
                er = pst_enr(k,j)

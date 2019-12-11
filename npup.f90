@@ -94,17 +94,13 @@ subroutine npup
    integer :: j, icrop, l, ir
    real*8 :: up2, uapd, upmx, uapl, gx
 
-   j = 0
    j = ihru
 
-   icrop = 0
    icrop = idplt(j)
    pltfr_p(j) = (pltpfr(1,icrop) - pltpfr(3,icrop)) * (1. - phuacc(j)&
    &/ (phuacc(j) + Exp(bio_p1(icrop) - bio_p2(icrop) * phuacc(j))))&
    &+ pltpfr(3,icrop)
 
-   up2 = 0.
-   uapd = 0.
    up2 = pltfr_p(j) * bio_ms(j)
    if (up2 < plantp(j)) up2 = plantp(j)
    uapd = up2 - plantp(j)
@@ -118,7 +114,6 @@ subroutine npup
    do l = 1, sol_nly(j)
       if (ir > 0) exit
 
-      gx = 0.
       if (sol_rd <= sol_z(l,j)) then
          gx = sol_rd
          ir = 1
@@ -126,8 +121,6 @@ subroutine npup
          gx = sol_z(l,j)
       end if
 
-      upmx = 0.
-      uapl = 0.
       upmx = uapd * (1. - Exp(-p_updis * gx / sol_rd)) / uobp
       uapl = Min(upmx - pplnt(j), sol_solp(l,j))
       pplnt(j) = pplnt(j) + uapl

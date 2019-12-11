@@ -79,7 +79,6 @@ subroutine surq_greenampt
    real*8, dimension (nstep+1) :: rintns
    !! array location #1 is for last time step of prev day
 
-   j = 0
    j = ihru
    sb = hru_sub(j)
    ida=iida
@@ -105,7 +104,6 @@ subroutine surq_greenampt
       rateinf(1) = newrti(j)
       newrti(j) = 0.
    else
-      soilw = 0.
       if (sol_sw(j) >= sol_sumfc(j)) then
          soilw = 0.999 * sol_sumfc(j)
       else
@@ -115,10 +113,8 @@ subroutine surq_greenampt
       rateinf(1) = 2000.
    end if
 
-   psidt = 0.
    psidt = dthet * wfsh(j)
 
-   k = 1
    rintns(1) = 60. * precipdt(2) / dfloat(idt)  !! urban 60./idt  NK Feb 4,08
 
    do k = 2, nstep+1
@@ -142,10 +138,8 @@ subroutine surq_greenampt
          !! if rainfall intensity is greater than infiltration rate
          !! find cumulative infiltration for time step by successive
          !! substitution
-         tst = 0.
          tst = adj_hc * dfloat(idt) / 60.  !!urban 60./idt NK Feb 4,08
          do
-            f1 = 0.
             f1 = cuminf(k-1) + adj_hc * dfloat(idt) / 60. +&
             &psidt * Log((tst + psidt)/(cuminf(k-1) + psidt))
             if (abs(f1 - tst) <= 0.001) then
@@ -156,7 +150,6 @@ subroutine surq_greenampt
                hhqday(k-1) = exinc(k)
                exit
             else
-               tst = 0.
                tst = f1
             end if
          end do

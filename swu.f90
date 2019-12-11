@@ -101,7 +101,6 @@ subroutine swu
    real*8 :: sum, xx, gx, reduc, sump, satco, scparm
    real*8, parameter :: pl_aerfac = .85
 
-   j = 0
    j = ihru
 
    select case (idc(idplt(j)))
@@ -148,7 +147,6 @@ subroutine swu
             gx = sol_z(k,j)
          end if
 
-         sum = 0.
          if (sol_rd <= 0.01) then
             sum = ep_max / uobw
          else
@@ -161,7 +159,7 @@ subroutine swu
 !          else
 !            yy= sump - xx
 !          end if
-         wuse(k) = sum - sump + 1. * epco(j)
+         !wuse(k) = sum - sump + 1. * epco(j) ! ovrewritten in the following line
          wuse(k) = sum - sump + (sump - xx) * epco(j)
          sump = sum
 
@@ -186,7 +184,6 @@ subroutine swu
 !         endif
 
          !! adjust uptake if sw is less than 25% of plant available water
-         reduc = 0.
          if (sol_st(k,j) < sol_fc(k,j)/4.) then
             reduc = Exp(5. * (4. * sol_st(k,j) / sol_fc(k,j) - 1.))
          else

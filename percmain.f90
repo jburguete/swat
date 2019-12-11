@@ -97,7 +97,6 @@ subroutine percmain
 
    lid_cuminf_total = 0.
 
-   j = 0
    j = ihru
    sb = inum1
    isp = isep_typ(j)     !! J.Jeong 6/25/14
@@ -111,9 +110,6 @@ subroutine percmain
    end if
 
 !!  add irrigation water
-   !if (aird(j)>0) then ! redundant
-   !   j=j              ! redundant 
-   !end if              ! redundant
    sepday = inflpcp + aird(j) + pot_seep(j)
    pot_seep(j) = 0.
 
@@ -172,7 +168,6 @@ subroutine percmain
       end if
 
       !! determine gravity drained water in layer
-      sw_excess = 0.
       sw_excess = sol_st(j1,j) - sol_fc(j1,j)
 
       !! initialize variables for current layer
@@ -221,12 +216,10 @@ subroutine percmain
    sol_sw(j) = 0.
    do j1 = 1, sol_nly(j)
       sol_sw(j) = sol_sw(j) + sol_st(j1,j)
-
    end do
 
    !! compute shallow water table depth and tile flow
    qtile = 0.
-   wt_shall = 0.    !CB 8/24/09
    wt_shall = dep_imp(j)
    !! drainmod tile equations   08/11/2006
    if (sol_tmp(2,j) > 0.) then   !Daniel 1/29/09

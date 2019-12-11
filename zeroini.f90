@@ -120,7 +120,6 @@ subroutine zeroini
    pest_sol = 0.
    petfile = ""
    phoskd = 0.
-   ! pperco = 0. ! not defined
    psp = 0.
    prf = 0.
    rcor = 0.

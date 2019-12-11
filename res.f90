@@ -102,17 +102,9 @@ subroutine res
    real*8 :: inised, finsed, setsed, remsetsed
    real*8 :: res_h, res_h1, res_qi, susp, trapres, velofl, x1
 
-   jres = 0
    jres = inum1
 
 !! store initial values
-   vol = 0.
-   sed = 0.
-   inised = 0.
-   finsed = 0.
-   setsed = 0.
-   remsetsed = 0.
-   trapres = 0.
 
    vol = res_vol(jres)
    sed = res_sed(jres)
@@ -139,7 +131,6 @@ subroutine res
    endif
 
 !! subtract consumptive water use from reservoir storage
-   xx = 0.
    xx = wuresn(i_mo,jres)
    res_vol(jres) = res_vol(jres) - xx
    if (res_vol(jres) < 0.) then
@@ -342,39 +333,32 @@ subroutine res
 
          if (res_gra(jres) >= setsed) then
             res_gra(jres) = res_gra(jres) - setsed
-            remsetsed = 0.
          else
             remsetsed = setsed - res_gra(jres)
             res_gra(jres) = 0.
             if (res_lag(jres) >= remsetsed) then
                res_lag(jres) = res_lag(jres) - remsetsed
-               remsetsed = 0.
             else
                remsetsed = remsetsed - res_lag(jres)
                res_lag(jres) = 0.
                if (res_san(jres) >= remsetsed) then
                   res_san(jres) = res_san(jres) - remsetsed
-                  remsetsed = 0.
                else
                   remsetsed = remsetsed - res_san(jres)
                   res_san(jres) = 0.
                   if (res_sag(jres) >= remsetsed) then
                      res_sag(jres) = res_sag(jres) - remsetsed
-                     remsetsed = 0.
                   else
                      remsetsed = remsetsed - res_sag(jres)
                      res_sag(jres) = 0.
                      if (res_sil(jres) >= remsetsed) then
                         res_sil(jres) = res_sil(jres) - remsetsed
-                        remsetsed = 0.
                      else
                         remsetsed = remsetsed - res_sil(jres)
                         res_sil(jres) = 0.
                         if (res_cla(jres) >= remsetsed) then
                            res_cla(jres) = res_cla(jres) - remsetsed
-                           remsetsed = 0.
                         else
-                           remsetsed = remsetsed - res_cla(jres)
                            res_cla(jres) = 0.
                         end if
                      end if

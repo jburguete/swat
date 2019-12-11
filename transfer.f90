@@ -111,7 +111,6 @@ subroutine transfer
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    k           |none          |counter
 !!    ratio       |none          |fraction of reach outflow diverted
 !!    tranmx      |m^3 H2O       |maximum amount of water to be transferred
 !!    volum       |m^3 H2O       |volume of water in source
@@ -133,7 +132,6 @@ subroutine transfer
       if (i_mo > mo_transe(inum5) .and. i_mo < mo_transb(inum5))return
    end if
 !! compute volume of water in source
-   volum = 0.
    if (ihout == 2) then
       volum = res_vol(inum1)
    else
@@ -156,6 +154,8 @@ subroutine transfer
       if (tranmx > volum) tranmx = volum
    end select
 
+   ratio = 0.
+   ratio1 = 1.
    if (tranmx > 0.) then
 
       !! TRANSFER WATER TO DESTINATION
@@ -169,8 +169,6 @@ subroutine transfer
 
       !! SUBTRACT AMOUNT TRANSFERED FROM SOURCE
       xx = 0.
-      ratio = 0.
-      ratio1 = 1.
       if (ihout == 2) then
          res_vol(inum1) = res_vol(inum1) - tranmx
       else

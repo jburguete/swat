@@ -49,13 +49,10 @@ subroutine openwth
 !! open precip files and read elevation
    do j = 1, nrgage
       !! calculate gage id codes for first and last dataset in file
-      kk1 = 0
-      kk2 = 0
       kk1 = nrgfil * (j - 1) + 1
       if (j == nrgage) then
          kk2 = nrtot
       else
-
          kk2 = kk1 + (nrgfil - 1)
       end if
       if (rfile(j) /= '             ') then
@@ -74,8 +71,6 @@ subroutine openwth
 
    do j = 1, ntgage
       !! calculate gage id codes for first and last dataset in file
-      kk1 = 0
-      kk2 = 0
       kk1 = ntgfil * (j - 1) + 1
       if (j == ntgage) then
          kk2 = nttot

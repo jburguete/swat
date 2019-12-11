@@ -39,11 +39,9 @@ subroutine slrgen(j)
    real*8 :: rx, rav
 
 
-   rav = 0.
    rav = solarav(i_mo,hru_sub(j)) /&
    &(1. - 0.5 * pr_w(3,i_mo,hru_sub(j)))
    if (subp(j) > 0.0) rav = 0.5 * rav
-   rx = 0.
    rx = hru_rmx(j) - rav
    hru_ra(j) = rav + wgncur(3,j) * rx / 4.
    if (hru_ra(j) <= 0.) hru_ra(j) = .05 * hru_rmx(j)

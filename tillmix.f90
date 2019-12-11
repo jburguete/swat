@@ -132,8 +132,6 @@ subroutine tillmix(jj,bmix)
    real*8 :: emix, dtil, dg
    real*8 :: thtill(mlyr), smix(11+npmx)
 
-   emix = 0.
-   dtil = 0.
 ! Drainmod  08/2006
    !rrns = 0. ! not used
    if (bmix > 1.e-6) then
@@ -204,7 +202,6 @@ subroutine tillmix(jj,bmix)
 
       do l = 1, nl
 
-         dg = 0.
          if (l == 1) then
             dg = sol_z(1,jj)
          else

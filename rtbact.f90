@@ -75,28 +75,22 @@ subroutine rtbact
    real*8 :: totbactp, totbactlp, netwtr, initlp, initp
    real*8 :: tday, wtmp
 
-   jrch = 0
    jrch = inum1
 
    !! calculate temperature in stream
    !! Stefan and Preudhomme. 1993.  Stream temperature estimation
    !! from air temperature.  Water Res. Bull. p. 27-45
    !! SWAT manual equation 2.3.13
-   wtmp = 0.
    wtmp = 5.0 + 0.75 * tmpav(jrch)
    if (wtmp <= 0.) wtmp = 0.1
 
 !     skipping hourly bacteria route for now  04/16/07 nubs
    if (ievent > 0) then                !! hourly mass balance
-      initlp = 0.
-      initp = 0.
       initlp = rch_bactlp(jrch)
       initp = rch_bactp(jrch)
       netwtr = 0.
       do ii = 1, nstep
          !! total bacteria mass in reach
-         totbactp = 0.
-         totbactlp = 0.
          totbactp = hhvaroute(18,inum2,ii) * hhvaroute(2,inum2,ii) *&
          &(1. - rnum1) + initp * hrchwtr(ii)
          totbactlp = hhvaroute(19,inum2,ii) * hhvaroute(2,inum2,ii) *&
@@ -114,8 +108,6 @@ subroutine rtbact
             hbactp(ii) = totbactp / netwtr
             hbactlp(ii) = totbactlp / netwtr
          end if
-         initlp = 0.
-         initp = 0.
          initp = hbactp(ii)
          initlp = hbactlp(ii)
       end do
@@ -134,8 +126,6 @@ subroutine rtbact
 !! daily mass balance
       !! total bacteria mass in reach
 
-      totbactp = 0.
-      totbactlp = 0.
       totbactp = varoute(18,inum2) * varoute(2,inum2) * (1. - rnum1)&
       &+ rch_bactp(jrch) * rchwtr
       totbactlp = varoute(19,inum2) * varoute(2,inum2) *&
@@ -143,7 +133,6 @@ subroutine rtbact
 
       !! compute bacteria die-off
       !! calculate flow duration
-      tday = 0.
       tday = rttime / 24.0
       if (tday > 1.0) tday = 1.0
       totbactp = totbactp * Exp(-Theta(wdprch,thbact,wtmp)*tday)
@@ -152,7 +141,6 @@ subroutine rtbact
       totbactlp = Max(0., totbactlp)
 
       !! new concentration
-      netwtr = 0.
       netwtr = varoute(2,inum2) * (1. - rnum1) + rchwtr
 
 !! !! change made by CS while running region 4; date 2 jan 2006

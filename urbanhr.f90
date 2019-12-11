@@ -79,8 +79,6 @@ subroutine urbanhr
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cod         |kg            |carbonaceous biological oxygen demand of
-!!                               |surface runoff from urban area
 !!    dirt        |kg/curb km    |amount of solids built up on impervious
 !!                               |surfaces
 !!    dirto       |kg/ha         |amount of solids built up on impervious
@@ -108,7 +106,6 @@ subroutine urbanhr
    real*8 :: dirt, tno3
    integer :: j, k
 
-   j = 0
    j = ihru
 
 
@@ -124,26 +121,18 @@ subroutine urbanhr
          if (qdt > 0.025 .and. surfq(j) > 0.1) then   ! SWMM : 0.001 in/hr (=0.0254mm/hr)
 
             !! calculate amount of dirt on streets prior to wash-off
-            dirt = 0.
-            dirto = 0.
             dirto = dirtmx(urblu(j)) * twash(j) /&
             &(thalf(urblu(j)) + twash(j))
 
             !! calculate wash-off of solids
-            urbk = 0.    ! peakr -> hhqday for subdaily time steps 6/19/09 JJ
             urbk = urbcoef(urblu(j)) * qdt
 
             dirt = dirto * Exp (- urbk * dfloat(idt) / 60.)
             if (dirt < 1.e-6) dirt = 0.0
 
             !! set time to correspond to lower amount of dirt
-            twash(j) = 0.
             twash(j) = thalf(urblu(j)) * dirt&
             &/ (dirtmx(urblu(j)) - dirt)
-            sus_sol = 0.
-            tn = 0.
-            tp = 0.
-            tno3 = 0.
             !! amounts are kg/ha
             sus_sol = Max(0., (dirto - dirt) * curbden(urblu(j)))
             tn = tnconc(urblu(j)) * sus_sol / 1.e6

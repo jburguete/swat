@@ -89,7 +89,6 @@ subroutine readfcst
 
 !! calculate missing values and additional parameters
       do mon = 1, 12
-         mdays = 0
          mdays = ndays(mon+1) - ndays(mon)
 
          !! calculate values for fpr_w if missing or bad

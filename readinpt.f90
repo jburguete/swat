@@ -50,7 +50,6 @@ subroutine readinpt
 !!=============================
 
    if (irtpest > 0) irtpest = nope(irtpest)
-   npmx = 0
    npmx = Sum(pstflg)         !! set equal to # pesticides modeled in
    !! watershed
 

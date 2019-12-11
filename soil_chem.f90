@@ -100,8 +100,6 @@ subroutine soil_chem
 !!    wt1         |none          |converts mg/kg (ppm) to kg/ha
 !!    xx          |none          |variable to hold value
 !!    zdst        |none          |variable to hold value
-!!    labfrac     |none          |fraction of total soil mineral P which is labile
-!!    soil_TP   |kg/ha         |Total Soil Mineral P
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
@@ -131,7 +129,6 @@ subroutine soil_chem
    !!=============
 
 
-   nly = 0
    solpst = 0.
    sumno3 = 0.
    sumorgn = 0.
@@ -143,7 +140,6 @@ subroutine soil_chem
    if (nly >= 3 .and. sol_cbn(3,i) <= 0) then
       do j = 3, nly
          if (sol_cbn(j,i) == 0.) then
-            soldepth = 0
             soldepth = sol_z(j,i) - sol_z(2,i)
             sol_cbn(j,i) = sol_cbn(j-1,i) * Exp(-.001 * soldepth)
          end if
@@ -174,10 +170,8 @@ subroutine soil_chem
 !!    upper layer
    if (hrupest(i) == 1) then
       do j = 1, npmx
-         jj = 0
          jj = npno(j)
          if (jj > 0) then
-            solpst = 0.
             solpst = sol_pst(j,i,1)  !!concentration of pesticide in soil
             xx = 0.
             do n = 1, nly
@@ -202,14 +196,11 @@ subroutine soil_chem
    sol_fon(1,i) = sol_rsd(1,i) * .0055 !! was 0.0015 Armen January 2009
    sol_cov(i) = sol_rsd(1,i)
    do j = 1, nly
-      dg = 0.
-      wt1 = 0.
       dg = (sol_z(j,i) - xx)
       wt1 = sol_bd(j,i) * dg / 100.              !! mg/kg => kg/ha
       conv_wt(j,i) = 1.e6 * wt1                  !! kg/kg => kg/ha
 
       if (sol_no3(j,i) <= 0.) then
-         zdst = 0.
          zdst = Exp(-sol_z(j,i) / 1000.)
          sol_no3(j,i) = 10. * zdst * .7
       end if
@@ -270,7 +261,7 @@ subroutine soil_chem
          actp = sol_actp(j,i) / conv_wt(j,i) * 1000000.
          solp = sol_solp(j,i) / conv_wt(j,i) * 1000000.
          !! estimate Total Mineral P in this soil based on data from sharpley 2004
-         ssp = 25.044 * (actp + solp)** -0.3833
+         SSP = 25.044 * (actp + solp)** (-0.3833)
          !!limit SSP Range
          if (SSP > 7.) SSP = 7.
          if (SSP < 1.) SSP = 1.

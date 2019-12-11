@@ -104,7 +104,6 @@ subroutine snom
    real*8 :: sum, smp, smfac, smleb, ratio
    real*8 :: xx, snocov
 
-   j = 0
    j = ihru
    sum =0.
    smp =0.
@@ -134,8 +133,6 @@ subroutine snom
 
             !! compute snow melt if temperature is above smtmp
             if (tmxband(ib,j) > sub_smtmp(ib,isub)) then
-               smfac = 0.
-               smleb = 0.
                smfac = (sub_smfmx(ib,isub) + sub_smfmn(ib,isub)) / 2. +&
                &Sin((iida - 81) / 58.09) *&
                &(sub_smfmx(ib,isub) - sub_smfmn(ib,isub)) / 2.    !! 365/2pi = 58.09
@@ -144,8 +141,6 @@ subroutine snom
 
                !! adjust for areal extent of snow cover
                if (snoeb(ib,j) < snocovmx) then
-                  xx = 0.
-                  snocov = 0.
                   xx = snoeb(ib,j) / snocovmx
                   snocov = xx / (xx + Exp(snocov1 - snocov2 * xx))
                else
@@ -196,8 +191,6 @@ subroutine snom
 
       if (tmx(j) > sub_smtmp(ib,isub) .and. sno_hru(j) > 0.) then
          !! adjust melt factor for time of year
-         smfac = 0.
-         snomlt = 0.
          smfac = (sub_smfmx(ib,isub) + sub_smfmn(ib,isub)) / 2. +&
          &Sin((iida - 81) / 58.09) *&
          &(sub_smfmx(ib,isub) - sub_smfmn(ib,isub)) / 2.    !! 365/2pi = 58.09
@@ -205,7 +198,6 @@ subroutine snom
 
          !! adjust for areal extent of snow cover
          if (sno_hru(j) < snocovmx) then
-            xx = 0.
             xx = sno_hru(j) / snocovmx
             snocov = xx / (xx + Exp(snocov1 - snocov2 * xx))
          else

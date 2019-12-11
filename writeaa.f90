@@ -292,7 +292,6 @@ subroutine writeaa
 !!    k           |none          |counter
 !!    ly          |none          |counter
 !!    nicr        |none          |crop number in sequence within year
-!!    nnro        |none          |year number in rotation sequence
 !!    summinp     |kg P/ha       |total mineral P in HRU soil profile
 !!    sumno3      |kg N/ha       |total nitrate in HRU soil profile
 !!    sumorgn     |kg N/ha       |total organic N in HRU soil profile
@@ -317,7 +316,6 @@ subroutine writeaa
 !! calculate number of years simulated
    yrs = 0.
    do j = 1, nbyr
-      xx = 0.
       xx = 366. - dfloat(leapyr)
       if (j > nyskip) then
          if (j == 1 .and. idaf > 0) then
@@ -346,7 +344,6 @@ subroutine writeaa
    bio_aams = bio_aams / yrs
    lai_aamx = lai_aamx / yrs
    yldaa = yldaa / yrs
-   irn = irn / yrs
    aairr = aairr / yrs
    do j = 1, nhru
       do nicr = 1, mcrhru(j)

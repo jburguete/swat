@@ -55,14 +55,13 @@ subroutine routels(iru_sub)
 !      end if
 
    if (inum5 == 0 .or. inum8 == 0) then
-      ls_overq = 0.
       surfqrunon = 0.
       surfqout = 0.
       if (inum5 == 0) then
          ls_overq = varoute(29,inum2) * rnum1
       end if
       if (inum8 == 0) then
-         ls_overq = ls_overq + varoute(31,inum2) * rnum1
+         ls_overq = varoute(31,inum2) * rnum1
       end if
 !!    sediment
       sed = varoute(3,inum2) * rnum1

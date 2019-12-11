@@ -23,7 +23,6 @@ subroutine rootfr
    endif
 
 
-   l = 0
    k = 0
    cum_d = 0.
    cum_rf = 0.

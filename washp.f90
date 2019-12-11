@@ -44,17 +44,14 @@ subroutine washp
    integer :: j, k, kk
    real*8 :: xx
 
-   j = 0
    j = ihru
 
    if (hrupest(j) == 0) return
 
    do k = 1, npmx
-      kk = 0
       kk = npno(k)
       if (plt_pst(k,j) >= 0.0001) then
          if (kk > 0) then
-            xx = 0.
             xx = pst_wof(kk) * plt_pst(k,j)
             if (xx > plt_pst(k,j)) xx = plt_pst(k,j)
 

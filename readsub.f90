@@ -242,7 +242,6 @@ subroutine readsub
    !!General HRUs
    read (101,5100) titldum
    do j = jj, hrutot(i)
-      ihru = 0
       ihru = nhru + j
       if (j == 1) hru1(i) = ihru
 !         ipot(ihru) = ip
@@ -427,13 +426,11 @@ subroutine readsub
    end if
 
 !!    This equation given to us by EPA, in the process of getting reference
-   sdrift = 0.
    sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) +&
    &.2267) / 2.
 
 !! assign subbasin values to HRUs where needed
    do j = 1, hrutot(i)
-      ihru = 0
       ihru = nhru + j
       hru_sub(ihru) = i
 !!   hru_seq = sequential hru number within the subbasin

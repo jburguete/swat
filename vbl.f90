@@ -59,12 +59,8 @@ subroutine vbl(evx,spx,pp,qin,ox,vx1,vy,yi,yo,ysx,vf,vyf,aha)
 
    !! ysx undefined for reservoirs
 
-   dfw = 0.
-   dfy = 0.
    dfw = vx1 - evx - spx + qin + pp - ox - vf
    dfy = vy + yi - yo - ysx - vyf
-   vx1 = 0.
-   vy = 0.
    vx1 = .1 * dfw / aha
    vy = dfy / aha
 

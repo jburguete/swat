@@ -25,10 +25,6 @@ subroutine water_hru
    j = ihru
 !! if the HRU is water compute only pet and et
 !! using Priestly-Taylor and a coefficient
-   tmpk = 0.
-   d = 0.
-   gma = 0.
-   ho = 0.
    albday = .08
    tmpk = tmpav(j) + 273.15
    d = Exp(21.255 - 5304. / tmpk) * 5304. / tmpk ** 2

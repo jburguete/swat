@@ -196,7 +196,6 @@ subroutine routres
    real*8 :: sepmm, resorgpc, ressolpc, sedcon, resorgnc, resno3c
    real*8 :: resno2c, resnh3c,zz
 
-   jres = 0
    jres = inum1
 !!    ires_code = 0 do not turn off reservoirs
 !!    ires_code = 1 turn off reservoirs for santhi
@@ -254,7 +253,6 @@ subroutine routres
 
          !! add reservoir seepage to shallow aquifer convert from m^3 to mm
          if (ressep > 0.) then
-            sepmm = 0.
             sepmm = ressep / (da_ha * sub_fr(res_sub(jres)) * 10.)
             do k = 1, nhru
                if (hru_sub(k) == res_sub(jres)) then
@@ -325,13 +323,6 @@ subroutine routres
          !! summarization calculations
          if (curyr > nyskip) then
             !!calculate concentrations
-            resorgnc = 0.
-            resnh3c = 0.
-            resno3c = 0.
-            resno2c = 0.
-            resorgpc = 0.
-            ressolpc = 0.
-            sedcon = 0.
             resorgnc = res_orgn(jres) / (res_vol(jres)+.1) * 1000.
             resno3c = res_no3(jres) / (res_vol(jres)+.1) * 1000.
             resno2c = res_no2(jres) / (res_vol(jres)+.1) * 1000.

@@ -170,9 +170,6 @@ subroutine readwgn
    end do
 
 !! variables needed for radiation calcs.
-   xx = 0.0
-   lattan = 0.0
-   x1 = 0.0
    x2 = 0.0
    if (sub_lat(i) < 1.e-4) sub_lat(i) = wlat(i)
    xx = sub_lat(i) / 57.296
@@ -195,7 +192,6 @@ subroutine readwgn
 
 !! calculate day length threshold for dormancy
    if (dorm_hr < -1.e-6) then
-      dl = 0.
       if (abs(sub_lat(i)) > 40.) then
          dl = 1.
       else if (abs(sub_lat(i)) < 20.) then
@@ -227,8 +223,6 @@ subroutine readwgn
    tmax = 0.
    pcpdays(i) = 0.
    do mon = 1, 12
-      mdays = 0
-      tav = 0.
       mdays = ndays(mon+1) - ndays(mon)
       tav = (tmpmx(mon,i) + tmpmn(mon,i)) / 2.
       if (tav > tmax) tmax = tav
@@ -266,8 +260,6 @@ subroutine readwgn
    !! calculate initial temperature of soil layers
    if (idaf > ndays(2)) then
       do mon = 2, 12
-         m1 = 0
-         nda = 0
          m1 = mon + 1
          nda = ndays(m1) - 1
          if (idaf <= nda) exit
@@ -275,16 +267,13 @@ subroutine readwgn
    else
       mon = 1
    end if
-   tmpsoil = 0.
    tmpsoil = (tmpmx(mon,i) + tmpmn(mon,i)) / 2.
 
-   xrnd = 0
    xrnd = rndseed(idg(3),i)
    rndm1 = Aunif(xrnd)
    do mon = 1, 12
       !! calculate precipitation correction factor for pcp generator
       if (idist == 0) then
-         r6 = 0.
          rnm2 = 0.
          xlv = 0.
          pcp = 0.
@@ -307,9 +296,6 @@ subroutine readwgn
       end if
 
       !! calculate or estimate amp_r values
-      x1 = 0.
-      x2 = 0.
-      x3 = 0.
       if (rain_yrs < 1.0) rain_yrs = 10.
       x1 = .5 / rain_yrs
       x2 = x1 / pcpd(mon)
@@ -324,13 +310,11 @@ subroutine readwgn
    end do
 
 !!    determine precipitation category (ireg initialized to category 1)
-   xx = 0
    xx = summm_p
    if (summm_p > 508.) ireg(i) = 2
    if (summm_p > 1016.) ireg(i) = 3
 
 !!    set fraction of field capacity in soil
-   sffc = 0.
    if (ffcb <= 0.) then
       sffc = summm_p / (summm_p + Exp(9.043 - 0.002135*summm_p))
       !!S-curve equation Jeff made up.
@@ -340,7 +324,6 @@ subroutine readwgn
 
 !! assign HRU values
    do j = 1, hrutot(i)
-      ihru = 0
       ihru = nhru + j
       do k = 1, sol_nly(ihru)
          sol_tmp(k,ihru) = tmpsoil

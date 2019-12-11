@@ -71,8 +71,6 @@ subroutine tmeas
    !! read temperature data from files
    do k = 1, ntgage
       !! calculate gage id codes for first and last dataset in file
-      kk1 = 0
-      kk2 = 0
       kk1 = ntgfil * (k - 1) + 1
       if (k == ntgage) then
          kk2 = nttot
@@ -114,9 +112,6 @@ subroutine tmeas
          else
             call tgen(k)
             !! set subbasin generated values
-            inum3sprev = 0
-            tmxbsb = 0.
-            tmnbsb = 0.
             inum3sprev = hru_sub(k)
             tmxbsb = tmx(k)
             tmnbsb = tmn(k)

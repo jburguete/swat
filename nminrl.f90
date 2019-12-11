@@ -173,13 +173,11 @@ subroutine nminrl
    real*8 :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr
    real*8 :: cprf, ca, decr, rdc, wdn, cdg, sut
 
-   j = 0
    j = ihru
 
 
    do k = 1, sol_nly(j)
 
-      kk =0
       if (k == 1) then
          kk = 2
       else
@@ -189,7 +187,6 @@ subroutine nminrl
       !! mineralization can occur only if temp above 0 deg
       if (sol_tmp(kk,j) > 0.) then
          !! compute soil water factor
-         sut = 0.
          !! change for domain error 1/29/09 gsm check with Jeff !!!
          if (sol_st(kk,j) < 0.) sol_st(kk,j) = .0000001
          sut = .1 + .9 * Sqrt(sol_st(kk,j) / sol_fc(kk,j))
@@ -197,22 +194,17 @@ subroutine nminrl
          sut = Max(.05, sut)
 
          !!compute soil temperature factor
-         xx = 0.
-         cdg = 0.
          xx = sol_tmp(kk,j)
          cdg = .9 * xx / (xx + Exp(9.93 - .312 * xx)) + .1
          cdg = Max(.1, cdg)
 
          !! compute combined factor
-         xx = 0.
-         csf = 0.
          xx = cdg * sut
          if (xx < 0.) xx = 0.
          if (xx > 1.e6) xx = 1.e6
          csf = Sqrt(xx)
 
          !! compute flow from active to stable pools
-         rwn = 0.
          rwn = .1e-4 * (sol_aorgn(k,j) * (1. / nactfr - 1.) -&
          &sol_orgn(k,j))
          if (rwn > 0.) then
@@ -224,12 +216,9 @@ subroutine nminrl
          sol_aorgn(k,j) = Max(1.e-6, sol_aorgn(k,j) - rwn)
 
          !! compute humus mineralization on active organic n
-         hmn = 0.
          hmn = cmn(j) * csf * sol_aorgn(k,j)
          hmn = Min(hmn, sol_aorgn(k,j))
          !! compute humus mineralization on active organic p
-         xx = 0.
-         hmp = 0.
          xx = sol_orgn(k,j) + sol_aorgn(k,j)
          if (xx > 1.e-6) then
             hmp = 1.4 * hmn * sol_orgp(k,j) / xx
@@ -248,32 +237,24 @@ subroutine nminrl
          rmn1 = 0.
          rmp = 0.
          if (k <= 2) then
-            r4 = 0.
             r4 = .58 * sol_rsd(k,j)
 
             if (sol_fon(k,j) + sol_no3(k,j) > 1.e-4) then
-               cnr = 0.
                cnr = r4 / (sol_fon(k,j) + sol_no3(k,j))
                if (cnr > 500.) cnr = 500.
-               cnrf = 0.
                cnrf = Exp(-.693 * (cnr - 25.) / 25.)
             else
                cnrf = 1.
             end if
 
             if (sol_fop(k,j) + sol_solp(k,j) > 1.e-4) then
-               cpr = 0.
                cpr = r4 / (sol_fop(k,j) + sol_solp(k,j))
                if (cpr > 5000.) cpr = 5000.
-               cprf = 0.
                cprf = Exp(-.693 * (cpr - 200.) / 200.)
             else
                cprf = 1.
             end if
 
-            ca = 0.
-            decr = 0.
-            rdc = 0.
             ca = Min(cnrf, cprf, 1.)
             if (idplt(j) > 0) then
                decr = rsdco_pl(idplt(j)) * ca * csf

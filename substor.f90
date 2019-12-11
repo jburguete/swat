@@ -59,7 +59,6 @@ subroutine substor
 
    integer :: j, k
 
-   j = 0
    j = ihru
 
    bssprev = bss(1,j)

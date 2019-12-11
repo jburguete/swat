@@ -131,7 +131,6 @@ subroutine readplant
 !!                                |crop.dat need to be assigned consecutively
 !!                                |to ensure that the crop number used by the
 !!                                |user is the same as the array storage number
-!!    icnum     |none             |crop/landcover number. Reference number only.
 !!    laimx1    |none             |fraction of maximum leaf area index
 !!                                |corresponding to the 1st point on optimal
 !!                                |leaf area development curve
@@ -276,8 +275,6 @@ subroutine readplant
 !!        The other point used to determine shape parameters for radiation
 !!        use efficiency is the ambient CO2 level (330 ul/l) and the
 !!        biomass-energy ratio (bio_e) given for the crop/land cover.
-         b1 = 0.0
-         b2 = 0.0
          c1 = 330.                        !! ambient CO2
          if (co2hi == 330.) co2hi = 660.
          b1 = bio_e(ic) * .01             !! "ambient" bio-e ratio/100
@@ -297,9 +294,6 @@ subroutine readplant
          &pltnfr(2,ic) = pltnfr(1,ic) - .0001
          if (pltnfr(2,ic) - pltnfr(3,ic) < .0001)&
          &pltnfr(3,ic) = .75 * pltnfr(3,ic)
-         b1 = 0.0
-         b2 = 0.0
-         b3 = 0.0
          b1 = pltnfr(1,ic) - pltnfr(3,ic)           !!normalize N fractions
          b2 = 1. - (pltnfr(2,ic) - pltnfr(3,ic)) / b1
          b3 = 1. - .00001 / b1
@@ -313,9 +307,6 @@ subroutine readplant
          &pltpfr(2,ic) = pltpfr(1,ic) - .0001
          if (pltpfr(2,ic) - pltpfr(3,ic) < .0001)&
          &pltpfr(3,ic) = .75 * pltpfr(3,ic)
-         b1 = 0.0
-         b2 = 0.0
-         b3 = 0.0
          b1 = pltpfr(1,ic) - pltpfr(3,ic)        !!normalize P fractions
          b2 = 1. - (pltpfr(2,ic) - pltpfr(3,ic)) / b1
          b3 = 1. - .00001 / b1

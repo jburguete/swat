@@ -65,26 +65,18 @@ subroutine structure
    integer :: ii, jj
 
 !! initialize variables
-   reak = 0.
    reak = rnum1
    if (reak <= 1.) reak = 1.
    soxy = 0.
 
 !! daily array
    do ii = 1, mvaro
-      varoute(ii,ihout) = 0.
       varoute(ii,ihout) = varoute(ii,inum1)
    end do
    if (varoute(2,inum1) > 0.001) then
-      wtmp = 0.
       wtmp = varoute(1,inum1)
       !! calculate saturation concentration for dissolved oxygen
       !! QUAL2E section 3.6.1 equation III-29
-      disoxin = 0.
-      ww = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
       ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
       xx = 6.642308e07 / ((wtmp + 273.15)**2)
       yy = 1.243800e10 / ((wtmp + 273.15)**3)
@@ -107,15 +99,9 @@ subroutine structure
          end do
          soxy = 0.
          if (hhvaroute(2,inum1,ii) > 0.0001) then
-            wtmp = 0.
             wtmp = hhvaroute(1,inum1,ii)
             !! calculate saturation concentration for dissolved oxygen
             !! QUAL2E section 3.6.1 equation III-29
-            disoxin = 0.
-            ww = 0.
-            xx = 0.
-            yy = 0.
-            zz = 0.
             ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
             xx = 6.642308e07 / ((wtmp + 273.15)**2)
             yy = 1.243800e10 / ((wtmp + 273.15)**3)

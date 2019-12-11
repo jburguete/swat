@@ -170,7 +170,6 @@ subroutine pothole
    real*8 :: qin, potvol_m3, drcla, drsil, drtot, pot_depth, potmpao, potmpso, potno3o, potorgno, potorgpo, potsa_ini,&
      potsolpo, potvol_ini, potvol_sep, potvol_tile, solp_tileo, spillo, tileo, xx
 
-   j = 0
    j = ihru
 
 !! initialize variables
@@ -184,7 +183,6 @@ subroutine pothole
    potevmm = 0.
    potsepmm = 0.
    potflwo = 0.
-!   potflwosp = 0. ! not used
    potsedo = 0.
    potsano = 0.
    potsilo = 0.

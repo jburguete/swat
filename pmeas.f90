@@ -101,6 +101,7 @@ subroutine pmeas
 !       hrmeas = 0.
    end if
 
+   rbsb = 0.
 
    select case (ievent)
     case (0)                       !!daily rainfall
@@ -108,8 +109,6 @@ subroutine pmeas
       !! read precipitation data from files
       do k = 1, nrgage
          !! calculate gage id codes for first and last dataset in file
-         kk1 = 0
-         kk2 = 0
          kk1 = nrgfil * (k - 1) + 1
          if (k == nrgage) then
             kk2 = nrtot
@@ -135,7 +134,6 @@ subroutine pmeas
       !! assign precipitation data to HRUsoutput.std
 
       inum3sprev = 0
-      rbsb = 0.
       do k = 1, nhru
          subp(k) = rmeas(irgage(hru_sub(k)))
          !! generate data to replace missing values
@@ -151,7 +149,6 @@ subroutine pmeas
             else
                call pgen(k)
                !! set subbasin generated values
-               inum3sprev = 0
                inum3sprev = hru_sub(k)
                rbsb = subp(k)
                if (ievent == 1) then
@@ -171,8 +168,6 @@ subroutine pmeas
       !! read precipitation data from files
       do k = 1, nrgage
          !! calculate gage id codes for first and last dataset in file
-         kk1 = 0
-         kk2 = 0
          kk1 = nrgfil * (k - 1) + 1
          if (k == nrgage) then
             kk2 = nrtot

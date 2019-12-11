@@ -134,17 +134,6 @@ subroutine pond(k)
 
 
    !! store initial values
-   vol = 0.
-   sed = 0.
-   san = 0.
-   sil = 0.
-   cla = 0.
-   sag = 0.
-   lag = 0.
-   inised = 0.
-   finsed = 0.
-   setsed = 0.
-   remsetsed = 0.
    vol = pnd_vol(k)
    sed = pnd_sed(k)
    san = pnd_san(k)
@@ -154,7 +143,6 @@ subroutine pond(k)
    lag = pnd_lag(k)
 
    !! calculate water balance for day
-   pndsa = 0.
    pndsa = hru_fr(k) * bp1(k) * pnd_vol(k) ** bp2(k)
    pndev = 10. * evpnd(k) * pet_day * pndsa
    pndsep = pnd_k(k) * pndsa * 240.
@@ -207,7 +195,6 @@ subroutine pond(k)
          pndflwo = pnd_vol(k) - pnd_evol(k)
       else
          !! target storage based on flood season and soil water
-         xx = 0.
          targ = 0.
          if (iflod2(k) > iflod1(k)) then
             if (i_mo > iflod1(k) .and. i_mo < iflod2(k)) then
@@ -270,33 +257,27 @@ subroutine pond(k)
 
          if (pnd_lag(k) >= setsed) then
             pnd_lag(k) = pnd_lag(k) - setsed
-            remsetsed = 0.
          else
             remsetsed = setsed - pnd_lag(k)
             pnd_lag(k) = 0.
             if (pnd_san(k) >= remsetsed) then
                pnd_san(k) = pnd_san(k) - remsetsed
-               remsetsed = 0.
             else
                remsetsed = remsetsed - pnd_san(k)
                pnd_san(k) = 0.
                if (pnd_sag(k) >= remsetsed) then
                   pnd_sag(k) = pnd_sag(k) - remsetsed
-                  remsetsed = 0.
                else
                   remsetsed = remsetsed - pnd_sag(k)
                   pnd_sag(k) = 0.
                   if (pnd_sil(k) >= remsetsed) then
                      pnd_sil(k) = pnd_sil(k) - remsetsed
-                     remsetsed = 0.
                   else
                      remsetsed = remsetsed - pnd_sil(k)
                      pnd_sil(k) = 0.
                      if (pnd_cla(k) >= remsetsed) then
                         pnd_cla(k) = pnd_cla(k) - remsetsed
-                        remsetsed = 0.
                      else
-                        remsetsed = remsetsed - pnd_cla(k)
                         pnd_cla(k) = 0.
                      end if
                   end if
@@ -324,8 +305,6 @@ subroutine pond(k)
       else
          iseas = 2
       endif
-      phosk = 0.
-      nitrok = 0.
       phosk = psetlp(iseas,k) * pndsa * 10000. / pnd_vol(k)  !setl/mean depth
       phosk = Min(phosk, 1.)
       nitrok = nsetlp(iseas,k) * pndsa * 10000. / pnd_vol(k) !setl/mean depth
@@ -342,7 +321,6 @@ subroutine pond(k)
       pnd_no3s(k) = pnd_no3s(k) * (1. - nitrok)
       pnd_no3g(k) = pnd_no3g(k) * (1. - nitrok)
 
-      tpco = 0.
       if (pnd_vol(k) + pndflwo > 0.1) then
          tpco = 1.e+6 * (pnd_solp(k) + pnd_orgp(k) + pnd_psed(k) +&
          &pnd_solpg(k)) / (pnd_vol(k) + pndflwo)

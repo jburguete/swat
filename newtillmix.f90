@@ -92,7 +92,7 @@ subroutine newtillmix(jj,bmix)
 !!    sol_stap(:,:) |kg P/ha       |amount of phosphorus in the soil layer
 !!                                 |stored in the stable mineral phosphorus pool
 !!    sumix(:)      |none          |sum of mixing efficiencies in HRU
-!!    min_res(:) |kg/ha     |Min residue allowed due to implementation of
+!!    min_res(:)    |kg/ha         |Min residue allowed due to implementation of
 !!                                 |residue managment in the OPS file.
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -112,8 +112,8 @@ subroutine newtillmix(jj,bmix)
 !!                               |that is being redistributed between
 !!                               |mixed layers
 !!    thtill(:)   |none          |fraction of soil layer that is mixed
-!!    sol_msm      | sol_mass mixed
-!!    sol_msn      | sol_mass not mixed
+!!    sol_msm                    | sol_mass mixed
+!!    sol_msn                    | sol_mass not mixed
 !!    maxmix      |none          | maximum mixing eff to preserve specified minimum residue cover
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -144,12 +144,6 @@ subroutine newtillmix(jj,bmix)
 
 
    XX = 0.
-   WW1 = 0.
-   WW2 = 0.
-   WW3 = 0.
-   WW4 = 0.
-   emix = 0.
-   dtil = 0.
    if (bmix > 1.e-6) then
       !! biological mixing
       emix = bmix !bmix MJW (rev 412)

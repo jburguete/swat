@@ -112,8 +112,6 @@ subroutine soil_par
    if (sol_zmx(i) > 0.001) then
       flag = 0
       do j = 1, nly - 1
-         xx = 0.
-         yy = 0.
          xx = abs(sol_zmx(i)-sol_z(j,i))
          yy = abs(sol_zmx(i)-sol_z(j+1,i))
          !! if values are within 51 mm of one another, reset boundary
@@ -127,7 +125,6 @@ subroutine soil_par
             flag = 1
             sol_nly(i) = sol_nly(i) + 1
             nly = nly + 1
-            jj = 0
             jj = j + 1
             do n = nly, jj, -1
                sol_z(n,i) = sol_z(n-1,i)

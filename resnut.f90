@@ -79,7 +79,6 @@ subroutine resnut
    integer :: jres, iseas
    real*8 :: nitrok, phosk, tpco, chlaco, conc_p, conc_n
 
-   jres = 0
    jres = inum1
 
 !! if reservoir volume less than 1 m^3, set all nutrient levels to
@@ -152,7 +151,6 @@ subroutine resnut
    res_no2(jres) = res_no2(jres) * (1. - nitrok)
 
    !! calculate chlorophyll-a and water clarity
-   tpco = 0.
    chlaco = 0.
    res_chla(jres) = 0.
    res_seci(jres) = 0.

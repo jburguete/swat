@@ -64,12 +64,8 @@ subroutine orgn(iwave)
    integer :: j
    real*8 :: xx, wt1, er, conc
 
-   j = 0
    j = ihru
 
-   xx = 0.
-   wt1 = 0.    !! conversion factor
-   er = 0.  !! enrichment ratio
    if (iwave <= 0) then
       !! HRU calculations
       xx = sol_orgn(1,j) + sol_aorgn(1,j) + sol_fon(1,j)
@@ -88,7 +84,6 @@ subroutine orgn(iwave)
       er = enratio
    end if
 
-   conc = 0.
    conc = xx * er / wt1
 
    if (iwave <= 0) then

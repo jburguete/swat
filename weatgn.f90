@@ -70,15 +70,12 @@ subroutine weatgn(j)
    e = 0.
 
 !!    set random number array values
-   v2 = 0.
    v2 = Aunif(rndseed(idg(8),j))
    e(1) = Dstn1(rnd8(j),v2)    !! for max temp
    rnd8(j) = v2
-   v2 = 0.
    v2 = Aunif(rndseed(idg(9),j))
    e(2) = Dstn1(rnd9(j),v2)    !! for min temp
    rnd9(j) = v2
-   v2 = 0.
    v2 = Aunif(rndseed(idg(2),j))
    e(3) = Dstn1(rnd2(j),v2)    !! for radiation
    rnd2(j) = v2

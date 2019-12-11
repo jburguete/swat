@@ -80,14 +80,11 @@ subroutine pminrl
    integer :: j, l
    real*8 :: rto, rmn1, roc
 
-   j = 0
    j = ihru
 
-   rto = 0.
    rto = psp(j) / (1.-psp(j))
 
    do l = 1, sol_nly(j)
-      rmn1 = 0.
       rmn1 = (sol_solp(l,j) - sol_actp(l,j) * rto)
 !!  mike changed/added per isabelle beaudin's email from 01/21/09
       if (rmn1 > 0.) rmn1 = rmn1 * 0.1
@@ -95,7 +92,6 @@ subroutine pminrl
 !!  mike changed/added per isabelle beaudin's email from 01/21/09
       rmn1 = Min(rmn1, sol_solp(l,j))
 
-      roc = 0.
       roc = bk * (4. * sol_actp(l,j) - sol_stap(l,j))
       if (roc < 0.) roc = roc * .1
       roc = Min(roc, sol_actp(l,j))

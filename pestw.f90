@@ -69,7 +69,6 @@ subroutine pestw
    real*8 :: pfp, pfg
 
    do k = 1, npmx
-      kk = 0
       kk = npno(k)
 
       !! change units from kg/ha to mg/ha

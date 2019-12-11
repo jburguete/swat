@@ -33,28 +33,29 @@ subroutine sched_mgt
    use parm
    implicit none
 
-   integer :: j, ncrp
+   integer :: j, n, ncrp
    real*8 :: biomass, husc
 
    j = ihru
+   n = nop(j)
 
-   select case (mgtop(nop(j),j))
+   select case (mgtop(n,j))
 
     case (1)  !! plant operation
       igro(j) = 1
-      lai_init = mgt5op(nop(j),j)
-      bio_init = mgt6op(nop(j),j)
-      hi_targ(j) = mgt7op(nop(j),j)
-      bio_targ(j) = mgt8op(nop(j),j) * 1000.
-      cnop = mgt9op(nop(j),j)
-      curyr_mat(j) = mgt3iop(nop(j),j)
+      lai_init = mgt5op(n,j)
+      bio_init = mgt6op(n,j)
+      hi_targ(j) = mgt7op(n,j)
+      bio_targ(j) = mgt8op(n,j) * 1000.
+      cnop = mgt9op(n,j)
+      curyr_mat(j) = mgt3iop(n,j)
       if (curyr_mat(j) == 0) igrotree(j) = 1
 
-      idplt(j) = mgt1iop(nop(j),j)
+      idplt(j) = mgt1iop(n,j)
 
-      if (mgt4op(nop(j),j) < 700.) mgt4op(nop(j),j) = 1700.
-!            if (mgt4op(nop(j),j) > 5000.) mgt4op(nop(j),j) = 5000.
-      phu_plt(j) = mgt4op(nop(j),j)
+      if (mgt4op(n,j) < 700.) mgt4op(n,j) = 1700.
+!            if (mgt4op(n,j) > 5000.) mgt4op(n,j) = 5000.
+      phu_plt(j) = mgt4op(n,j)
 
       call plantop
 
@@ -67,19 +68,19 @@ subroutine sched_mgt
 
 
     case (2)  !! irrigation operation
-      irr_sc(ihru) = mgt2iop(nop(j),j)     !!NUBZ
-      irr_no(ihru) = mgt10iop(nop(j),j)
-      irramt(ihru) = mgt4op(nop(j),j)
-      irrsalt(ihru) = mgt5op(nop(j),j)
-      irrefm(ihru) = mgt6op(nop(j),j)
-      irrsq(ihru) = mgt7op(nop(j),j)
-      irr_flag(ihru) = 1
+      irr_sc(j) = mgt2iop(n,j)     !!NUBZ
+      irr_no(j) = mgt10iop(n,j)
+      irramt(j) = mgt4op(n,j)
+      irrsalt(j) = mgt5op(n,j)
+      irrefm(j) = mgt6op(n,j)
+      irrsq(j) = mgt7op(n,j)
+      irr_flag(j) = 1
 
-      if (irrefm(ihru) < 1.e-6) irrefm(ihru)=1.0
+      if (irrefm(j) < 1.e-6) irrefm(j)=1.0
       if (irr_sc(j) <= 0) irr_sc(j) = irrsc(j)
       if (irr_no(j) <= 0) irr_no(j) = irrno(j)
       if (irr_no(j) <= 0) irr_no(j) = hru_sub(j)
-      if (irr_sc(ihru) > 2) then    !! reach and res flag ??
+      if (irr_sc(j) > 2) then    !! reach and res flag ??
          call irrsub
       endif
 
@@ -95,9 +96,9 @@ subroutine sched_mgt
 
 
     case (3)   !! fertilizer operation
-      ifrttyp = mgt1iop(nop(j),j)
-      frt_kg = mgt4op(nop(j),j)
-      frt_surface = mgt5op(nop(j),j)
+      ifrttyp = mgt1iop(n,j)
+      frt_kg = mgt4op(n,j)
+      frt_surface = mgt5op(n,j)
       if (frt_surface <= 1.e-6) frt_surface = 0.2
 
       call fert
@@ -113,10 +114,10 @@ subroutine sched_mgt
 
 
     case (4)   !! pesticide operation
-      hrupest(ihru) = 1
-      ipest = mgt1iop(nop(j),j)
-      pst_kg = mgt4op(nop(j),j)
-      pst_dep = mgt5op(nop(j),j)
+      hrupest(j) = 1
+      ipest = mgt1iop(n,j)
+      pst_kg = mgt4op(n,j)
+      pst_dep = mgt5op(n,j)
 
       call apply
 
@@ -128,9 +129,9 @@ subroutine sched_mgt
       endif
 
     case (5)   !! harvest and kill operation
-      cnop = mgt4op(nop(j),j)
-      hi_ovr = mgt5op(nop(j),j)
-      frac_harvk = mgt6op(nop(j),j)
+      cnop = mgt4op(n,j)
+      hi_ovr = mgt5op(n,j)
+      frac_harvk = mgt6op(n,j)
       biomass = bio_ms(j)
 
       call harvkillop
@@ -151,8 +152,8 @@ subroutine sched_mgt
       phuacc(j) = 0.
 
     case (6)   !! tillage operation
-      idtill = mgt1iop(nop(j),j)
-      cnop = mgt4op(nop(j),j)
+      idtill = mgt1iop(n,j)
+      cnop = mgt4op(n,j)
 
       call newtillmix(j,0.0D+00)
 
@@ -165,9 +166,9 @@ subroutine sched_mgt
       end if
 
     case (7)  !! harvest only operation
-      hi_bms = mgt5op(nop(j),j)
-      hi_rsd = mgt6op(nop(j),j)
-      harveff = mgt4op(nop(j),j)
+      hi_bms = mgt5op(n,j)
+      hi_rsd = mgt6op(n,j)
+      harveff = mgt4op(n,j)
       if (harveff <= 0.) harveff = 1.0
       call harvestop
 
@@ -195,16 +196,16 @@ subroutine sched_mgt
       phuacc(j) = 0.
 
     case (9)    !! grazing operation
-      manure_id(j) = mgt2iop(nop(j),j)
-      grz_days(j) = mgt1iop(nop(j),j)
-      bio_eat(j) = mgt4op(nop(j),j)
-      bio_trmp(j) = mgt5op(nop(j),j)
-      manure_kg(j) = mgt6op(nop(j),j)
+      manure_id(j) = mgt2iop(n,j)
+      grz_days(j) = mgt1iop(n,j)
+      bio_eat(j) = mgt4op(n,j)
+      bio_trmp(j) = mgt5op(n,j)
+      manure_kg(j) = mgt6op(n,j)
       ndeat(j) = 0
       igrz(j) = 1
 
       if (manure_kg(j) <= 0.) then
-         manure_kg(j) = 0.95 * mgt4op(nop(j),j)
+         manure_kg(j) = 0.95 * mgt4op(n,j)
       end if
       call graze
 
@@ -217,13 +218,13 @@ subroutine sched_mgt
       end if
 
     case (10)   !! auto irrigation operation
-      wstrs_id(j) = mgt1iop(nop(j),j)
-      auto_wstr(j) = mgt4op(nop(j),j)
-      irr_eff(j) = mgt5op(nop(j),j)
-      irr_mx(j) = mgt6op(nop(j),j)
-      irr_asq(j) = mgt7op(nop(j),j)
-      irr_sca(j) = mgt2iop(nop(j),j)
-      irr_noa(j) = mgt10iop(nop(j),j)
+      wstrs_id(j) = mgt1iop(n,j)
+      auto_wstr(j) = mgt4op(n,j)
+      irr_eff(j) = mgt5op(n,j)
+      irr_mx(j) = mgt6op(n,j)
+      irr_asq(j) = mgt7op(n,j)
+      irr_sca(j) = mgt2iop(n,j)
+      irr_noa(j) = mgt10iop(n,j)
       if (irr_noa(j) <= 0) irr_noa(j) = irrno(j)
       if (irr_noa(j) <= 0) irr_noa(j) = hru_sub(j)
       if (wstrs_id(j) <= 0) wstrs_id(j) = 1
@@ -231,7 +232,7 @@ subroutine sched_mgt
       if (irr_eff(j) == 0.) irr_eff(j) = 1.
       if (irr_mx(j) < 1.e-6) irr_mx(j) = 25.4
       if (irr_sca(j) <= 0) irr_sca(j) = irrsc(j)
-      irra_flag(ihru) = 1
+      irra_flag(j) = 1
       if (imgt ==1) then
          write (143, 1010) subnum(j), hruno(j), iyr, i_mo,&
          &iida, hru_km(j), "        ",&
@@ -242,16 +243,16 @@ subroutine sched_mgt
 
 
     case (11)   !! auto fertilizer operation
-      iafrttyp(j) = mgt1iop(nop(j),j)
-      nstress(j) = mgt2iop(nop(j),j)
-      auto_nstrs(j) = mgt4op(nop(j),j)
-      auto_napp(j) = mgt5op(nop(j),j)
+      iafrttyp(j) = mgt1iop(n,j)
+      nstress(j) = mgt2iop(n,j)
+      auto_nstrs(j) = mgt4op(n,j)
+      auto_napp(j) = mgt5op(n,j)
       if (auto_napp(j) < 1.e-6) auto_napp(j) = 250.
-      auto_nyr(j) = mgt6op(nop(j),j)
+      auto_nyr(j) = mgt6op(n,j)
       if (auto_nyr(j) < 1.e-6) auto_nyr(j) = 350.
-      auto_eff(j) = mgt7op(nop(j),j)
+      auto_eff(j) = mgt7op(n,j)
       if (auto_eff(j) <= 0.) auto_eff(j) = 1.3
-      afrt_surface(j) = mgt8op(nop(j),j)
+      afrt_surface(j) = mgt8op(n,j)
       if (afrt_surface(j) <= 1.e-6) afrt_surface(j) = .8
       !! calculate tnylda for autofertilization
       ncrp = idplt(j)
@@ -266,7 +267,7 @@ subroutine sched_mgt
     case (12)   !! street sweeping (only if iurban=2)
 
       ! husc was not defined
-      husc = phu_op(nop(j),j) !?
+      husc = phu_op(n,j) !?
       if (husc > 0.) then
          ! igrow is not defined
          !if (igrow == 1) then
@@ -276,8 +277,8 @@ subroutine sched_mgt
             phusw_nocrop(j) = husc
          endif
       endif
-      sweepeff = mgt4op(nop(j),j)
-      fr_curb = mgt5op(nop(j),j)
+      sweepeff = mgt4op(n,j)
+      fr_curb = mgt5op(n,j)
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
@@ -287,7 +288,7 @@ subroutine sched_mgt
       end if
 
     case (13)    !! release/impound water in rice fields
-      imp_trig(j) = mgt1iop(nop(j),j)
+      imp_trig(j) = mgt1iop(n,j)
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
@@ -297,25 +298,25 @@ subroutine sched_mgt
       end if
 
     case (14)    !! continuous fertilization operation
-      fert_days(j) = mgt1iop(nop(j),j)
-      cfrt_id(j) = mgt2iop(nop(j),j)
-      ifrt_freq(j) = mgt3iop(nop(j),j)
-      cfrt_kg(j) = mgt4op(nop(j),j)
+      fert_days(j) = mgt1iop(n,j)
+      cfrt_id(j) = mgt2iop(n,j)
+      ifrt_freq(j) = mgt3iop(n,j)
+      cfrt_kg(j) = mgt4op(n,j)
       icfrt(j) = 1
       ndcfrt(j) = 1
       iday_fert(j) = ifrt_freq(j)
 
     case (15)    !! continuous pesticide operation
-      cpst_id(j) = mgt1iop(nop(j),j)
-      pest_days(j) = mgt2iop(nop(j),j)
-      ipst_freq(j) = mgt3iop(nop(j),j)
-      cpst_kg(j) = mgt4op(nop(j),j)
+      cpst_id(j) = mgt1iop(n,j)
+      pest_days(j) = mgt2iop(n,j)
+      ipst_freq(j) = mgt3iop(n,j)
+      cpst_kg(j) = mgt4op(n,j)
       icpst(j) = 1
       ndcpst(j) = 0
       iday_pest(j) = ipst_freq(j)
 
     case (16)   !! burning
-      burn_frlb = mgt4op(nop(j),j)
+      burn_frlb = mgt4op(n,j)
       call burnop
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
@@ -329,7 +330,7 @@ subroutine sched_mgt
 
    end select
 
-   if (mgtop(nop(j),j) /= 17) then
+   if (mgtop(n,j) /= 17) then
       nop(j) = nop(j) + 1
    end if
 

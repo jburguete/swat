@@ -204,10 +204,8 @@ subroutine readfile
    if (idist == 1) then
       if (rexp <= 0.) rexp = 1.3
       sumv = 0.
-      rn = 0
       rn = rndseed(idg(3),1)
       do j = 1, 10000
-         xx = 0.
          xx = Aunif(rn)
          sumv = sumv + (-Log(xx))**rexp
       end do

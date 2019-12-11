@@ -89,7 +89,7 @@ Then, it overwrites the file read
 
 - In routels.f
 "dstor" is not defined, it has to be as in watbal.f?
-"latqout" and "gwqout" can be not initialized
+"ls_overq", "latqout" and "gwqout" can be not initialized
 
 - In rtbact.f:
 "netwtr" can be not initialized
@@ -129,3 +129,4 @@ or it is "mgt5op(nop(ihru),ihru)" as in sched_mgt.f?
 - In zero_urbn.f
 "stp_subnum" seems to be "dtp_subnum"
 "subdr_kg" seems to be "subdr_km"
+"spl_eros" is not defined, could be "eros_spl"?

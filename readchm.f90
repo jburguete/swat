@@ -113,7 +113,6 @@ subroutine readchm
                npmx = npmx + 1
             end if
 
-            k = 0
             k = nope(pstnum)
             plt_pst(k,ihru) = pltpst
             sol_pst(k,ihru,1) = solpst

@@ -246,7 +246,6 @@ subroutine readres
    if (res_evol(i) <= 0.0) res_evol(i) = 1.11 * res_pvol(i)
    if (res_psa(i) <= 0.0) res_psa(i) = 0.08 * res_pvol(i)
    if (res_esa(i) <= 0.0) res_esa(i) = 1.5 * res_psa(i)
-   targ = 0.
    targ = res_pvol(i) + 0.1 * (res_evol(i) - res_pvol(i))
    if (res_vol(i) > targ ) res_vol(i) = targ
    if (evrsv(i) <= 0.) evrsv(i) = 0.6
@@ -297,10 +296,8 @@ subroutine readres
    wshd_ressed = wshd_ressed + res_vol(i) * res_sed(i)
 
 !!    calculate shape parameters for surface area equation
-   resdif = 0.
    resdif = res_evol(i) - res_pvol(i)
    if ((res_esa(i) - res_psa(i)) > 0. .and. resdif > 0.) then
-      lnvol = 0.
       lnvol = Log10(res_evol(i)) - Log10(res_pvol(i))
       if (lnvol > 1.e-4) then
          br2(i) = (Log10(res_esa(i)) - Log10(res_psa(i))) / lnvol

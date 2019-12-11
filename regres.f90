@@ -73,10 +73,8 @@ real*8 function regres(k) result (r_regres)
    &0.697, 1.008, 0.628, 0.469, 1.790,&
    &1.618, 0.954, 0.789, 0.289, 2.247/), (/5,3/))
 
-   j = 0
    j = ihru
 
-   ii = 0
    ii = ireg(hru_sub(j))
 
    beta = 0.
@@ -85,7 +83,6 @@ real*8 function regres(k) result (r_regres)
    if (k==3) beta = btn
    if (k==4) beta = btp
 
-   r_regres = 0.
    r_regres = beta(1,ii) * (precipday / 25.4) ** beta(2,ii) *&
    &(hru_km(j) * fimp(urblu(j)) / 2.589) ** beta(3,ii) *&
    &(fimp(urblu(j)) * 100. + 1.) ** beta(4,ii) * beta(5,ii)

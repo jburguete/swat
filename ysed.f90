@@ -62,12 +62,10 @@ subroutine ysed(iwave)
    integer :: j
    real*8 :: c
 
-   j = 0
    j = ihru
 
    !! initialize variables
    c = 0.
-   cklsp(j) = 0.
 
    if (iwave > 0) then
       !! subbasin sediment calculations

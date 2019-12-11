@@ -108,7 +108,6 @@ subroutine urban
    real*8 :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt, tno3, xx
    integer :: j
 
-   j = 0
    j = ihru
 
 
@@ -116,10 +115,6 @@ subroutine urban
 
     case (1)                         !! USGS regression equations
       if (precipday > .1 .and. surfq(j) > .1) then
-         cod = 0.
-         sus_sol = 0.
-         tn = 0.
-         tp = 0.
          cod = Regres(1)
          sus_sol = Regres(2)
          tn = Regres(3)
@@ -153,19 +148,13 @@ subroutine urban
          !! rainy day: no build-up, street cleaning allowed
 
          !! calculate amount of dirt on streets prior to wash-off
-         dirt = 0.
-         dirto = 0.
          dirt = dirtmx(urblu(j)) * twash(j) /&
          &(thalf(urblu(j)) + twash(j))
          dirto = dirt
 
          !! calculate wash-off of solids
-         urbk = 0.
          urbk = urbcoef(urblu(j)) * (peakr * 3.6 / hru_km(j))
          !! expression in () peakr in mm/hr
-         rp1 = 0.
-         durf = 0.
-         turo = 0.
          if(al5==0) al5 = 1e-6    !J.Jeong urban modeling
          rp1 = -2. * Log(1.- al5)
          durf = 4.605 / rp1
@@ -177,13 +166,8 @@ subroutine urban
          if (dirt < 1.e-6) dirt = 0.0
 
          !! set time to correspond to lower amount of dirt
-         twash(j) = 0.
          twash(j) = thalf(urblu(j)) * dirt / (dirtmx(urblu(j)) - dirt)
 
-         sus_sol = 0.
-         tn = 0.
-         tp = 0.
-         tno3 = 0.
          !! amounts are kg/ha
          sus_sol = Max(0., (dirto - dirt) * curbden(urblu(j)))
          tn = tnconc(urblu(j)) * sus_sol / 1.e6

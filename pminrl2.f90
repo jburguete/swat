@@ -96,7 +96,6 @@ subroutine pminrl2
    real*8 :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff, arate, ssp, xx
    real*8  solp(mlyr),actp(mlyr),stap(mlyr) !! locals for concentation based data
 
-   j = 0
    j = ihru
 
    do l = 1, sol_nly(j) !! loop through soil layers in this HRU
@@ -141,9 +140,7 @@ subroutine pminrl2
       end if
 
       !! Calculate P balance
-      rto = 0.
       rto = psp(j) / (1.-psp(j))
-      rmn1 = 0.
       rmn1 = sol_solp(l,j) - sol_actp(l,j) * rto !! P imbalance
 
       !! Move P between the soluble and active pools based on vadas et al., 2006
@@ -160,7 +157,7 @@ subroutine pminrl2
          !! limit rate coeff from 0.05 to .5 helps on day 1 when a_days is zero
          if (arate > 0.5) arate  = 0.5
          if (arate < 0.1) arate  = 0.1
-         rmn1 = (arate) * rmn1
+         rmn1 = arate * rmn1
          a_days(l,j) = a_days(l,j)  + 1 !! add a day to the imbalance counter
          b_days(l,j) = 0
       End if
@@ -203,7 +200,6 @@ subroutine pminrl2
          ssp = (ssp + ssp_store(l,j) * 99.)/100.
       end if
 
-      roc = 0.
       roc = ssp * (sol_actp(l,j) + sol_actp(l,j) * rto)
       roc = roc - sol_stap(l,j)
       roc = as_p_coeff * roc

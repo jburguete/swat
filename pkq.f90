@@ -50,7 +50,6 @@ subroutine pkq(iwave)
    integer :: j
    real*8 :: altc
 
-   j = 0
    j = ihru
 
    altc = 0.

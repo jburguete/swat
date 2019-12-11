@@ -76,21 +76,17 @@ subroutine rtday
    real*8 :: volrt, maxrt, adddep, addp, addarea, vc, aaa
    real*8 :: rttlc1, rttlc2, rtevp1, rtevp2, det
 
-   jrch = 0
    jrch = inum1
 
-   wtrin = 0.
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
 !! calculate volume of water in reach
-   vol = 0.
    vol = wtrin + rchstor(jrch)
 
 !! Find average flowrate in a day
    volrt = vol / 86400.
 
 !! Find maximum flow capacity of the channel at bank full
-   c = 0.
    c = chside(jrch)
    p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c)
    rh = phi(1,jrch) / p
@@ -140,7 +136,6 @@ subroutine rtday
    end if
 
 !! calculate top width of channel at water level
-   topw = 0.
    if (rchdep <= ch_d(jrch)) then
       topw = phi(6,jrch) + 2. * rchdep * c
    else
@@ -158,12 +153,10 @@ subroutine rtday
 
 
       !! calculate volume of water leaving reach on day
-      scoef = 0.
-      rtwtr = 0.
       !scoef = 2. * det / (2. * rttime + det)
       scoef =  det / (rttime + det)
       if (scoef > 1.) scoef = 1.
-      rtwtr = scoef * (wtrin + rchstor(jrch))
+      !rtwtr = scoef * (wtrin + rchstor(jrch)) ! replaced by the following line
       !new storage coefficient replacement
       rtwtr = vc * rcharea * 86400.
       rtwtr = dmin1 (rtwtr, wtrin)

@@ -285,7 +285,6 @@ subroutine stdaa
 !!    j           |none          |counter
 !!    k           |none          |counter
 !!    nicr        |none          |sequence number for crop in year
-!!    nnro        |none          |sequence number for year in rotation
 !!    sumpady     |none          |number of HRUs with potholes
 !!    xirr        |mm H2O        |average annual amount of irrigation water
 !!                               |applied to watershed
@@ -309,7 +308,6 @@ subroutine stdaa
       write (19,1100) title
       write (19,1200)
    endif
-   xirr = 0.
    xirr = Sum(aairr)
    !! print irrigation data
    if (xirr > 0.) then

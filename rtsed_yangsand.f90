@@ -86,7 +86,7 @@ subroutine rtsed_yangsand
    implicit none
 
    integer :: jrch
-   real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep, tbase
+   real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep
    real*8 :: depdeg, dot, x, Tbank,Tbed,asinea,Tou
    real*8 :: sanin, silin, clain, sagin, lagin, grain, outfract
    real*8 :: depsan, depsil, depcla, depsag, deplag, depgra
@@ -98,22 +98,14 @@ subroutine rtsed_yangsand
      &SFbank, topw, var1, var2, var3, var4, var5, var56, var6, vcla, vgra, vlag,&
      &vsag, vsan, vsh, vsil, w50
 
-   jrch = 0
    jrch = inum1
 
    if (rtwtr > 0. .and. rchdep > 0.) then
 
 !! initialize water in reach during time step
-      qdin = 0.
       qdin = rtwtr + rchstor(jrch)
 
 !! initialize sediment in reach during time step
-      sedin = 0.
-      sanin = 0.
-      silin = 0.
-      clain = 0.
-      sagin = 0.
-      lagin = 0.
       sedin = varoute(3, inum2) * (1. - rnum1) + sedst(jrch)
       sanin = varoute(23,inum2) * (1. - rnum1) + sanst(jrch)
       silin = varoute(24,inum2) * (1. - rnum1) + silst(jrch)
@@ -130,7 +122,6 @@ subroutine rtsed_yangsand
          peakr = 1. * sdti  !! prf(jrch) = 1.0
 
 !! calculate peak flow velocity
-         vc = 0.
          if (rcharea < .010) then
             vc = 0.01
          else
@@ -138,10 +129,6 @@ subroutine rtsed_yangsand
          end if
 
          if (vc > 5.) vc = 5.
-
-         tbase = 0.
-         tbase = ch_l2(jrch) * 1000. / (3600. * 24. * vc)
-         if (tbase > 1.) tbase = 1.
 
 !! JIMMY'S NEW IMPROVED METHOD for sediment transport
          cyin = 0.
@@ -175,7 +162,6 @@ subroutine rtsed_yangsand
          depsag = 0.
          deplag = 0.
          depgra = 0.
-         watdep = 0.
          bnkrt = 0.
          bedrt = 0.
          effbnkbed = 0.
@@ -185,7 +171,6 @@ subroutine rtsed_yangsand
          pbank = 2. * rchdep * Sqrt(1. + c * c)
          rh = rcharea / (pbed + pbank)
 
-         topw = 0.
          if (rchdep <= ch_d(jrch)) then
             topw = phi(6,jrch) + 2. * rchdep * c
             fpratio = 0.
@@ -430,7 +415,6 @@ subroutine rtsed_yangsand
          vlag = 411.0 * ((0.50)**2.) / (3600.)
 
 !! Deposition calculated based on Einstein Equation
-         x = 0.
 
 !! Gravel deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vgra / (vc * rchdep)

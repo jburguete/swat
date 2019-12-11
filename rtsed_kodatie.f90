@@ -98,22 +98,14 @@ subroutine rtsed_kodatie
    &deg1san, deg1sil, degremain, pbank, pbed, SFbank, topw,&
    &vcla, vgra, vlag, vsag, vsan, vsil
 
-   jrch = 0
    jrch = inum1
 
    if (rtwtr > 0. .and. rchdep > 0.) then
 
 !! initialize water in reach during time step
-      qdin = 0.
       qdin = rtwtr + rchstor(jrch)
 
 !! initialize sediment in reach during time step
-      sedin = 0.
-      sanin = 0.
-      silin = 0.
-      clain = 0.
-      sagin = 0.
-      lagin = 0.
       sedin = varoute(3, inum2) * (1. - rnum1) + sedst(jrch)
       sanin = varoute(23,inum2) * (1. - rnum1) + sanst(jrch)
       silin = varoute(24,inum2) * (1. - rnum1) + silst(jrch)
@@ -130,7 +122,6 @@ subroutine rtsed_kodatie
          peakr = 1. * sdti  !! prf(jrch) = 1.0
 
 !! calculate peak flow velocity
-         vc = 0.
          if (rcharea < .010) then
             vc = 0.01
          else
@@ -138,10 +129,6 @@ subroutine rtsed_kodatie
          end if
 
          if (vc > 5.) vc = 5.
-
-         !tbase = 0. ! not used
-         !tbase = ch_l2(jrch) * 1000. / (3600. * 24. * vc) ! not used
-         !if (tbase > 1.) tbase = 1. ! not used
 
 !! JIMMY'S NEW IMPROVED METHOD for sediment transport
          cyin = 0.
@@ -185,7 +172,6 @@ subroutine rtsed_kodatie
          pbank = 2. * rchdep * Sqrt(1. + c * c)
          ! rh = rcharea / (pbed + pbank) ! not used
 
-         topw = 0.
          if (rchdep <= ch_d(jrch)) then
             topw = phi(6,jrch) + 2. * rchdep * c
             fpratio = 0.
@@ -412,7 +398,6 @@ subroutine rtsed_kodatie
          vlag = 411.0 * ((0.50)**2.) / (3600.)
 
 !! Deposition calculated based on Einstein Equation
-         x = 0.
 
 !! Gravel deposition
          x = 1.055 * 1000. * ch_l2(jrch) * vgra / (vc * rchdep)
@@ -570,11 +555,9 @@ subroutine rtsed_kodatie
 
 !! compute changes in channel dimensions
          if (ideg == 1) then
-            depdeg = 0.
             depdeg = ch_d(jrch) - ch_di(jrch)
             if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
                if (qdin > 1400000.) then
-                  dot = 0.
                   dot = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
                   dat2 = 1.
                   dat2 =  dat2 * dot

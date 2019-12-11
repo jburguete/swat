@@ -444,10 +444,8 @@ subroutine sumv
    integer :: j, k, ii
    real*8 :: cnv
 
-   j = 0
    j = ihru
 
-   cnv = 0.
    cnv = 10. * hru_ha(j)
 
    if (curyr > nyskip) then

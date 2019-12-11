@@ -40,8 +40,6 @@ subroutine xmon
 
    if (iida > ndays(2)) then
       do i_mo = 2, 12
-         m1 = 0
-         nda = 0
          m1 = i_mo + 1
          nda = ndays(m1)
          if (iida <= nda) return

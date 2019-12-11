@@ -45,10 +45,8 @@ subroutine tstr
    integer :: j
    real*8 :: tgx, rto
 
-   j = 0
    j = ihru
 
-   tgx = 0.
    tgx = tmpav(j) - t_base(idplt(j))
 
    if (tgx <= 0.) then
@@ -59,7 +57,6 @@ subroutine tstr
          &t_base(idplt(j)) - tmpav(j)
       end if
 
-      rto = 0.
       rto = ((t_opt(idplt(j)) - tmpav(j)) /&
       &(tgx + 1.e-6)) ** 2
 

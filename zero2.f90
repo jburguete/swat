@@ -103,7 +103,6 @@ subroutine zero2
    tile_minpso = 0.
    tile_minpao = 0.
 
-   ! irelease = 0 ! not defined
    imp_trig = 1
    ires1 = 0
    ires2 = 0

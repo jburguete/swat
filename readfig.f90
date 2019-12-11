@@ -160,7 +160,6 @@ subroutine readfig
          !     if (char8(idum) == "in:") inum8s = 0
 
          if (char6(idum) == "  1")  then
-            ! xyz = 0. ! not used
             write (char6(idum), fmt=' (i3)') jjii
             inum6s(idum) = jjii
          else
@@ -168,7 +167,6 @@ subroutine readfig
          end if
 
          if (char7(idum) == "  1")  then
-            ! xyz = 0. ! not used
             write (char7(idum), fmt=' (i3)') jjii
             inum7s(idum) = jjii
          else
@@ -176,7 +174,6 @@ subroutine readfig
          end if
 
          if (char8(idum) == "  0")  then
-            ! xyz = 0. ! not used
             write (char8(idum), fmt=' (i3)') iijj
             inum8s(idum) = iijj
          else
@@ -195,7 +192,6 @@ subroutine readfig
             subfile = ""
             read (102,5100) subfile
             call caps(subfile)
-            i = 0
             i = inum1s(idum)
             subed(ihouts(idum)) = inum4s(idum)
             open (101,file=subfile)
@@ -213,7 +209,6 @@ subroutine readfig
             read (102,5100) rtefile, swqfile
             call caps(rtefile)
             call caps(swqfile)
-            irch = 0
             irch = inum1s(idum)
             open (103,file=rtefile)
             open (104,file=swqfile)
@@ -227,7 +222,6 @@ subroutine readfig
             read (102,5100) resfile, lwqfile
             call caps(resfile)
             call caps(lwqfile)
-            i = 0
             i = inum1s(idum)
             open (105,file=resfile)
             call readres
@@ -259,7 +253,6 @@ subroutine readfig
             read (102,5100) month_in
             recmonps(ihouts(idum)) = month_in(1:index(month_in,'.')-1)
             call caps(month_in)
-            i = 0
             i = inum1s(idum)
             open (107,file=month_in,recl=350)
             call readmon
@@ -270,7 +263,6 @@ subroutine readfig
             read (102,5100) year_in
 
             call caps(year_in)
-            i = 0
             i = inum1s(idum)
             open (108,file=year_in,recl=350)
             call readyr
@@ -289,7 +281,6 @@ subroutine readfig
                   write (40+inum1s(idum),5400) title
                   write (40+inum1s(idum),5500)
                else
-                  iida = 0
                   iida = idaf
                   call xmon
                   write (40+inum1s(idum),5501) iyr, i_mo,&
@@ -314,7 +305,6 @@ subroutine readfig
             read (102,5100) annual_in
             reccnstps(ihouts(idum))=annual_in(1:index(annual_in,'.')-1)
             call caps(annual_in)
-            i = 0
             i = inum1s(idum)
             open (109,file=annual_in,recl=350)
             call readcnst

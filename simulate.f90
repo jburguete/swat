@@ -79,9 +79,6 @@ subroutine simulate
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ic          |none          |counter
 !!    idlst       |julian date   |last day of simulation in current year
-!!    iix         |none          |sequence number of current year in rotation
-!!    iiz         |none          |sequence number of current crop grown
-!!                               |within the current year
 !!    j           |none          |counter
 !!    xx          |none          |current year in simulation sequence
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -122,7 +119,6 @@ subroutine simulate
       end if
 
       !! set beginning day of simulation for year
-      id1 = 0
       if (curyr == 1 .and. idaf > 0) then
          id1 = idaf
       else
@@ -130,7 +126,6 @@ subroutine simulate
       end if
 
       !! set ending day of simulation for year
-      idlst = 0
       if (curyr == nbyr .and. idal > 0) then
          idlst = idal
       else
@@ -138,7 +133,6 @@ subroutine simulate
       end if
 
       !! set current julian date to begin annual simulation
-      iida = 0
       iida = id1
 
       call xmon
@@ -197,7 +191,6 @@ subroutine simulate
             igen = igen + iscen
             call gcycl
             do j = 1, subtot
-               ii = 0
                ii = fcst_reg(j)
                if (ii <= 0) ii = 1
                do mon = 1, 12
@@ -319,7 +312,6 @@ subroutine simulate
          !! update target nitrogen content of yield with data from
          !! year just simulated
          do ic = 1, mcr
-            xx = 0.
             xx = dfloat(curyr)
             tnylda(j) = (tnylda(j) * xx + tnyld(j)) / (xx + 1.)
          end do

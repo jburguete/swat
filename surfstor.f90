@@ -141,7 +141,6 @@ subroutine surfstor
 
    integer :: j, k
 
-   j = 0
    j = ihru
 
    if (ievent == 0) then

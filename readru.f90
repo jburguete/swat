@@ -80,7 +80,7 @@ subroutine readru
    ru_k(isub,iru) = sumk
    ru_ovsl(isub,iru) = ovsl
    ru_ovs(isub,iru) = ovs
-   ru_ktc(isub,iru) = tck
+   ru_ktc(isub,iru) = tck ! tck is not readed
    !daru_km(isub,iru) = da_ru
 
 5000 format (a)

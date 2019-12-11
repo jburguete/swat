@@ -99,11 +99,9 @@ subroutine rtpest
    real*8 :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
    real*8 :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
 
-   jrch = 0
    jrch = inum1
 
 !! initialize depth of water for pesticide calculations
-   depth = 0.
    if (rchdep < 0.1) then
       depth = .1
    else
@@ -111,17 +109,12 @@ subroutine rtpest
    endif
 
 !! calculate volume of active river bed sediment layer
-   bedvol = 0.
    bedvol = ch_w(2,jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
 
 !! calculate volume of water entering reach
-   wtrin = 0.
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
 !! pesticide transported into reach during day
-   solpstin = 0.
-   sorpstin = 0.
-   pstin = 0.
    solpstin = varoute(11,inum2) * (1. - rnum1)
    sorpstin = varoute(12,inum2) * (1. - rnum1)
    pstin = solpstin + sorpstin
@@ -135,11 +128,9 @@ subroutine rtpest
 !      endif
 
    !! calculate mass of pesticide in reach
-   chpstmass = 0.
    chpstmass = pstin + chpst_conc(jrch) * rchwtr
 
    !! calculate mass of pesticide in bed sediment
-   sedpstmass = 0.
    sedpstmass = sedpst_conc(jrch) * bedvol
 
    if (chpstmass + sedpstmass < 1.e-6) then
@@ -151,12 +142,9 @@ subroutine rtpest
 !!in-stream processes
    if (rtwtr / 86400. > 0.002) then
       !! calculated sediment concentration
-      sedcon = 0.
       sedcon = sedrch / rtwtr * 1.e6
 
       !! calculate fraction of soluble and sorbed pesticide
-      frsol = 0.
-      frsrb = 0.
       if (solpstin + sorpstin > 1.e-6) then
          if (chpst_koc(jrch) > 0.) then
             frsol = 1. / (1. + chpst_koc(jrch)* sedcon)
@@ -175,10 +163,9 @@ subroutine rtpest
       fd2 = 1. / (.5 + chpst_koc(jrch))
 
       !! calculate flow duration
-      tday = 0.
-      tday = rttime / 24.0
-      if (tday > 1.0) tday = 1.0
-      tday = 1.0
+      !tday = rttime / 24.0
+      !if (tday > 1.0) tday = 1.0
+      tday = 1.0 ! this line overwrites previous lines
 
       !! calculate amount of pesticide that undergoes chemical or
       !! biological degradation on day in reach
@@ -250,7 +237,6 @@ subroutine rtpest
       end if
 
       !! verify that water concentration is at or below solubility
-      solmax = 0.
       solmax = pest_sol * (rchwtr + wtrin)
       if (solmax < chpstmass * frsol) then
          sedpstmass = sedpstmass + (chpstmass * frsol - solmax)
@@ -275,7 +261,6 @@ subroutine rtpest
 
 !! calculate pesticide concentrations at end of day
    chpst_conc(jrch) = 0.
-   sedpst_conc(jrch) = 0.
    if (rchwtr + wtrin > 1.e-6) then
       chpst_conc(jrch) = chpstmass / (rchwtr + wtrin)
    else

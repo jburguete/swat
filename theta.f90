@@ -26,7 +26,6 @@ real*8 function theta(r20,thk,tmp) result (r_theta)
 
    real*8, intent (in) :: r20, thk, tmp
 
-   r_theta = 0.
    r_theta = r20 * thk ** (tmp - 20.)
 
    return

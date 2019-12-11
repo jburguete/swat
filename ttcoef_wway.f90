@@ -82,9 +82,6 @@ subroutine ttcoef_wway
       wat_phi(jj,k) = 0.
    end do
 
-   b = 0.
-   d = 0.
-
 !!    If side slope is not set in .rte file then assume this default
 !!    If it is main reach default side slope to 2:1 if it is a waterway default to 8:1
    !if (chside(k) <= 1.e-6) then
@@ -99,8 +96,6 @@ subroutine ttcoef_wway
 
 !!    check if bottom width (b) is < 0
    if (b <= 0.) then
-      b = 0.
-      chsslope = 0.
       b = .5 * grwat_w(k)
       chsslope = (grwat_w(k) - b) / (2. * d)
    end if
@@ -108,10 +103,6 @@ subroutine ttcoef_wway
    wat_phi(7,k) = d
 
 !!    compute flow and travel time at bankfull depth
-   p = 0.
-   a = 0.
-   rh = 0.
-   tt2 = 0.
    p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
    a = b * d + chsslope * d * d
    rh = a / p
@@ -123,10 +114,6 @@ subroutine ttcoef_wway
    tt2 = grwat_l(k) * a / wat_phi(5,k)
 
 !!    compute flow and travel time at 1.2 bankfull depth
-   d = 0.
-   rh = 0.
-   qq1 = 0.
-   tt1 = 0.
    d = 1.2 * grwat_d(k)
    a = a + (grwat_w(k) * grwat_d(k) + fps * (d - grwat_d(k)) ** 2)
    p=p + 4.*grwat_w(k) + (0.4 * grwat_d(k) * Sqrt(fps * fps + 1.))
@@ -135,12 +122,6 @@ subroutine ttcoef_wway
    tt1 = grwat_l(k) * a / qq1
 
 !!    compute flow and travel time at 0.1 bankfull depth
-   a = 0.
-   d = 0.
-   p = 0.
-   rh = 0.
-   qq1 = 0.
-   tt1 = 0.
    d = 0.1 * grwat_d(k)
    p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
    a = b * d + chsslope * d * d

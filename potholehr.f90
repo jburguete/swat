@@ -211,7 +211,6 @@ subroutine potholehr()
    no3in = surqno3(j) + latno3(j)    ! + gwno3(j) - don't include groundwater no3
 
 !! conversion factors
-   cnv = 0.
    cnv = 10. * hru_ha(j)
    !rto = 1. !not used
 
@@ -390,7 +389,6 @@ subroutine potholehr()
 !         pot_solp(j) = Exp(-.693 / hlife_pot) * pot_solp(j)
 
          !! limit seepage into soil if profile is near field capacity
-         yy = 0.
          if (sol_sw(j) / sol_sumfc(j) < .5) then
             yy = 1.
          elseif (sol_sw(j) / sol_sumfc(j) < 1.) then
@@ -407,8 +405,6 @@ subroutine potholehr()
 
 !        redistribute water so that no layer exceeds maximum storage
          do ly = 1, sol_nly(j)
-            dg = 0.
-            stmax = 0.
             excess = 0.
             if (ly == 1) then
                dg = sol_z(ly,j)

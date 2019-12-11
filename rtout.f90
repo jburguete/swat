@@ -276,10 +276,8 @@ subroutine rtout
    integer :: jrch, ii
    real*8 :: sedcon, bedvol, sedpest, wtmp
 
-   jrch = 0
    jrch = inum1
 
-   wtmp = 0.
    wtmp = 5.0 + 0.75 * tmpav(jrch)
 !! set values for routing variables
    varoute(1,ihout) = wtmp
@@ -377,7 +375,6 @@ subroutine rtout
    endif
 
 !! determine sediment concentration in outflow
-   sedcon = 0.
    if (rtwtr > 0.01) then
       sedcon = sedrch / rtwtr * 1.e6
    else
@@ -386,8 +383,6 @@ subroutine rtout
    if (sedcon > 200000.) sedcon = 200000.
 
 !! determine amount of pesticide in river bed sediments
-   bedvol = 0.
-   sedpest = 0.
    bedvol = ch_w(2,jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
    sedpest = sedpst_conc(jrch) * bedvol
 

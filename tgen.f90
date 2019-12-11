@@ -55,10 +55,6 @@ subroutine tgen(j)
    real*8 :: tmxg, tmng, tamp, txxm
 
 
-   tamp = 0.
-   txxm = 0.
-   tmng = 0.
-   tmxg = 0.
    tamp = (tmpmx(i_mo,hru_sub(j)) - tmpmn(i_mo,hru_sub(j))) / 2
    txxm = tmpmx(i_mo,hru_sub(j)) + tamp * pr_w(3,i_mo,hru_sub(j))
 

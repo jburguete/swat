@@ -59,7 +59,6 @@ subroutine plantop
    integer :: j, nly
    real*8 :: plt_zmx
 
-   j = 0
    j = ihru
 
    igro(j) = 1

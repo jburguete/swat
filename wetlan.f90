@@ -146,25 +146,12 @@ subroutine wetlan
    real*8 :: qdayi, latqi, chlaco, fr_cur, yy
 
 
-   j = 0
    j = ihru
 
    if (wet_fr(j) > 0.) then
-      cnv = 0.
       cnv = hru_ha(j) * 10.               !conversion factor
 
       !! store initial values
-      vol = 0.
-      sed = 0.
-      san = 0.
-      sil = 0.
-      cla = 0.
-      sag = 0.
-      lag = 0.
-      inised = 0.
-      finsed = 0.
-      setsed = 0.
-      remsetsed = 0.
 
       vol = wet_vol(j)
       sed = wet_sed(j)
@@ -175,7 +162,6 @@ subroutine wetlan
       lag = wet_lag(j)
 
       !! calculate water balance for day
-      wetsa = 0.
       wetsa = bw1(j) * wet_vol(j) ** bw2(j)
 
       wetev = 10. * evwet(j) * pet_day * wetsa
@@ -226,7 +212,6 @@ subroutine wetlan
       !! compute nitrogen and phosphorus levels in wetland at beginning
       !! of day
       !! equation 29.1.1 in SWAT manual
-      xx = 0.
       xx = wet_fr(j) * hru_ha(j)
       wet_solp(j) = wet_solp(j) + (surqsolp(j) + sedminpa(j)) * xx
       wet_psed(j) = wet_psed(j) + sedminps(j) * xx
@@ -238,7 +223,6 @@ subroutine wetlan
       wet_no3g(j) = wet_no3g(j) + no3gw(j) * xx
 
       !! remove nutrients entering wetlands from HRU loadings
-      xx = 0.
       xx = 1. - wet_fr(j)
       sedorgn(j) = sedorgn(j) * xx
       surqno3(j) = surqno3(j) * xx
@@ -325,33 +309,27 @@ subroutine wetlan
 
          if (wet_lag(j) >= setsed) then
             wet_lag(j) = wet_lag(j) - setsed
-            remsetsed = 0.
          else
             remsetsed = setsed - wet_lag(j)
             wet_lag(j) = 0.
             if (wet_san(j) >= remsetsed) then
                wet_san(j) = wet_san(j) - remsetsed
-               remsetsed = 0.
             else
                remsetsed = remsetsed - wet_san(j)
                wet_san(j) = 0.
                if (wet_sag(j) >= remsetsed) then
                   wet_sag(j) = wet_sag(j) - remsetsed
-                  remsetsed = 0.
                else
                   remsetsed = remsetsed - wet_sag(j)
                   wet_sag(j) = 0.
                   if (wet_sil(j) >= remsetsed) then
                      wet_sil(j) = wet_sil(j) - remsetsed
-                     remsetsed = 0.
                   else
                      remsetsed = remsetsed - wet_sil(j)
                      wet_sil(j) = 0.
                      if (wet_cla(j) >= remsetsed) then
                         wet_cla(j) = wet_cla(j) - remsetsed
-                        remsetsed = 0.
                      else
-                        remsetsed = remsetsed - wet_cla(j)
                         wet_cla(j) = 0.
                      end if
                   end if
@@ -386,8 +364,6 @@ subroutine wetlan
          else
             iseas = 2
          endif
-         phosk = 0.
-         nitrok = 0.
          phosk = psetlw(iseas,j) * wetsa * 10000. / wet_vol(j)
          phosk = Min(phosk, 1.)
          nitrok = nsetlw(iseas,j) * wetsa * 10000. / wet_vol(j)
@@ -414,7 +390,6 @@ subroutine wetlan
          if (wet_solp(j) < 1.e-6) wet_solp(j) = 0.0
          if (wet_solpg(j) < 1.e-6) wet_solpg(j) = 0.0
 
-         tpco = 0.
          tpco = 1.e+6 * (wet_solp(j) + wet_orgp(j) + wet_psed(j) +&
          &wet_solpg(j)) / (wet_vol(j) + wetflwo)
          chlaco = 0.
@@ -431,7 +406,6 @@ subroutine wetlan
          endif
 
          !! compute nutrients leaving wetland
-         yy = 0.
          yy = wetflwo / (wet_vol(j) + wetflwo)
          sedorgn(j) = sedorgn(j) + wet_orgn(j) * yy / hru_ha(j)
          surqno3(j) = surqno3(j) + wet_no3(j) * yy / hru_ha(j)

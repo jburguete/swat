@@ -285,8 +285,6 @@ subroutine readhru
 
 
 !!    calculate USLE slope length factor
-   xm = 0.
-   sin_sl = 0.
    xm = .6 * (1. - Exp(-35.835 * hru_slp(ihru)))
    sin_sl = Sin(Atan(hru_slp(ihru)))
    usle_ls(ihru) = (slsubbsn(ihru)/22.128)**xm * (65.41 * sin_sl *&

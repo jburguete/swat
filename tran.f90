@@ -65,23 +65,18 @@ subroutine tran
    real*8 :: qinit, vo, dur, k, b, zz, bxw, pr1, a, xx, axw, pxw
 
    !! initialize variables
-   j = 0
    j = ihru
 
    if (ch_k(1,hru_sub(j)) <= 0.) return
 
 !! save runoff amount prior to transmission losses
-   qinit = 0.
-   pr1 = 0.
    qinit = qday
    pr1 = peakr
 
 !! calculate incoming volume of water
-   vo = 0.
    vo = qday * hru_km(j) * 1000.   !!volume incoming: m^3
 
 !! calculate flow duration
-   dur = 0.
    dur = vo / (peakr * 3600.)      !!duration: hr
    if (dur > 24.) dur = 24.
 
@@ -90,7 +85,6 @@ subroutine tran
 !!      qday = 0.
 !!      peakr = 0.
 
-   xx = 0.
    xx = 2.6466 * ch_k(1,hru_sub(j)) * dur / vo
    if (xx < 1.) then
 
@@ -100,9 +94,7 @@ subroutine tran
       peakr = 0.
       ! end move pdw
 
-      k = 0.
       k = -2.22 * Log(1. - xx)
-      b = 0.
       b = Exp(-0.4905 * k)
 
       ! bug fix by pdw
@@ -111,12 +103,9 @@ subroutine tran
       if ((1. - b) .GE. 0.) then
          ! end fix pdw
 
-         zz = 0.
          zz = - k * ch_w(1,hru_sub(j)) * ch_l1(j)
          if (zz >= -30.) then
-            bxw = 0.
             bxw = Exp(zz)
-            a = 0.
             a = -.2258 * ch_k(1,hru_sub(j)) * dur
             if (1. - b > 0.01) then
                axw = (a / (1. - b)) * (1. - bxw)

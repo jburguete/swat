@@ -62,10 +62,8 @@ subroutine subday
    real*8 :: sub_ha
    real*8, dimension (msubo) :: pdvab, pdvb
 
-   sb = 0
    sb = hru_sub(ihru)
 
-   sub_ha = 0.
    sub_ha = da_ha * sub_fr(sb)
 
    pdvab = 0.

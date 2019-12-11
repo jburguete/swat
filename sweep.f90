@@ -45,11 +45,9 @@ subroutine sweep
    integer :: j
    real*8 :: dirt
 
-   j = 0
    j = ihru
 
 !! calculate amount of dirt on streets prior to sweeping
-   dirt = 0.
    dirt = dirtmx(urblu(j)) * twash(j) / (thalf(urblu(j)) + twash(j))
 
 !! calculate reduced amount of solid built up on impervious areas
@@ -58,7 +56,6 @@ subroutine sweep
    if (dirt < 1.e-6) dirt = 0.
 
 !! set time to correspond to lower amount of dirt
-   twash(j) = 0.
    twash(j) = thalf(urblu(j)) * dirt / (dirtmx(urblu(j)) - dirt)
 
    nsweep(j) = nsweep(j) + 1

@@ -57,18 +57,18 @@ subroutine operatn
    use parm
    implicit none
 
-   integer :: j
+   integer :: j, n
    real*8 :: aphu
 
-   j = 0
    j = ihru
+   n = nop(j)
 
 
 !! operations performed only when no land cover growing
 
-   do while(idop(nop(j),j) > 0 .and. iida == idop(nop(j),j))
+   do while(idop(n,j) > 0 .and. iida == idop(n,j))
       call sched_mgt
-      if (mgtop(nop(j),j) == 17) then
+      if (mgtop(n,j) == 17) then
          call sched_mgt
       end if
       if (yr_skip(j) == 1) exit
@@ -80,7 +80,7 @@ subroutine operatn
       aphu = phuacc(j)
    end if
    if (dorm_flag == 1) aphu = 999.
-   do while (phu_op(nop(j),j) > 0. .and. aphu > phu_op(nop(j),j))
+   do while (phu_op(n,j) > 0. .and. aphu > phu_op(n,j))
       call sched_mgt
       if (igro(j) == 0) then
          aphu = phubase(j)
@@ -88,7 +88,7 @@ subroutine operatn
          aphu = phuacc(j)
       end if
       if (dorm_flag == 1) aphu = 999.
-      if (mgtop(nop(j),j) == 17) then
+      if (mgtop(n,j) == 17) then
          call sched_mgt
       end if
       if (yr_skip(j) == 1) exit

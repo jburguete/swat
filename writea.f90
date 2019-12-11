@@ -248,7 +248,6 @@ subroutine writea
 !         !! annual write--sediment routing (.sed)
          call rsedyr
 
-         idlast = 0
          idlast = i - (id1 - 1)
          do j = 1, nres
             resouty(1,j) = resouty(1,j) / dfloat(idlast)

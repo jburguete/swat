@@ -186,7 +186,6 @@ subroutine varinit
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    ly          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
@@ -197,7 +196,6 @@ subroutine varinit
 
    integer :: j, ii
 
-   j = 0
    j = ihru
 
    !!initialize variables
@@ -218,7 +216,6 @@ subroutine varinit
    cfertn = 0.
    cfertp = 0.
    crk = 0.
-   deepstp = 0.
    deepstp = deepst(j)
    enratio = 0.
    ep_day = 0.
@@ -273,7 +270,6 @@ subroutine varinit
    potlago = 0.
 
    potsepmm = 0.
-   precipday = 0.
    precipday = subp(j)
    precipdt = 0.
    if (nstep > 0) then
@@ -292,17 +288,14 @@ subroutine varinit
    roctl = 0.
    rwntl = 0.
    sepday = 0.
-   shallstp = 0.
    shallstp = shallst(j)
    snoev = 0.
    snofall = 0.
    snomlt = 0.
-   snoprev = 0.
    snoprev = sno_hru(j)
    sol_rd = 0.
    soxy = 0.
    sw_excess = 0.
-   swprev = 0.
    swprev = sol_sw(j)
    tloss = 0.
    twlpnd = 0.

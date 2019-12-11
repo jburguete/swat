@@ -97,7 +97,7 @@ subroutine rthsed
 
    real*8 :: thbase,  shear_stress, vshear, deg1, deg2, d_fract, dat2
 
-   jrch = 0; deg24=0.; dep24=0
+   deg24=0.; dep24=0
    jrch = inum1
    channel_d50 = ch_d50 / 1000. !! unit change mm->m
    particle_specific_gravity = 2.65
@@ -108,7 +108,6 @@ subroutine rthsed
       if (hrtwtr(ii)>0. .and. hdepth(ii)>0.) then
 
          !! initialize water in reach during time step
-         qin = 0.
          sedin = 0.
          qin = hrtwtr(ii) + hhstor(ii)
 
@@ -128,7 +127,6 @@ subroutine rthsed
             peakr = prf(jrch) * hsdti(ii)
 
             !! calculate flow velocity
-            vc = 0.
             if (hharea(ii) < .010) then
                vc = 0.01
             else
@@ -136,13 +134,11 @@ subroutine rthsed
             end if
             if (vc > 5.) vc = 5.
 
-            thbase = 0.
             thbase = ch_l2(jrch) * 1000. / (3600. * 24. * vc)
             if (thbase > 1.) thbase = 1.
 
             !! JIMMY'S NEW IMPROVED METHOD for sediment transport
 
-            cyin = 0.
             cych = 0.
             depnet = 0.
             deg = 0.
@@ -314,16 +310,7 @@ subroutine rthsed
    ch_orgn(jrch) = deg24 * ch_onco(jrch) * 1000.
    ch_orgp(jrch) = deg24 * ch_opco(jrch) * 1000.
 
-
-
-   qdin = 0.
    qdin = rtwtr + rchstor(jrch)
-
-
-
-
-
-
 
    if ((rtwtr == 0. .and. rchdep == 0.) .or. qdin <= 0.01) then
       sedrch = 0.
@@ -351,15 +338,11 @@ subroutine rthsed
    !! compute changes in channel dimensions
    if ((rtwtr > 0. .and. rchdep > 0.) .or. qdin > 0.01) then
       if (ideg == 1) then
-         qdin = 0.
 
          qdin = rtwtr + rchstor(jrch)
-         depdeg = 0.
          depdeg = ch_d(jrch) - ch_di(jrch)
          if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
             if (qdin > 1400000.) then
-               dot = 0.
-
                dot = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
                dat2 = 1.
 

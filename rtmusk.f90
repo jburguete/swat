@@ -79,14 +79,12 @@ subroutine rtmusk
 !!    c1          |
 !!    c2          |
 !!    c3          |
-!!    c4          |m^3 H2O       |
 !!    det         |hr            |time step (24 hours)
 !!    jrch        |none          |reach number
 !!    nn          |              |number of subdaily computation points for stable
 !!                               |routing in the muskingum routing method
 !!    p           |m             |wetted perimeter
 !!    rh          |m             |hydraulic radius
-!!    tbase       |none          |flow duration (fraction of 24 hr)
 !!    topw        |m             |top width of main channel
 !!    vol         |m^3 H2O       |volume of water in reach at beginning of
 !!                               |day
@@ -112,13 +110,12 @@ subroutine rtmusk
    implicit none
 
    integer :: jrch,nn,ii
-   real*8 :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c, rh
+   real*8 :: xkm, det, yy, c1, c2, c3, wtrin, p, vol, c, rh
    real*8 :: topw,msk1,msk2,detmax,detmin,qinday,qoutday
    real*8 :: volrt, maxrt, adddep, addp, addarea
    real*8 :: rttlc1, rttlc2, rtevp1, rtevp2
    real*8 :: aaa, vc
 
-   jrch = 0
    jrch = inum1
    qinday = 0; qoutday = 0
 
@@ -126,7 +123,6 @@ subroutine rtmusk
 
 
 !! Water entering reach on day
-   wtrin = 0.
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
 !! Compute storage time constant for reach (msk_co1 + msk_co2 = 1.)
@@ -134,7 +130,6 @@ subroutine rtmusk
    msk2 = msk_co2 / (msk_co1 + msk_co2)
    msk_co1 = msk1
    msk_co2 = msk2
-   xkm = 0.
    xkm = phi(10,jrch) * msk_co1 + phi(13,jrch) * msk_co2
 
 !! Muskingum numerical stability -Jaehak Jeong, 2011
@@ -162,14 +157,12 @@ subroutine rtmusk
    do ii=1,nn
 
       !! calculate volume of water in reach
-      vol = 0.
       vol = wtrin + rchstor(jrch)
 
 !! Find average flowrate in a sub time interval
       volrt = vol / (86400. / nn)
 
 !! Find maximum flow capacity of the channel at bank full
-      c = 0.
       c = chside(jrch)
       p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c)
       rh = phi(1,jrch) / p
@@ -179,7 +172,6 @@ subroutine rtmusk
       rchdep = 0.
       p = 0.
       rh = 0.
-      vc = 0.
 
 !! If average flowrate is greater than than the channel capacity at bank full
 !! then simulate flood plain flow else simulate the regular channel flow
@@ -219,7 +211,6 @@ subroutine rtmusk
       end if
 
 !! calculate top width of channel at water level
-      topw = 0.
       if (rchdep <= ch_d(jrch)) then
          topw = phi(6,jrch) + 2. * rchdep * c
       else
@@ -234,11 +225,6 @@ subroutine rtmusk
          rttime = ch_l2(jrch) * 1000. / (3600. * vc)
 
 !! Compute coefficients
-         yy = 0.
-         c1 = 0.
-         c2 = 0.
-         c3 = 0.
-         c4 = 0.
          yy = 2. * xkm * (1. - msk_x) + det
          c1 = (det - 2. * xkm * msk_x) / yy
          c2 = (det + 2. * xkm * msk_x) / yy
@@ -342,8 +328,6 @@ subroutine rtmusk
          end if
 
 !! define flow parameters for current iteration
-         flwin(jrch) = 0.
-         flwout(jrch) = 0.
          flwin(jrch) = wtrin
          flwout(jrch) = rtwtr
 

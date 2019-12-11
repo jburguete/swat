@@ -84,28 +84,24 @@ subroutine rtsed
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg1, deg2, dep
    real*8 :: depdeg, dot, outfract, deg, dat2
 
-   jrch = 0
    jrch = inum1
    sedin = 0.0
 
    if (rtwtr > 0. .and. rchdep > 0.) then
 
 !! initialize water in reach during time step
-      qdin = 0.
       qdin = rtwtr + rchstor(jrch)
 
 !! do not perform sediment routing if no water in reach
       if (qdin > 0.01) then
 
 !! initialize sediment in reach during time step
-         sedin = 0.
          sedin = varoute(3,inum2) * (1. - rnum1) + sedst(jrch)
          !sedinorg = sedin ! not used
 !! initialize reach peak runoff rate
          peakr = prf(jrch) * sdti
 
 !! calculate flow velocity
-         vc = 0.
          if (rchdep < .010) then
             vc = 0.01
          else
@@ -120,13 +116,6 @@ subroutine rtsed
 
 
 !! JIMMY'S NEW IMPROVED METHOD for sediment transport
-         cyin = 0.
-         cych = 0.
-         depnet = 0.
-         deg = 0.
-         deg1 = 0.
-         deg2 = 0.
-         dep = 0.
          cyin = sedin / qdin
          cych = spcon(jrch) * vc ** spexp(jrch)
          depnet = qdin * (cych - cyin)

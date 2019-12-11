@@ -98,7 +98,6 @@ subroutine nup
    integer :: j, icrop, l, ir
    real*8 :: un2, unmx, uno3l, gx, tno3, xx
 
-   j = 0
    j = ihru
 
    tno3 = 0.
@@ -113,20 +112,18 @@ subroutine nup
    &/ (phuacc(j) + Exp(bio_n1(icrop) - bio_n2(icrop) *&
    &phuacc(j)))) + pltnfr(3,icrop)
 
-   un2 = 0.
    un2 = pltfr_n(j) * bio_ms(j)
    if (un2 < plantn(j)) un2 = plantn(j)
    uno3d = un2 - plantn(j)
    uno3d = Min(4. * pltnfr(3,icrop) * bioday, uno3d)
 
    strsn(j) = 1.
-   ir = 0
    if (uno3d < 1.e-6) return
 
+   ir = 0
    do l = 1, sol_nly(j)
       if (ir > 0) exit
 
-      gx = 0.
       if (sol_rd <= sol_z(l,j)) then
          gx = sol_rd
          ir = 1
@@ -134,8 +131,6 @@ subroutine nup
          gx = sol_z(l,j)
       end if
 
-      unmx = 0.
-      uno3l = 0.
       unmx = uno3d * (1. - Exp(-n_updis * gx / sol_rd)) / uobn
       uno3l = Min(unmx - nplnt(j), sol_no3(l,j))
       !uno3l = up_reduc * uno3l

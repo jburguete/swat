@@ -66,10 +66,8 @@ subroutine rthvsc()
 !!    inhyd       |none          |inflow hydrograph storage location number
 !!    jrch        |none          |reach number
 !!    p           |m             |wetted perimeter
-!!    scoef       |none          |storage coefficient
 !!    nstep       |none          |No. of steps in a day (depends on model operational time step)
 !!    topw        |m             |width of channel at water level
-!!    vol         |m^3 H2O       |volume of water in reach
 !!    wtrin       |m^3 H2O       |water entering reach during hour
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -172,7 +170,6 @@ subroutine rthvsc()
          QI1 = QI2
          !WRITE(KW(1),6)NIT,TM,ZII,ZOO,AII,AOO,V,TT,CVSC,STHY,QI2,QO2
       END DO
-      ! ISM=ii ! not used
       IIY=0
 
       !Calculate discharge rate using variable storage coefficient

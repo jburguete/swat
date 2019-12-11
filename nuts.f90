@@ -29,8 +29,6 @@ subroutine nuts(u1,u2,uu)
    real*8, intent (in) :: u1, u2
    real*8, intent (out) :: uu
 
-   uu = 0.
-
    uu = 200. * (u1 / (u2 + .0001) - .5)
 
    if (uu <= 0.) then

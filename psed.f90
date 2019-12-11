@@ -87,13 +87,10 @@ subroutine psed(iwave)
    integer :: j, sb
    real*8 :: xx, wt1, er, conc, xxo, sedp, psedd, porgg, xxa, xxs
 
-   j = 0
    j = ihru
 
-   sb = 0
    sb = inum1
 
-   xx = 0.
    xxo = 0.
    xxa = 0.
    xxs = 0.
@@ -122,7 +119,6 @@ subroutine psed(iwave)
       end if
    end if
 
-   wt1 = 0.
    if (iwave <= 0) then
       !! HRU sediment calculations
       wt1 = sol_bd(1,j) * sol_z(1,j) / 100.
@@ -131,7 +127,6 @@ subroutine psed(iwave)
       wt1 = sub_bd(iwave) * sol_z(1,j) / 100.
    end if
 
-   er = 0.
    if (iwave <= 0) then
       !! HRU sediment calculations
       if (erorgp(j) > .001) then
@@ -144,10 +139,8 @@ subroutine psed(iwave)
       er = enratio
    end if
 
-   conc = 0.
    conc = xx * er / wt1
 
-   sedp = 0.
    if (iwave <= 0) then
       !! HRU sediment calculations
       sedp = .001 * conc * sedyld(j) / hru_ha(j)
@@ -169,8 +162,6 @@ subroutine psed(iwave)
 
 !! modify phosphorus pools only for HRU calculations
    if (iwave <= 0) then
-      psedd = 0.
-      porgg = 0.
       psedd = sol_actp(1,j) + sol_stap(1,j)
       porgg = sol_orgp(1,j) + sol_fop(1,j)
       if (porgg > 1.e-3) then

@@ -114,7 +114,6 @@ subroutine rchyr
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
 
-   idlast = 0
    idlast = i - (id1 - 1)
 
 

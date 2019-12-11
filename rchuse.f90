@@ -37,10 +37,8 @@ subroutine rchuse
    integer :: jrch, ii
    real*8 :: wtrin
 
-   jrch = 0
    jrch = inum1
 
-   wtrin = 0.
    wtrin = rtwtr
 
    rtwtr = rtwtr - wurch(i_mo,jrch) * 10000.

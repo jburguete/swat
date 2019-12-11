@@ -238,28 +238,15 @@ subroutine watqual2
    real*8 :: dalgae, dchla, dorgn, dnh4, dno2, dno3,dorgp,dsolp
    real*8 :: dbod, ddisox, setl
 
-   jrch = 0
    jrch = inum1
 
    !! initialize water flowing into reach
-   wtrin = 0.
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
    if (rtwtr / 86400.> 0.01.and.wtrin>0.001) then
 !! concentrations
       !! initialize concentration of nutrient in reach
-      wtrtot = 0.
-      algcon = 0.
-      orgncon = 0.
-      nh3con = 0.
-      no2con = 0.
-      no3con = 0.
-      orgpcon = 0.
-      solpcon = 0.
-      cbodcon = 0.
-      o2con = 0.
       wtrtot = wtrin + rchwtr
-
       algcon = algae(jrch)
       orgncon = organicn(jrch)
       nh3con = ammonian(jrch)
@@ -287,10 +274,6 @@ subroutine watqual2
 
       !! calculate saturation concentration for dissolved oxygen
       !! QUAL2E section 3.6.1 equation III-29
-      ww = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
       ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
       xx = 6.642308e07 / ((wtmp + 273.15)**2)
       yy = 1.243800e10 / ((wtmp + 273.15)**3)
@@ -302,7 +285,6 @@ subroutine watqual2
 !! O2 impact calculations
       !! calculate nitrification rate correction factor for low
       !! oxygen QUAL2E equation III-21
-      cordo = 0.
 !       write(104, *) o2con, 'o'
       !! the following 3 lines are overwritten
 !      o2con2=o2con
@@ -316,8 +298,6 @@ subroutine watqual2
 
       !! modify ammonia and nitrite oxidation rates to account for
       !! low oxygen
-      bc1mod = 0.
-      bc2mod = 0.
       bc1mod = bc1(jrch) * cordo
       bc2mod = bc2(jrch) * cordo
 !! end O2 impact calculations
@@ -337,15 +317,12 @@ subroutine watqual2
 
       !! calculate algal growth limitation factors for nitrogen
       !! and phosphorus QUAL2E equations III-13 & III-14
-      fnn = 0.
-      fpp = 0.
       fnn = cinn / (cinn + k_n)
       fpp = solpcon / (solpcon + k_p)
 
       !! calculate daylight average, photosynthetically active,
       !! light intensity QUAL2E equation III-8
       !! Light Averaging Option # 2
-      algi = 0.
       if (dayl(hru1(jrch)) > 0.) then
          algi = hru_ra(hru1(jrch)) * tfact / dayl(hru1(jrch))
       else
@@ -354,8 +331,6 @@ subroutine watqual2
 
       !! calculate growth attenuation factor for light, based on
       !! daylight average light intensity QUAL2E equation III-7b
-      fl_1 = 0.
-      fll = 0.
       fl_1 = (1. / (lambda * rchdep)) *&
       &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * rchdep))))
       fll = 0.92 * (dayl(hru1(jrch)) / 24.) * fl_1
@@ -381,7 +356,6 @@ subroutine watqual2
       !! calculate algal biomass concentration at end of day
       !! (phytoplanktonic algae)
       !! QUAL2E equation III-2
-      dalgae = 0.
       setl=min(1.,Theta(rs1(jrch),thrs1,wtmp)/ rchdep)
       dalgae = algcon + (Theta(gra,thgra,wtmp) * algcon -&
       &Theta(rhoq,thrho,wtmp) * algcon - setl * algcon) * tday
@@ -390,27 +364,21 @@ subroutine watqual2
       !! calculate chlorophyll-a concentration at end of day
       !! QUAL2E equation III-1
 
-      dchla = 0.
       dchla = dalgae* ai0 / 1000.
 !! end algal growth
 
 !! oxygen calculations
       !! calculate carbonaceous biological oxygen demand at end
       !! of day QUAL2E section 3.5 equation III-26
-      yy = 0.
-      zz = 0.
       yy = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
       zz = Theta(rk3(jrch),thrk3,wtmp) * cbodcon
-      dbod = 0.
       dbod = cbodcon - (yy + zz) * tday
       if (dbod < 0.00001) dbod = 0.00001
 
       !! calculate dissolved oxygen concentration if reach at
       !! end of day QUAL2E section 3.6 equation III-28
 
-      uu = 0.
       vv = 0.
-      ww = 0.
       xx = 0.
       yy = 0.
       zz = 0.
@@ -445,53 +413,37 @@ subroutine watqual2
 !! nitrogen calculations
       !! calculate organic N concentration at end of day
       !! QUAL2E section 3.3.1 equation III-16
-      xx = 0.
-      yy = 0.
-      zz = 0.
       xx = ai1 * Theta(rhoq,thrho,wtmp) * algcon
       yy = Theta(bc3(jrch),thbc3,wtmp) * orgncon
       zz = Theta(rs4(jrch),thrs4,wtmp) * orgncon
-      dorgn = 0.
       dorgn = orgncon + (xx - yy - zz) * tday
       if (dorgn < 0.00001) dorgn = 0.00001
 
       !! calculate fraction of algal nitrogen uptake from ammonia
       !! pool QUAL2E equation III-18
-      f1 = 0.
       f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con +&
       &1.e-6)
 
       !! calculate ammonia nitrogen concentration at end of day
       !! QUAL2E section 3.3.2 equation III-17
-      ww = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
       ww = Theta(bc3(jrch),thbc3,wtmp) * orgncon
       xx = Theta(bc1mod,thbc1,wtmp) * nh3con
       yy = Theta(rs3(jrch),thrs3,wtmp) / (rchdep * 1000.)
       zz = f1 * ai1 * algcon * Theta(gra,thgra,wtmp)
-      dnh4  = 0.
       dnh4  = nh3con + (ww - xx + yy - zz) * tday
       if (dnh4  < 1.e-6) dnh4  = 0.
 
       !! calculate concentration of nitrite at end of day
       !! QUAL2E section 3.3.3 equation III-19
-      yy = 0.
-      zz = 0.
       yy = Theta(bc1mod,thbc1,wtmp) * nh3con
       zz = Theta(bc2mod,thbc2,wtmp) * no2con
-      dno2 = 0.
       dno2 = no2con + (yy - zz) * tday
       if (dno2 < 1.e-6) dno2 = 0.
 
       !! calculate nitrate concentration at end of day
       !! QUAL2E section 3.3.4 equation III-20
-      yy = 0.
-      zz = 0.
       yy = Theta(bc2mod,thbc2,wtmp) * no2con
       zz = (1. - f1) * ai1 * algcon * Theta(gra,thgra,wtmp)
-      dno3  = 0.
       dno3  = no3con + (yy - zz) * tday
       if (dno3 < 1.e-6) dno3  = 0.
 !! end nitrogen calculations
@@ -499,25 +451,17 @@ subroutine watqual2
 !! phosphorus calculations
       !! calculate organic phosphorus concentration at end of
       !! day QUAL2E section 3.3.6 equation III-24
-      xx = 0.
-      yy = 0.
-      zz = 0.
       xx = ai2 * Theta(rhoq,thrho,wtmp) * algcon
       yy = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
       zz = Theta(rs5(jrch),thrs5,wtmp) * orgpcon
-      dorgp = 0.
       dorgp= orgpcon + (xx - yy - zz) * tday
       if (dorgp < 1.e-6) dorgp = 0.
 
       !! calculate dissolved phosphorus concentration at end
       !! of day QUAL2E section 3.4.2 equation III-25
-      xx = 0.
-      yy = 0.
-      zz = 0.
       xx = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
       yy = Theta(rs2(jrch),thrs2,wtmp) / (rchdep * 1000.)
       zz = ai2 * Theta(gra,thgra,wtmp) * algcon
-      dsolp  = 0.
       dsolp  = solpcon + (xx + yy - zz) * tday
       if (dsolp  < 1.e-6) dsolp  = 0.
 !! end phosphorus calculations
@@ -564,21 +508,10 @@ subroutine watqual2
 
       !! calculate chlorophyll-a concentration at end of day
       !! QUAL2E equation III-1
-      chlora(jrch) = 0.
       chlora(jrch) = algae(jrch) * ai0 / 1000.
 
    else
       !! all water quality variables set to zero when no flow
-      algin = 0.0
-      chlin = 0.0
-      orgnin = 0.0
-      ammoin = 0.0
-      nitritin = 0.0
-      nitratin = 0.0
-      orgpin = 0.0
-      dispin = 0.0
-      cbodin = 0.0
-      disoxin = 0.0
       algae(jrch) = 0.0
       chlora(jrch) = 0.0
       organicn(jrch) = 0.0
@@ -589,17 +522,6 @@ subroutine watqual2
       disolvp(jrch) = 0.0
       rch_cbod(jrch) = 0.0
       rch_dox(jrch) = 0.0
-      dalgae = 0.0
-      dchla = 0.0
-      dorgn = 0.0
-      dnh4 = 0.0
-      dno2 = 0.0
-      dno3 = 0.0
-      dorgp= 0.0
-      dsolp = 0.0
-      dbod = 0.0
-      ddisox = 0.0
-      soxy = 0.0
    endif
 
    return

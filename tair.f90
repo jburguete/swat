@@ -49,7 +49,6 @@ function tair(hr,jj) result (r_tair)
    if (hr == 15) tmp_hi(jj) = tmx(jj)
 
 !! SWAT manual equation 2.3.1
-   r_tair = 0.
    r_tair = 0.5 * (tmp_hi(jj) + tmp_lo(jj) + (tmp_hi(jj) - tmp_lo(jj)&
    &* Cos(0.2618 * (hr - 15))))
 

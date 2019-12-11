@@ -17,7 +17,7 @@ real*8 function ran1(idum)
       ix1 = mod(ic1 - idum,m1)
       ix1 = mod((ia1 * ix1) + ic1,m1)
       ix2 = mod(ix1,m2)
-      ix1 = mod((ia1 * ix1) + ic1,m1)
+      !ix1 = mod((ia1 * ix1) + ic1,m1) ! redundant
       ix3 = mod(ix1,m3)
       do 11 j = 1, 97
          ix1 = mod((ia1 * ix1) + ic1,m1)

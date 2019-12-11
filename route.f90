@@ -77,7 +77,6 @@ subroutine route
    integer :: jrch, ii, j
    real*8 :: subwtr
 
-   jrch = 0
    jrch = inum1
    !inum3 is the subbasin for stream-aquifer interaction
    !inum5 is the landscape within the subbasin

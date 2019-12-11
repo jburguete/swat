@@ -49,7 +49,6 @@ subroutine wattable
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    j1          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -65,7 +64,6 @@ subroutine wattable
 
    real*8 :: w2, eo_sum, rfqeo_sum, w1, wtl
 
-   j = 0
    j = ihru
    wtab_mn(j) = 0.
    wtab_mx(j) = 2.5

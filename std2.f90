@@ -110,9 +110,6 @@ subroutine std2
    !!write subbasin info
    write (24,1000)
    do j = 1, subtot
-      kpnd = ""
-      kbnd = ""
-      kwet = ""
       if (pnd_fr(hru1(j)) > 0.) then
          kpnd = "x"
       else
@@ -193,9 +190,7 @@ subroutine std2
    if (irte == 1) then
       write (24,1013)
       do j = 1, subtot
-         xkm = 0.
          xkm = phi(10,j) * msk_co1 + phi(13,j) * msk_co2
-         xch_l1 = 0.
          xch_l1 = ch_l1(hru1(j)) / hru_fr(hru1(j))
          write (24,1014) j,xch_l1,ch_s(1,j),ch_w(1,j),ch_k(1,j)&
          &,ch_n(1,j),ch_l2(j),ch_s(2,j),ch_w(2,j),ch_d(j),&
@@ -213,7 +208,6 @@ subroutine std2
    end if
 
 !!    standard output file
-   sumarea = 0.
    sumarea = Sum(hru_fr)
    !if (sumarea < .9999) write (26,2000) sumarea
 

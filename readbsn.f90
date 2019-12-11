@@ -703,9 +703,6 @@ subroutine readbsn
 
 !!    calculate normalization parameters for water, nitrogen, and
 !!    phosphorus uptake
-   uobn = 0.0
-   uobp = 0.0
-   uobw = 0.0
    ubw = 10.0       !! the uptake distribution for water is hardwired
    !! users are not allowed to modify the water
    !! water uptake distribution

@@ -95,7 +95,6 @@ subroutine rthmusk
 !!    jrch        |none          |reach number
 !!    p           |m             |wetted perimeter
 !!    rh          |m             |hydraulic radius
-!!    tbase       |none          |flow duration (fraction of 1 hr)
 !!    nstep       |none          |number of steps in a day
 !!    topw        |m             |top width of main channel
 !!    vol         |m^3 H2O       |volume of water in reach at beginning of day
@@ -121,23 +120,16 @@ subroutine rthmusk
 
    integer :: jrch, ii
    real*8 :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c
-   real*8 :: tbase, topw
+   real*8 :: topw
 
-   jrch = 0
    jrch = inum1
 
    !! Compute storage time constant for reach
-   xkm = 0.
    xkm = phi(10,jrch) * msk_co1 + phi(13,jrch) * msk_co2
 
    det = idt / 60.
 
    !! Compute coefficients
-   yy = 0.
-   c1 = 0.
-   c2 = 0.
-   c3 = 0.
-   c4 = 0.
    yy = 2. * xkm * (1. - msk_x) + det
    c1 = (det - 2. * xkm * msk_x) / yy
    c2 = (det + 2. * xkm * msk_x) / yy
@@ -146,7 +138,6 @@ subroutine rthmusk
 
    do ii = 1, nstep   !! begin time step loop
       !! Water entering reach on day
-      wtrin = 0.
       wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
 
       !! Compute water leaving reach at the end of time step
@@ -160,12 +151,9 @@ subroutine rthmusk
 
 
       !! define flow parameters for current time step
-      flwin(jrch) = 0.
-      flwout(jrch) = 0.
       flwin(jrch) = wtrin
       flwout(jrch) = hrtwtr(ii)
       !! calculate volume of water in reach
-      vol = 0.
       if (ii == 1) then
          hrchwtr(ii) = rchstor(jrch)
          vol = wtrin + rchstor(jrch)
@@ -179,7 +167,6 @@ subroutine rthmusk
       hharea(ii) = vol / (ch_l2(jrch) * 1000.)
 
       !! calculate depth of flow
-      c = 0.
       c = chside(jrch)
       if (hharea(ii) <= phi(1,jrch)) then
          hdepth(ii) = Sqrt(hharea(ii) / c + phi(6,jrch) * phi(6,jrch)&
@@ -193,7 +180,6 @@ subroutine rthmusk
       end if
 
       !! calculate wetted perimeter
-      p = 0.
       if (hdepth(ii) <= ch_d(jrch)) then
          p = phi(6,jrch) + 2. * hdepth(ii) * Sqrt(1. + c * c)
       else
@@ -202,7 +188,6 @@ subroutine rthmusk
       end if
 
       !! calculate hydraulic radius
-      rhy(ii) = 0.
       if (p > 0.01) then
          rhy(ii) = hharea(ii) / p
       else
@@ -236,12 +221,8 @@ subroutine rthmusk
 
       if (hrtwtr(ii) > 0.) then
          !! calculate flow duration
-         tbase = 0.
-         tbase = hhtime(ii)
-         if (tbase > 1.) tbase = 1.
 
          !! calculate width of channel at water level
-         topw = 0.
          if (hdepth(ii) <= ch_d(jrch)) then
             topw = phi(6,jrch) + 2. * hdepth(ii) * chside(jrch)
          else

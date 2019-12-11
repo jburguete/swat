@@ -44,7 +44,6 @@ subroutine nrain
    integer :: j
    real*8 :: nh3pcp
 
-   j = 0
    j = ihru
 
    select case (iatmodep)

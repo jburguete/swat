@@ -19,7 +19,7 @@ subroutine zero_urbn
 
 !! subdaily sediment modeling by J.Jeong
    hhsedy=0.
-   ! spl_eros = 0. ! not defined
+   eros_spl = 0. ! spl_eros is not defined
    rill_mult = 0.
    eros_expo = 0.
    sig_g = 0.

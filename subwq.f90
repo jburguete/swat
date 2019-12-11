@@ -71,14 +71,12 @@ subroutine subwq
    integer :: j
    real*8 :: tp, org_c, wtmp, ww, xx, yy, zz
 
-   j = 0
    j = ihru
 
    !! calculcate water temperature
    !! Stefan and Preudhomme. 1993.  Stream temperature estimation
    !!from air temperature.  Water Res. Bull. p. 27-45
    !! SWAT manual 2.3.13
-   wtmp = 0.
    wtmp = 5.0 + 0.75 * tmpav(j)
    if (wtmp <= 0.1) wtmp = 0.1
    wtmp = wtmp + 273.15    !! deg C to deg K
@@ -88,7 +86,6 @@ subroutine subwq
       chl_a(j) = chla_subco * tp
 
       !! calculate organic carbon loading to main channel
-      org_c = 0.
       org_c = (sol_cbn(1,j) / 100.) * enratio * sedyld(j) * 1000.
 
       !!add by zhang

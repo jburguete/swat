@@ -129,9 +129,6 @@ subroutine rteinit
 
 !!    read in areas associated with .fig record files
    do idum = 1, mhyd
-      icd = 0
-      iht = 0
-      rnm1 = 0.
 
       icd = icodes(idum)
       rnm1 = rnum1s(idum)
@@ -161,13 +158,6 @@ subroutine rteinit
 !!    calculate subbasin areas
 !!    calculate reach and hydrograph drainage areas
    do idum = 1, mhyd
-      icd = 0
-      iht = 0
-      inm1 = 0
-      inm2 = 0
-      inm3 = 0
-      rnm1 = 0.
-      inm4 = 0
 
       icd = icodes(idum)
       iht = ihouts(idum)

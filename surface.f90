@@ -43,10 +43,8 @@ subroutine surface
    integer :: j, sb, kk, ib, ii
    real*8 :: hruvirr, irfr
 
-   j = 0
    j = ihru
    sb = hru_sub(j)
-   !hruirrday = 0. ! not used
    irmmdt = 0.
 
    !! compute canopy interception

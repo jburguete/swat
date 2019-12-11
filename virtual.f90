@@ -376,7 +376,6 @@ subroutine virtual
       !! subbasin averages: water temperature
       !! Stefan and Preudhomme. 1993.  Stream temperature estimation
       !! from air temperature.  Water Res. Bull. p. 27-45
-      wtmp = 0.
       wtmp = 5.0 + 0.75 * tmpav(j)
       sub_wtmp(sb) = sub_wtmp(sb) + wtmp * qdr(j) * hru_fr(j)
 
@@ -410,7 +409,6 @@ subroutine virtual
 
 !! perform subbasin level operations after processing last HRU in subbasin
    if (iihru == hrutot(sb)) then
-      sub_ha = 0.
       sub_ha = da_ha * sub_fr(sb)
 
       !! calculate subbasin average values for weighted parameters
@@ -690,7 +688,6 @@ subroutine virtual
    potsagi(j) = 0.
    potlagi(j) = 0.
 !! end of day calculations
-   tmpavp(j) = 0.
    tmpavp(j) = tmpav(j)
 
    return

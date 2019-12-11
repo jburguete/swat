@@ -78,15 +78,11 @@ subroutine pgenhr(jj)
 
 
    !! calculate maximum half-hour rainfall
-   ajp = 0.
-   al5 = 0.
    ajp = 1. - Expo(-125. / (subp(jj) + 5.))
    al5 = Atri(ab, amp_r(i_mo,hru_sub(jj)), ajp, rndseed(10,jj))
 
    !! need peak rainfall rate
    !! calculate peak rate using same method as that for peak runoff
-   altc = 0.
-   pkrr = 0.
    altc = 1. - Expo(2. * tconc(jj) * Log(1. - al5))
    pkrr = altc * subp(jj) / tconc(jj)           !! mm/h
 
@@ -94,15 +90,11 @@ subroutine pgenhr(jj)
    !! generate random number between 0.0 and 1.0
    !! because all input set to constant value, vv always the same
    !! vv => time to peak expressed as fraction of total storm duration
-   vv = 0.
    k = 8
    vv = Atri(blm, qmn, uplm, k)
    !vv = 0.03
 
    !! calculate storm duration
-   xk1 = 0.
-   xk2 = 0.
-   dur = 0.
    xk1 = vv / 4.605
    xk2 = (1.- vv) / 4.605
    dur = subp(jj) / (pkrr * (xk1 + xk2))
@@ -113,19 +105,14 @@ subroutine pgenhr(jj)
 
    !! calculate amount of total rainfall fallen at time of peak
    !! rainfall and time of peak rainfall in units of minutes
-   pkrain = 0.
-   rtp = 0.
    pkrain = vv * subp(jj)
    rtp = vv * dur * 60
 
    !! calculate constants for exponential rainfall distribution
    !! equation
-   xkp1 = 0.
-   xkp2 = 0.
    xkp1 = dur * xk1
    xkp2 = dur * xk2
 
-   pt = 0
    pt = idt
    itime = 1
    sumrain = 0.
@@ -134,28 +121,24 @@ subroutine pgenhr(jj)
    !! do while pt less than rtp
    do
       if (pt >= Int(rtp)) exit
-      rx = 0.
       rx = pkrain - pkrr * xkp1 *&
       &(1. - Exp((dfloat(pt) - rtp) / (60. * xkp1)))
       rainsub(jj,itime) = rx - sumrain
       pt = pt + idt
       itime = itime + 1
       if (itime > nstep) exit
-      sumrain = 0.
       sumrain = rx
    end do
 
    !! after peak rainfall and before end of storm
    do
       if (pt >= Int(dur * 60.)) exit
-      rx = 0.
       rx = pkrain + pkrr * xkp2 *&
       &(1. - Exp((rtp - dfloat(pt)) / (60. * xkp2)))
       rainsub(jj,itime) = rx - sumrain
       pt = pt + idt
       itime = itime + 1
       if (itime > nstep) exit
-      sumrain = 0.
       sumrain = rx
    end do
 

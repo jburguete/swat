@@ -49,18 +49,16 @@ subroutine percmacro
    implicit none
 
    integer :: j, ly
-   real*8 :: crklch = 0.5, xx
+   real*8 :: xx
+   real*8, parameter :: crklch = 0.5
 
-   j = 0
    j = ihru
 
-   sepcrk = 0.
    sepcrk = Min(voltot, inflpcp)
    sepcrktot = sepcrk
    if (sepcrk > 1.e-4) then
       do ly = sol_nly(j), 1, -1
          crk = 0.
-         xx = 0.
          if (ly == sol_nly(j)) then
             crk = crklch * (volcr(ly,j) / (sol_z(ly,j) - sol_z(ly-1,j))&
             &* voltot - volcrmin)

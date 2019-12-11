@@ -44,10 +44,8 @@ subroutine watuse
    integer :: j
    real*8 :: cnv, sub_ha
 
-   j = 0
    j = ihru
 
-   cnv = 0.
    sub_ha = da_ha * sub_fr(hru_sub(j))
    cnv = sub_ha * 10.
 

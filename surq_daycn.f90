@@ -49,14 +49,11 @@ subroutine surq_daycn
    implicit none
 
    integer :: j
-   real*8 :: r2, bb, pb, cnimp, surfqimp
+   real*8 :: r2, bb, pb, surfqimp
+   real*8, parameter :: cnimp = 98.
 
-   j = 0
    j = ihru
 
-   r2 = 0.
-   bb = 0.
-   pb = 0.
    r2 = 25400. / cnday(j) - 254.
    bb = .2 * r2
    pb = precipday - bb
@@ -67,11 +64,7 @@ subroutine surq_daycn
 
 
    if (iurban(j) > 0) then
-      r2 = 0.
-      bb = 0.
-      pb = 0.
       surfqimp = 0.
-      cnimp = 98.
       r2 = 25400. / cnimp - 254.
       bb = .2 * r2
       pb = precipday - bb

@@ -93,11 +93,7 @@ subroutine watbal
    integer :: j
    real*8 :: dstor, h2oloss
 
-   j = 0
    j = ihru
-
-   dstor = 0.
-   h2oloss = 0.
 
    if (ievent == 0) then
       dstor = sno_hru(j) - snoprev + sol_sw(j) - swprev +&

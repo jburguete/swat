@@ -62,12 +62,10 @@ subroutine solp
    integer :: j, ii
    real*8 :: xx, vap
 
-   j = 0
    j = ihru
    vap_tile = 0
 
 !! compute soluble P lost in surface runoff
-   xx = 0.
    xx = sol_bd(1,j) * sol_z(1,j) * phoskd(j)
    surqsolp(j) = sol_solp(1,j) * surfq(j) / xx
    !!units ==> surqsolp = [kg/ha * mm] / [t/m^3 * mm * m^3/t] = kg/ha
@@ -84,7 +82,6 @@ subroutine solp
    surqsolp(j) = surqsolp(j) * bmp_sp(j)
 
 !! compute soluble P leaching
-   vap = 0.
    vap = sol_solp(1,j) * sol_prk(1,j) / ((conv_wt(1,j) / 1000.)&
    &* pperco_sub(1,j))
    vap = Min(vap, .5 * sol_solp(1,j))

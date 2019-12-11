@@ -71,7 +71,6 @@ subroutine solt
    real*8 :: f, dp, ww, b, wc, dd, xx, st0
    real*8 :: tlag, df, zd, bcv, tbare, tcov, tmp_srf
 
-   j = 0
    j = ihru
 
    tlag = 0.8
@@ -80,23 +79,16 @@ subroutine solt
 
    !! calculate maximum damping depth
    !! SWAT manual equation 2.3.6
-   f = 0.
-   dp = 0.
    f = sol_avbd(j) / (sol_avbd(j) + 686. * Exp(-5.63 * sol_avbd(j)))
    dp = 1000. + 2500. * f
 
    !! calculate scaling factor for soil water
    !! SWAT manual equation 2.3.7
-   ww = 0.
-   wc = 0.
    ww = .356 - .144 * sol_avbd(j)
    wc = sol_sw(j) / (ww * sol_z(sol_nly(j),j))
 
    !! calculate daily value for damping depth
    !! SWAT manual equation 2.3.8
-   b = 0.
-   f = 0.
-   dd = 0.
    b = Log(500. / dp)
    f = Exp(b * ((1. - wc) / (1. + wc))**2)
    dd = f * dp
@@ -104,12 +96,10 @@ subroutine solt
 
 !! calculate lagging factor for soil cover impact on soil surface temp
 !! SWAT manual equation 2.3.11
-   bcv = 0.
    bcv = sol_cov(j) /&
    &(sol_cov(j) + Exp(7.563 - 1.297e-4 * sol_cov(j)))
    if (sno_hru(j) /= 0.) then
       if (sno_hru(j) <= 120.) then
-         xx = 0.
          xx = sno_hru(j) /&
          &(sno_hru(j) + Exp(6.055 - .3002 * sno_hru(j)))
       else
@@ -119,10 +109,6 @@ subroutine solt
    end if
 
 !! calculate temperature at soil surface
-   st0 = 0.
-   tbare = 0.
-   tcov = 0.
-   tmp_srf = 0.
    !! SWAT manual equation 2.3.10
    st0 = (hru_ra(j) * (1. - albday) - 14.) / 20.
    !! SWAT manual equation 2.3.9
@@ -141,8 +127,6 @@ subroutine solt
 !! calculate temperature for each layer on current day
    xx = 0.
    do k = 1, sol_nly(j)
-      zd = 0.
-      df = 0.
       zd = (xx + sol_z(k,j)) / 2.  ! calculate depth at center of layer
       zd = zd / dd                 ! SWAT manual equation 2.3.5
       !! SWAT manual equation 2.3.4
