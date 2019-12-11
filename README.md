@@ -25,8 +25,8 @@ perl script file (:heavy_check_mark:)
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
-* Generate an exhausive list of issues detected in the original code
-(:construction:, see issues.txt file or at the end of this README)
+* Generate a detailed list of issues detected in the original code
+(:heavy_check_mark:, see issues.txt file or at the end of this README)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:x:)
 * Standardize comments by using Doxygen style on order to generate documentation
@@ -81,8 +81,8 @@ Issues in the original source code
 ----------------------------------
 
 This is a list of possible issues detected in the original source code. These
-issues have been mostly detected by the GFortran compiler warnings. Some of them could
-not arise because the logic of the variables is not possible.
+issues have been mostly detected by the GFortran compiler warnings. Some of them
+could not arise because the logic of the variables is not possible.
 
 * In biofilm.f:
   - "dcoef" is not defined.
