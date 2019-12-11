@@ -40,48 +40,38 @@ update the makefile or to translate original files to Fortran 90)
 * [findent](https://sourceforge.net/projects/findent) (optional: to translate
 original files to Fortran 90 with a standard indentation)
 * On Microsoft Windows systems you have to install
-[MSYS2](http://sourceforge.net/projects/msys2) and the required
-libraries and utilities. You can follow detailed instructions in
+[MSYS2](http://sourceforge.net/projects/msys2) and the required utilities
+(gfortran and make). You can follow detailed instructions in
 [install-unix](https://github.com/jburguete/install-unix/blob/master/tutorial.pdf)
 
-Generation of an executable to test
------------------------------------
+Instructions to generate an executable to test
+----------------------------------------------
 
 * In UNIX type operative systems:
 > $ make
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
 system:
-> $ make clean
->
 > $ prefix="i686-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 * Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
 system:
-> $ make clean
->
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 
-Generation of an optimized executable file
-------------------------------------------
+Instructions to generate of an optimized executable file
+--------------------------------------------------------
 
 * In UNIX type operative systems:
-> $ make clean
->
 > $ CFLAGS="-march=native -flto" LDFLAGS="-flto" make strip
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
 system:
-> $ make clean
->
 > $ prefix="i686-w64-mingw32-" EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static"
 > make strip
 
 * Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
 system:
-> $ make clean
->
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" CFLAGS="-flto"
 > LDFLAGS="-flto -static" make strip
 
