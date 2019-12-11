@@ -17,13 +17,11 @@ perl script file (:heavy_check_mark:)
 * Remove non-used variables and format labels (:heavy_check_mark:)
 * Detect and solve all uninitialized variables (:heavy_check_mark:, but some
 solutions can be incorrect) 
-* Remove unneeded variable initializations as:
+* Remove unneeded variable initializations (:heavy_check_mark:) as:
 
 `j=0 ! this line is not necessary`
 
 `j=ihru`
-
-(:heavy_check_mark:)
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
