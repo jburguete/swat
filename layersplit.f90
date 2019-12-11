@@ -15,7 +15,6 @@ subroutine layersplit(dep_new)
    flag = 0
 
    do j = 2, nly
-      xx = 0.
       xx = abs(dep_new - sol_z(j,ihru))
       !! if values are within 10 mm of one another, reset boundary
       if (xx < 10.) then
@@ -28,7 +27,6 @@ subroutine layersplit(dep_new)
          flag = 1
          sol_nly(ihru) = sol_nly(ihru) + 1
          nly = nly + 1
-         jj = 0
          jj = j + 1
          do n = nly, jj, -1
             sol_z(n,ihru) = sol_z(n-1,ihru)

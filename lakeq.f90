@@ -84,23 +84,15 @@ subroutine lakeq
    integer :: jres
    real*8 :: tpest1, tpest2, fd1, fp1, fd2, dlake, fp2
 
-   jres = 0
    jres = inum1
 
-   tpest1 = 0.
-   tpest2 = 0.
    tpest1 = lkpst_mass(jres)
    tpest2 = lkspst_mass(jres)
 
    if (res_vol(jres) > 1.) then
       !! calculate depth of lake
-      dlake = 0.
       dlake = res_vol(jres) / (ressa * 10000.)
 
-      fd1 = 0.
-      fp1 = 0.
-      fd2 = 0.
-      fp2 = 0.
       fd1 = 1. / (1. + lkpst_koc(jres) * res_sed(jres) * 1.e6)
       fp1 = 1. - fd1
       !! ASSUME POR=0.8; DENSITY=2.6E6, then concsed = 5.2e5; KD2=KD1

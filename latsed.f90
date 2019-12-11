@@ -33,7 +33,6 @@ subroutine latsed
 
    integer :: j
 
-   j = 0
    j = ihru
 
    !! update sediment yield for sediment in lateral flow

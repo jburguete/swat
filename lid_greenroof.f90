@@ -113,7 +113,6 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
 
 !!      Calculate infiltration using the Green-Ampt equation
       do
-         lid_f1 = 0.
          lid_f1 = lid_cuminf_last(j,1) + lid_adj_ksat * dt&
          &+ whd * cvwc&
          &* Log((tst + whd * cvwc) / (lid_cuminf_last(j,1) + whd *&
