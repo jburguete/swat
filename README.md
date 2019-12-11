@@ -18,6 +18,8 @@ with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl 
 > j=0 ! this line is not necessary
 >
 > j=ihru
+* Remove redundant code
+* Exhaustive use of the "parameter" directive on constants
 
 Required tools
 --------------
