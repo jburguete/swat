@@ -193,9 +193,9 @@ subroutine orgncswat2(iwave)
 
    latc_clyr = latc_clyr + sol_latc(1,j)
    DO k=2,sol_nly(j)
-      if (sol_prk(k,j) > 0 .and. k == sol_nly(j)) then
+      !if (sol_prk(k,j) > 0 .and. k == sol_nly(j)) then
          !write (*,*) 'stop'
-      end if
+      !end if
       sol_thick = 0.
       sol_thick = sol_z(k,j)-sol_z(k-1,j)
       sol_WOC(k,j) = sol_LSC(k,j)+sol_LMC(k,j)+sol_HPC(k,j)+sol_HSC(k,j)
