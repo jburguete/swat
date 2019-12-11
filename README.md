@@ -58,17 +58,19 @@ Generation of an optimized executable file
 * In UNIX type operative systems:
 > $ make clean
 >
-> $ CFLAGS="-march=native" make strip
+> $ CFLAGS="-march=native -flto" LDFLAGS="-flto" make strip
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
 system:
 > $ make clean
 >
-> $ prefix="i686-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make strip
+> $ prefix="i686-w64-mingw32-" EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static"
+> make strip
 
 * Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
 system:
 > $ make clean
 >
-> $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make strip
+> $ prefix="x86\_64-w64-mingw32-" EXE=".exe" CFLAGS="-flto"
+> LDFLAGS="-flto -static" make strip
 
