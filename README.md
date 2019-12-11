@@ -118,7 +118,7 @@ could not arise because the logic of the variables is not possible.
     line 96
 
 * In drains.f:
-  - "nlayer" could be used not initialized at line 23. However, yhe problem only
+  - "nlayer" could be used not initialized at line 23. However, the problem only
     arises if it is not set in the previous bucle (`mlyr<=1` or
     `sol_z(j1,j)<=0`)
 
@@ -164,7 +164,7 @@ could not arise because the logic of the variables is not possible.
 
 * In pothole.f:
   - "solp\_tileo" could be used not initialized at line 593 if
-    `pot\_vol(j)<=1.e-6` or `potvol\_tile<=1.e-6`
+    `pot_vol(j)<=1.e-6` or `potvol_tile<=1.e-6`
 
 * In potholehr.f:
   - "potflow" seems to be "potflwo" at line 447
@@ -206,7 +206,7 @@ could not arise because the logic of the variables is not possible.
 
 * In sched\_mgt.f:
   - "husc" and "igrow" at lines 264-265 are used but not initialized.
-    "husc" has to be `phu\_op(iop,ihru)` has in readmgt.f?
+    "husc" has to be `phu_op(iop,ihru)` has in readmgt.f?
     "igrow" has to be `igro(ihru)` has in readmgt.f?
 
 * In smeas.f:
