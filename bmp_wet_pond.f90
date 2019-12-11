@@ -293,7 +293,7 @@ subroutine ext_dpth(hmax)
    hmax = hmax / 3.2808 ! meter
 
 end subroutine
- !-------------------------------------------------------------------
+!-------------------------------------------------------------------
 
 subroutine wpnd_depth(hvol,width,slp,lenwdth,hdep)
    !calculate ponding depth using Newton's method

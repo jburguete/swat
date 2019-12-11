@@ -1,4 +1,4 @@
-real function expo (xx) result(r_expo)
+real*8 function expo (xx) result(r_expo)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This function checks the argument against upper and lower
@@ -29,7 +29,6 @@ real function expo (xx) result(r_expo)
    if (yy < -20.) yy = -20.
    if (yy > 20.) yy = 20.
 
-   r_expo = 0.
    r_expo = Exp(yy)
 
    return

@@ -62,7 +62,6 @@ subroutine orgncswat2(iwave)
    perc_clyr = 0.
    latc_clyr = 0.
 
-   j = 0
    j = ihru
 
    !!for debug purpose by zhang
@@ -70,17 +69,16 @@ subroutine orgncswat2(iwave)
    ! write(*,*) 'stop'
    !end if
 
-   xx = 0.
-   wt1 = 0.  !! conversion factor
-   er = 0. !! enrichment ratio
    if (iwave <= 0) then
       !! HRU calculations
       !xx = sol_n(1,j) + sol_fon(1,j) + sol_mn(1,j)
       xx = sol_LSN(1,j)+sol_LMN(1,j)+sol_HPN(1,j)+sol_HSN(1,j) !+sol_BMN(1,j)
       !wt = sol_bd(1,j) * sol_z(1,j) * 10. (tons/ha)
       !wt1 = wt/1000
+      !! conversion factor 
       wt1 = sol_bd(1,j) * sol_z(1,j) / 100.
 
+      !! enrichment ratio
       if (erorgn(j) > .001) then
          er = erorgn(j)
       else
@@ -95,7 +93,6 @@ subroutine orgncswat2(iwave)
       er = enratio
    end if
 
-   conc = 0.
    conc = xx * er / wt1
 
    if (iwave <= 0) then
@@ -156,7 +153,7 @@ subroutine orgncswat2(iwave)
       !write(*,*) 'stop'
    end if
    IF(sol_BMC(1,j)>.01) THEN
-      PRMT_21 = 0.  !KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C
+      !KOC FOR CARBON LOSS IN WATER AND SEDIMENT(500._1500.) KD = KOC * C
       PRMT_21 = 1000.
       sol_WOC(1,j) = sol_LSC(1,j)+sol_LMC(1,j)+sol_HPC(1,j)+sol_HSC(1,j)+sol_BMC(1,j)
       DK=.0001*PRMT_21*sol_WOC(1,j)
@@ -213,7 +210,6 @@ subroutine orgncswat2(iwave)
       sol_BMC(k,j)=Y1-VBC
 
       !! calculate nitrate in percolate
-      !perc_clyr = 0.
       perc_clyr = perc_clyr + sol_percc(k,j)
 
       latc_clyr = latc_clyr + sol_latc(k,j)

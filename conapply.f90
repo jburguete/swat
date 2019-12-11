@@ -70,7 +70,6 @@ subroutine conapply
    kk = 0
    k = 0
 
-   j = 0
    j = ihru
 
 !! if continuous pesticide not currently on, check to see if it is time
@@ -82,12 +81,9 @@ subroutine conapply
       iday_pest(j) = 1
 
       !! initialize local variables
-      jj = 0
-      xx = 0.
-
       kk = cpst_id(j)
       k = nope(kk)
-      xx = cpst_kg(j)
+      !xx = cpst_kg(j) ! overwritten by a following line
       jj = inum1
 
       !! calculate amount of pesticide drifting onto main channel in subbasin
@@ -99,7 +95,6 @@ subroutine conapply
       xx = xx * ap_ef(kk)
 
 !! calculate ground cover
-      gc = 0.
       gc = (1.99532 - Erfc(1.333 * laiday(j) - 2.)) / 2.1
       if (gc < 0.) gc = 0.
 

@@ -138,31 +138,15 @@ subroutine harvkillop
    !!=============
    real*8 :: BLG1, BLG2, CLG, sf
    real*8 :: sol_min_n, resnew_n, resnew_ne
-   real*8 :: LMF, LSF, LSLF, LSNF,LMNF
+   real*8 :: LMF, LSF
    real*8, parameter :: BLG3 = 0.10
-   ! orgc_f = 0. ! not used
-   BLG1 = 0.
-   BLG2 = 0.
-   CLG = 0.
-   sf = 0.
-   sol_min_n = 0.
-   resnew = 0.
-   resnew_n = 0.
-   resnew_ne = 0.
-   LMF = 0.
-   LSF = 0.
-   LSLF = 0.
-   LSNF = 0.
-   LMNF = 0.
    !!By Zhang
    !!==================
 
 
-   j = 0
    j = ihru
 
    !! calculate modifier for autofertilization target nitrogen content
-   tnyld(j) = 0.
    tnyld(j) = (1. - rwt(j)) * bio_ms(j) * pltfr_n(j) * auto_eff(j)
 !     if (icr(j) > 1) then
 !       tnyld(nro(j),icr(j)-1,j) = tnyld(nro(j),icr(j),j)
@@ -171,14 +155,12 @@ subroutine harvkillop
 !     end if
 
 
-   hiad1 = 0.
    if (hi_targ(j) > 0.) then
       hiad1 = hi_targ(j)
    else
       if (plt_pet(j) < 10.) then
          wur = 100.
       else
-         wur = 0.
          wur = 100. * plt_et(j) / plt_pet(j)
       endif
       hiad1 = (hvstiadj(j) - wsyf(idplt(j))) *&
@@ -244,8 +226,6 @@ subroutine harvkillop
    !!=================
 
    !! calculate nutrients removed with yield
-   yieldn = 0.
-   yieldp = 0.
    yieldn = yield * cnyld(idplt(j))
    yieldp = yield * cpyld(idplt(j))
    yieldn = Min(yieldn, 0.80 * plantn(j))
@@ -305,10 +285,8 @@ subroutine harvkillop
       !end if
 
       !kg/ha
-      sol_min_n = 0.
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
 
-      !resnew = resnew ! redundant
       resnew_n = ff1 * (plantn(j) - yieldn)
       resnew_ne = resnew_n + sf * sol_min_n
 
@@ -449,8 +427,7 @@ subroutine harvkillop
 
 
          !here a simplified assumption of 0.5 LSL
-         LSLF = 0.0
-         LSLF = CLG
+         !LSLF = CLG ! not used
 
          sol_LSL(l,j) = sol_LSL(l,j) + RLR* LSF * resnew
          sol_LSC(l,j) = sol_LSC(l,j) + 0.42*LSF * resnew
@@ -487,7 +464,6 @@ subroutine harvkillop
    if (hrupest(j) == 1) then
       do k = 1, npmx
          !! calculate amount of pesticide removed with yield
-         yldpst = 0.
          if (hvsti(idplt(j)) > 1.001) then
             yldpst = plt_pst(k,j)
             plt_pst(k,j) = 0.
@@ -514,8 +490,7 @@ subroutine harvkillop
    endif
 
    !! update curve number
-   if (cnop > 0.)&
-   &call curno(cnop,j)
+   if (cnop > 0.) call curno(cnop,j)
 
    !! reset variables
    igro(j) = 0

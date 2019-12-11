@@ -108,13 +108,6 @@ subroutine command
    idum = 0
 
    do ii = 1, mhyd_bsn
-      icode = 0
-      ihout = 0
-      inum1 = 0
-      inum2 = 0
-      inum3 = 0
-      rnum1 = 0.
-      inum4 = 0
       idum = idum + 1
       icode = icodes(idum)
       ihout = ihouts(idum)

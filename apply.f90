@@ -67,14 +67,9 @@ subroutine apply
    integer :: j, kk, k, jj, nly
    real*8 :: xx, gc
 
-   j = 0
    j = ihru
 
 !! initialize local variables
-   kk = 0
-   k = 0
-   jj = 0
-   xx = 0.
 
    kk = ipest
 
@@ -112,7 +107,6 @@ subroutine apply
 !   added above for pesticide incorporation 3/31/08 gsm
 
 !! calculate ground cover
-      gc = 0.
       gc = (1.99532 - Erfc(1.333 * laiday(j) - 2.)) / 2.1
       if (gc < 0.) gc = 0.
 

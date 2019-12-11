@@ -159,7 +159,6 @@ subroutine confert
    real*8 :: gc, gc1, frt_t, RLN, X1, X10, X8, XXX, XZ, YY, YZ, ZZ
    real*8, parameter :: orgc_f = 0.35
 
-   j = 0
    j = ihru
 
 !! if continuous fertilization not currently on, check to see if it is time
@@ -167,7 +166,6 @@ subroutine confert
 
    if (iday_fert(j) == ifrt_freq(j)) then
       !! apply manure
-      it = 0
       it = cfrt_id(j)
       if (cfrt_kg(j) > 0.) then
          l = 1
@@ -232,14 +230,11 @@ subroutine confert
 
 !! add bacteria - (cells/t*t/ha + 10t/m^3*mm*cells/t)/(t/ha + 10t/m^3*mm)
 !! calculate ground cover
-         gc = 0.
          gc = (1.99532 - Erfc(1.333 * laiday(j) - 2.)) / 2.1
          if (gc < 0.) gc = 0.
 
-         gc1 = 0.
          gc1 = 1. - gc
 
-         frt_t = 0.
          frt_t = bact_swf * cfrt_kg(j) / 1000.
 
          bactp_plt(j) = gc * bactpdb(it) * frt_t * 100. +&

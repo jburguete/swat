@@ -61,16 +61,14 @@ subroutine dailycn
 
    real*8 :: xx, r2
 
-   j = 0
    j = ihru
 
 
-   xx = 0.
-   r2 = 0.
    xx = wrt(1,j) - wrt(2,j) * sol_sw(j)
    if (xx < -20.) xx = -20.
    if (xx > 20.) xx = 20.
 
+   r2 = 0.
    if (icn <= 0) then
       !! traditional CN method (function of soil water)
       if ((sol_sw(j) + Exp(xx)) > 0.001) then

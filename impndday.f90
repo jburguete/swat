@@ -139,8 +139,6 @@ subroutine impndday
    real*8, dimension (40) :: pdvas
    character*4 cropname
 
-   j = 0
-   sb = 0
    j = ihru
    sb = inum1
 

@@ -45,7 +45,6 @@ subroutine bmp_ri_pond(kk,riflw,rised)
 
    sb = inum1
    sub_ha = da_ha * sub_fr(sb)
-   qin = 0.; qout = 0.
    outflw = 0.; outsed = 0.
    qseep = 0.; qet = 0.;
 

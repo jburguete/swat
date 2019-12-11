@@ -157,7 +157,6 @@ subroutine impndaa(years)
    character*4 cropname
 
    do j = 1, nhru
-      sb = 0
       sb = hru_sub(j)
 
       iflag = 0

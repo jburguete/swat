@@ -88,7 +88,6 @@ subroutine hydroinit
 
 !! subbasin !!
 !!    compute time of concentration (sum of overland and channel times)
-      t_ch = 0
       t_ov(j) = .0556 * (slsubbsn(j)*ov_n(j)) ** .6 / hru_slp(j) ** .3
       t_ch = .62 * ch_l1(j) * ch_n(1,hru_sub(j)) ** .75 /&
       &((da_km * sub_fr(hru_sub(j)))**.125 *&
@@ -99,7 +98,6 @@ subroutine hydroinit
 
 !! HRU !!
 !!    compute time of concentration (sum of overland and channel times)
-      t_ch = 0
       ch_l1(j) = ch_l1(j) * hru_dafr(j) / sub_fr(hru_sub(j))
       t_ov(j) = .0556 * (slsubbsn(j)*ov_n(j)) ** .6 / hru_slp(j) ** .3
       t_ch = .62 * ch_l1(j) * ch_n(1,hru_sub(j)) ** .75 /&
@@ -130,7 +128,6 @@ subroutine hydroinit
          end do
          !! unit conversion:
          !! xx = m/(mm/h) * 1000.(mm/m)/24.(h/d) / 4.
-         xx = 0.
          xx = 10.4 * slsoil(j) / scmx
          lat_ttime(j) = 1. - Exp(-1./xx)
       else

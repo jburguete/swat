@@ -134,10 +134,6 @@ subroutine impnd_init
    do j = 1, nhru
 
       !! calculate the sediment settling rate
-      cl = 0.
-      si = 0.
-      sa = 0.
-      mnpsz = 0.
       cl = 0.4100 * sol_clay(1,j) / 100.
       si = 2.7100 * sol_silt(1,j) / 100.
       sa = 5.7000 * sol_sand(1,j) / 100.
@@ -155,7 +151,6 @@ subroutine impnd_init
             if (pnd_pvol(j) <= 0.) pnd_pvol(j) = .9 * pnd_evol(j)
             if (pnd_psa(j) <= 0.) pnd_psa(j) = 0.08 * pnd_pvol(j)
             if (pnd_esa(j) <= 0.) pnd_esa(j) = 1.5 * pnd_psa(j)
-            targ = 0
             targ = pnd_pvol(j) + .1 * (pnd_evol(j) - pnd_pvol(j))
             if (pnd_vol(j) > targ) pnd_vol(j) = targ
 
@@ -179,16 +174,11 @@ subroutine impnd_init
             wshd_pndsed = wshd_pndsed + pnd_vol(j) * pnd_sed(j)
 
             !! calculate shape parameters for surface area equation
-            pe_sa = 0.
-            pp_sa = 0.
-            pp_vo = 0.
-            pe_vo = 0.
             pp_vo = pnd_pvol(j)
             pe_vo = pnd_evol(j)
             pe_sa = pnd_esa(j)
             pp_sa = pnd_psa(j)
             if ((pe_sa - pp_sa) > 0. .and. (pe_vo - pp_vo) > 0.) then
-               lnvol = 0.
                lnvol = Log10(pe_vo) - Log10(pp_vo)
                if (lnvol > 1.e-4) then
                   bp2(j) = (Log10(pe_sa) - Log10(pp_sa)) / lnvol
@@ -253,10 +243,8 @@ subroutine impnd_init
             wshd_wetfr = wshd_wetfr + (hru_dafr(j) * wet_fr(j))
 
             !! calculate shape parameters for surface area equation
-            wetdif = 0.
             wetdif = wet_mxvol(j) - wet_nvol(j)
             if ((wet_mxsa(j) - wet_nsa(j)) > 0. .and. wetdif > 0.) then
-               lnvol = 0.
                lnvol = Log10(wet_mxvol(j)) - Log10(wet_nvol(j))
                if (lnvol > 1.e-4) then
                   bw2(j) = (Log10(wet_mxsa(j)) - Log10(wet_nsa(j))) / lnvol

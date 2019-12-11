@@ -88,7 +88,6 @@ subroutine irrsub
    integer :: j, k
    real*8 :: vmma, vmm, cnv, vmxi, vol, vmms, vmmd
 
-   j = 0
    j = ihru
 
 !! determine available amount of water in source
@@ -104,14 +103,12 @@ subroutine irrsub
     case (3)   !! shallow aquifer source
       do k = 1, nhru
          if (hru_sub(k) == irrno(j)) then
-            cnv = 0.
             cnv = hru_ha(k) * 10.
             if (shallst(k) < 1.e-6) shallst(k) = 0.0
             vmma = vmma + shallst(k) * cnv * irrefm(j)
          end if
       end do
       vmms = vmma
-      cnv = 0.
       cnv = hru_ha(j) * 10.
       vmma = vmma / cnv
       vmm = Min(sol_sumfc(j), vmma)
@@ -119,13 +116,11 @@ subroutine irrsub
     case (4)   !! deep aquifer source
       do k = 1, nhru
          if (hru_sub(k) == irrno(j)) then
-            cnv = 0.
             cnv = hru_ha(k) * 10.
             vmma = vmma + deepst(k) * cnv * irrefm(j)
          end if
       end do
       vmmd = vmma
-      cnv = 0.
       cnv = hru_ha(j) * 10.
       vmma = vmma / cnv
       vmm = Min(sol_sumfc(j), vmma)
@@ -137,15 +132,12 @@ subroutine irrsub
 
 !! if water available from source, proceed with irrigation
    if (vmm > 0.) then
-      cnv = 0.
       cnv = hru_ha(j) * 10.
 
-      vmxi = 0.
       vmxi = irramt(j)
       if (vmxi < 1.e-6) vmxi = sol_sumfc(j)
       if (vmm > vmxi) vmm = vmxi
 
-      vol = 0.
       vol = vmm * cnv
 
       !if (pot_fr(j) > 1.e-6) then
@@ -162,14 +154,12 @@ subroutine irrsub
 
       !! subtract irrigation from shallow or deep aquifer
       if (pot_fr(j) > 1.e-6) then
-         vol = 0.
          vol = aird(j) * cnv * irrefm(j)
       end if
       select case (irrsc(j))
        case (3)   !! shallow aquifer source
          do k = 1, nhru
             if (hru_sub(k) == irrno(j)) then
-               cnv = 0.
                vmma = 0.
                cnv = hru_ha(k) * 10.
                if (vmms > 0.01) vmma = vol * (shallst(k) * cnv / vmms)
@@ -186,7 +176,6 @@ subroutine irrsub
        case (4)   !! deep aquifer source
          do k = 1, nhru
             if (hru_sub(k) == irrno(j)) then
-               cnv = 0.
                vmma = 0.
                cnv = hru_ha(k) * 10.
                if (vmmd > 0.01) vmma = vol * (deepst(k) * cnv / vmmd)

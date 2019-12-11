@@ -23,7 +23,6 @@ subroutine burnop
    integer :: j
    real*8 :: pburn, xx
 
-   j = 0
    j = ihru
 
    xx = burn_frlb

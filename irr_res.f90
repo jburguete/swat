@@ -99,7 +99,6 @@ subroutine irr_res
    integer :: jres, k, flag
    real*8 :: cnv, vmm, vol, vmxi
 
-   jres = 0
    jres = inum1
 
    do k = 1, nhru
@@ -124,29 +123,24 @@ subroutine irr_res
          endif
 
          if (flag > 0) then
-            cnv = 0.
             cnv = hru_ha(k) * 10.
 
             !! compute maximum amount of water available for irrigation
             !! from reach
-            vmm = 0.
             vmm = res_vol(jres) / cnv
 
             !! check available against set amount in scheduled operation
             if (flag == 1) then
-               vmxi = 0.
                vmxi = irramt(k)
                if (vmxi < 1.e-6) vmxi = sol_sumfc(k)
                if (vmm > vmxi) vmm = vmxi
             end if
             if (flag == 2) then
-               vmxi = 0.
                vmxi = irr_mx(k)
                if (vmm > vmxi) vmm = vmxi
             end if
 
             if (vmm > 0.) then
-               vol = 0.
                vol = vmm * cnv
 
                !!   if (ipot(k) == k) then
@@ -168,7 +162,6 @@ subroutine irr_res
                !! subtract irrigation from reservoir volume
                !!     if (ipot(k) /= k) then
                if (pot_fr(k) > 1.e-6) then
-                  vol = 0.
                   vol = aird(k) * cnv
                end if
                vol = vol / irr_eff(k)       !! BN inserted to account for irr. efficiency

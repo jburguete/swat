@@ -233,13 +233,11 @@ subroutine hhwatqual
    &thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
 !      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
 
-   jrch = 0
    jrch = inum1
 
 !! hourly loop
    do ii = 1, nstep
       !! initialize water flowing into reach
-      wtrin = 0.
       wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
 
       if (hrtwtr(ii) / (idt * 60.) > 0.01) then
@@ -282,16 +280,6 @@ subroutine hhwatqual
          if (disoxin < 1.e-6) disoxin = 0.0
 
          !! initialize concentration of nutrient in reach
-         wtrtot = 0.
-         algcon = 0.
-         orgncon = 0.
-         nh3con = 0.
-         no2con = 0.
-         no3con = 0.
-         orgpcon = 0.
-         solpcon = 0.
-         cbodcon = 0.
-         o2con = 0.
          wtrtot = wtrin + hrchwtr(ii)
          if (ii == 1) then
             algcon = (algin * wtrin + algae(jrch) * hrchwtr(ii)) / wtrtot
@@ -336,7 +324,6 @@ subroutine hhwatqual
          !! Stefan and Preudhomme. 1993.  Stream temperature estimation
          !! from air temperature.  Water Res. Bull. p. 27-45
          !! SWAT manual equation 2.3.13
-         wtmp = 0.
          wtmp = 5.0 + 0.75 * tmpav(jrch)
          if (wtmp <= 0.) wtmp = 0.1
 
@@ -346,10 +333,6 @@ subroutine hhwatqual
 
          !! calculate saturation concentration for dissolved oxygen
          !! QUAL2E section 3.6.1 equation III-29
-         ww = 0.
-         xx = 0.
-         yy = 0.
-         zz = 0.
          ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
          xx = 6.642308e07 / ((wtmp + 273.15)**2)
          yy = 1.243800e10 / ((wtmp + 273.15)**3)
@@ -361,21 +344,17 @@ subroutine hhwatqual
 !! O2 impact calculations
          !! calculate nitrification rate correction factor for low
          !! oxygen QUAL2E equation III-21
-         cordo = 0.
          cordo = 1.0 - Exp(-0.6 * o2con)
          !! modify ammonia and nitrite oxidation rates to account for
          !! low oxygen
-         bc1mod = 0.
-         bc2mod = 0.
          bc1mod = bc1(jrch) * cordo
          bc2mod = bc2(jrch) * cordo
 !! end O2 impact calculations
 
          !! calculate flow duration
-         thour = 0.
-         thour = hhtime(ii)
-         if (thour > 1.0) thour = 1.0
-         thour = 1.0
+         !thour = hhtime(ii)
+         !if (thour > 1.0) thour = 1.0
+         thour = 1.0 ! this overwrites previous lines
 
 !! algal growth
          !! calculate light extinction coefficient
@@ -389,20 +368,16 @@ subroutine hhwatqual
 
          !! calculate algal growth limitation factors for nitrogen
          !! and phosphorus QUAL2E equations III-13 & III-14
-         fnn = 0.
-         fpp = 0.
          fnn = cinn / (cinn + k_n)
          fpp = solpcon / (solpcon + k_p)
 
          !! calculate hourly, photosynthetically active,
          !! light intensity QUAL2E equation III-9c
          !! Light Averaging Option # 3
-         algi = 0.
          algi = frad(hru1(jrch),ii) * hru_ra(hru1(jrch)) * tfact
 
          !! calculate growth attenuation factor for light, based on
          !! hourly light intensity QUAL2E equation III-6a
-         fll = 0.
          fll = (1. / (lambda * hdepth(ii))) *&
          &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * hdepth(ii)))))
 
@@ -427,37 +402,27 @@ subroutine hhwatqual
          !! calculate algal biomass concentration at end of day
          !! (phytoplanktonic algae)
          !! QUAL2E equation III-2
-         halgae(ii) = 0.
          halgae(ii) = algcon + (Theta(gra,thgra,wtmp) * algcon -&
          &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
          &/ hdepth(ii) * algcon) * thour
-         if (halgae(ii) < 0.) halgae(ii) = 0.
+         if (halgae(ii) < 1.e-6) halgae(ii) = 0.0
 
          !! calculate chlorophyll-a concentration at end of day
          !! QUAL2E equation III-1
-         hchla(ii) = 0.
          hchla(ii) = halgae(ii) * ai0 / 1000.
+         if (hchla(ii) < 1.e-6) hchla(ii) = 0.0
 !! end algal growth
 
 !! oxygen calculations
          !! calculate carbonaceous biological oxygen demand at end
          !! of day QUAL2E section 3.5 equation III-26
-         yy = 0.
-         zz = 0.
          yy = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
          zz = Theta(rk3(jrch),thrk3,wtmp) * cbodcon
-         hbod(ii) = 0.
          hbod(ii) = cbodcon - (yy + zz) * thour
-         if (hbod(ii) < 0.) hbod(ii) = 0.
+         if (hbod(ii) < 1.e-6) hbod(ii) = 0.0
 
          !! calculate dissolved oxygen concentration if reach at
          !! end of day QUAL2E section 3.6 equation III-28
-         uu = 0.
-         vv = 0.
-         ww = 0.
-         xx = 0.
-         yy = 0.
-         zz = 0.
          uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
          vv = (ai3 * Theta(gra,thgra,wtmp) - ai4 *&
          &Theta(rhoq,thrho,wtmp)) * algcon
@@ -465,103 +430,68 @@ subroutine hhwatqual
          xx = Theta(rk4(jrch),thrk4,wtmp) / (hdepth(ii) * 1000.)
          yy = ai5 * Theta(bc1mod,thbc1,wtmp) * nh3con
          zz = ai6 * Theta(bc2mod,thbc2,wtmp) * no2con
-         hdisox(ii) = 0.
          hdisox(ii) = o2con + (uu + vv - ww - xx - yy - zz) * thour
-         if (hdisox(ii) < 0.) hdisox(ii) = 0.
+         if (hdisox(ii) < 1.e-6) hdisox(ii) = 0.0
 !! end oxygen calculations
 
 !! nitrogen calculations
          !! calculate organic N concentration at end of day
          !! QUAL2E section 3.3.1 equation III-16
-         xx = 0.
-         yy = 0.
-         zz = 0.
          xx = ai1 * Theta(rhoq,thrho,wtmp) * algcon
          yy = Theta(bc3(jrch),thbc3,wtmp) * orgncon
          zz = Theta(rs4(jrch),thrs4,wtmp) * orgncon
-         horgn(ii) = 0.
          horgn(ii) = orgncon + (xx - yy - zz) * thour
-         if (horgn(ii) < 0.) horgn(ii) = 0.
+         if (horgn(ii) < 1.e-6) horgn(ii) = 0.0
 
          !! calculate fraction of algal nitrogen uptake from ammonia
          !! pool QUAL2E equation III-18
-         f1 = 0.
          f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con +&
          &1.e-6)
 
          !! calculate ammonia nitrogen concentration at end of day
          !! QUAL2E section 3.3.2 equation III-17
-         ww = 0.
-         xx = 0.
-         yy = 0.
-         zz = 0.
          ww = Theta(bc3(jrch),thbc3,wtmp) * orgncon
          xx = Theta(bc1mod,thbc1,wtmp) * nh3con
          yy = Theta(rs3(jrch),thrs3,wtmp) / (hdepth(ii) * 1000.)
          zz = f1 * ai1 * algcon * Theta(gra,thgra,wtmp)
-         hnh4(ii) = 0.
          hnh4(ii) = nh3con + (ww - xx + yy - zz) * thour
-         if (hnh4(ii) < 0.) hnh4(ii) = 0.
+         if (hnh4(ii) < 1.e-6) hnh4(ii) = 0.0
 
          !! calculate concentration of nitrite at end of day
          !! QUAL2E section 3.3.3 equation III-19
-         yy = 0.
-         zz = 0.
          yy = Theta(bc1mod,thbc1,wtmp) * nh3con
          zz = Theta(bc2mod,thbc2,wtmp) * no2con
-         hno2(ii) = 0.
          hno2(ii) = no2con + (yy - zz) * thour
-         if (hno2(ii) < 0.) hno2(ii) = 0.
+         if (hno2(ii) < 1.e-6) hno2(ii) = 0.0
 
          !! calculate nitrate concentration at end of day
          !! QUAL2E section 3.3.4 equation III-20
-         yy = 0.
-         zz = 0.
          yy = Theta(bc2mod,thbc2,wtmp) * no2con
          zz = (1. - f1) * ai1 * algcon * Theta(gra,thgra,wtmp)
-         hno3(ii) = 0.
          hno3(ii) = no3con + (yy - zz) * thour
-         if (hno3(ii) < 0.) hno3(ii) = 0.
+         if (hno3(ii) < 1.e-6) hno3(ii) = 0.0
 !! end nitrogen calculations
 
 !! phosphorus calculations
          !! calculate organic phosphorus concentration at end of
          !! day QUAL2E section 3.3.6 equation III-24
-         xx = 0.
-         yy = 0.
-         zz = 0.
          xx = ai2 * Theta(rhoq,thrho,wtmp) * algcon
          yy = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
          zz = Theta(rs5(jrch),thrs5,wtmp) * orgpcon
-         horgp(ii) = 0.
          horgp(ii) = orgpcon + (xx - yy - zz) * thour
-         if (horgp(ii) < 0.) horgp(ii) = 0.
+         if (horgp(ii) < 1.e-6) horgp(ii) = 0.0
 
          !! calculate dissolved phosphorus concentration at end
          !! of day QUAL2E section 3.4.2 equation III-25
-         xx = 0.
-         yy = 0.
-         zz = 0.
          xx = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
          yy = Theta(rs2(jrch),thrs2,wtmp) / (hdepth(ii) * 1000.)
          zz = ai2 * Theta(gra,thgra,wtmp) * algcon
-         hsolp(ii) = 0.
          hsolp(ii) = solpcon + (xx + yy - zz) * thour
-         if (hsolp(ii) < 0.) hsolp(ii) = 0.
+         if (hsolp(ii) < 1.e-6) hsolp(ii) = 0.0
 !! end phosphorus calculations
 
       else
          !! all water quality variables set to zero when no flow
-         algin = 0.0
-         chlin = 0.0
-         orgnin = 0.0
-         ammoin = 0.0
-         nitritin = 0.0
-         nitratin = 0.0
-         orgpin = 0.0
-         dispin = 0.0
-         cbodin = 0.0
-         disoxin = 0.0
          halgae(ii) = 0.0
          hchla(ii) = 0.0
          horgn(ii) = 0.0
@@ -572,19 +502,7 @@ subroutine hhwatqual
          hsolp(ii) = 0.0
          hbod(ii) = 0.0
          hdisox(ii) = 0.0
-         soxy = 0.0
       endif
-      if (halgae(ii) < 1.e-6) halgae(ii) = 0.0
-      if (hchla(ii) < 1.e-6) hchla(ii) = 0.0
-      if (horgn(ii) < 1.e-6) horgn(ii) = 0.0
-      if (hnh4(ii) < 1.e-6) hnh4(ii) = 0.0
-      if (hno2(ii) < 1.e-6) hno2(ii) = 0.0
-      if (hno3(ii) < 1.e-6) hno3(ii) = 0.0
-      if (horgp(ii) < 1.e-6) horgp(ii) = 0.0
-      if (hsolp(ii) < 1.e-6) hsolp(ii) = 0.0
-      if (hbod(ii) < 1.e-6) hbod(ii) = 0.0
-      if (hdisox(ii) < 1.e-6) hdisox(ii) = 0.0
-      if (soxy < 1.e-6) soxy = 0.0
 
    end do
 !! end hourly loop
@@ -600,16 +518,6 @@ subroutine hhwatqual
    disolvp(jrch) = hsolp(nstep)
    rch_cbod(jrch) = hbod(nstep)
    rch_dox(jrch) = hdisox(nstep)
-
-   if (algae(jrch) < 1.e-6) algae(jrch) = 0.0
-   if (chlora(jrch) < 1.e-6) chlora(jrch) = 0.0
-   if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.0
-   if (ammonian(jrch) < 1.e-6) ammonian(jrch) = 0.0
-   if (nitriten(jrch) < 1.e-6) nitriten(jrch) = 0.0
-   if (organicp(jrch) < 1.e-6) organicp(jrch) = 0.0
-   if (disolvp(jrch) < 1.e-6) disolvp(jrch) = 0.0
-   if (rch_cbod(jrch) < 1.e-6) rch_cbod(jrch) = 0.0
-   if (rch_dox(jrch) < 1.e-6) rch_dox(jrch) = 0.0
 
    return
 end

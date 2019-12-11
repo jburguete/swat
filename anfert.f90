@@ -173,12 +173,10 @@ subroutine anfert
    real*8, parameter :: rtoaf = 0.50, orgc_f = 0.0
    integer :: j, ly, ifrt
    real*8 :: tsno3, tpno3, dwfert, xx, targn, tfp, RLN, X1, X10, X8, XXX, XZ,&
-     YY, YZ, ZZ
+     &YY, YZ, ZZ
 
-   j = 0
    j = ihru
 
-   ifrt = 0
    ifrt = iafrttyp(j)
 
 !! determine amount of mineral N to be applied
@@ -186,7 +184,6 @@ subroutine anfert
       targn = 0.
       if (nstress(j) == 0) then                !! n target approach
          tsno3 = 0.
-         tpno3 = 0.
          do ly = 1, sol_nly(j)
             tsno3 = tsno3 + sol_no3(ly,j) + sol_nh3(ly,j)
          end do
@@ -217,7 +214,6 @@ subroutine anfert
 
 
 !! add nutrients to soil based on nitrogen need
-      dwfert = 0.
       if (fminn(ifrt) > 0.0001) then
          dwfert = targn / fminn(ifrt)
       else
@@ -238,7 +234,6 @@ subroutine anfert
       &* dwfert
 
       do ly = 1, 2
-         xx = 0.
          if (ly == 1) then
             xx = afrt_surface(j)
          else
@@ -283,7 +278,7 @@ subroutine anfert
             !xx is fraction of fertilizer applied to layer
             X1 = xx * dwfert
             X8 = X1 * orgc_f
-            RLN = .175 *(orgc_f)/(fminn(ifrt) + forgn(ifrt) + 1.e-5)
+            RLN = .175 *orgc_f / (fminn(ifrt) + forgn(ifrt) + 1.e-5)
             X10 = .85-.018*RLN
             if (X10<0.01) then
                X10 = 0.01
@@ -317,7 +312,6 @@ subroutine anfert
          !!=================
 
          !! check for P stress
-         tfp = 0.
 !!       Naresh (npai@stone-env.com) edited on 4/12/2016
 !!       to handle fertilizers which have fminn(ifrt) = 0 (e.g. elemental P)
 !!        if (strsp(j) <= 0.75) then

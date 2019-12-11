@@ -153,7 +153,6 @@ subroutine bacteria
    integer :: j
    real*8 :: bpq, blpq, bps, blps, wt1, cbact, xx
 
-   j = 0
    j = ihru
 
    if (bactlps(j) < 1.e-6) bactlps(j) = 0.0
@@ -164,12 +163,10 @@ subroutine bacteria
 
 !! compute bacteria wash off
    if (precipday >= 2.54) then
-      xx = 0.
       xx = wof_p * bactp_plt(j)
       if (xx > bactp_plt(j)) xx = bactp_plt(j)
       bactpq(j) = bactpq(j) + xx
       bactp_plt(j) = bactp_plt(j) - xx
-      xx = 0.
       xx = wof_lp * bactlp_plt(j)
       if (xx > bactlp_plt(j)) xx = bactlp_plt(j)
       bactlpq(j) = bactlpq(j) + xx
@@ -189,10 +186,6 @@ subroutine bacteria
    endif
 
 !! compute bacteria die-off and re-growth in surface soil layer
-   bpq = 0.
-   blpq = 0.
-   bps = 0.
-   blps = 0.
    bpq = bactpq(j)
    bactpq(j) = bactpq(j) * Exp(-Theta(wpq20,thbact,tmpav(j))) -&
    &bactminp
@@ -229,16 +222,13 @@ subroutine bacteria
 
 !! compute bacteria transported with sediment
    if (enratio > 0.) then
-      wt1 = 0.
       wt1 = sol_bd(1,j) * sol_z(1,j) / 1000.
 
-      cbact = 0.
       cbact = bactps(j) * enratio / wt1
       bactsedp = .0001 * cbact * sedyld(j) / hru_ha(j)
       bactsedp = Min(bactsedp, bactps(j))
       bactps(j) = bactps(j) - bactsedp
 
-      cbact = 0.
       cbact = bactlps(j) * enratio / wt1
       bactsedlp = .0001 * cbact * sedyld(j) / hru_ha(j)
       bactsedlp = Min(bactsedlp, bactlps(j))

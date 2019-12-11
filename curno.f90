@@ -65,10 +65,6 @@ subroutine curno(cnn,h)
    cn2(h) = cnn
    smxold = 0.
    if (cn1(h) > 1.e-6) smxold = 254.* (100. / cn1(h) - 1.)
-   c2 = 0.
-   cn3(h) = 0.
-   s3 = 0.
-   cn1(h) = 0.
 
 !! calculate moisture condition I and III curve numbers
    c2 = 100. - cnn
@@ -83,8 +79,6 @@ subroutine curno(cnn,h)
    s3 = 254. * (100. / cn3(h) - 1.)
 
 !! calculate fraction difference in retention parameters
-   rto3 = 0.
-   rtos = 0.
    rto3 = 1. - s3 / smx(h)
    rtos = 1. - 2.54 / smx(h)
 

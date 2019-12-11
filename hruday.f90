@@ -304,7 +304,6 @@ subroutine hruday
    !!===============================
 
 
-   j = 0
    j = ihru
    sb = hru_sub(j)
    iflag = 0
@@ -492,7 +491,6 @@ subroutine hruday
          tot_solp = 0.
          tot_no3_nh3 =0.
          do k=1,sol_nly(j)
-            sol_mass = 0.
             if (k == 1) then
                sol_mass = (10) / 1000.* 10000. * sol_bd(k,j)* 1000. * &
                   (1- sol_rock(k,j) / 100.)
@@ -500,10 +498,8 @@ subroutine hruday
                sol_mass = (sol_z(k,j) - sol_z(k-1,j)) / 1000.* 10000. &
                   * sol_bd(k,j)* 1000. * (1- sol_rock(k,j) / 100.)
             end if
-            sol_cmass = 0.
             sol_cmass = sol_LSC(k,j)+sol_LMC(k,j)+sol_HPC(k,j)+sol_HSC(k,j) &
                +sol_BMC(k,j)
-            sol_nmass = 0.
             sol_nmass = sol_LSN(k,j)+sol_LMN(k,j)+sol_HPN(k,j)+sol_HSN(k,j) &
                +sol_BMN(k,j)
             write (98,9000) iyr, i, k, j, sol_mass,sol_cmass,             &

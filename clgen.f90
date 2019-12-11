@@ -72,13 +72,11 @@ subroutine clgen(j)
 
    !! Calculate Daylength !!
    !! calculate solar declination: equation 2.1.2 in SWAT manual
-   sd = 0.
    sd = Asin(.4 * Sin((dfloat(iida) - 82.) / 58.09))  !!365/2pi = 58.09
 
    !! calculate the relative distance of the earth from the sun
    !! the eccentricity of the orbit
    !! equation 2.1.1 in SWAT manual
-   dd = 0.
    dd = 1.0 + 0.033 * Cos(dfloat(iida) / 58.09)
 
    !!daylength = 2 * Acos(-Tan(sd) * Tan(lat)) / omega
@@ -86,8 +84,6 @@ subroutine clgen(j)
    !! to 15 deg/hr or 0.2618 rad/hr and 2/0.2618 = 7.6374
    !! equation 2.1.6 in SWAT manual
 
-   ch = 0.
-   h = 0.
    ch = -latsin(hru_sub(j)) * Tan(sd) / latcos(hru_sub(j))
    if (ch > 1.) then    !! ch will be >= 1. if latitude exceeds +/- 66.5 deg in winter
       h = 0.
@@ -100,8 +96,6 @@ subroutine clgen(j)
 
    !! Calculate Potential (maximum) Radiation !!
    !! equation 2.2.7 in SWAT manual
-   ys = 0.
-   yc = 0.
    ys = latsin(hru_sub(j)) * Sin(sd)
    yc = latcos(hru_sub(j)) * Cos(sd)
    hru_rmx(j) = 30. * dd * (h * ys + yc * Sin(h))
@@ -119,7 +113,6 @@ subroutine clgen(j)
       !!radiation for an hour, the hour angle for the midpoint of the
       !!time period is used. time = 0. at solar noon with positive values
       !! in the morning and negative in the evening
-      w = 0.
       w = (12.5 - dfloat(ii)) * 0.2618 * idt / 60.   !!0.2618 rad/hr
       cosrho(ii) = ys + yc * Cos(w)
       if (cosrho(ii) <= 0.) cosrho(ii) = 0.

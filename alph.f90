@@ -12,11 +12,11 @@ subroutine alph(iwave)
 !!                             |used for a given process
 !!    idt         |minutes     |length of time step used to report
 !!                             |precipitation data for sub-daily modeling
-!!    ievent      |none          |rainfall/runoff code
-!!                               |0 daily rainfall/curve number technique
-!!                               |1 sub-daily rainfall/Green&Ampt/hourly
-!!                               |  routing
-!!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
+!!    ievent      |none        |rainfall/runoff code
+!!                             |0 daily rainfall/curve number technique
+!!                             |1 sub-daily rainfall/Green&Ampt/hourly
+!!                             |  routing
+!!                             |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihru        |none        |HRU number
 !!    iwave       |none        |flag to differentiate calculation of HRU and
 !!                             |subbasin sediment calculation
@@ -71,11 +71,10 @@ subroutine alph(iwave)
 
    integer, intent (in) :: iwave
    integer :: j, k, kk, jj
-   real*8 :: ab, ajp, preceff, rainsum
+   real*8 :: ajp, preceff, rainsum
+   real*8, parameter :: ab = 0.02083
 
-   j = 0
    j = ihru
-   ab = 0.02083
 
    select case (ievent)
     case(0)                !! daily rainfall, estimate al5
@@ -101,7 +100,6 @@ subroutine alph(iwave)
          endif
       endif
 
-      ajp = 0.
       ajp = 1. - Expo(-125. / (preceff + 5.))
       if (ised_det == 0) then
          al5 = Atri(ab, amp_r(i_mo,hru_sub(j)), ajp, rndseed(idg(6),j))
@@ -111,7 +109,6 @@ subroutine alph(iwave)
 
     case (1)            !! subdaily rainfall, get from pcp data
       if (idt <= 30) then
-         k = 0
          k = 30 / idt
          k = k - 1
          do kk = 1, nstep+1-k
@@ -153,7 +150,6 @@ subroutine alph(iwave)
             endif
          endif
 
-         ajp = 0.
          ajp = 1. - Expo(-125. / (preceff + 5.))
          if (ised_det == 0) then
             al5 = Atri(ab, amp_r(i_mo,hru_sub(j)), ajp,&

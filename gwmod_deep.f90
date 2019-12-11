@@ -42,10 +42,8 @@ subroutine gwmod_deep
    integer :: j
    real*8 :: rchrg1
 
-   j = 0
    j = ihru
 
-   rchrg1 = 0.
    rchrg1 = gwseep
 
 

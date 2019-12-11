@@ -41,7 +41,6 @@ subroutine crackflow
    integer :: j, ii
    real*8 :: voli
 
-   j = 0
    j = ihru
 
    !! subtract crack flow from surface runoff
@@ -52,7 +51,6 @@ subroutine crackflow
    endif
 
    if (ievent > 0) then
-      voli = 0.
       voli = voltot
       do ii = 1, nstep  !j.jeong 4/24/2009
          if (hhqday(ii) > voli) then

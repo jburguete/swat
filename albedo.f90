@@ -39,12 +39,10 @@ subroutine albedo
    integer :: j
    real*8 :: cej, eaj
 
-   j = 0
    j = ihru
 
 !! calculate albedo
    cej = -5.e-5
-   eaj = 0.
    eaj = Exp(cej * (sol_cov(j) + .1))   !! equation 2.2.16 in SWAT manual
 
    if (sno_hru(j) <= .5) then

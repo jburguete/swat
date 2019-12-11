@@ -13,7 +13,7 @@ subroutine bmpinit
 !!    dtp_evrsv      |none          |detention pond evaporation coefficient
 !!    dtp_numweir(:) |none          |Total number of weirs in the BMP
 !!    dtp_numstage(:)|none          |Total number of stages in the weir
-!!    dtp_lwratio(:)   |none          |Ratio of length to width of water back up
+!!    dtp_lwratio(:) |none          |Ratio of length to width of water back up
 !!    dtp_totwrwid(:)|m             |Total constructed width of the detention wall across
 !!                                  |the creek
 !!    dtp_stagdis(:) |none          |0=use weir/orifice discharge equation to calculate

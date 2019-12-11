@@ -88,7 +88,6 @@ subroutine drains
 
    !! initialize variables
 
-   j = 0
    j = ihru
    wnan = 0
    y1 = dep_imp(j) - wt_shall

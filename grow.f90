@@ -160,7 +160,6 @@ subroutine grow
    real*8 :: delg, par, ruedecl, beadj, reg, f, ff, deltalai
    real*8 :: laimax, rto, biomxyr
 
-   j = 0
    j = ihru
    rto = 1.
 
@@ -186,12 +185,10 @@ subroutine grow
       !! calculate optimal biomass
 
       !! calculate photosynthetically active radiation
-      par = 0.
       par = .5 * hru_ra(j) * (1. - Exp(-ext_coef(idp) *&
       &(laiday(j) + .05)))
 
       !! adjust radiation-use efficiency for CO2
-      beadj = 0.
       if (co2(hru_sub(j)) > 330.) then
          beadj = 100. * co2(hru_sub(j)) / (co2(hru_sub(j)) +&
          &Exp(wac21(idp) - co2(hru_sub(j)) * wac22(idp)))
@@ -202,7 +199,6 @@ subroutine grow
       !! adjust radiation-use efficiency for vapor pressure deficit
       !!assumes vapor pressure threshold of 1.0 kPa
       if (vpd > 1.0) then
-         ruedecl = 0.
          ruedecl = vpd - 1.0
          beadj = beadj - wavp(idp) * ruedecl
          beadj = Max(beadj, 0.27 * bio_e(idp))
@@ -213,7 +209,6 @@ subroutine grow
 
       !! calculate plant uptake of nitrogen and phosphorus changed by cibin 02/15/12
       !! to make sure no plant N and P uptake under, temperature, water and aeration stress.
-      reg = 0.
       reg = Min(strsw(j), strstmp(j), strsa(j))
       if (reg < 0.) reg = 0.
 
@@ -232,7 +227,6 @@ subroutine grow
       end select
 
       !! reduce predicted biomass due to stress on plant
-      reg = 0.
       reg = Min(strsw(j), strstmp(j), strsn(j), strsp(j), strsa(j))
       if (reg < 0.) reg = 0.
       if (reg > 1.) reg = 1.
@@ -249,8 +243,6 @@ subroutine grow
             rto = float(curyr_mat(j)) / float(mat_yrs(idp))
             biomxyr = rto * bmx_trees(idp)
             bio_ms(j) = Min (bio_ms(j), biomxyr)
-         else
-            rto = 1.
          end if
       end if
 
@@ -267,8 +259,6 @@ subroutine grow
       !! calculate fraction of total biomass that is in the roots
       rwt(j) = rsr1(idp) -(rsr1(idp) - rsr2(idp)) * phuacc(j)
 
-      f = 0.
-      ff = 0.
       f = phuacc(j) / (phuacc(j) + Exp(leaf1(idp)&
       &- leaf2(idp) * phuacc(j)))
       ff = f - laimxfr(j)
@@ -283,8 +273,6 @@ subroutine grow
 
       !! calculate new leaf area index
       if (phuacc(j) <= dlai(idp)) then
-         laimax = 0.
-         deltalai = 0.
          if (idc(idp) == 7) then
             laimax = rto * blai(idp)
          else

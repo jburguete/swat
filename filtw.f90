@@ -113,7 +113,6 @@ subroutine filtw
 
    integer :: j, k
 
-   j = 0
    j = ihru
 
 !! compute filter strip reduction

@@ -61,11 +61,7 @@ subroutine cfactor
    integer :: j
    real*8 :: c, bio_frcov, rsd_frcov, grcov_fr
 
-   j = 0
    j = ihru
-
-   !! initialize variables
-   c = 0.
 
    !! HRU sediment calculations
    if (icfac == 0) then

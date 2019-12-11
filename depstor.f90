@@ -56,7 +56,6 @@ subroutine depstor
 
    integer ::j
    real*8 :: df, hru_slpp, sol_orgm, sol_rrr, ei, xx
-   j = 0
    j = ihru
 
 

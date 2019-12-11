@@ -74,15 +74,12 @@ subroutine gw_no3
    integer :: j
    real*8 :: rchrgn1, revapn, gwseepn, xx
 
-   j = 0
    j = ihru
 
-   rchrgn1 = 0.
    rchrgn1 = rchrg_n(j)
    if (rchrgn1 < 1.e-6) rchrgn1 = 0.0
 
 !! compute nitrate aquifer loading from recharge for current day
-   rchrg_n(j) = 0.
    rchrg_n(j) = (1.- gw_delaye(j)) * percn(j) + gw_delaye(j)&
    &* rchrgn1
    shallst_n(j) = shallst_n(j) + rchrg_n(j)

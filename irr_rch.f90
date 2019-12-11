@@ -116,15 +116,12 @@ subroutine irr_rch
    integer :: jrch, k, flag, ii
    real*8 :: cnv, vmm, vminmm, vol, wtrin, vmxi, wtr_avail, xx
 
-   jrch = 0
    jrch = inum1
 
-   wtrin = 0.
    wtrin = rtwtr + rchstor(jrch)
 
    do k = 1, nhru
       !! check for timing of irrigation operation
-      flag = 0
       flag = irr_flag(k)
       if (auto_wstr(k) > 0.) then
          if (wstrs_id(k) == 1 .and. strsw(k) < auto_wstr(k)) flag = 2
@@ -149,11 +146,8 @@ subroutine irr_rch
          if (flag > 0) then
             !!irrigate only if flow is greater than minimum flow
             if (rtwtr > flowmin(k) * 86400.) then
-               cnv = 0.
                cnv = hru_ha(k) * 10.
 
-               vmm = 0.
-               vminmm = 0.
                !! compute maximum amount of water allowed in HRU
                if (divmax(k) < 0.) then
                   !!divmax units are 10^4 m^3
@@ -170,19 +164,16 @@ subroutine irr_rch
 
                !! check available against set amount in scheduled operation
                if (flag == 1) then
-                  vmxi = 0.
                   vmxi = irramt(k)
                   if (vmxi < 1.e-6) vmxi = sol_sumfc(k)
                   if (vmm > vmxi) vmm = vmxi
                end if
                if (flag == 2) then
-                  vmxi = 0.
                   vmxi = irr_mx(k)
                   if (vmm > vmxi) vmm = vmxi
                end if
 
                if (vmm > 0.) then
-                  vol = 0.
                   vol = vmm * cnv
 
                   !!         if (ipot(k) == k) then
@@ -195,7 +186,6 @@ subroutine irr_rch
                   !! subtract irrigation from reach outflow
                   !!     if (ipot(k) /= k) then
                   if (pot_fr(k) > 1.e-6) then
-                     vol = 0.
                      vol = aird(k) * cnv
                   end if
                   if (ievent > 0) then

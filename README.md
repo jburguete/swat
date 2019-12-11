@@ -23,7 +23,11 @@ Required tools
 --------------
 
 * [gfortran](https://gcc.gnu.org/fortran) (to compile the source code)
-* [make](http://www.gnu.org/software/make) (to build the executable file)
+* [make](https://www.gnu.org/software/make) (to build the executable file)
+* [perl](https://www.perl.org) (optional: to execute the perl scripts to 
+update the makefile or to translate original files to Fortran 90)
+* [findent](https://sourceforge.net/projects/findent) (optional: to translate
+original files to Fortran 90 with a standard indentation)
 * On Microsoft Windows systems you have to install
 [MSYS2](http://sourceforge.net/projects/msys2) and the required
 libraries and utilities. You can follow detailed instructions in

@@ -23,36 +23,18 @@ subroutine hruallo
 !!    ~ ~ ~ LOCAL VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ap_af       |none        |number of autofertilizer operations in mgt file
-!!    ap_ai       |none        |number of autoirrigation operations in mgt file
-!!    ap_cc       |none        |number of continuous cuuting operations in mgt
-!!    ap_cf       |none        |number of continuous fertilization operations in mgt
-!!    ap_ci       |none        |number of continuous irrigation operations in mgt
-!!    ap_f        |none        |number of fertilizer operations in mgt file
-!!    ap_i        |none        |number of irrigation operations in mgt file
-!!    ap_p        |none        |number of pesticide operations in mgt file
-!!    ap_r        |none        |number of release/impound operations in mgt file
-!!    ap_s        |none        |number of sweep operations in mgt file
-!!    ap_t        |none        |number of tillage operations in mgt file
 !!    chmfile     |NA          |HRU soil chemical data file name (.chm)
-!!    cut         |none        |number of harvest only operations in mgt file
 !!    depth(:)    |mm          |depth to bottom of soil layer
 !!    eof         |none        |end of file flag (=-1 if eof, else =0)
-!!    grz         |none        |number of grazing operations in mgt file
-!!    hkll        |none        |number of harvest/kill operations in mgt file
 !!    hru         |none        |number of HRUs in subbasin
 !!    hrufile     |NA          |name of HRU general data file name (.hru)
-!!    ii          |none        |counter
 !!    j           |none        |counter
 !!    k           |none        |counter
-!!    kll         |none        |number of kill operations in mgt file
 !!    lyrtot      |none        |total number of layers in profile
 !!    mgt_op      |none        |manangement operation code
 !!    mgt1i       |none        |sixth parameter in mgt file operation line
 !!    mgtfile     |NA          |HRU management data file name (.mgt)
-!!    plt         |none        |number of plant operations in mgt file
 !!    pstnum      |none        |pesticide ID number from database file
-!!    rot         |none        |number of years in rotation used in HRU
 !!    solfile     |NA          |HRU soil data file name (.sol)
 !!    titldum     |NA          |input lines in .sub that are not processed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

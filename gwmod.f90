@@ -76,11 +76,8 @@ subroutine gwmod
    integer :: j
    real*8 :: rchrg1, rchrg_karst
 
-   j = 0
    j = ihru
 
-   rchrg1 = 0.
-   rchrg_karst = 0.
    rchrg1 = rchrg(j) + rchrg_src(j)
 
 !! add seepage from secondary channels, ponds, and wetlands;

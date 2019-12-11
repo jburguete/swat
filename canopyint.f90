@@ -53,7 +53,6 @@ subroutine canopyint
    integer :: j, ii
    real*8 :: xx, canmxl, canstori
 
-   j = 0
    j = ihru
 
    if (blai(idplt(j)) < 0.001) return
@@ -61,12 +60,9 @@ subroutine canopyint
    select case (ievent)
     case (1)
 
-      canstori = 0.
-      canmxl = 0.
       canstori = canstor(j)
       canmxl = canmx(j) * laiday(j) / blai(idplt(j))
       do ii = 2, nstep+1
-         xx = 0.
          xx = precipdt(ii)
          precipdt(ii) = precipdt(ii) - (canmxl - canstor(j))
 
@@ -79,7 +75,6 @@ subroutine canopyint
       end do
       if (canstor(j) > canstori) then
          do ii = 1, nstep
-            xx = 0.
             xx = precipdt(ii)
             precipdt(ii) = precipdt(ii) - (canstor(j) - canstori)
 
@@ -93,8 +88,6 @@ subroutine canopyint
       end if
 
     case (0)
-      xx = 0.
-      canmxl = 0.
       xx = precipday
       canmxl = canmx(j) * laiday(j) / blai(idplt(j))
       precipday = precipday - (canmxl - canstor(j))

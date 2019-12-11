@@ -36,7 +36,6 @@ subroutine gwnutr
 
    integer :: j
 
-   j = 0
    j = ihru
 
 !     no3gw(j) = gwno3(j) * gw_q(j) / 100.

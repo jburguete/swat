@@ -115,9 +115,7 @@ subroutine etact
    real*8 :: no3up, es_max, eos1, xx, cej, eaj, pet, esleft
    real*8 :: sumsnoeb, evzp, eosl, dep, evz, sev
 
-   j = 0
    j = ihru
-   pet = 0.
    pet = pet_day
 !!    added statements for test of real statement above
    esd = 500.
@@ -155,9 +153,6 @@ subroutine etact
 
       !! compute potential soil evaporation
       cej = -5.e-5
-      eaj = 0.
-      es_max = 0.
-      eos1 = 0.
       if (sno_hru(j) >= 0.5) then
          eaj = 0.5
       else
@@ -183,7 +178,6 @@ subroutine etact
       !!end if
 
       !! initialize soil evaporation variables
-      esleft = 0.
       esleft = es_max
 
       !! compute sublimation
@@ -241,12 +235,10 @@ subroutine etact
 
 !! take soil evap from each soil layer
       evzp = 0.
-      eosl = 0.
       eosl = esleft
       do ly = 1, sol_nly(j)
 
          !! depth exceeds max depth for soil evap (esd)
-         dep = 0.
          if (ly == 1) then
             dep = sol_z(1,j)
          else
@@ -256,14 +248,13 @@ subroutine etact
          sev = 0.
          if (dep < esd) then
             !! calculate evaporation from soil layer
-            evz = 0.
-            xx = 0.
             evz = eosl * sol_z(ly,j) / (sol_z(ly,j) + Exp(2.374 -&
             &.00713 * sol_z(ly,j)))
             sev = evz - evzp * esco(j)
             evzp = evz
+            xx = 0.
             if (sol_st(ly,j) < sol_fc(ly,j)) then
-               xx =  2.5 * (sol_st(ly,j) - sol_fc(ly,j)) / sol_fc(ly,j)
+               xx = 2.5 * (sol_st(ly,j) - sol_fc(ly,j)) / sol_fc(ly,j)
                sev = sev * Expo(xx)
             end if
             sev = Min(sev, sol_st(ly,j) * etco)
@@ -283,7 +274,6 @@ subroutine etact
 
          !! compute no3 flux from layer 2 to 1 by soil evaporation
          if (ly == 2) then
-            no3up = 0.
             no3up = effnup * sev * sol_no3(2,j) / (sol_st(2,j) + 1.e-6)
             no3up = Min(no3up, sol_no3(2,j))
             sno3up = sno3up + no3up * hru_dafr(j)

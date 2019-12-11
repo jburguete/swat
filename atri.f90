@@ -47,16 +47,6 @@ function atri(at1,at2,at3,at4i) result (r_atri)
    real*8 :: u3, rn, y, b1, b2, x1, xx, yy, amn
    real*8 :: r_atri
 
-   u3 = 0.
-   rn = 0.
-   y = 0.
-   b1 = 0.
-   b2 = 0.
-   x1 = 0.
-   xx = 0.
-   yy = 0.
-   amn = 0.
-
    u3 = at2 - at1
    rn = Aunif(at4i)
    y = 2.0 / (at3 - at1)

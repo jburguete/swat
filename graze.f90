@@ -177,14 +177,12 @@ subroutine graze
    &sf, sol_min_n, X1, X10, X8, XXX, XZ, YY, YZ, ZZ
    real*8, parameter :: orgc_f = 0.35, BLG3 = 0.10
 
-   j = 0
    j = ihru
 
 !! graze only if adequate biomass in HRU
    if (bio_ms(j) > bio_min(j)) then
 
       !! determine new biomass in HRU
-      dmi = 0.
       dmi = bio_ms(j)
       bio_ms(j) = bio_ms(j) - bio_eat(j)
       if (bio_ms(j) < bio_min(j)) bio_ms(j) = bio_min(j)
@@ -204,7 +202,6 @@ subroutine graze
       if (plantp(j) < 0.) plantp(j) = 0.
 
       !! remove trampled biomass and add to residue
-      dmii = 0.
       dmii = bio_ms(j)
       bio_ms(j) = bio_ms(j) - bio_trmp(j)
       if (bio_ms(j) < bio_min(j))  then
@@ -349,7 +346,6 @@ subroutine graze
 
 
       !! apply manure
-      it = 0
       it = manure_id(j)
       if (manure_kg(j) > 0.) then
          l = 1
@@ -386,12 +382,12 @@ subroutine graze
          !!===============================
          if (cswat == 2) then
             sol_no3(l,j) = sol_no3(l,j) + manure_kg(j) *&
-            &(1. - fnh3n(it)) * fminn(it)&
-            !sol_fon(l,j) = sol_fon(l,j) + manure_kg(j) *
-            &!             forgn(it)
+            &(1. - fnh3n(it)) * fminn(it)
+            !sol_fon(l,j) = sol_fon(l,j) + manure_kg(j) *&
+            !&             forgn(it)
             X1 = manure_kg(j)
             X8 = X1 * orgc_f
-            RLN = .175 *(orgc_f)/(fminn(it) + forgn(it) + 1.e-5)
+            RLN = .175 * orgc_f / (fminn(it) + forgn(it) + 1.e-5)
             X10 = .85-.018*RLN
             if (X10<0.01) then
                X10 = 0.01
@@ -433,16 +429,13 @@ subroutine graze
          !!===============================
 !! add bacteria - #cfu/g * t(manure)/ha * 1.e6 g/t * ha/10,000 m^2 = 100.
 !! calculate ground cover
-         gc = 0.
          gc = (1.99532 - Erfc(1.333 * laiday(j) - 2.)) / 2.1
          if (gc < 0.) gc = 0.
 
-         gc1 = 0.
          gc1 = 1. - gc
 
          swf = .15
 
-         frt_t = 0.
          frt_t = bact_swf * manure_kg(j) / 1000.
 
          bactp_plt(j) = gc * bactpdb(it) * frt_t * 100. + bactp_plt(j)
@@ -474,28 +467,23 @@ subroutine graze
 
       !! summary calculations
       !! I do not understand these summary calculations Armen March 2009
-      grazn = grazn + manure_kg(j)               *&
-      &(fminn(it) + forgn(it))
-      grazp = grazp + manure_kg(j)               *&
-      &(fminp(it) + forgp(it))
+      grazn = grazn + manure_kg(j) * (fminn(it) + forgn(it))
+      grazp = grazp + manure_kg(j) * (fminp(it) + forgp(it))
       tgrazn(j) = tgrazn(j) + grazn
       tgrazp(j) = tgrazp(j) + grazp
 
       if (curyr > nyskip) then
-         wshd_ftotn = wshd_ftotn + manure_kg(j)               *&
-         &hru_dafr(j) * (fminn(it) + forgn(it))
-         wshd_forgn = wshd_forgn + manure_kg(j)               *&
-         &hru_dafr(j) * forgn(it)
-         wshd_fno3 = wshd_fno3 + manure_kg(j)               *&
-         &hru_dafr(j) * fminn(it) * (1. - fnh3n(it))
-         wshd_fnh3 = wshd_fnh3 + manure_kg(j)               *&
-         &hru_dafr(j) * fminn(it) * fnh3n(it)
-         wshd_ftotp = wshd_ftotp + manure_kg(j)               *&
-         &hru_dafr(j) * (fminp(it) + forgp(it))
-         wshd_fminp = wshd_fminp + manure_kg(j)               *&
-         &hru_dafr(j) * fminp(it)
-         wshd_forgp = wshd_forgp + manure_kg(j)               *&
-         &hru_dafr(j) * forgp(it)
+         wshd_ftotn = wshd_ftotn + manure_kg(j) * hru_dafr(j) *&
+         &(fminn(it) + forgn(it))
+         wshd_forgn = wshd_forgn + manure_kg(j) * hru_dafr(j) * forgn(it)
+         wshd_fno3 = wshd_fno3 + manure_kg(j) * hru_dafr(j) * fminn(it)&
+         &* (1. - fnh3n(it))
+         wshd_fnh3 = wshd_fnh3 + manure_kg(j) * hru_dafr(j) * fminn(it)&
+         &* fnh3n(it)
+         wshd_ftotp = wshd_ftotp + manure_kg(j) * hru_dafr(j) *&
+         &(fminp(it) + forgp(it))
+         wshd_fminp = wshd_fminp + manure_kg(j) * hru_dafr(j) * fminp(it)
+         wshd_forgp = wshd_forgp + manure_kg(j) * hru_dafr(j) * forgp(it)
          !       yldkg(nro(j),1,j) = yldkg(nro(j),1,j) + (dmi - bio_ms(j))
          yldkg(icr(j),j)=yldkg(icr(j),j) + (dmi - bio_ms(j))
       end if

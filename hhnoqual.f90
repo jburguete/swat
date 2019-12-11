@@ -99,13 +99,11 @@ subroutine hhnoqual
    real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot
    real*8 :: algcon, orgncon, nh3con, no2con, no3con
 
-   jrch = 0
    jrch = inum1
 
 !! hourly loop
    do ii = 1, nstep
       !! initialize water flowing into reach
-      wtrin = 0.
       wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
 
       if (hrtwtr(ii) / (idt * 60.) > 0.01 .and. wtrin > 0.01) then
@@ -147,16 +145,6 @@ subroutine hhnoqual
          if (disoxin < 1.e-6) disoxin = 0.0
 
          !! initialize concentration of nutrient in reach
-         wtrtot = 0.
-         algcon = 0.
-         orgncon = 0.
-         nh3con = 0.
-         no2con = 0.
-         no3con = 0.
-         orgpcon = 0.
-         solpcon = 0.
-         cbodcon = 0.
-         o2con = 0.
          wtrtot = wtrin + hrchwtr(ii)
          if (ii == 1) then
             algcon = (algin * wtrin + algae(jrch) * hrchwtr(ii)) / wtrtot
@@ -203,7 +191,6 @@ subroutine hhnoqual
          !! Stefan and Preudhomme. 1993.  Stream temperature estimation
          !! from air temperature.  Water Res. Bull. p. 27-45
          !! SWAT manual equation 2.3.13
-         wtmp = 0.
 
          wtmp = 5.0 + 0.75 * tmpav(jrch)
          if (wtmp <= 0.) wtmp = 0.1
@@ -212,73 +199,54 @@ subroutine hhnoqual
 
          !! calculate algal biomass concentration at end of hour
          !! (phytoplanktonic algae)
-         halgae(ii) = 0.
          halgae(ii) = algcon
-         if (halgae(ii) < 0.) halgae(ii) = 0.
+         if (halgae(ii) < 1.e-6) halgae(ii) = 0.0
 
          !! calculate chlorophyll-a concentration at end of hour
-         hchla(ii) = 0.
          hchla(ii) = halgae(ii) * ai0 / 1000.
+         if (hchla(ii) < 1.e-6) hchla(ii) = 0.0
 
 !! oxygen calculations
          !! calculate carbonaceous biological oxygen demand at end of hour
-         hbod(ii) = 0.
          hbod(ii) = cbodcon
-         if (hbod(ii) < 0.) hbod(ii) = 0.
+         if (hbod(ii) < 1.e-6) hbod(ii) = 0.0
 
          !! calculate dissolved oxygen concentration if reach at
          !! end of hour
-         hdisox(ii) = 0.
          hdisox(ii) = o2con
-         if (hdisox(ii) < 0.) hdisox(ii) = 0.
+         if (hdisox(ii) < 1.e-6) hdisox(ii) = 0.0
 !! end oxygen calculations
 
 !! nitrogen calculations
          !! calculate organic N concentration at end of hour
-         horgn(ii) = 0.
          horgn(ii) = orgncon
-         if (horgn(ii) < 0.) horgn(ii) = 0.
+         if (horgn(ii) < 1.e-6) horgn(ii) = 0.0
 
          !! calculate ammonia nitrogen concentration at end of hour
-         hnh4(ii) = 0.
          hnh4(ii) = nh3con
-         if (hnh4(ii) < 0.) hnh4(ii) = 0.
+         if (hnh4(ii) < 1.e-6) hnh4(ii) = 0.0
 
          !! calculate concentration of nitrite at end of hour
-         hno2(ii) = 0.
          hno2(ii) = no2con
-         if (hno2(ii) < 0.) hno2(ii) = 0.
+         if (hno2(ii) < 1.e-6) hno2(ii) = 0.0
 
          !! calculate nitrate concentration at end of hour
-         hno3(ii) = 0.
          hno3(ii) = no3con
-         if (hno3(ii) < 0.) hno3(ii) = 0.
+         if (hno3(ii) < 1.e-6) hno3(ii) = 0.0
 !! end nitrogen calculations
 
 !! phosphorus calculations
          !! calculate organic phosphorus concentration at end of hour
-         horgp(ii) = 0.
          horgp(ii) = orgpcon
-         if (horgp(ii) < 0.) horgp(ii) = 0.
+         if (horgp(ii) < 1.e-6) horgp(ii) = 0.0
 
          !! calculate dissolved phosphorus concentration at end of hour
-         hsolp(ii) = 0.
          hsolp(ii) = solpcon
-         if (hsolp(ii) < 0.) hsolp(ii) = 0.
+         if (hsolp(ii) < 1.e-6) hsolp(ii) = 0.0
 !! end phosphorus calculations
 
       else
          !! all water quality variables set to zero when no flow
-         algin = 0.0
-         chlin = 0.0
-         orgnin = 0.0
-         ammoin = 0.0
-         nitritin = 0.0
-         nitratin = 0.0
-         orgpin = 0.0
-         dispin = 0.0
-         cbodin = 0.0
-         disoxin = 0.0
          halgae(ii) = 0.0
          hchla(ii) = 0.0
          horgn(ii) = 0.0
@@ -290,16 +258,6 @@ subroutine hhnoqual
          hbod(ii) = 0.0
          hdisox(ii) = 0.0
       endif
-      if (halgae(ii) < 1.e-6) halgae(ii) = 0.0
-      if (hchla(ii) < 1.e-6) hchla(ii) = 0.0
-      if (horgn(ii) < 1.e-6) horgn(ii) = 0.0
-      if (hnh4(ii) < 1.e-6) hnh4(ii) = 0.0
-      if (hno2(ii) < 1.e-6) hno2(ii) = 0.0
-      if (hno3(ii) < 1.e-6) hno3(ii) = 0.0
-      if (horgp(ii) < 1.e-6) horgp(ii) = 0.0
-      if (hsolp(ii) < 1.e-6) hsolp(ii) = 0.0
-      if (hbod(ii) < 1.e-6) hbod(ii) = 0.0
-      if (hdisox(ii) < 1.e-6) hdisox(ii) = 0.0
    end do
 !! end hourly loop
 
@@ -314,17 +272,6 @@ subroutine hhnoqual
    disolvp(jrch) = hsolp(nstep)
    rch_cbod(jrch) = hbod(nstep)
    rch_dox(jrch) = hdisox(nstep)
-
-   if (algae(jrch) < 1.e-6) algae(jrch) = 0.0
-   if (chlora(jrch) < 1.e-6) chlora(jrch) = 0.0
-   if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.0
-   if (ammonian(jrch) < 1.e-6) ammonian(jrch) = 0.0
-   if (nitriten(jrch) < 1.e-6) nitriten(jrch) = 0.0
-   if (nitraten(jrch) < 1.e-6) nitraten(jrch) = 0.0
-   if (organicp(jrch) < 1.e-6) organicp(jrch) = 0.0
-   if (disolvp(jrch) < 1.e-6) disolvp(jrch) = 0.0
-   if (rch_cbod(jrch) < 1.e-6) rch_cbod(jrch) = 0.0
-   if (rch_dox(jrch) < 1.e-6) rch_dox(jrch) = 0.0
 
    return
 end

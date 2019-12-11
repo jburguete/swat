@@ -3,12 +3,14 @@ SUBROUTINE HQDAV(A,CBW,QQ,SSS,ZCH,ZX,CHW,FPW,jrch)
 !     THIS SUBPROGRAM COMPUTES FLOW AREA AND DEPTH GIVEN RATE in a reach
 
    USE PARM, ONLY: ch_w, ch_n, qcap, chxp, rchx, rcss, ch_s, chxa
+   implicit none
 
    real*8, intent (in out) :: A, ZX, CHW, FPW
    real*8, intent (in) :: CBW, QQ, SSS, ZCH
    integer, intent (in) :: jrch
 
-   real*8:: RFPW, RFPX
+   real*8 :: RFPW, RFPX, ACH, AFP, DFDZ, DFQ, FU, FU1, P, Q, QCH, QFP, R, X1, X6, ZX1, ZZ
+   integer :: IT, NBCF, NBCX
    ZX=.5*ZCH
    RFPW = ch_w(2,jrch) * 4. !width of floodplain
    RFPX = SQRT(ch_s(2,jrch)) * RFPW / ch_n(1,jrch)

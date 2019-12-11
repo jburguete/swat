@@ -30,9 +30,6 @@ subroutine caps(file_name)
    &up_case = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
    integer :: ii, j
 
-   temp_name = ""
-   j = 0
-
    temp_name = file_name
 
    do ii = 1, Len(file_name)

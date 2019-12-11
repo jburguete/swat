@@ -92,28 +92,14 @@ subroutine dormant
    !!by zhang
    !!====================
 
-   real*8 :: BLG1, BLG2, BLG3,  CLG, sf
+   real*8 :: BLG1, BLG2, CLG
    real*8 :: sol_min_n,  resnew_n, resnew_ne
-   real*8 :: LMF, LSF, LSLF, LSNF, LMNF, RLN, RLR, XX
-   BLG1 = 0.
-   BLG2 = 0.
-   BLG3 = 0.
-   CLG = 0.
-   sf = 0.
-   sol_min_n = 0.
-   resnew = 0.
-   resnew_n = 0.
-   resnew_ne = 0.
-   LMF = 0.
-   LSF = 0.
-   LSLF = 0.
-   LSNF = 0.
-   LMNF = 0.
+   real*8 :: LMF, LSF, RLN, RLR, XX
+   real*8, parameter :: BLG3 = 0.10, sf = 0.05
 
    !!by zhang
    !!====================
 
-   j = 0
    j = ihru
 
 
@@ -133,7 +119,6 @@ subroutine dormant
          !! beginning of forest dormant period
        case (7)
          idorm(j) = 1
-         resnew = 0.
          resnew = bio_ms(j) * bio_leaf(idplt(j))
 
          !!add by zhang
@@ -168,7 +153,6 @@ subroutine dormant
 
             BLG1 = 0.01/0.10
             BLG2 = 0.99
-            BLG3 = 0.10
             XX = log(0.5/BLG1-0.5)
             BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
             BLG1 = XX + 0.5*BLG2
@@ -176,13 +160,12 @@ subroutine dormant
             &EXP(BLG1-BLG2*phuacc(j)))
 
             !if (k == 1) then
-            sf = 0.05
+            !sf = 0.05
             !else
             !sf = 0.1
             !end if
 
             !kg/ha
-            sol_min_n = 0.
             sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
 
             resnew = bio_ms(j) * bio_leaf(idplt(j))
@@ -213,8 +196,7 @@ subroutine dormant
             sol_LS(1,j) = sol_LS(1,j) + LSF * resnew
 
             !here a simplified assumption of 0.5 LSL
-            LSLF = 0.0
-            LSLF = CLG
+            !LSLF = CLG ! not used
 
             sol_LSL(1,j) = sol_LSL(1,j) + RLR* LSF * resnew
             sol_LSC(1,j) = sol_LSC(1,j) + 0.42*LSF * resnew
@@ -264,7 +246,6 @@ subroutine dormant
          !! beginning of perennial (pasture/alfalfa) dormant period
        case (3, 6)
          idorm(j) = 1
-         resnew = 0.
          resnew = bm_dieoff(idplt(j)) * bio_ms(j)
 
          !!add by zhang
@@ -299,7 +280,6 @@ subroutine dormant
 
             BLG1 = 0.01/0.10
             BLG2 = 0.99
-            BLG3 = 0.10
             XX = log(0.5/BLG1-0.5)
             BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
             BLG1 = XX + 0.5*BLG2
@@ -307,13 +287,12 @@ subroutine dormant
             &EXP(BLG1-BLG2*phuacc(j)))
 
             !if (k == 1) then
-            sf = 0.05
+            !sf = 0.05
             !else
             !sf = 0.1
             !end if
 
             !kg/ha
-            sol_min_n = 0.
             sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
 
             resnew = bm_dieoff(idplt(j)) * bio_ms(j)

@@ -48,16 +48,14 @@ subroutine crackvol
    implicit none
 
    integer :: l, j
-   real*8 :: volcrnew, crlag, crlagdry = .99, crlagwet = 0.
+   real*8 :: volcrnew, crlag
+   real*8, parameter :: crlagdry = .99, crlagwet = 0.
 
-   j = 0
    j = ihru
    voltot = 0.
 
    !! calculate volume of cracks in soil
    do l = 1, sol_nly(j)
-      volcrnew = 0.
-      crlag = 0.
       volcrnew = crdep(l,j) * (sol_fc(l,j) - sol_st(l,j)) /&
       &(sol_fc(l,j))
       if (sol_sw(j) < .90 * sol_sumfc(j)) then

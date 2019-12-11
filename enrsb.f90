@@ -41,7 +41,6 @@ subroutine enrsb(iwave)
    integer :: j
    real*8 :: cy
 
-   j = 0
    j = ihru
 
    if (sedyld(j) < 1.e-4) then
@@ -54,7 +53,6 @@ subroutine enrsb(iwave)
    endif
 
 !! CREAMS method for calculating enrichment ratio
-   cy = 0.
    if (iwave > 0) then
       !! subbasin sediment calculations
       cy = .1 * sedyld(j) / (da_ha * sub_fr(iwave) * sub_surfq(iwave)&

@@ -1532,7 +1532,7 @@ subroutine allocate_parms
    allocate (hchla(nstep))
    allocate (hdepth(nstep))      ! changed as per nstep  !nstep Mar 19,2008
    allocate (hdisox(nstep))
-   allocate (hharea(nstep))   ! changed as per nstep  !nstep Mar 19,2008
+   allocate (hharea(nstep))  ! changed as per nstep  !nstep Mar 19,2008
    allocate (hhqday(nstep))  ! changed as  nstep  Oct. 18, 2007
    allocate (hhstor(nstep))  ! changed as per nstep   !nstep Mar 19,2008
    allocate (hhtime(nstep))  ! changed as per nstep   !nstep Mar 19,2008

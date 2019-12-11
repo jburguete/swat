@@ -81,7 +81,6 @@ subroutine autoirr
    integer :: j, k
    real*8 :: vmma, vmm, cnv, vol, vmms, vmmd
 
-   j = 0
    j = ihru
 
 !!!! Srin's irrigation source by each application changes

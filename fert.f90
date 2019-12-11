@@ -147,84 +147,61 @@ subroutine fert
    use parm
    implicit none
 
-   real*8, parameter :: rtof=0.5
+         !orgc_f is the fraction of organic carbon in fertilizer
+         !for most fertilziers this value is set to 0.
+   real*8, parameter :: rtof=0.5, orgc_f = 0.0
    integer :: j, l, ifrt
    real*8 :: xx, gc, gc1, frt_t
 
    !!added by zhang
    !!======================
-   real*8 :: X1, X8, X10, XXX, YY, ZZ, XZ, YZ, RLN, orgc_f
-   X1 = 0.
-   X8 = 0.
-   X10 = 0.
-   XXX = 0.
-   YY = 0.
-   ZZ = 0.
-   XZ = 0.
-   YZ = 0.
-   RLN = 0.
-   orgc_f = 0.
+   real*8 :: X1, X8, X10, XXX, YY, ZZ, XZ, YZ, RLN
    !!added by zhang
    !!======================
 
-   j = 0
    j = ihru
 
-   ifrt = 0
    ifrt = ifrttyp
 
    do l = 1, 2
-      xx = 0.
       if (l == 1) then
          xx = frt_surface
       else
          xx = 1. - frt_surface
       endif
 
-      sol_no3(l,j) = sol_no3(l,j) + xx * frt_kg                    *&
+      sol_no3(l,j) = sol_no3(l,j) + xx * frt_kg *&
       &(1. - fnh3n(ifrt)) * fminn(ifrt)
 
       if (cswat == 0) then
-         sol_fon(l,j) = sol_fon(l,j) + rtof * xx *&
-         &frt_kg                    * forgn(ifrt)
+         sol_fon(l,j) = sol_fon(l,j) + rtof * xx * frt_kg * forgn(ifrt)
          sol_aorgn(l,j) = sol_aorgn(l,j) + (1. - rtof) * xx *&
-         &frt_kg                    * forgn(ifrt)
-         sol_fop(l,j) = sol_fop(l,j) + rtof * xx *&
-         &frt_kg                    * forgp(ifrt)
-         sol_orgp(l,j) = sol_orgp(l,j) + (1. - rtof) * xx *&
-         &frt_kg                    * forgp(ifrt)
+         &frt_kg * forgn(ifrt)
+         sol_fop(l,j) = sol_fop(l,j) + rtof * xx * frt_kg * forgp(ifrt)
+         sol_orgp(l,j) = sol_orgp(l,j) + (1. - rtof) * xx * frt_kg * forgp(ifrt)
       end if
       if (cswat == 1) then
-         sol_mc(l,j) = sol_mc(l,j) + xx * frt_kg                    *&
-         &forgn(ifrt) * 10.
-         sol_mn(l,j) = sol_mn(l,j) + xx * frt_kg                    *&
-         &forgn(ifrt)
-         sol_mp(l,j) = sol_mp(l,j) + xx * frt_kg                    *&
-         &forgp(ifrt)
+         sol_mc(l,j) = sol_mc(l,j) + xx * frt_kg * forgn(ifrt) * 10.
+         sol_mn(l,j) = sol_mn(l,j) + xx * frt_kg * forgn(ifrt)
+         sol_mp(l,j) = sol_mp(l,j) + xx * frt_kg * forgp(ifrt)
       end if
 
       !!By Zhang for C/N cycling
       !!===========================
-      if (cswat == 2) then&
-      !sol_fon(l,j) = sol_fon(l,j) + rtof * xx *                       &
-      &&!   frt_kg(nro(j),nfert(j),j) * forgn(ifrt)
+      if (cswat == 2) then
+      !sol_fon(l,j) = sol_fon(l,j) + rtof * xx * &
+      !&   frt_kg(nro(j),nfert(j),j) * forgn(ifrt)
       !sol_aorgn(l,j) = sol_aorgn(l,j) + (1. - rtof) * xx *
-      &!   frt_kg(nro(j),nfert(j),j) * forgn(ifrt)
-         sol_fop(l,j) = sol_fop(l,j) + rtof * xx *&
-         &frt_kg * forgp(ifrt)
-         sol_orgp(l,j) = sol_orgp(l,j) + (1. - rtof) * xx *&
-         &frt_kg * forgp(ifrt)
+      !&   frt_kg(nro(j),nfert(j),j) * forgn(ifrt)
+         sol_fop(l,j) = sol_fop(l,j) + rtof * xx * frt_kg * forgp(ifrt)
+         sol_orgp(l,j) = sol_orgp(l,j) + (1. - rtof) * xx * frt_kg * forgp(ifrt)
 
          !!Allocate organic fertilizer to Slow (SWAT_active) N pool;
-         sol_HSN(l,j) = sol_HSN(l,j) + (1. - rtof) * xx *&
-         &frt_kg * forgn(ifrt)
+         sol_HSN(l,j) = sol_HSN(l,j) + (1. - rtof) * xx * frt_kg * forgn(ifrt)
          sol_aorgn(l,j) = sol_HSN(l,j)
 
 
 
-         !orgc_f is the fraction of organic carbon in fertilizer
-         !for most fertilziers this value is set to 0.
-         orgc_f = 0.0
          !X1 is fertlizer applied to layer (kg/ha)
          !xx is fraction of fertilizer applied to layer
          X1 = xx * frt_kg
@@ -286,11 +263,9 @@ subroutine fert
       !!By Zhang for C/N cycling
       !!===========================
 
-      sol_nh3(l,j) = sol_nh3(l,j) + xx * frt_kg                    *&
-      &fnh3n(ifrt) * fminn(ifrt)
+      sol_nh3(l,j) = sol_nh3(l,j) + xx * frt_kg * fnh3n(ifrt) * fminn(ifrt)
 
-      sol_solp(l,j) = sol_solp(l,j) + xx * frt_kg                    *&
-      &fminp(ifrt)
+      sol_solp(l,j) = sol_solp(l,j) + xx * frt_kg * fminp(ifrt)
 
    end do
 
@@ -303,16 +278,13 @@ subroutine fert
 
 !! add bacteria - #cfu/g * t(manure)/ha * 1.e6g/t * ha/10,000m^2 = 100.
 !! calculate ground cover
-   gc = 0.
    gc = (1.99532 - Erfc(1.333 * laiday(j) - 2.)) / 2.1
    if (gc < 0.) gc = 0.
 
-   gc1 = 0.
    gc1 = 1. - gc
 
 
-   frt_t = 0.
-   frt_t = bact_swf * frt_kg                    / 1000.
+   frt_t = bact_swf * frt_kg / 1000.
 
    bactp_plt(j) = gc * bactpdb(ifrt) * frt_t * 100. + bactp_plt(j)
    bactlp_plt(j) = gc * bactlpdb(ifrt) * frt_t * 100. + bactlp_plt(j)
@@ -336,36 +308,30 @@ subroutine fert
    fertorgn = frt_kg * forgn(ifrt)
    fertsolp = frt_kg * fminp(ifrt)
    fertorgp = frt_kg * forgp(ifrt)
-   fertn = fertn + (frt_kg                    + cfertn) *&
-   &(fminn(ifrt) + forgn(ifrt))
+   fertn = fertn + (frt_kg + cfertn) * (fminn(ifrt) + forgn(ifrt))
 
-   fertp = fertp + (frt_kg                    + cfertp) *&
-   &(fminp(ifrt) + forgp(ifrt))
+   fertp = fertp + (frt_kg + cfertp) * (fminp(ifrt) + forgp(ifrt))
 
    tfertn(j) = tfertn(j) + fertn
    tfertp(j) = tfertp(j) + fertp
 
    if (curyr > nyskip) then
-      wshd_ftotn = wshd_ftotn + frt_kg                    * hru_dafr(j)&
+      wshd_ftotn = wshd_ftotn + frt_kg * hru_dafr(j)&
       &* (fminn(ifrt) + forgn(ifrt))
 
-      wshd_forgn = wshd_forgn + frt_kg                    * hru_dafr(j)&
-      &* forgn(ifrt)
+      wshd_forgn = wshd_forgn + frt_kg * hru_dafr(j) * forgn(ifrt)
 
-      wshd_fno3 = wshd_fno3 + frt_kg                    * hru_dafr(j) *&
+      wshd_fno3 = wshd_fno3 + frt_kg * hru_dafr(j) *&
       &fminn(ifrt) * (1. - fnh3n(ifrt))
 
-      wshd_fnh3 = wshd_fnh3 + frt_kg                    * hru_dafr(j) *&
-      &fminn(ifrt) * fnh3n(ifrt)
+      wshd_fnh3 = wshd_fnh3 + frt_kg * hru_dafr(j) * fminn(ifrt) * fnh3n(ifrt)
 
-      wshd_ftotp = wshd_ftotp + frt_kg                    * hru_dafr(j)&
+      wshd_ftotp = wshd_ftotp + frt_kg * hru_dafr(j)&
       &* (fminp(ifrt) + forgp(ifrt))
 
-      wshd_fminp = wshd_fminp + frt_kg                    * hru_dafr(j)&
-      &* fminp(ifrt)
+      wshd_fminp = wshd_fminp + frt_kg * hru_dafr(j) * fminp(ifrt)
 
-      wshd_forgp = wshd_forgp + frt_kg                    * hru_dafr(j)&
-      &* forgp(ifrt)
+      wshd_forgp = wshd_forgp + frt_kg * hru_dafr(j) * forgp(ifrt)
 
    end if
 

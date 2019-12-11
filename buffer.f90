@@ -115,7 +115,6 @@ subroutine buffer
    integer :: j
    real*8 :: reduc
 
-   j = 0
    j = ihru
 
 !! compute nitrate reduction as a function of distance to stream

@@ -116,7 +116,6 @@ subroutine carbon_zhang2
    real*8 :: BMNTP, decr, hmn, hmp, hmp_rate, RLR, rmn1, rmp, RTO, rwn, XBM
 
 
-   j = 0
    j = ihru
 
    !!    zero new carbon variables for output.hru
@@ -218,19 +217,16 @@ subroutine carbon_zhang2
    WMIN= 0.
    DMDN= 0.
 
-   j=0
-   j=ihru
-
-   do k = 1,sol_nly(j)
+   !do k = 1,sol_nly(j)
       ! a simple equation to calculate Bulk Density from DSSAT (Not Used)
       !XZ = sol_cbn(k,j)
       !sol_BDM(k)=ZZ/(1./BD(J)-XZ/.224)
-   end do
+   !end do
 
    !!for debug purpose by zhang
-   if (iyr == 1941 .and. i==134) then
+   !if (iyr == 1941 .and. i==134) then
       !write(*,*) 'stop'
-   end if
+   !end if
 
    !calculate tillage factor using DSSAT
    if (tillage_switch(j) .eq. 1 .and. tillage_days(j) .le. 30) then
@@ -253,7 +249,6 @@ subroutine carbon_zhang2
 
       !!If k = 1, then using temperature, soil moisture in layer 2 to calculate decomposition factor
       !!Not
-      kk =0
       if (k == 1) then
          kk = 2
       else
@@ -270,7 +265,6 @@ subroutine carbon_zhang2
          void = sol_por(k,j) * (1. - wc / sat)   ! fraction
          !!from Armen
 
-         sut = 0.
          !sut = .1 + .9 * Sqrt(sol_st(kk,j) / sol_fc(kk,j))
          !sut = .1 + .9 * Sqrt(wc / fc)
 
@@ -313,10 +307,9 @@ subroutine carbon_zhang2
 
          !!compute soil temperature factor
          !!When sol_tep is larger than 35, cdg is negative?
-         cdg = 0.
          !if (sol_tmp(kk,j) <= 35.0) then
          !cdg = sol_tmp(kk,j) / (sol_tmp(kk,j) + exp(5.058 - 0.2504 * sol_tmp(kk,j)))
-         cdg = sol_tmp(k,j) / (sol_tmp(k,j) + exp(5.058459 - 0.2503591 * sol_tmp(k,j)))
+         !cdg = sol_tmp(k,j) / (sol_tmp(k,j) + exp(5.058459 - 0.2503591 * sol_tmp(k,j)))
 
          !end if
 
@@ -325,14 +318,12 @@ subroutine carbon_zhang2
          !!from Armen
 
          !!compute oxygen (OX)
-         OX = 0.
          !OX = 1 - (0.9* sol_z(k,j)/1000.) / (sol_z(k,j)/1000.+ exp(1.50-3.99*sol_z(k,j)/1000.))
          !OX = 1 - (0.8* sol_z(k,j)) / (sol_z(k,j)+ exp(1.50-3.99*sol_z(k,j)))
          OX=1.-0.8*((sol_z(kk,j)+sol_z(kk-1,j))/2)/&
            &(((sol_z(kk,j)+sol_z(kk-1,j))/2)&
            &+EXP(18.40961-0.023683632*((sol_z(kk,j)+sol_z(kk-1,j))/2)))
          !! compute combined factor
-         CS = 0.
          CS=MIN(10.,SQRT(cdg*sut)*0.9*OX*X1)
          !! call denitrification (to use void and cdg factor)
          wdn = 0.
@@ -349,7 +340,6 @@ subroutine carbon_zhang2
 
 
          !lignin content in structural litter (fraction)
-         RLR = 0.
          RLR = min(0.8,sol_LSL(k,j)/(sol_LS(k,j) + 1.E-5))
 
          !HSR=PRMT(47) !CENTURY SLOW HUMUS TRANSFORMATION RATE D^-1(0.00041_0.00068) ORIGINAL VALUE = 0.000548,
@@ -359,7 +349,7 @@ subroutine carbon_zhang2
 
          APCO2=.55
          ASCO2=.60
-         PRMT_51 =0.   !COEF ADJUSTS MICROBIAL ACTIVITY FUNCTION IN TOP SOIL LAYER (0.1_1.),
+         !PRMT_51 =0.   !COEF ADJUSTS MICROBIAL ACTIVITY FUNCTION IN TOP SOIL LAYER (0.1_1.),
          PRMT_51 = 1.
          !!The following codes are clculating of the N:C ration in the newly formed SOM for each pool
          !!please note that in the surface layer, no new materials enter Passive pool, therefore, no NCHP is
@@ -625,8 +615,6 @@ subroutine carbon_zhang2
 
          !calculate P flows
          !! compute humus mineralization on active organic p
-         hmp = 0.
-         hmp_rate = 0.
          hmp_rate = 1.4* (HSNTA + HPNTA)/(sol_HSN(k,j) + sol_HPN(k,j) + 1.e-6)
          !hmp_rate = 1.4* (HSNTA )/(sol_HSN(k,j) + sol_HPN(k,j) + 1.e-6)
          hmp = hmp_rate*sol_orgp(k,j)
@@ -636,8 +624,6 @@ subroutine carbon_zhang2
 
          !! compute residue decomp and mineralization of
          !! fresh organic n and p (upper two layers only)
-         rmp = 0.
-         decr = 0.
          decr = (LSCTA + LMCTA)/(sol_LSC(k,j) + sol_LMC(k,j) + 1.e-6)
          decr = min(1., decr)
          rmp = decr * sol_fop(k,j)
@@ -800,15 +786,12 @@ subroutine carbon_zhang2
          !! summary calculations
          !! calculations are based on century model, and not alighned with SWAT old algorithm yet.
          if (curyr > nyskip) then
-            hmn = 0.
             hmn = sol_RNMN(k,j)
             wshd_hmn = wshd_hmn + hmn * hru_dafr(j)
-            rwn = 0.
             rwn = HSNTA
             wshd_rwn = wshd_rwn + rwn * hru_dafr(j)
 
             wshd_hmp = wshd_hmp + hmp * hru_dafr(j)
-            rmn1 = 0.
             rmn1 = (LSNTA+LMNTA)
             wshd_rmn = wshd_rmn + rmn1 * hru_dafr(j)
             wshd_rmp = wshd_rmp + rmp * hru_dafr(j)

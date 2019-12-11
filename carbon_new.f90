@@ -98,7 +98,7 @@ subroutine carbon
 
 
 
-   j = 0; wdn = 0
+   wdn = 0
    j = ihru
 
    !! initialize
@@ -208,8 +208,7 @@ subroutine carbon
          cdg = fcgd(sol_tmp(kk,j))
 
          !! compute combined factor
-         xx = 0.
-!!  xx = sqrt(cdg * sut)
+!!        xx = sqrt(cdg * sut)
          xx = (cdg * sut) ** cf(j)
          if (xx < 0.) xx = 0.
          if (xx > 1.) xx = 1.
@@ -390,10 +389,10 @@ subroutine carbon
 
          sol_mc(k,j) = sol_mc(k,j) * (1. - ffman)
          sol_mn(k,j) = sol_mn(k,j) * (1. - ffman)
-         sol_mp(k,j) = sol_mp(k,j) * (1. - ffman)&
+         sol_mp(k,j) = sol_mp(k,j) * (1. - ffman)
 
-         !sol_no3(k,j) = sol_no3(k,j) + net_N +
-         &! sol_cdec * (1. / CNsoil)
+         !sol_no3(k,j) = sol_no3(k,j) + net_N +&
+         !      &sol_cdec * (1. / CNsoil)
 
          ! add positive n-mineralization to ammonia pool in the layer
          if (rnet_N>0.) sol_nh3(k,j) = sol_nh3(k,j) + rnet_N
@@ -502,8 +501,9 @@ end subroutine
 
  !! LOCAL FUNCTIONS
 real*8 Function fwf(fc,wc,pwp)
+   implicit none
    real*8, intent (in) :: fc, wc, pwp
-   xx2 = 0.
+   real*8 :: xx2
    if (wc <= pwp) then
       xx2 = 0.4 * wc / pwp
    else if (wc <= fc) then
@@ -517,8 +517,9 @@ real*8 Function fwf(fc,wc,pwp)
 End function
 
 real*8 Function fof(void,por)
+   implicit none
    real*8, intent (in) :: void, por
-   xx3 = 0.
+   real*8 :: xx3
    if (void >= 0.1) then
       xx3 = 0.2 + 0.8 * (void - 0.1) / (por - 0.1)
    else
@@ -529,16 +530,17 @@ End function
 
 
 real*8 Function fcgd(xx)
+   implicit none
    real*8, intent (in) :: xx
-   tn = -5.
-   top = 35.
-   tx = 50.
+   real*8 :: qq
+   real*8, parameter :: tn = -5., top = 35., tx = 50.
    qq = (tn - top)/(top - tx)
    fcgd = ((xx-tn)**qq)*(tx-xx)/(((top-tn)**qq)*(tx-top))
    if (fcgd < 0.) fcgd = 0.
 End function
 
 real*8 Function ftilf(tillage, wc, sat)
+   implicit none
    real*8, intent (in out) :: tillage
    real*8, intent (in) :: wc, sat
    !! tillage factor effect on decomposition
@@ -550,6 +552,7 @@ End function
 
 
 real*8 Function fcx(pclay)
+   implicit none
    real*8, intent (in) :: pclay
    !! saturated soil carbon concentration (%) from Hassink and Whitmore 1997
    fcx = 2.11 + 0.0375 * pclay
@@ -557,7 +560,9 @@ End function
 
 
 real*8 Function fsol_cdec(pcarbon, cx, cfdec, tilf, csf, sol_cmass)
+   implicit none
    real*8, intent (in) :: pcarbon, cx, cfdec, tilf, csf, sol_cmass
+   real*8 :: decf
    !! decomposition adjustment by current SOC
    decf = (pcarbon / cx) ** 0.5
    ! if (decf > 1.) decf = 1.
@@ -567,8 +572,9 @@ End function
 
 
 real*8 Function fCNnew(yy1,yy2,CNpool,yy5)
-   real*8, intent(in) :: yy1,yy2,CNpool
-   real*8, intent(in) :: yy5
+   implicit none
+   real*8, intent(in) :: yy1,yy2,CNpool,yy5
+   real*8 :: yy3, yy4
    !! CN ratio of newly formed organic matter
    !! based on CN or decomposing residue and nitrate in soil
    !! the same approach used for crop residues and manure
@@ -586,6 +592,7 @@ End function
 
 
 real*8 Function fhc(pclay, pcarbon, cx)
+   implicit none
    real*8, intent(in) :: pclay, pcarbon, cx
    !! maximum and actual humification factor
    !! hx = maximum humification factor
@@ -617,10 +624,11 @@ real*8 Function fnetmin(poold, R1, R2, hc, dummy, poolm, xinorg, cc1)
    !! xinorg = mass of NO3 or P in solution
    !! xx = net mineralization of N or P
    !! cc1 = pool's carbon fraction
+   implicit none
    real*8, intent(in) :: R1, R2, hc, poolm, xinorg, cc1
    real*8, intent(in out) :: poold, dummy
+   real*8 :: xx
 
-   xx = 0.
    xx = poold * cc1 * (1. / R1 - hc / R2)
 
    if (xx > 0.) then

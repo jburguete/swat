@@ -39,9 +39,6 @@ real*8 function aunif (x1) result (unif)
    integer, intent (in out) :: x1
    integer :: x2
 
-   x2 = 0
-   unif = 0.
-
    x2 = x1 / 127773
    x1 = 16807 * (x1-x2*127773) - x2 * 2836
    if (x1 < 0) x1 = x1 + 2147483647

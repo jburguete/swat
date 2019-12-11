@@ -105,15 +105,12 @@ subroutine hrupond
    integer :: j
    real*8 :: cnv, pndsa, xx, yy, qdayi, latqi
 
-   j = 0
    j = ihru
 
    if (pnd_fr(j) > 1.e-6) then
-      cnv = 0.
       cnv = hru_ha(j) * 10.
 
       !! calculate area of HRU covered by pond
-      pndsa = 0.
       pndsa = hru_fr(j) * bp1(j) * pnd_vol(j) ** bp2(j)
 
       !! calculate water flowing into pond for day
@@ -153,7 +150,6 @@ subroutine hrupond
       if (pnd_no3(j) < 1.e-6) pnd_no3(j) = 0.0
       if (pnd_no3s(j) < 1.e-6) pnd_no3s(j) = 0.0
       if (pnd_no3g(j) < 1.e-6) pnd_no3g(j) = 0.0
-      xx = 0.
       xx = pnd_fr(j) * hru_ha(j)
       pnd_solp(j) = pnd_solp(j) + (surqsolp(j) + sedminpa(j)) * xx
       pnd_psed(j) = pnd_psed(j) + sedminps(j) * xx
@@ -165,7 +161,6 @@ subroutine hrupond
       pnd_no3g(j) = pnd_no3g(j) + no3gw(j) * xx
 
       !! compute amount of nutrients not passing through ponds
-      xx = 0.
       xx = 1. - pnd_fr(j)
       sedorgn(j) = sedorgn(j) * xx
       surqno3(j) = surqno3(j) * xx

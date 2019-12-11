@@ -57,19 +57,16 @@ subroutine decay
    integer :: j, k, kk, l
    real*8 :: x1, xx
 
-   j = 0
    j = ihru
 
    if (hrupest(j) == 0) return
 
    do k = 1, npmx
-      kk = 0
       kk = npno(k)
       if (kk > 0) then
 
          !! calculate degradation in soil
          do l = 1, sol_nly(j)
-            x1 = 0.
             x1 = sol_pst(k,j,l)
             if (x1 >= 0.0001) then
                xx = 0.
@@ -80,7 +77,6 @@ subroutine decay
          end do
 
          !! calculate degradation off plant foliage
-         x1 = 0.
          x1 = plt_pst(k,j)
          if (x1 >= 0.0001) then
             xx = 0.

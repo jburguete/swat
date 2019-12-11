@@ -155,7 +155,6 @@ subroutine filter
    &sedtrap, xrem
    real*8 drain_vfs3, vfs_ratio1, vfs_ratio2
 
-   j = 0
    j = ihru
 
    if (i == 100) then
@@ -223,7 +222,6 @@ subroutine filter
       sedyld(j) = Max(0., sedyld(j))
 
       sedtrap = sedyld(j) * sed_remove / 100.
-      xrem = 0.
 
       if (sedtrap <= lagyld(j)) then
          lagyld(j) = lagyld(j) - sedtrap
@@ -248,7 +246,6 @@ subroutine filter
                   if (xrem <= clayld(j)) then
                      clayld(j) = clayld(j) - xrem
                   else
-                     xrem = xrem - clayld(j)
                      clayld(j) = 0.
                   end if
                end if

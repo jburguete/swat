@@ -104,8 +104,7 @@ subroutine grass_wway
          Do While (sdti < peakr)
             rchdep = rchdep + 0.01
             rcharea = (wat_phi(6,j) + 8 * rchdep) * rchdep
-            p = wat_phi(6,j) + 2. * rchdep * Sqrt(1. + 8 *&
-            &8)
+            p = wat_phi(6,j) + 2. * rchdep * Sqrt(1. + 8 * 8)
             rh = rcharea / p
             sdti = Qman(rcharea, rh, grwat_n(j), grwat_s(j))
          end do
@@ -161,8 +160,6 @@ subroutine grass_wway
       cyin = 0.
       cych = 0.
       depnet = 0.
-      !deg = 0. ! not used
-      !dep = 0. ! not used
 !! if there is significant flow calculate
       if (chflow_m3 > 1.e-4) then
 !! Calculate sediment concentration in inflow mg/m^3
@@ -194,7 +191,6 @@ subroutine grass_wway
       sedorgn(j) = sedorgn(j) * sed_frac
       surqno3(j) = surqno3(j) * surq_frac
 
-      xrem = 0.
       if (sedtrap <= lagyld(j)) then
          lagyld(j) = lagyld(j) - sedtrap
       else
@@ -218,7 +214,6 @@ subroutine grass_wway
                   if (xrem <= clayld(j)) then
                      clayld(j) = clayld(j) - xrem
                   else
-                     xrem = xrem - clayld(j)
                      clayld(j) = 0.
                   end if
                end if

@@ -6,7 +6,7 @@ subroutine addh
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hhvaroute(:,:,:)|varies    |routing storage array for hourly time step
-!    ievent      |none          |rainfall/runoff code
+!!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing

@@ -26,7 +26,6 @@ real*8 function dstn1(rn1,rn2) result (r_dstn1)
    implicit none
    real*8, intent (in) :: rn1, rn2
 
-   r_dstn1 = 0.
    r_dstn1 = Sqrt(-2. * Log(rn1)) * Cos(6.283185 * rn2)
 
    return

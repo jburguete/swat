@@ -131,18 +131,15 @@ subroutine harvgrainop
    real*8 :: wur, hiad1, xx
 !      real*8 :: wur, hiad1, yield, yieldn, yieldp, yldpst
 
-   j = 0
    j = ihru
 
 
-   hiad1 = 0.
    if (hi_targ(j) > 0.) then
       hiad1 = hi_targ(j)
    else
       if (plt_pet(j) < 10.) then
          wur = 100.
       else
-         wur = 0.
          wur = 100. * plt_et(j) / plt_pet(j)
       endif
 
@@ -157,7 +154,6 @@ subroutine harvgrainop
 
 
 !! check if yield is from above or below ground
-   yield = 0.
    if (hvsti(idplt(j)) > 1.001) then
       yield = bio_ms(j) * (1. - 1. / (1. + hiad1))
    else
@@ -177,8 +173,6 @@ subroutine harvgrainop
    !!====================
 
 !! calculate nutrients removed with yield
-   yieldn = 0.
-   yieldp = 0.
    yieldn = yield * cnyld(idplt(j))
    yieldp = yield * cpyld(idplt(j))
    yieldn = Min(yieldn, 0.85 * plantn(j))
@@ -189,7 +183,6 @@ subroutine harvgrainop
    plantp(j) = dmax1(0.0D+00,plantp(j))
 
 !! calculate modifier for autofertilization target nitrogen content
-   tnyld(j) = 0.
    tnyld(j) = (1. - rwt(j)) * bio_ms(j) * pltfr_n(j) * auto_eff(j)
 !     if (icr(j) > 1) then
 !       tnyld(nro(j),icr(j)-1,j) = tnyld(nro(j),icr(j),j)
@@ -212,8 +205,7 @@ subroutine harvgrainop
    endif
 
 !! update curve number
-   if (cnop > 0.)&
-   &call curno(cnop,j)
+   if (cnop > 0.) call curno(cnop,j)
 
 !! increment harvest sequence number
    ncut(j) = ncut(j) + 1

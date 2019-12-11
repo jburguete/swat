@@ -52,13 +52,11 @@ subroutine eiusle
    integer :: j
    real*8 :: ab, xa, preceff, ajp, xb, pkrf, pkrf30
 
-   j = 0
    j = ihru
 
    ab = 0.02083
    pkrf = 0.
    pkrf30 = 0.
-   preceff = 0.
    xa = 0.
    xb = 0.
 

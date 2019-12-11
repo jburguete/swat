@@ -81,8 +81,6 @@ subroutine gcycl
    if (igen /= 0) then
       !! assign new random number seeds
       do j = 1, 9
-         rn = 0.
-         ii = 0
          rn = Aunif(rndseed10)
          ii = 100 * igen * rn
          do k = 1, ii
@@ -93,8 +91,6 @@ subroutine gcycl
 
       !! shuffle seeds randomly (Bratley, Fox, Schrage, p34)
       do j = 9, 1, -1
-         ii = 0
-         rn = 0.
          ii = idg(j)
          rn = Aunif(rndseed10)
          k = j * rn + 1

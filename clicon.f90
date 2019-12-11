@@ -284,8 +284,6 @@ subroutine clicon
          ratio = 0.
          do ib = 1, 10
             if (elevb_fr(ib,hru_sub(k)) < 0.) exit
-            tdif = 0.
-            pdif = 0.
             if (tmpsim == 1) then
                tdif = (elevb(ib,hru_sub(k)) -&
                &dfloat(elevt(itgage(hru_sub(k))))) * tlaps(hru_sub(k)) / 1000.

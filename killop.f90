@@ -83,25 +83,10 @@ subroutine killop
    real*8 :: sol_min_n, resnew_n, resnew_ne
    real*8 :: LMF, LSF
    real*8, parameter :: BLG3 = 0.10
-   ! orgc_f = 0. ! not used
-   BLG1 = 0.
-   BLG2 = 0.
-   CLG = 0.
-   sf = 0.
-   sol_min_n = 0.
-   resnew = 0.
-   resnew_n = 0.
-   resnew_ne = 0.
-   LMF = 0.
-   LSF = 0.
-   ! LSLF = 0. ! not used
-   ! LSNF = 0. ! not used
-   ! LMNF = 0. ! not used
    !!by zhang
    !!====================
 
 
-   j = 0
    j = ihru
 
 !      if (curyr > nyskip) then
@@ -109,8 +94,6 @@ subroutine killop
 !      endif
 
    !! 22 January 2008
-   resnew = 0.
-   rtresnew = 0.
    resnew = bio_ms(j) * (1. - rwt(j))
    rtresnew = bio_ms(j) * rwt(j)
    call rootfr
@@ -160,10 +143,8 @@ subroutine killop
       !end if
 
       !kg/ha
-      sol_min_n = 0.
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
 
-      ! resnew = resnew ! redundant
       resnew_n = ff1 * (plantn(j) - yieldn)
       resnew_ne = resnew_n + sf * sol_min_n
 
@@ -268,7 +249,6 @@ subroutine killop
          end if
 
          !kg/ha
-         sol_min_n = 0.
          sol_min_n = (sol_no3(l,j)+sol_nh3(l,j))
 
          resnew = rtfr(l) * rtresnew

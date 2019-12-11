@@ -147,31 +147,16 @@ subroutine harvestop
    !!===================
    real*8 :: BLG1, BLG2, CLG, sf
    real*8 :: sol_min_n, resnew, resnew_n, resnew_ne
-   real*8 :: LMF, LSF, LSLF, LSNF,LMNF
+   real*8 :: LMF, LSF
    real*8 :: RLN, RLR
    real*8, parameter :: BLG3 = 0.10
-! orgc_f = 0. not used
-   BLG1 = 0.
-   BLG2 = 0.
-   CLG = 0.
    sf = 0.
-   sol_min_n = 0.
-   resnew = 0.
-   resnew_n = 0.
-   resnew_ne = 0.
-   LMF = 0.
-   LSF = 0.
-   LSLF = 0.
-   LSNF = 0.
-   LMNF = 0.
    clipbms = 0.
    clipnbms = 0.
    clippbms = 0.
    yieldnbms = 0.
    yieldpbms = 0.
 
-   RLN = 0.
-   RLR = 0.
    clipgrn = 0.; cliptbr = 0.; clipngrn = 0.; clippgrn = 0.
    yieldngrn = 0.; yieldntbr = 0.; yieldnrsd = 0.; yieldpgrn = 0.
    yieldptbr = 0.; yieldprsd = 0.; clipntbr = 0.; clipptbr = 0.
@@ -317,7 +302,6 @@ subroutine harvestop
       CLG=BLG3*phuacc(j)/(phuacc(j)+ EXP(BLG1-BLG2*phuacc(j)))
       sf = 0.05
       !kg/ha
-      sol_min_n = 0.
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
       resnew = clip
       resnew_n = clipn
@@ -436,7 +420,6 @@ subroutine harvestop
          BLG1 = XX + 0.5*BLG2
          CLG=BLG3*phuacc(j)/(phuacc(j)+ EXP(BLG1-BLG2*phuacc(j)))
          !kg/ha
-         sol_min_n = 0.
          sol_min_n = (sol_no3(l,j)+sol_nh3(l,j))
 
          resnew = rtfr(l) * rtresnew
@@ -463,7 +446,6 @@ subroutine harvestop
          sol_LS(l,j) = sol_LS(l,j) + LSF * resnew
 
          !here a simplified assumption of 0.5 LSL
-         LSLF = CLG
          sol_LSL(l,j) = sol_LSL(l,j) + RLR* LSF * resnew
          sol_LSC(l,j) = sol_LSC(l,j) + 0.42*LSF * resnew
          sol_LSLC(l,j) = sol_LSLC(l,j) + RLR*0.42*LSF * resnew

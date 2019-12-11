@@ -142,11 +142,9 @@ subroutine biofilm
 !      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
    real*8, parameter :: dcoef = 3. !! it was undefined, it is as in watqual.f ?
 
-   jrch = 0
    jrch = inum1
 
    !! initialize water flowing into reach
-   wtrin = 0.
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
    if (rtwtr / 86400. > 0.01 .and. wtrin > 1.e-4) then
@@ -177,16 +175,6 @@ subroutine biofilm
       end if
 
       !! initialize concentration of nutrient in reach
-      wtrtot = 0.
-      algcon = 0.
-      orgncon = 0.
-      nh3con = 0.
-      no2con = 0.
-      no3con = 0.
-      orgpcon = 0.
-      solpcon = 0.
-      cbodcon = 0.
-      o2con = 0.
       rch_cbod(jrch) = dmax1(1.e-6,rch_cbod(jrch))
       wtrtot = wtrin + rchwtr
       algcon = (algin * wtrin + algae(jrch) * rchwtr) / wtrtot
@@ -212,7 +200,6 @@ subroutine biofilm
       !! Stefan and Preudhomme. 1993.  Stream temperature estimation
       !! from air temperature.  Water Res. Bull. p. 27-45
       !! SWAT manual equation 2.3.13
-      wtmp = 0.
       wtmp = 5.0 + 0.75 * tmpav(jrch)
       if (wtmp <= 0.) wtmp = 0.1
 
@@ -222,10 +209,6 @@ subroutine biofilm
 
       !! calculate saturation concentration for dissolved oxygen
       !! QUAL2E section 3.6.1 equation III-29
-      ww = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
       ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
       xx = 6.642308e07 / ((wtmp + 273.15)**2)
       yy = 1.243800e10 / ((wtmp + 273.15)**3)
@@ -237,20 +220,16 @@ subroutine biofilm
 !! O2 impact calculations
       !! calculate nitrification rate correction factor for low
       !! oxygen QUAL2E equation III-21
-      cordo = 0.
       if (o2con.le.0.001) o2con=0.001
       if (o2con.gt.30.) o2con=30.
       cordo = 1.0 - Exp(-0.6 * o2con)
       !! modify ammonia and nitrite oxidation rates to account for
       !! low oxygen
-      bc1mod = 0.
-      bc2mod = 0.
       bc1mod = bc1(jrch) * cordo
       bc2mod = bc2(jrch) * cordo
 !! end O2 impact calculations
 
       !! calculate flow duration
-      tday = 0.
       tday = rttime / 24.0
       if (tday > 1.0) tday = 1.0
       !!     tday = 1.0
@@ -269,15 +248,12 @@ subroutine biofilm
 
       !! calculate algal growth limitation factors for nitrogen
       !! and phosphorus QUAL2E equations III-13 & III-14
-      fnn = 0.
-      fpp = 0.
       fnn = cinn / (cinn + k_n)
       fpp = solpcon / (solpcon + k_p)
 
       !! calculate daylight average, photosynthetically active,
       !! light intensity QUAL2E equation III-8
       !! Light Averaging Option # 2
-      algi = 0.
       if (dayl(hru1(jrch)) > 0.) then
          algi = hru_ra(hru1(jrch)) * tfact / dayl(hru1(jrch))
       else
@@ -286,8 +262,6 @@ subroutine biofilm
 
       !! calculate growth attenuation factor for light, based on
       !! daylight average light intensity QUAL2E equation III-7b
-      fl_1 = 0.
-      fll = 0.
       fl_1 = (1. / (lambda * rchdep)) *&
       &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * rchdep))))
       fll = 0.92 * (dayl(hru1(jrch)) / 24.) * fl_1
@@ -313,7 +287,6 @@ subroutine biofilm
       !! calculate algal biomass concentration at end of day
       !! (phytoplanktonic algae)
       !! QUAL2E equation III-2
-      algae(jrch) = 0.
       algae(jrch) = algcon + (Theta(gra,thgra,wtmp) * algcon -&
       &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
       &/ rchdep * algcon) * tday
@@ -324,18 +297,14 @@ subroutine biofilm
 
       !! calculate chlorophyll-a concentration at end of day
       !! QUAL2E equation III-1
-      chlora(jrch) = 0.
       chlora(jrch) = algae(jrch) * ai0 / 1000.
       !! end algal growth
 
 !! oxygen calculations
       !! calculate carbonaceous biological oxygen demand at end
       !! of day QUAL2E section 3.5 equation III-26
-      yy = 0.
-      zz = 0.
       yy = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
       zz = Theta(rk3(jrch),thrk3,wtmp) * cbodcon
-      rch_cbod(jrch) = 0.
       rch_cbod(jrch) = cbodcon - (yy + zz) * tday
       if (rch_cbod(jrch) < 1.e-6) rch_cbod(jrch) = 0.
       if (rch_cbod(jrch) > dcoef * cbodcon) rch_cbod(jrch) = dcoef *&
@@ -343,12 +312,6 @@ subroutine biofilm
 
       !! calculate dissolved oxygen concentration if reach at
       !! end of day QUAL2E section 3.6 equation III-28
-      uu = 0.
-      vv = 0.
-      ww = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
       uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
       vv = (ai3 * Theta(gra,thgra,wtmp) - ai4 *&
       &Theta(rhoq,thrho,wtmp)) * algcon
@@ -365,16 +328,12 @@ subroutine biofilm
 !! nitrogen calculations
       !! calculate organic N concentration at end of day
       !! QUAL2E section 3.3.1 equation III-16
-      xx = 0.
-      yy = 0.
-      zz = 0.
       xx = ai1 * Theta(rhoq,thrho,wtmp) * algcon
       yy = Theta(bc3(jrch),thbc3,wtmp) * orgncon
       zz = Theta(rs4(jrch),thrs4,wtmp) * orgncon
 !        red_fac = orgncon / 4.
 !        if (red_fac > 0.75) red_fac = 0.75
 !        zz = zz + red_fac
-      organicn(jrch) = 0.
       organicn(jrch) = orgncon + (xx - yy - zz) * tday
       if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.
       if(organicn(jrch) > dcoef * orgncon) organicn(jrch) = dcoef *&
@@ -382,21 +341,15 @@ subroutine biofilm
 
       !! calculate fraction of algal nitrogen uptake from ammonia
       !! pool QUAL2E equation III-18
-      f1 = 0.
       f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con +&
       &1.e-6)
 
       !! calculate ammonia nitrogen concentration at end of day
       !! QUAL2E section 3.3.2 equation III-17
-      ww = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
       ww = Theta(bc3(jrch),thbc3,wtmp) * orgncon
       xx = Theta(bc1mod,thbc1,wtmp) * nh3con
       yy = Theta(rs3(jrch),thrs3,wtmp) / (rchdep * 1000.)
       zz = f1 * ai1 * algcon * Theta(gra,thgra,wtmp)
-      ammonian(jrch) = 0.
       ammonian(jrch) = nh3con + (ww - xx + yy - zz) * tday
       if (ammonian(jrch) < 1.e-6) ammonian(jrch) = 0.
       if (ammonian(jrch) > dcoef * nh3con .and. nh3con > 0.)&
@@ -404,11 +357,8 @@ subroutine biofilm
 
       !! calculate concentration of nitrite at end of day
       !! QUAL2E section 3.3.3 equation III-19
-      yy = 0.
-      zz = 0.
       yy = Theta(bc1mod,thbc1,wtmp) * nh3con
       zz = Theta(bc2mod,thbc2,wtmp) * no2con
-      nitriten(jrch) = 0.
       nitriten(jrch) = no2con + (yy - zz) * tday
       if (nitriten(jrch) < 1.e-6) nitriten(jrch) = 0.
       if (nitriten(jrch) > dcoef * no2con .and. no2con > 0.)&
@@ -416,11 +366,8 @@ subroutine biofilm
 
       !! calculate nitrate concentration at end of day
       !! QUAL2E section 3.3.4 equation III-20
-      yy = 0.
-      zz = 0.
       yy = Theta(bc2mod,thbc2,wtmp) * no2con
       zz = (1. - f1) * ai1 * algcon * Theta(gra,thgra,wtmp)
-      nitraten(jrch) = 0.
       nitraten(jrch) = no3con + (yy - zz) * tday
       if (nitraten(jrch) > dcoef * no3con) nitraten(jrch) = dcoef *&
       &no3con
@@ -431,13 +378,9 @@ subroutine biofilm
 !! phosphorus calculations
       !! calculate organic phosphorus concentration at end of
       !! day QUAL2E section 3.3.6 equation III-24
-      xx = 0.
-      yy = 0.
-      zz = 0.
       xx = ai2 * Theta(rhoq,thrho,wtmp) * algcon
       yy = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
       zz = Theta(rs5(jrch),thrs5,wtmp) * orgpcon
-      organicp(jrch) = 0.
       organicp(jrch) = orgpcon + (xx - yy - zz) * tday
       if (organicp(jrch) < 1.e-6) organicp(jrch) = 0.
       if (organicp(jrch) > dcoef * orgpcon) organicp(jrch) = dcoef *&
@@ -445,13 +388,9 @@ subroutine biofilm
 
       !! calculate dissolved phosphorus concentration at end
       !! of day QUAL2E section 3.4.2 equation III-25
-      xx = 0.
-      yy = 0.
-      zz = 0.
       xx = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
       yy = Theta(rs2(jrch),thrs2,wtmp) / (rchdep * 1000.)
       zz = ai2 * Theta(gra,thgra,wtmp) * algcon
-      disolvp(jrch) = 0.
       disolvp(jrch) = solpcon + (xx + yy - zz) * tday
       if (disolvp(jrch) < 1.e-6) disolvp(jrch) = 0.
       if (disolvp(jrch) > dcoef * solpcon) disolvp(jrch) = dcoef *&
