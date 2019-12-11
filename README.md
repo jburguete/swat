@@ -8,18 +8,20 @@ Objectives
 
 * Standard indentation and translation to Fortran 90 by using
 [findent](https://sourceforge.net/projects/findent). See the
-translate-fortran90.pl perl script file
+translate-fortran90.pl perl script file (:heavy-check-mark:)
 * Exhaustive use of the "implicit none" directive to detect bad variable usage
 * Generate a GNU [make](http://www.gnu.org/software/make) makefile and compile
 with GNU [gfortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl perl script file
 * Remove non-used variables and format labels
 * Detect and solve all uninitialized variables
 * Remove unneeded variable initializations as:
-> j=0 ! this line is not necessary
->
-> j=ihru
+`j=0 ! this line is not necessary`
+`j=ihru`
 * Remove redundant code
 * Exhaustive use of the "parameter" directive on constants
+* Remove obsolete commented code
+* Update variable descriptions in comments
+* Standardize comments by using Doxygen style on order to generate documentation
 
 Required tools
 --------------
