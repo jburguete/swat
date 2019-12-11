@@ -95,11 +95,11 @@ could not arise because the logic of the variables is not possible.
     However the problem only arises for `nstep<1`
 
 * In bmp\_sand\_filter.f:
-  - "sed\_removed" at line 342 can be used not initialized if `sfsedstdev<=0`
+  - "sed\_removed" at line 342 could be used not initialized if `sfsedstdev<=0`
 
 * In bmp\_wet\_pond.f:
-  - "hvol" can be used not initialized in "ext\_dpth" subroutine at line 267 in
-    first bucle iteration
+  - "hvol" could be used not initialized in "ext\_dpth" subroutine at line 267
+    in first bucle iteration
 
 * In clicon.f:
   - "tmxbsb", "tmnbsb", "rbsb", "rstpbsb", "rhdbsb", "rabsb", "rmxbsb",
@@ -114,7 +114,7 @@ could not arise because the logic of the variables is not possible.
   - "ifrt" seems to be "it" at line 214
 
 * In curno.f:
-  - "smxold" can be used not initialized if `cn1(h)<=1.e-6` and `curyr/=0` at
+  - "smxold" could be used not initialized if `cn1(h)<=1.e-6` and `curyr/=0` at
     line 96
 
 * In drains.f:
@@ -123,7 +123,7 @@ could not arise because the logic of the variables is not possible.
     `sol_z(j1,j)<=0`)
 
 * In etact.f:
-  - "sev" can be used not initialized at line 286 if `dep>=esd` and `ly==2`
+  - "sev" could be used not initialized at line 286 if `dep>=esd` and `ly==2`
 
 * In filter.f:
   - "remove21" seems to be "remove2" at line 316
@@ -160,7 +160,7 @@ could not arise because the logic of the variables is not possible.
   - "rainsb" could be used not initialized, however only if `nstep<=0`
 
 * In pminrl2.f:
-  - "ssp" can be used not initialized at line 196 if `xx<=1.e-6`
+  - "ssp" could be used not initialized at line 196 if `xx<=1.e-6`
 
 * In pothole.f:
   - "solp\_tileo" could be used not initialized at line 593 if
