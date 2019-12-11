@@ -81,7 +81,7 @@ Issues in the original source code
 ----------------------------------
 
 This is a list of possible issues detected in the original source code. These
-issues have been detected by the GFortran compiler warnings. Some of them could
+issues have been mostly detected by the GFortran compiler warnings. Some of them could
 not arise because the logic of the variables is not possible.
 
 * In biofilm.f:
