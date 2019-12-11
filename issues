@@ -1,0 +1,131 @@
+- In biofilm.f:
+dcoef is not defined.
+dcoef=3 as in watqual.f?
+
+- In bmp_ri_pond.f
+"qseep" and "qet" can be not initialized
+
+- In bmp_sand_filter.f:
+"sand_removed" can be not initialized
+
+- In bmp_wet_pond.f:
+"hvol" can be not initialized in "ext_dpth" subroutine
+
+- In clicon.f:
+"u10bsb", "tmxbsb", "tmnbsb", "rmxbsb", "rhdbsb", "rbsb", "rabsb", "npcpbsb" and
+"daylbsb" can be not initialized
+
+- In conapply.f:
+"k" and "kk" can be not initialized
+
+- In confert.f:
+"ifrt" seems to be "it"
+
+- In curno.f:
+"smxold" can be not initialized
+
+- In drains.f:
+"nlayer" could be not initialized
+
+- In etact.f
+"sev" can be not initialized
+
+- In filter.f:
+"remove21" seems to be "remove2"
+
+- In grass_wway.g:
+"sf_sed" and "sf_depth" can be not initialized
+
+- In hhnoqual.f
+"algon" seems to be "algcon"
+
+- In hhwatqual.f
+"orgnpin" seems to be "orgnin"
+"thour=1.0" overwrites previous "thour" calculation. It is wrong
+
+- In hmeas.f
+"rhdbsb" can be not initialized
+
+- In killop.f
+"ff1" and "ff2" are not defined
+They have to be included in modparm.f?
+or they are as in harvkillop.f?
+
+- In NCsed_leach.f90
+"perc_clyr" can be not initialized
+
+- In nrain.f
+"no2pcp" seems to be "no3pcp"
+
+- In pmeas.f
+"rbsb" and "flag" can be not initialized
+"rainsb" could be not initialized
+
+- In pminrl2.f
+"ssp" can be not initialized
+
+- In pothole.f
+"solp_tileo" can be not initialized
+
+- In potholehr.f
+"potflow" seems to be "potflwo"
+
+- In readatmodep.f
+"momax=12*nbyr" is defined but not used, it has to be "mo_max"?
+Then, it overwrites the file read
+
+- In readops.f
+"mg13" seems to be "mgt13"
+"year = 0." seems to be "iyear = 0"
+
+- In readpnd.f
+"vselsetlpnd" seems to be "velsetlpnd"
+
+- In readru.f
+"tck" is not defined
+
+- In rewind_init.f
+"orig_tnylda" is not defined
+
+- In routels.f
+"dstor" is not defined, it has to be as in watbal.f?
+"latqout" and "gwqout" can be not initialized
+
+- In rtbact.f:
+"netwtr" can be not initialized
+
+- In rthpest.f
+"thour=1.0" overwrites previous "thour" calculation. It is wrong
+"frsrb" and "frsol" can be not initialized
+
+- In rtpest.f
+"tday=1.0" overwrites previous "tday" calculation. It is wrong
+
+- In sched_mgt.f
+"husc" and "igrow" are not defined
+"husc" has to be "phu_op(iop,ihru)" has in readmgt.f?
+"igrow" has to be "igro(ihru)" has in readmgt.f?
+
+- In smeas.f
+"rabsb" can be not initialized
+
+- In sweep.f
+"fr_curb" is not defined,
+it has to be added to modparm.f?
+or it is "mgt5op(nop(ihru),ihru)" as in sched_mgt.f?
+
+- In tmeas.f
+"tmxbsb" and "tmnbsb" can be not initialized
+
+- In transfer.f
+"xx", "ratio" and "ratio1" can be not initialized
+
+- In wmeas.f
+"u10bsb" can be not initialized
+
+- In zero0.f
+"sol_sumn03" seems to be "sol_sumno3"
+
+- In zero_urbn.f
+"stp_subnum" seems to be "dtp_subnum"
+"subdr_kg" seems to be "subdr_km"
