@@ -94,7 +94,7 @@ You need [GFortran](https://gcc.gnu.org/fortran) and
 
 * In a [MSYS2](http://sourceforge.net/projects/msys2) terminal in Microsoft
 Window:
-> $ EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static" make
+> $ EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static" make strip
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
 system:
