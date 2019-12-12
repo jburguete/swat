@@ -144,6 +144,9 @@ module parm
 !> date simulation is performed where leftmost eight characters are set to a
 !> value of yyyymmdd, where yyyy is the year, mm is the month and dd is the day
    character(len=8) :: date
+!> time simulation is performed where leftmost ten characters are set to a value
+!> of hhmmss.sss, where hh is the hour, mm is the minutes and ss.sss is the
+!> seconds and milliseconds
    character(len=10) :: time
    character(len=5) :: zone
    character(len=80) :: prog !< SWAT program header string
@@ -153,7 +156,17 @@ module parm
    character(len=13) :: dpd_file, wpd_file, rib_file, sfb_file,&
    &lid_file
    integer, dimension (:), allocatable :: ifirstr, idg, ifirsthr
-   integer, dimension (:), allocatable :: values, ndays
+!> values(1): year simulation is performed\n
+!> values(2): month simulation is performed\n
+!> values(3): day in month simulation is performed\n
+!> values(4): time difference with respect to Coordinated Universal Time (ie
+!> Greenwich Mean Time)\n
+!> values(5): hour simulation is performed\n
+!> values(6): minute simulation is performed\n
+!> values(7): second simulation is performed\n
+!> values(8): millisecond simulation is performed
+   integer, dimension (:), allocatable :: values
+   integer, dimension (:), allocatable :: ndays
    integer, dimension (:), allocatable :: ndays_noleap, ndays_leap
 !     apex/command output files
    integer :: mapex

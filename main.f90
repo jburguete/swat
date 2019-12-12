@@ -23,20 +23,6 @@ program main
 !!    isproj      |none          |special project code:
 !!                               |1 test rewind (run simulation twice)
 !!    prog        |NA            |SWAT program header string
-!!    time        |NA            |time simulation is performed where leftmost
-!!                               |ten characters are set to a value of
-!!                               |hhmmss.sss, where hh is the hour, mm is the
-!!                               |minutes and ss.sss is the seconds and
-!!                               |milliseconds
-!!    values(1)   |year          |year simulation is performed
-!!    values(2)   |month         |month simulation is performed
-!!    values(3)   |day           |day in month simulation is performed
-!!    values(4)   |minutes       |time difference with respect to Coordinated
-!!                               |Universal Time (ie Greenwich Mean Time)
-!!    values(5)   |hour          |hour simulation is performed
-!!    values(6)   |minutes       |minute simulation is performed
-!!    values(7)   |seconds       |second simulation is performed
-!!    values(8)   |milliseconds  |millisecond simulation is performed
 !!    zone        |NA            |time difference with respect to Coordinated
 !!                               |Universal Time (ie Greenwich Mean Time)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
