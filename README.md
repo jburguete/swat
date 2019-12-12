@@ -98,7 +98,7 @@ could not arise because the logic of the variables is not possible.
   - "sed\_removed" at line 342 could be used not initialized if `sfsedstdev<=0`
 
 * In bpm\_sed\_pond.f:
-  - "bmp\_sed \_pond" seems to be "bmp\_sed\_pond" at line 186
+  - `bmp_sed _pond` seems to be `bmp_sed_pond` at line 186
 
 * In bmp\_wet\_pond.f:
   - "hvol" could be used not initialized in "ext\_dpth" subroutine at line 267
@@ -212,7 +212,7 @@ could not arise because the logic of the variables is not possible.
   - `tday=1.0` at line 180 overwrites previous "tday" calculation. It is wrong
 
 * In sched\_mgt.f:
-  - "< =" seems to be "<=" at 202 line
+  - `< =` seems to be `<=` at 202 line
   - "husc" and "igrow" at lines 264-265 are used but not initialized.
     "husc" has to be `phu_op(iop,ihru)` has in readmgt.f?
     "igrow" has to be `igro(ihru)` has in readmgt.f?
