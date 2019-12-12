@@ -64,45 +64,45 @@ style (you need [Perl](https://www.perl.org)):
 Instructions to generate an executable to test
 ----------------------------------------------
 
-You need [GFortran](https://gcc.gnu.org/fortran) and
-[Make](https://www.gnu.org/software/make)
+Type on the UNIX type terminal (you need [GFortran](https://gcc.gnu.org/fortran)
+and [Make](https://www.gnu.org/software/make))
 
 * In UNIX type operative systems:
 > $ make
 
 * In a [MSYS2](http://sourceforge.net/projects/msys2) terminal in Microsoft
-Window:
+Windows:
 > $ EXE=".exe" LDFLAGS="-static" make
 
-* Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
-system:
+* Cross-compiling a 32 bits Microsoft Windows executable in a UNIX type
+operative system:
 > $ prefix="i686-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
-* Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
-system:
+* Cross-compiling a 64 bits Microsoft Windows executable in a UNIX type
+operative system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 
 Instructions to generate an optimized executable file
 -----------------------------------------------------
 
-You need [GFortran](https://gcc.gnu.org/fortran) and
-[Make](https://www.gnu.org/software/make)
+Type on the UNIX type terminal (you need [GFortran](https://gcc.gnu.org/fortran)
+and [Make](https://www.gnu.org/software/make))
 
 * In UNIX type operative systems:
 > $ CFLAGS="-march=native -flto" LDFLAGS="-flto" make strip
 
 * In a [MSYS2](http://sourceforge.net/projects/msys2) terminal in Microsoft
-Window:
+Windows:
 > $ EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static" make strip
 
-* Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
-system:
+* Cross-compiling a 32 bits Microsoft Windows executable in a UNIX type
+operative system:
 > $ prefix="i686-w64-mingw32-" EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static"
 > make strip
 
-* Cross-compiling a 64 bits Microsoft Window executable in a UNIX type operative
-system:
+* Cross-compiling a 64 bits Microsoft Windows executable in a UNIX type
+operative system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" CFLAGS="-flto"
 > LDFLAGS="-flto -static" make strip
 
