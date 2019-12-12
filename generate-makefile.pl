@@ -60,3 +60,5 @@ foreach $source (@sources)
 {
 	system "sed -i \"s/".$source." parm\.mod/".$source."/g\" Makefile";
 }
+system "sed -i \"s/) carbon_z/) -ffree-line-length-0 carbon_z/g\" Makefile"; 
+system "sed -i \"s/) lay/) -ffree-line-length-0 lay/g\" Makefile"; 

@@ -97,6 +97,9 @@ could not arise because the logic of the variables is not possible.
 * In bmp\_sand\_filter.f:
   - "sed\_removed" at line 342 could be used not initialized if `sfsedstdev<=0`
 
+* In bpm\_sed\_pond.f:
+  - "bmp\_sed \_pond" seems to be "bmp\_sed\_pond" at line 186
+
 * In bmp\_wet\_pond.f:
   - "hvol" could be used not initialized in "ext\_dpth" subroutine at line 267
     in first bucle iteration
@@ -160,6 +163,7 @@ could not arise because the logic of the variables is not possible.
   - "rainsb" could be used not initialized, however only if `nstep<=0`
 
 * In pminrl2.f:
+  - at line 95 a comma is necessary between "base" and "vara"
   - "ssp" could be used not initialized at line 196 if `xx<=1.e-6`
 
 * In pothole.f:
@@ -183,6 +187,9 @@ could not arise because the logic of the variables is not possible.
 * In readru.f:
   - "tck" is used but not initialized at line 79
 
+* In readsepticbz.f:
+  - at line 135 "4. e-8" seems to be "4.e-8"
+
 * In rewind\_init.f:
   - "orig\_tnylda" is used but not initialized at line 174
 
@@ -205,6 +212,7 @@ could not arise because the logic of the variables is not possible.
   - `tday=1.0` at line 180 overwrites previous "tday" calculation. It is wrong
 
 * In sched\_mgt.f:
+  - "< =" seems to be "<=" at 202 line
   - "husc" and "igrow" at lines 264-265 are used but not initialized.
     "husc" has to be `phu_op(iop,ihru)` has in readmgt.f?
     "igrow" has to be `igro(ihru)` has in readmgt.f?
