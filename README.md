@@ -43,7 +43,9 @@ update the makefile or to translate original files to Fortran 90)
 original files to Fortran 90 with a standard indentation)
 * On Microsoft Windows systems you have to install
 [MSYS2](http://sourceforge.net/projects/msys2) and the required utilities
-(GFortran and Make). You can follow detailed instructions in
+([GFortran](https://gcc.gnu.org/fortran) and
+[Make](https://www.gnu.org/software/make)). You can follow detailed instructions
+in
 [install-unix](https://github.com/jburguete/install-unix/blob/master/tutorial.pdf)
 
 Instructions to generate Fortran 90 style code from original code
@@ -110,8 +112,9 @@ Issues in the original source code
 ----------------------------------
 
 This is a list of possible issues detected in the original source code. These
-issues have been mostly detected by the GFortran compiler warnings. Some of them
-could not arise because the logic of the variables is not possible.
+issues have been mostly detected by the [GFortran](https://gcc.gnu.org/fortran)
+(to compile the source code) compiler warnings. Some of them could not arise
+because the logic of the variables is not possible.
 
 * In biofilm.f:
   - "dcoef" is not defined.
