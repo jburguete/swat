@@ -188,7 +188,7 @@ could not arise because the logic of the variables is not possible.
   - "tck" is used but not initialized at line 79
 
 * In readsepticbz.f:
-  - at line 135 "4. e-8" seems to be "4.e-8"
+  - at line 135 `4. e-8` seems to be `4.e-8`
 
 * In rewind\_init.f:
   - "orig\_tnylda" is used but not initialized at line 174
