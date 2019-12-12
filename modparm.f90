@@ -118,7 +118,9 @@ module parm
    integer :: ifirstatmo, iyr_atmo, iyr_atmo1, matmo
    integer :: mrg, mch, mcr, mpdb, mcrdb, mfdb, mhru, mhyd, mfcst
    integer :: mnr, myr, mcut, mgr, msubo, mrcho, isubwq, ffcst
-   integer :: nhru, isproj, mo, nbyr, immo, nrch, nres, irte, i_mo
+!> special project code: 1 test rewind (run simulation twice)
+   integer :: isproj
+   integer :: nhru, mo, nbyr, immo, nrch, nres, irte, i_mo
    integer :: icode, ihout, inum1, inum2, inum3, inum4, wndsim, ihru
    integer :: inum5, inum6, inum7, inum8, icfac
    integer :: nrgage, ntgage, nrgfil, ntgfil, nrtot, nttot, mrech
@@ -144,7 +146,7 @@ module parm
    character(len=8) :: date
    character(len=10) :: time
    character(len=5) :: zone
-   character(len=80) :: prog
+   character(len=80) :: prog !< SWAT program header string
    character(len=13) :: slrfile, wndfile, rhfile, petfile, calfile
    character(len=13) :: atmofile, lucfile
    character(len=13) :: septdb

@@ -22,6 +22,7 @@ program main
 !!                               |month and dd is the day
 !!    isproj      |none          |special project code:
 !!                               |1 test rewind (run simulation twice)
+!!    prog        |NA            |SWAT program header string
 !!    time        |NA            |time simulation is performed where leftmost
 !!                               |ten characters are set to a value of
 !!                               |hhmmss.sss, where hh is the hour, mm is the
