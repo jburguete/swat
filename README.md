@@ -30,7 +30,7 @@ perl script file (:heavy_check_mark:)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:x:)
 * Standardize comments by using Doxygen style on order to generate documentation
-(:construction:)
+(:construction:, a lot of work)
 
 Required tools
 --------------
@@ -46,10 +46,28 @@ original files to Fortran 90 with a standard indentation)
 (GFortran and Make). You can follow detailed instructions in
 [install-unix](https://github.com/jburguete/install-unix/blob/master/tutorial.pdf)
 
+Instructions to generate Fortran 90 style code from original code
+-----------------------------------------------------------------
+In order to generate Fortran 90 style code with standard indentation from
+original code you have to type on a UNIX type terminal (you need
+[Perl](https://www.perl.org) and
+[Findent](https://sourceforge.net/projects/findent)):
+> $ perl translate-fortran90.pl
+
+Instructions to generate an initial GNU make Makefile
+-----------------------------------------------------
+
+Type on the UNIX type terminal, when translated the original code to Fortran 90
+style (you need [Perl](https://www.perl.org)):
+> $ perl generate-makefile.pl
+
 Instructions to generate an executable to test
 ----------------------------------------------
 
-* In UNIX type operative systems:
+You need [GFortran](https://gcc.gnu.org/fortran) and
+[Make](https://www.gnu.org/software/make)
+
+* In UNIX type operative systems (you need :
 > $ make
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
@@ -61,8 +79,11 @@ system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 
-Instructions to generate of an optimized executable file
---------------------------------------------------------
+Instructions to generate an optimized executable file
+-----------------------------------------------------
+
+You need [GFortran](https://gcc.gnu.org/fortran) and
+[Make](https://www.gnu.org/software/make)
 
 * In UNIX type operative systems:
 > $ CFLAGS="-march=native -flto" LDFLAGS="-flto" make strip
