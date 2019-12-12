@@ -67,7 +67,7 @@ Instructions to generate an executable to test
 You need [GFortran](https://gcc.gnu.org/fortran) and
 [Make](https://www.gnu.org/software/make)
 
-* In UNIX type operative systems (you need :
+* In UNIX type operative systems:
 > $ make
 
 * Cross-compiling a 32 bits Microsoft Window executable in a UNIX type operative
