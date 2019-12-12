@@ -29,8 +29,8 @@ perl script file (:heavy_check_mark:)
 (:heavy_check_mark:, see at the end of this README)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:x:)
-* Standardize comments by using Doxygen style on order to generate documentation
-(:construction:, a lot of work)
+* Standardize comments by using Doxygen style in order to generate
+documentation. See at latex/refman.pdf (:construction:, a lot of work)
 
 Required tools
 --------------
