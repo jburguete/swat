@@ -1,3 +1,8 @@
+!> @author
+!> modified by Javier Burguete Tolosa
+!
+!> @brief
+!> main module contatining the global variables
 module parm
    integer icalen
    real*8 :: prf_bsn
@@ -134,6 +139,8 @@ module parm
    integer :: no_lup, no_up, nostep
 !  routing 5/3/2010 gsm per jga
 ! date
+!> date simulation is performed where leftmost eight characters are set to a
+!> value of yyyymmdd, where yyyy is the year, mm is the month and dd is the day
    character(len=8) :: date
    character(len=10) :: time
    character(len=5) :: zone

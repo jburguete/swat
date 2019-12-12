@@ -30,7 +30,7 @@ perl script file (:heavy_check_mark:)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:x:)
 * Standardize comments by using Doxygen style on order to generate documentation
-(:x:)
+(:construction:)
 
 Required tools
 --------------

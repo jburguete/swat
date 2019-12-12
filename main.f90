@@ -1,7 +1,18 @@
+!  SWAT
+!
+!> @file
+!> main.f90
+!> @brief
+!> this is the main program that reads input, calls the main simulation
+!> model, and writes output.
 include 'modparm.f90'
+!
+!> @author
+!> modified by Javier Burguete Tolosa
+!> @brief
+!> this is the main program that reads input, calls the main simulation
+!> model, and writes output.
 program main
-!!    this is the main program that reads input, calls the main simulation
-!!    model, and writes output.
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -36,7 +47,7 @@ program main
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i           |none          |counter
+!!    ii          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: date_and_time
@@ -47,6 +58,8 @@ program main
 
    use parm
    implicit none
+   integer :: ii
+
    prog = "SWAT Sep 7    VER 2018/Rev 670"
    write (*,1000)
 1000 format(1x,"               SWAT2018               ",/,&
@@ -81,9 +94,9 @@ program main
    !! convert integer to string for output.mgt file
    subnum = ""
    hruno = ""
-   do i = 1, mhru
-      write (subnum(i),fmt=' (i5.5)') hru_sub(i)
-      write (hruno(i),fmt=' (i4.4)') hru_seq(i)
+   do ii = 1, mhru
+      write (subnum(ii),fmt=' (i5.5)') hru_sub(ii)
+      write (hruno(ii),fmt=' (i4.4)') hru_seq(ii)
    end do
 
    if (isproj == 2) then
@@ -115,8 +128,8 @@ program main
          if (scenario > iscen) call rewind_init
       end do
    end if
-   do i = 101, 109
-      close (i)
+   do ii = 101, 109
+      close (ii)
    end do
    close(124)
    write (*,1001)
