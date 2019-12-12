@@ -128,13 +128,20 @@ module parm
 !    Drainmod tile equations  01/2006
    integer :: ismax, itdrn, iwtdn, iroutunit, ires_nut
 !    Drainmod tile equations  01/2006
-   integer :: mtil, mvaro, mrecd, idist, mudb, mrecm, mrecc, iclb
+   integer :: iclb !< auto-calibration flag
+   integer :: mtil, mvaro, mrecd, idist, mudb, mrecm, mrecc
    integer :: mrecy, ipet, nyskip, ideg, ievent, slrsim, iopera
    integer :: id1, idaf, idal, leapyr, mo_chk, rhsim, mstdo
    integer :: ifirsts, ifirsth, ifirstw, nstot, nhtot, nwtot, icst
-   integer :: ilog, i, iyr, itotr, iwq, iskip, scenario, ifirstpet
+   integer :: ilog, i, iyr, itotr, iwq, iskip, ifirstpet
    integer :: itotb,itots,iprp,pcpsim,itoth,nd_30,iops,iphr,isto,isol
-   integer :: iscen, fcstyr, fcstday, fcstcycles, subtot, ogen
+!> number of times forecast period is simulated (using different weather
+!> generator seeds each time)
+   integer :: fcstcycles
+   integer :: fcstday !< beginning date of forecast period (julian date)
+   integer :: fcstyr !< beginning year of forecast period
+   integer :: iscen !< scenarios counter
+   integer :: subtot, ogen
    integer :: msub, mhruo, mres, mapp, mpst, mlyr, igen, iprint, iida
    integer :: fcstcnt, icn, ised_det, mtran, idtill, motot
    integer, dimension(100) :: ida_lup, iyr_lup
@@ -148,6 +155,8 @@ module parm
 !> of hhmmss.sss, where hh is the hour, mm is the minutes and ss.sss is the
 !> seconds and milliseconds
    character(len=10) :: time
+!> time difference with respect to Coordinated Universal Time (ie Greenwich Mean
+!> Time)
    character(len=5) :: zone
    character(len=80) :: prog !< SWAT program header string
    character(len=13) :: slrfile, wndfile, rhfile, petfile, calfile
@@ -172,7 +181,9 @@ module parm
    integer :: mapex
    real*8, dimension (:), allocatable :: flodaya, seddaya, orgndaya
    real*8, dimension (:), allocatable :: orgpdaya, no3daya, minpdaya
-   real*8, dimension (:), allocatable :: hi_targ, bio_targ, tnyld
+!> index target of cover defined at planting
+   real*8, dimension (:), allocatable :: hi_targ
+   real*8, dimension (:), allocatable :: bio_targ, tnyld
    integer, dimension (:), allocatable :: idapa, iypa, ifirsta
    integer, dimension (:), allocatable :: mo_transb, mo_transe
    integer, dimension (:), allocatable :: ih_tran

@@ -16,25 +16,31 @@ program main
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    date        |NA            |date simulation is performed where leftmost
-!!                               |eight characters are set to a value of
-!!                               |yyyymmdd, where yyyy is the year, mm is the
-!!                               |month and dd is the day
-!!    isproj      |none          |special project code:
-!!                               |1 test rewind (run simulation twice)
-!!    prog        |NA            |SWAT program header string
-!!    zone        |NA            |time difference with respect to Coordinated
-!!                               |Universal Time (ie Greenwich Mean Time)
+!!    fcstcycles  |none        |number of times forecast period is simulated
+!!                             |(using different weather generator seeds each
+!!                             |time)
+!!    fcstday     |julian date |beginning date of forecast period
+!!    fcstyr      |year        |beginning year of forecast period
+!!    hi_targ(:,:,:)|(kg/ha)/(kg/ha)|harvest index target of cover defined
+!!                             |at planting
+!!    hruno       |            |
+!!    iclb        |none        |auto-calibration flag
+!!    iscen       |none        |scenarios counter
+!!    isproj      |none        |special project code:
+!!                             |1 test rewind (run simulation twice)
+!!    prog        |NA          |SWAT program header string
+!!    subnum      |NA          |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
+!!    name        |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    prog        |NA            |program name and version
+!!    prog        |NA           |program name and version
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
+!!    scenario    |none          |scenarios number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: date_and_time
@@ -45,7 +51,7 @@ program main
 
    use parm
    implicit none
-   integer :: ii
+   integer :: ii, scenario
 
    prog = "SWAT Sep 7    VER 2018/Rev 670"
    write (*,1000)

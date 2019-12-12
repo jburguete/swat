@@ -28,7 +28,7 @@ perl script file (:heavy_check_mark:)
 * Generate a detailed list of issues detected in the original code
 (:heavy_check_mark:, see at the end of this README)
 * Remove obsolete commented code (:x:)
-* Update variable descriptions in comments (:x:)
+* Update variable descriptions in comments (:construction:, a lot of work)
 * Standardize comments by using Doxygen style in order to generate
 documentation. See at latex/refman.pdf (:construction:, a lot of work)
 
@@ -41,6 +41,10 @@ Required tools
 update the makefile or to translate original files to Fortran 90)
 * [Findent](https://sourceforge.net/projects/findent) (optional: to translate
 original files to Fortran 90 with a standard indentation)
+* [Doxygen](http://www.doxygen.nl) (optional: to generate a reference
+programming manual from source code)
+* [TeX Live](https://www.tug.org/texlive) or [MiKTeX](https://miktex.org/)
+(optional: to generate a reference programming manual from source code)
 * On Microsoft Windows systems you have to install
 [MSYS2](http://sourceforge.net/projects/msys2) and the required utilities
 ([GFortran](https://gcc.gnu.org/fortran) and
@@ -107,6 +111,20 @@ operative system:
 operative system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" CFLAGS="-flto"
 > LDFLAGS="-flto -static" make strip
+
+Instructions to generate a reference programming manual
+-------------------------------------------------------
+
+Type on the UNIX type terminal (you need [Doxygen](http://www.doxygen.nl) and
+[TeX Live](https://www.tug.org/texlive) or [MiKTeX](https://miktex.org/)):
+> $ doxygen
+>
+> $ cd latex
+>
+> $ make
+
+The reference programming manual file latex/refman.pdf is generated from source
+code in PDF format
 
 Issues in the original source code
 ----------------------------------
