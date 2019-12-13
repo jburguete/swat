@@ -6,6 +6,8 @@ sources = addh.f90 albedo.f90 allocate_parms.f90 alph.f90 anfert.f90 apex_day.f9
 objs = addh.o albedo.o allocate_parms.o alph.o anfert.o apex_day.o apply.o ascrv.o atri.o aunif.o autoirr.o aveval.o bacteria.o biofilm.o biozone.o bmp_det_pond.o bmpfixed.o bmpinit.o bmp_ri_pond.o bmp_sand_filter.o bmp_sed_pond.o bmp_wet_pond.o buffer.o burnop.o canopyint.o caps.o carbon_new.o carbon_zhang2.o cfactor.o chkcst.o clgen.o clicon.o command.o conapply.o confert.o crackflow.o crackvol.o curno.o dailycn.o decay.o depstor.o distrib_bmps.o dormant.o drains.o dstn1.o ee.o eiusle.o enrsb.o estimate_ksat.o etact.o etpot.o expo.o fert.o filter.o filtw.o finalbal.o gcycl.o getallo.o grass_wway.o graze.o grow.o gwmod_deep.o gwmod.o gw_no3.o gwnutr.o h2omgt_init.o harvestop.o harvgrainop.o harvkillop.o header.o headout.o hhnoqual.o hhwatqual.o hmeas.o HQDAV.o hruaa.o hruallo.o hruday.o hrumon.o hrupond.o hrupondhr.o hruyr.o hydroinit.o icl.o impndaa.o impndday.o impnd_init.o impndmon.o impndyr.o irrigate.o irr_rch.o irr_res.o irrsub.o jdt.o killop.o lakeq.o latsed.o layersplit.o lid_cistern.o lid_greenroof.o lidinit.o lid_porpavement.o lid_raingarden.o lids.o log_normal.o lwqdef.o main.o NCsed_leach.o ndenit.o newtillmix.o nfix.o nitvol.o nlch.o nminrl.o noqual.o npup.o nrain.o nup.o nuts.o openwth.o operatn.o orgncswat.o orgn.o origtile.o ovr_sed.o percmacro.o percmain.o percmicro.o pestlch.o pestw.o pesty.o pgen.o pgenhr.o pkq.o plantmod.o plantop.o pmeas.o pminrl2.o pminrl.o pond.o pondhr.o pothole.o potholehr.o print_hyd.o psed.o qman.o ran1.o rchaa.o rchday.o rchinit.o rchmon.o rchuse.o rchyr.o reachout.o readatmodep.o readbsn.o readchm.o readcnst.o readfcst.o readfert.o readfig.o readfile.o readgw.o readhru.o readinpt.o readlup.o readlwq.o readmgt.o readmon.o readops.o readpest.o readplant.o readpnd.o readres.o readrte.o readru.o readsdr.o readsepticbz.o readseptwq.o readsno.o readsol.o readsub.o readswq.o readtill.o readurban.o readwgn.o readwus.o readwwq.o readyr.o reccnst.o recday.o rechour.o recmon.o recyear.o regres.o resbact.o resetlu.o res.o reshr.o resinit.o resnut.o rewind_init.o rhgen.o rootfr.o route.o routels.o routeunit.o routres.o rsedaa.o rseday.o rsedmon.o rsedyr.o rtbact.o rtday.o rteinit.o rthmusk.o rthpest.o rthsed.o rthvsc.o rtmusk.o rtout.o rtpest.o rtsed_bagnold.o rtsed.o rtsed_kodatie.o rtsed_Molinas_Wu.o rtsed_yangsand.o sat_excess.o saveconc.o save.o sched_mgt.o schedule_ops.o sim_initday.o sim_inityr.o simulate.o slrgen.o smeas.o snom.o soil_chem.o soil_par.o soil_phys.o soil_write.o solp.o solt.o std1.o std2.o std3.o stdaa.o storeinitial.o structure.o subaa.o subbasin.o subday.o submon.o substor.o sub_subbasin.o subwq.o subyr.o sumhyd.o sumv.o surface.o surfst_h2o.o surfstor.o surq_daycn.o surq_greenampt.o swbl.o sweep.o swu.o tair.o tgen.o theta.o tillfactor.o tillmix.o tmeas.o tran.o transfer.o tstr.o ttcoef.o ttcoef_wway.o urban.o urbanhr.o urb_bmp.o varinit.o vbl.o virtual.o volq.o washp.o watbal.o water_hru.o watqual2.o watqual.o wattable.o watuse.o weatgn.o wetlan.o wmeas.o wndgen.o writeaa.o writea.o writed.o writem.o xmon.o ysed.o zero0.o zero1.o zero2.o zeroini.o zero_urbn.o
 mods = parm.mod
 
+all: swat$(EXE) latex/refman.pdf
+
 swat$(EXE): $(mods) $(objs)
 	$(cc) $(LDFLAGS) $(objs) -o swat$(EXE)
 
@@ -105,7 +107,7 @@ carbon_new.o: carbon_new.f90 parm.mod Makefile
 	$(cc) $(cflags) carbon_new.f90 -o carbon_new.o
 
 carbon_zhang2.o: carbon_zhang2.f90 parm.mod Makefile
-	$(cc) $(cflags) carbon_zhang2.f90 -o carbon_zhang2.o
+	$(cc) $(cflags) -ffree-line-length-0 carbon_zhang2.f90 -o carbon_zhang2.o
 
 cfactor.o: cfactor.f90 parm.mod Makefile
 	$(cc) $(cflags) cfactor.f90 -o cfactor.o
@@ -315,7 +317,7 @@ latsed.o: latsed.f90 parm.mod Makefile
 	$(cc) $(cflags) latsed.f90 -o latsed.o
 
 layersplit.o: layersplit.f90 parm.mod Makefile
-	$(cc) $(cflags) layersplit.f90 -o layersplit.o
+	$(cc) $(cflags) -ffree-line-length-0 layersplit.f90 -o layersplit.o
 
 lid_cistern.o: lid_cistern.f90 parm.mod Makefile
 	$(cc) $(cflags) lid_cistern.f90 -o lid_cistern.o
@@ -943,3 +945,7 @@ zeroini.o: zeroini.f90 parm.mod Makefile
 
 zero_urbn.o: zero_urbn.f90 parm.mod Makefile
 	$(cc) $(cflags) zero_urbn.f90 -o zero_urbn.o
+
+latex/refman.pdf: $(sources) README.md Makefile Doxyfile
+	doxygen
+	cd latex; make
