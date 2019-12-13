@@ -310,12 +310,14 @@ module parm
    real*8, dimension (:,:), allocatable :: sub_smfmx, sub_smfmn
    real*8, dimension (:,:,:), allocatable :: hrupstd,hrupsta,hrupstm
    real*8, dimension (:,:,:), allocatable :: hrupsty
+! mrg = max number of rainfall/temperature gages
    integer, dimension (:), allocatable :: ifirstt,ifirstpcp
    integer, dimension (:), allocatable :: elevp,elevt
 ! mfcst = max number of forecast regions
    real*8, dimension (:,:), allocatable :: ftmpstdmn,ftmpmn,ftmpmx
    real*8, dimension (:,:), allocatable :: ftmpstdmx
    real*8, dimension (:,:,:), allocatable :: fpr_w,fpcp_stat
+! mch = max number of channels
    real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi,ch_d
    real*8, dimension (:), allocatable :: ch_onco, ch_opco
    real*8, dimension (:), allocatable :: ch_orgn, ch_orgp
@@ -380,6 +382,7 @@ module parm
    real*8, dimension (:,:), allocatable :: wurch
    integer, dimension (:), allocatable :: icanal
    integer, dimension (:), allocatable :: itb
+! msub = max number of subbasins
    real*8, dimension (:), allocatable :: ch_revap, dep_chan
    real*8, dimension (:), allocatable :: harg_petco, subfr_nowtr
    real*8, dimension (:), allocatable :: cncoef_sub, dr_sub
@@ -428,6 +431,7 @@ module parm
    integer, dimension (:), allocatable :: isgage,ihgage,iwgage
    integer, dimension (:), allocatable :: irgage,itgage,subgis
    integer, dimension (:), allocatable :: fcst_reg, irelh
+! mlyr = max number of soil layers
    real*8, dimension (:,:), allocatable :: sol_aorgn,sol_tmp,sol_fon
    real*8, dimension (:,:), allocatable :: sol_awc,sol_prk,volcr
    real*8, dimension (:,:), allocatable :: pperco_sub
@@ -455,6 +459,7 @@ module parm
 !    Drainmod tile equations  01/2006
    real*8, dimension (:,:,:), allocatable :: sol_pst,sol_kp
    real*8, dimension (:,:,:), allocatable :: orig_solpst
+! mres = max number of reservoirs
    real*8, dimension (:), allocatable :: velsetlr, velsetlp
    real*8, dimension (:), allocatable :: br1,res_k,lkpst_conc, evrsv
    real*8, dimension (:), allocatable :: res_evol,res_pvol,res_vol
@@ -485,6 +490,7 @@ module parm
    integer, dimension (:), allocatable :: ires1,ires2,res_sub
    integer, dimension (:), allocatable :: iresco,mores,iyres
    integer, dimension (:), allocatable :: iflod1r,iflod2r,ndtargr
+! mpdb = max number of pesticides in the database
    real*8, dimension (:), allocatable :: skoc,ap_ef,decay_f
    real*8, dimension (:), allocatable :: hlife_f,hlife_s,decay_s
    real*8, dimension (:), allocatable :: pst_wsol,pst_wof, irramt
@@ -515,17 +521,21 @@ module parm
 !     real*8, dimension (:), allocatable :: air_str
    real*8, dimension (:,:), allocatable :: pltnfr,pltpfr
    integer, dimension (:), allocatable :: idc, mat_yrs
+! mfdb = maximum number of fertilizer in database
    real*8, dimension (:), allocatable :: forgn,forgp,fminn,bactpdb
    real*8, dimension (:), allocatable :: fminp,fnh3n,bactlpdb,bactkddb
    character(len=8), dimension (200) :: fertnm
    real*8, dimension (:), allocatable :: fimp,curbden,urbcoef,dirtmx
    real*8, dimension (:), allocatable :: thalf,tnconc,tpconc,tno3conc
    real*8, dimension (:), allocatable :: fcimp,urbcn2
+! mapp = max number of applications
    real*8 :: sweepeff,frt_kg, pst_dep, fr_curb
 !! added pst_dep to statement below 3/31/08 gsm
 !!   burn 3/5/09
+! mnr = max number years of rotation
 !!   burn 3/5/09
-   !! drainmod tile equations   06/2006
+! mtil = max number tillages in database
+!! drainmod tile equations   06/2006
 
    real*8, dimension (:), allocatable :: ranrns_hru
    integer, dimension (:), allocatable :: itill

@@ -16,7 +16,7 @@ strip:
 	$(strip) swat$(EXE)
 
 clean:
-	rm *.mod *.o swat*
+	rm -rf *.mod *.o swat* latex html
 
 tar:
 	tar cJf swat.tar.xz *.f90 *.pl *.sh Makefile

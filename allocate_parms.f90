@@ -1,3 +1,8 @@
+!> @file allocate_parms.f90
+!> @author 
+!> modified by Javier Burguete
+!> @brief
+!> this subroutine allocates array sizes
 subroutine allocate_parms
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine allocates array sizes

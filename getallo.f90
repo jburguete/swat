@@ -490,7 +490,6 @@ subroutine getallo
    mpst = Sum(pstflg) + 1
 
 !! calculate max number of climate gages
-   mrg = 0
    mrg = Max(nrtot,nttot,nstot,nhtot,nwtot)
    if (mrg <= 0) mrg = 1
 

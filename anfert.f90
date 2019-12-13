@@ -226,12 +226,9 @@ subroutine anfert
 
       !! add bacteria to surface layer
       bactpq(j) = bactpq(j) + bactkddb(ifrt) * bactpdb(ifrt) * dwfert
-      bactlpq(j) = bactlpq(j) + bactkddb(ifrt) * bactlpdb(ifrt) *&
-      &dwfert
-      bactps(j) = bactps(j) + (1. - bactkddb(ifrt)) * bactpdb(ifrt)*&
-      &dwfert
-      bactlps(j) = bactlps(j) + (1. - bactkddb(ifrt)) *bactlpdb(ifrt)&
-      &* dwfert
+      bactlpq(j) = bactlpq(j) + bactkddb(ifrt) * bactlpdb(ifrt) * dwfert
+      bactps(j) = bactps(j) + (1. - bactkddb(ifrt)) * bactpdb(ifrt) * dwfert
+      bactlps(j) = bactlps(j) + (1. - bactkddb(ifrt)) * bactlpdb(ifrt) * dwfert
 
       do ly = 1, 2
          if (ly == 1) then

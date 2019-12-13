@@ -24,7 +24,7 @@ print DATA "\nmods = parm.mod\n".
 	"\nswat\$(EXE): \$(mods) \$(objs)\n".
 	"\t\$(cc) \$(LDFLAGS) \$(objs) -o swat\$(EXE)\n".
 	"\nstrip:\n\tmake\n\t\$(strip) swat\$(EXE)\n".
-	"\nclean:\n\trm *.mod *.o swat*\n".
+	"\nclean:\n\trm -rf *.mod *.o swat* latex html\n".
 	"\ntar:\n\ttar cJf swat.tar.xz *.f90 *.pl *.sh Makefile\n".
 	"\nparm.mod: modparm.f90 main.f90 Makefile\n".
 	"\t\$(cc) \$(cflags) main.f90 -o main.o\n\ttouch parm.mod\n";

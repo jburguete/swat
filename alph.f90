@@ -152,8 +152,7 @@ subroutine alph(iwave)
 
          ajp = 1. - Expo(-125. / (preceff + 5.))
          if (ised_det == 0) then
-            al5 = Atri(ab, amp_r(i_mo,hru_sub(j)), ajp,&
-            &rndseed(idg(6),j))
+            al5 = Atri(ab, amp_r(i_mo,hru_sub(j)), ajp, rndseed(idg(6),j))
          else
             al5 = amp_r(i_mo,hru_sub(j))
          end if

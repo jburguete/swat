@@ -1,3 +1,9 @@
+!> @file readfile.f90
+!> @author
+!> modified by Javier Burguete
+!> @brief
+!> this subroutine opens the main input and output files and reads watershed
+!> information from the file.cio
 subroutine readfile
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
