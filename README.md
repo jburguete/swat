@@ -131,11 +131,11 @@ Issues in the original source code
 
 This is a list of possible issues detected in the original source code. These
 issues have been mostly detected by the [GFortran](https://gcc.gnu.org/fortran)
-(to compile the source code) compiler warnings. Some of them could not arise
-because the logic of the variables is not possible.
+compiler warnings. Some of them could not arise because the logic of the
+variables is not possible.
 
 * In biofilm.f:
-  - "dcoef" is not defined.
+  - "dcoef" is used but not initialized.
     `dcoef=3` as in watqual.f?
     Then, I propose at beginning:
     `real*8, parameter :: dcoef = 3.`
@@ -196,7 +196,7 @@ because the logic of the variables is not possible.
   - "rhdbsb" could be used not initialized at line 84
 
 * In killop.f:
-  - "ff1" and "ff2" are not defined at lines 167 and 267.
+  - "ff1" and "ff2" are used but not initialized at lines 167 and 267.
     They are set in harvkillop.f file (lines 257-258).
     They have to be included in modparm.f to share harvkillop.f values?
     or they have to be redefined as in harvkillop.f?
