@@ -1,7 +1,6 @@
 !  SWAT
 !
-!> @file
-!> main.f90
+!> @file main.f90
 !> @brief
 !> this is the main program that reads input, calls the main simulation
 !> model, and writes output.

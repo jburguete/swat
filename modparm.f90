@@ -4,6 +4,30 @@
 !> @brief
 !> main module contatining the global variables
 module parm
+!!    mres        |none        |maximum number of reservoirs
+!!    mrg         |none        |max number of rainfall/temp gages
+!!    nhtot       |none        |number of relative humidity records in file
+!!    nrgage      |none        |number of raingage files
+!!    nrgfil      |none        |number of rain gages per file
+!!    nrtot       |none        |total number of rain gages
+!!    nsave       |none        |number of save commands in .fig file
+!!    nstep       |none        |max number of time steps per day
+!!    nstot       |none        |number of solar radiation records in file
+!!    ntgage      |none        |number of temperature gage files
+!!    ntgfil      |none        |number of temperature gages per file
+!!    nttot       |none        |total number of temperature gages
+!!    nwtot       |none        |number of wind speed records in file
+!!    msub        |none        |maximum number of subbasins
+!!    mtil        |none        |max number of tillage types in till.dat
+!!    mudb        |none        |maximum number of urban land types in urban.dat
+!!    myr         |none        |max number of years of simulation
+!!    pstflg(:)   |none        |flag for types of pesticide used in watershed
+!!                             |array location is pesticide ID number
+!!                             |0: pesticide not used
+!!                             |1: pesticide used
+!!    septdb      |NA          |name of septic tank database file
+!!                             |(septwq1.dat)  !!
+!!    title       |NA          |description lines in file.cio(1st 3 lines)
    integer icalen
    real*8 :: prf_bsn
 
@@ -116,21 +140,37 @@ module parm
 !    Drainmod tile equations  01/2006
    integer :: i_subhw, imgt, idlast, iwtr, ifrttyp, mo_atmo, mo_atmo1
    integer :: ifirstatmo, iyr_atmo, iyr_atmo1, matmo
-   integer :: mrg, mch, mcr, mpdb, mcrdb, mfdb, mhru, mhyd, mfcst
-   integer :: mnr, myr, mcut, mgr, msubo, mrcho, isubwq, ffcst
+   integer :: mch !< maximum number of channels
+   integer :: mcr !< maximum number of crops grown per year
+   integer :: mcrdb !< max number of lu/lc defined in crop.dat
+   integer :: mfcst !< maximum number of forecast stations
+   integer :: mfdb !< max number of fertilizers in fert.dat
+   integer :: mhru !< maximum number of HRUs in watershed
+   integer :: mhyd !< maximum number of hydrograph nodes
+   integer :: mpdb !< max number of pesticides in pest.dat
+   integer :: mrg
+   integer :: mcut !< maximum number of cuttings per year
+   integer :: mgr !< maximum number of grazings per year
+   integer :: mnr !< max number of years of rotation
+   integer :: myr, msubo, mrcho, isubwq, ffcst
 !> special project code: 1 test rewind (run simulation twice)
    integer :: isproj
    integer :: nhru, mo, nbyr, immo, nrch, nres, irte, i_mo
    integer :: icode, ihout, inum1, inum2, inum3, inum4, wndsim, ihru
    integer :: inum5, inum6, inum7, inum8, icfac
-   integer :: nrgage, ntgage, nrgfil, ntgfil, nrtot, nttot, mrech
+   integer :: mrech !< maximum number of rechour files
+   integer :: nrgage, ntgage, nrgfil, ntgfil, nrtot, nttot
    integer :: lao, igropt, npmx, irtpest, curyr, tmpsim, icrk, iihru
 !    Drainmod tile equations  01/2006
    integer :: ismax, itdrn, iwtdn, iroutunit, ires_nut
 !    Drainmod tile equations  01/2006
    integer :: iclb !< auto-calibration flag
-   integer :: mtil, mvaro, mrecd, idist, mudb, mrecm, mrecc
-   integer :: mrecy, ipet, nyskip, ideg, ievent, slrsim, iopera
+   integer :: mrecc !< maximum number of reccnst files
+   integer :: mrecd !< maximum number of recday files
+   integer :: mrecm !< maximum number of recmon files
+   integer :: mtil, mvaro, idist, mudb
+   integer :: mrecy !< maximum number of recyear files
+   integer :: ipet, nyskip, ideg, ievent, slrsim, iopera
    integer :: id1, idaf, idal, leapyr, mo_chk, rhsim, mstdo
    integer :: ifirsts, ifirsth, ifirstw, nstot, nhtot, nwtot, icst
    integer :: ilog, i, iyr, itotr, iwq, iskip, ifirstpet
@@ -142,7 +182,10 @@ module parm
    integer :: fcstyr !< beginning year of forecast period
    integer :: iscen !< scenarios counter
    integer :: subtot, ogen
-   integer :: msub, mhruo, mres, mapp, mpst, mlyr, igen, iprint, iida
+   integer :: mapp !< maximum number of applications
+   integer :: mlyr !< maximum number of soil layers
+   integer :: mpst !< max number of pesticides used in wshed
+   integer :: msub, mhruo, mres, igen, iprint, iida
    integer :: fcstcnt, icn, ised_det, mtran, idtill, motot
    integer, dimension(100) :: ida_lup, iyr_lup
    integer :: no_lup, no_up, nostep
@@ -1005,7 +1048,7 @@ module parm
 !! By Zhang for C/N cycling
 
    !Flood routing variables by Jaehak Jeong 2017
-   real*8 :: dthy
+   real*8 :: dthy !< time interval for subdaily routing
    integer, dimension(4) :: IHX
    integer, dimension(:), allocatable :: NHY
    real*8, dimension(:), allocatable :: RCHX,RCSS,QCAP,CHXA,CHXP

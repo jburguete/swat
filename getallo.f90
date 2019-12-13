@@ -1,3 +1,9 @@
+!> @file getallo.f90
+!> @author
+!> modified by Javier Burguete
+!> @brief
+!> This subroutine calculates the number of HRUs, subbasins, etc. in the
+!> simulation. These values are used to allocate array sizes.
 subroutine getallo
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -7,6 +13,7 @@ subroutine getallo
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    dthy        |hr          |time interval for subdaily routing
 !!    mapp        |none        |maximum number of applications
 !!    mch         |none        |maximum number of channels
 !!    mcr         |none        |maximum number of crops grown per year
@@ -28,7 +35,17 @@ subroutine getallo
 !!    mrecy       |none        |maximum number of recyear files
 !!    mres        |none        |maximum number of reservoirs
 !!    mrg         |none        |max number of rainfall/temp gages
+!!    nhtot       |none        |number of relative humidity records in file
+!!    nrgage      |none        |number of raingage files
+!!    nrgfil      |none        |number of rain gages per file
+!!    nrtot       |none        |total number of rain gages
+!!    nsave       |none        |number of save commands in .fig file
 !!    nstep       |none        |max number of time steps per day
+!!    nstot       |none        |number of solar radiation records in file
+!!    ntgage      |none        |number of temperature gage files
+!!    ntgfil      |none        |number of temperature gages per file
+!!    nttot       |none        |total number of temperature gages
+!!    nwtot       |none        |number of wind speed records in file
 !!    msub        |none        |maximum number of subbasins
 !!    mtil        |none        |max number of tillage types in till.dat
 !!    mudb        |none        |maximum number of urban land types in urban.dat
@@ -37,20 +54,21 @@ subroutine getallo
 !!                             |array location is pesticide ID number
 !!                             |0: pesticide not used
 !!                             |1: pesticide used
-!!    dthy         |hr        |time interval for subdaily routing
+!!    septdb      |NA          |name of septic tank database file
+!!                             |(septwq1.dat)  !!
+!!    title       |NA          |description lines in file.cio(1st 3 lines)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    a           |NA          |comment flag
-!!    plantdb     |NA          |name of LU/LC database input file (crop.dat)
+!!    bsnfile     |NA          |name of basin input file (.bsn)
 !!    eof         |none        |end of file flag
 !!    fcstfile    |NA          |name of weather forecast input file (.cst)
 !!    fcsttot     |none        |total number of forecast regions in database
 !!    fertdb      |NA          |name of fertilizer database file (fert.dat)
 !!    figfile     |NA          |name of watershed configuration file (.fig)
-!!    i           |none        |counter
 !!    ic          |none        |number of land cover in crop database
 !!    icd         |none        |routing command code (.fig)
 !!    ifcst       |none        |number of forecast region in database file
@@ -61,29 +79,20 @@ subroutine getallo
 !!    inm3        |none        |3rd routing command variable (.fig)
 !!                             |if icd=1, inm3=subbasin #
 !!    ipnum       |none        |number of pesticide type in database file
+!!    isnum       |            |?
 !!    itnum       |none        |number of tillage implement in database file
 !!    iunum       |none        |number of urban land type in database file
 !!    j           |none        |counter
-!!    nhtot       |none        |number of relative humidity records in file
-!!    nrgage      |none        |number of raingage files
-!!    nrgfil      |none        |number of rain gages per file
-!!    nrtot       |none        |total number of rain gages
-!!    nsave       |none        |number of save commands in .fig file
-!!    nstot       |none        |number of solar radiation records in file
-!!    ntgage      |none        |number of temperature gage files
-!!    ntgfil      |none        |number of temperature gages per file
-!!    nttot       |none        |total number of temperature gages
+!!    k           |none        |counter
+!!    nlines      |none        |counter
 !!    numhru      |none        |number of HRUs listed in subbasin file
-!!    nwtot       |none        |number of wind speed records in file
 !!    pestdb      |NA          |name of pesticide database input file(pest.dat)
+!!    plantdb     |NA          |name of LU/LC database input file (crop.dat)
 !!    subfile     |NA          |name of subbasin input file (.sub)
 !!    tilldb      |NA          |name of tillage database input file(till.dat)
-!!    title       |NA          |description lines in file.cio(1st 3 lines)
 !!    titldum     |NA          |variable to read in data line
 !!    urbandb     |NA          |name of urban land type database file
 !!                             |(urban.dat)
-!!    septdb      !  NA        ! name of septic tank database file
-!!                             |(septwq1.dat)  !!
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~

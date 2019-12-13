@@ -112,8 +112,8 @@ operative system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" CFLAGS="-flto"
 > LDFLAGS="-flto -static" make strip
 
-Instructions to generate a reference programming manual
--------------------------------------------------------
+Instructions to generate a reference programming manual from source code
+------------------------------------------------------------------------
 
 Type on the UNIX type terminal (you need [Doxygen](http://www.doxygen.nl) and
 [TeX Live](https://www.tug.org/texlive) or [MiKTeX](https://miktex.org/)):
