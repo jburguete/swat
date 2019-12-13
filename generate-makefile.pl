@@ -57,7 +57,7 @@ close DATA;
 	"qman\.f90",
 	"ran1\.f90",
 	"theta\.f90",
-	"virtual\.f90"
+	"vbl\.f90"
 );
 foreach $source (@sources)
 {

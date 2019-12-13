@@ -4,6 +4,16 @@
 !> @brief
 !> main module contatining the global variables
 module parm
+
+!> max number of variables routed through the reach
+   integer, parameter :: mvaro = 33
+   integer, parameter :: mhruo = 79 !< max number of variables in output.hru
+   integer, parameter :: mrcho = 62 !< max number of variables in reach file
+   integer, parameter :: msubo = 24 !< max number of variables in output.sub
+!> max number of variables summarized in output.std
+   integer, parameter :: mstdo = 113
+   integer, parameter :: motot = 600 !! (50 years limit)
+
    integer icalen
    real*8 :: prf_bsn
 
@@ -129,7 +139,7 @@ module parm
    integer :: mgr !< maximum number of grazings per year
    integer :: mnr !< max number of years of rotation
    integer :: myr !< max number of years of simulation
-   integer :: msubo, mrcho, isubwq, ffcst
+   integer :: isubwq, ffcst
 !> special project code: 1 test rewind (run simulation twice)
    integer :: isproj
    integer :: nhru, mo, nbyr, immo, nrch, nres, irte, i_mo
@@ -152,10 +162,10 @@ module parm
    integer :: mrecm !< maximum number of recmon files
    integer :: mtil !< max number of tillage types in till.dat
    integer :: mudb !< maximum number of urban land types in urban.dat
-   integer :: mvaro, idist
+   integer :: idist
    integer :: mrecy !< maximum number of recyear files
    integer :: ipet, nyskip, ideg, ievent, slrsim, iopera
-   integer :: id1, idaf, idal, leapyr, mo_chk, rhsim, mstdo
+   integer :: id1, idaf, idal, leapyr, mo_chk, rhsim
    integer :: nhtot !< number of relative humidity records in file
    integer :: nstot !< number of solar radiation records in file
    integer :: nwtot !< number of wind speed records in file
@@ -174,8 +184,8 @@ module parm
    integer :: mpst !< max number of pesticides used in wshed
    integer :: mres !< maximum number of reservoirs
    integer :: msub !< maximum number of subbasins
-   integer :: mhruo, igen, iprint, iida
-   integer :: fcstcnt, icn, ised_det, mtran, idtill, motot
+   integer :: igen, iprint, iida
+   integer :: fcstcnt, icn, ised_det, mtran, idtill
    integer, dimension(100) :: ida_lup, iyr_lup
    integer :: no_lup, no_up, nostep
 !  routing 5/3/2010 gsm per jga
@@ -197,7 +207,8 @@ module parm
    character(len=13) :: septdb
    character(len=13) :: dpd_file, wpd_file, rib_file, sfb_file,&
    &lid_file
-   integer, dimension (:), allocatable :: ifirstr, idg, ifirsthr
+   integer, dimension (9) :: idg
+   integer, dimension (:), allocatable :: ifirstr, ifirsthr
 !> values(1): year simulation is performed\n
 !> values(2): month simulation is performed\n
 !> values(3): day in month simulation is performed\n
@@ -207,9 +218,9 @@ module parm
 !> values(6): minute simulation is performed\n
 !> values(7): second simulation is performed\n
 !> values(8): millisecond simulation is performed
-   integer, dimension (:), allocatable :: values
-   integer, dimension (:), allocatable :: ndays
-   integer, dimension (:), allocatable :: ndays_noleap, ndays_leap
+   integer, dimension (8) :: values
+   integer, dimension (13) :: ndays
+   integer, dimension (13) :: ndays_noleap, ndays_leap
 !     apex/command output files
    integer :: mapex
    real*8, dimension (:), allocatable :: flodaya, seddaya, orgndaya
@@ -218,8 +229,8 @@ module parm
    real*8, dimension (:), allocatable :: hi_targ
    real*8, dimension (:), allocatable :: bio_targ, tnyld
    integer, dimension (:), allocatable :: idapa, iypa, ifirsta
-   integer, dimension (:), allocatable :: mo_transb, mo_transe
-   integer, dimension (:), allocatable :: ih_tran
+   integer, dimension (100) :: mo_transb, mo_transe
+   integer, dimension (100) :: ih_tran
 !     apex/command output files
 !  septic inputs
 !! septic change added iseptic 1/28/09 gsm
@@ -277,29 +288,34 @@ module parm
 ! output files
 !!  added for binary files 3/25/09 gsm
    integer :: ia_b, ihumus, itemp, isnow
-   integer, dimension (:), allocatable :: icolb,icolr,icolrsv,icols
-   integer, dimension (:), allocatable :: ipdvar,ipdvab,ipdvas,ipdhru
-   real*8, dimension (:), allocatable :: wshddayo,wshdmono,wshdyro
-   real*8, dimension (:), allocatable :: wshdaao,fcstaao
+   integer, dimension (41) :: icolrsv
+   integer, dimension (mhruo) :: icols
+   integer, dimension (mrcho) :: icolr
+   integer, dimension (msubo) :: icolb
+   integer, dimension (46) :: ipdvar
+   integer, dimension (mhruo) :: ipdvas
+   integer, dimension (msubo) :: ipdvab
+   integer, dimension (:), allocatable :: ipdhru
+   real*8, dimension (mstdo) :: wshddayo,wshdmono,wshdyro
+   real*8, dimension (16) :: fcstaao
+   real*8, dimension (mstdo) :: wshdaao
    real*8, dimension (:,:), allocatable :: wpstdayo,wpstmono,wpstyro
    real*8, dimension (:,:), allocatable :: yldkg, bio_hv
    real*8, dimension (:,:), allocatable :: wpstaao,rchmono,rchyro
    real*8, dimension (:,:), allocatable :: rchaao,rchdy,hrumono,hruyro
    real*8, dimension (:,:), allocatable :: hruaao,submono,subyro,subaao
    real*8, dimension (:,:), allocatable :: resoutm,resouty,resouta
-   real*8, dimension (:,:), allocatable :: wshd_aamon
+   real*8, dimension (12,8) :: wshd_aamon
    real*8, dimension (:,:), allocatable :: wtrmon,wtryr,wtraa
    real*8, dimension (:,:), allocatable :: sub_smfmx, sub_smfmn
    real*8, dimension (:,:,:), allocatable :: hrupstd,hrupsta,hrupstm
    real*8, dimension (:,:,:), allocatable :: hrupsty
-! mrg = max number of rainfall/temperature gages
    integer, dimension (:), allocatable :: ifirstt,ifirstpcp
    integer, dimension (:), allocatable :: elevp,elevt
 ! mfcst = max number of forecast regions
    real*8, dimension (:,:), allocatable :: ftmpstdmn,ftmpmn,ftmpmx
    real*8, dimension (:,:), allocatable :: ftmpstdmx
    real*8, dimension (:,:,:), allocatable :: fpr_w,fpcp_stat
-! mch = max number of channels
    real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi,ch_d
    real*8, dimension (:), allocatable :: ch_onco, ch_opco
    real*8, dimension (:), allocatable :: ch_orgn, ch_orgp
@@ -364,7 +380,6 @@ module parm
    real*8, dimension (:,:), allocatable :: wurch
    integer, dimension (:), allocatable :: icanal
    integer, dimension (:), allocatable :: itb
-! msub = max number of subbasins
    real*8, dimension (:), allocatable :: ch_revap, dep_chan
    real*8, dimension (:), allocatable :: harg_petco, subfr_nowtr
    real*8, dimension (:), allocatable :: cncoef_sub, dr_sub
@@ -413,7 +428,6 @@ module parm
    integer, dimension (:), allocatable :: isgage,ihgage,iwgage
    integer, dimension (:), allocatable :: irgage,itgage,subgis
    integer, dimension (:), allocatable :: fcst_reg, irelh
-! mlyr = max number of soil layers
    real*8, dimension (:,:), allocatable :: sol_aorgn,sol_tmp,sol_fon
    real*8, dimension (:,:), allocatable :: sol_awc,sol_prk,volcr
    real*8, dimension (:,:), allocatable :: pperco_sub
@@ -441,7 +455,6 @@ module parm
 !    Drainmod tile equations  01/2006
    real*8, dimension (:,:,:), allocatable :: sol_pst,sol_kp
    real*8, dimension (:,:,:), allocatable :: orig_solpst
-! mres = max number of reservoirs
    real*8, dimension (:), allocatable :: velsetlr, velsetlp
    real*8, dimension (:), allocatable :: br1,res_k,lkpst_conc, evrsv
    real*8, dimension (:), allocatable :: res_evol,res_pvol,res_vol
@@ -452,7 +465,8 @@ module parm
    real*8, dimension (:), allocatable :: theta_n, theta_p, con_nirr
    real*8, dimension (:), allocatable :: con_pirr
    real*8, dimension (:), allocatable :: lkspst_bry,lkspst_act,sed_stlr
-   real*8, dimension (:), allocatable :: wurtnf,res_nsed,resdata,chlar
+   real*8, dimension (7) :: resdata
+   real*8, dimension (:), allocatable :: wurtnf,res_nsed,chlar
    real*8, dimension (:), allocatable :: res_orgn,res_orgp,res_no3
    real*8, dimension (:), allocatable :: res_solp,res_chla,res_seci
    real*8, dimension (:), allocatable :: res_esa,seccir,res_no2,res_nh3
@@ -471,7 +485,6 @@ module parm
    integer, dimension (:), allocatable :: ires1,ires2,res_sub
    integer, dimension (:), allocatable :: iresco,mores,iyres
    integer, dimension (:), allocatable :: iflod1r,iflod2r,ndtargr
-! mpdb = max number of pesticides in the database
    real*8, dimension (:), allocatable :: skoc,ap_ef,decay_f
    real*8, dimension (:), allocatable :: hlife_f,hlife_s,decay_s
    real*8, dimension (:), allocatable :: pst_wsol,pst_wof, irramt
@@ -502,21 +515,16 @@ module parm
 !     real*8, dimension (:), allocatable :: air_str
    real*8, dimension (:,:), allocatable :: pltnfr,pltpfr
    integer, dimension (:), allocatable :: idc, mat_yrs
-! mfdb = maximum number of fertilizer in database
    real*8, dimension (:), allocatable :: forgn,forgp,fminn,bactpdb
    real*8, dimension (:), allocatable :: fminp,fnh3n,bactlpdb,bactkddb
    character(len=8), dimension (200) :: fertnm
-! mudb = maximum number of land types in urban database
    real*8, dimension (:), allocatable :: fimp,curbden,urbcoef,dirtmx
    real*8, dimension (:), allocatable :: thalf,tnconc,tpconc,tno3conc
    real*8, dimension (:), allocatable :: fcimp,urbcn2
-! mapp = max number of applications
    real*8 :: sweepeff,frt_kg, pst_dep, fr_curb
 !! added pst_dep to statement below 3/31/08 gsm
 !!   burn 3/5/09
-! mnr = max number years of rotation
 !!   burn 3/5/09
-! mtil = max number tillages in database
    !! drainmod tile equations   06/2006
 
    real*8, dimension (:), allocatable :: ranrns_hru
@@ -719,7 +727,8 @@ module parm
    integer, dimension (:,:), allocatable :: istrip, iystrip
    integer, dimension (:,:), allocatable :: iopday, iopyr, mgt_ops
    real*8, dimension (:), allocatable :: wshd_pstap, wshd_pstdg
-   integer, dimension (:), allocatable :: ndmo,npno,mcrhru
+   integer, dimension (12) :: ndmo
+   integer, dimension (:), allocatable :: npno,mcrhru
    character(len=13), dimension (18) :: rfile,tfile
 !!      character(len=1), dimension (50000) :: hydgrp, kirr  !!for srin's big run
 
@@ -768,8 +777,8 @@ module parm
    real*8, dimension (:), allocatable :: hhqday,precipdt
    real*8, dimension (:), allocatable :: hhtime,hbactp,hbactlp
 ! store initial values
-   integer, dimension (:), allocatable :: ivar_orig
-   real*8, dimension (:), allocatable :: rvar_orig
+   integer, dimension (10) :: ivar_orig
+   real*8, dimension (10) :: rvar_orig
 ! Input Uncertainty, added by Ann van Griensven
    integer :: nsave !< number of save commands in .fig file
    integer ::  nauto, iatmodep

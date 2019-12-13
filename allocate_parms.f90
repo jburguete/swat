@@ -32,18 +32,6 @@ subroutine allocate_parms
 !!    myr         |none          |max number of years of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mhruo       |none          |max number of variables in output.hru
-!!    mrcho       |none          |max number of variables in reach file
-!!    mstdo       |none          |max number of variables summarized in
-!!                               |output.std
-!!    msubo       |none          |max number of variables in output.sub
-!!    mvaro       |none          |max number of variables routed through the
-!!                               |reach
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 
@@ -57,12 +45,12 @@ subroutine allocate_parms
 
 
 !! initialize variables
-   mvaro = 33
-   mhruo = 79
-   mrcho = 62
-   msubo = 24
-   mstdo = 113
-   motot = 600             !! (50 years limit)
+   !mvaro = 33
+   !mhruo = 79
+   !mrcho = 62
+   !msubo = 24
+   !mstdo = 113
+   !motot = 600             !! (50 years limit)
 
    allocate (surlag(mhru))
    allocate (cdn(mhru))
@@ -119,7 +107,7 @@ subroutine allocate_parms
    allocate (ifirstr(mrecd))
 
 !!    arrays which contain data related to the date
-   allocate (values(8))
+!   allocate (values(8))
 
 !!    arrays which contain data related to rainfall/temperature gages
 !!     test for JRW
@@ -340,10 +328,10 @@ subroutine allocate_parms
    allocate (grast(mch))
 
 !!    arrays which contain data related to reach output
-   allocate (icolr(mrcho))
+!   allocate (icolr(mrcho))
 !     allocate (ipdvar(mrcho))
 !!  increased ipdvar(42) to 45 to add Total N/Total P/NO3conc(mg/l)
-   allocate (ipdvar(46))
+!   allocate (ipdvar(46))
    allocate (rchaao(mrcho,mxsubch))
    allocate (rchdy(mrcho,mxsubch))
    allocate (rchmono(mrcho,mxsubch))
@@ -514,8 +502,8 @@ subroutine allocate_parms
    allocate (submono(msubo,msub))
    allocate (subaao(msubo,msub))
    allocate (subyro(msubo,msub))
-   allocate (ipdvab(msubo))
-   allocate (icolb(msubo))
+!   allocate (ipdvab(msubo))
+!   allocate (icolb(msubo))
 
 !!    arrays which contain data related to soil layers, HRUs
 !    Drainmod tile equations  01/2006
@@ -585,9 +573,9 @@ subroutine allocate_parms
    allocate (sol_pst(mpst,mhru,mlyr))
 
 !!    arrays which contain data related to transfer command
-   allocate (mo_transb(100))
-   allocate (mo_transe(100))
-   allocate (ih_tran(100))
+!   allocate (mo_transb(100))
+!   allocate (mo_transe(100))
+!   allocate (ih_tran(100))
 
 !!    arrays which contain data related to reservoirs
    allocate (br1(mres))
@@ -688,12 +676,12 @@ subroutine allocate_parms
    allocate (velsetlr(mres))
 
 !! arrays for reservoir output
-   allocate (icolrsv(41))
+!   allocate (icolrsv(41))
    allocate (resoutm(41,mres))
    allocate (resouta(41,mres))
    allocate (resouty(41,mres))
 
-   allocate (resdata(7))
+!   allocate (resdata(7))
 
 !!    arrays which contain data related to reservoirs, year
    allocate (res_out(mres,12,myr))
@@ -1420,8 +1408,8 @@ subroutine allocate_parms
    allocate (hrupstd(mpst,4,mhru))
    allocate (hrupstm(mpst,4,mhru))
    allocate (hrupsty(mpst,4,mhru))
-   allocate (icols(mhruo))
-   allocate (ipdvas(mhruo))
+!   allocate (icols(mhruo))
+!   allocate (ipdvas(mhruo))
    allocate (hrumono(74,mhru))
    allocate (hruyro(74,mhru))
    allocate (hruaao(74,mhru))
@@ -1495,11 +1483,11 @@ subroutine allocate_parms
    allocate (srbpstmon(mrecm,myr,12))
 
 !!    arrays
-   allocate (ndays(13))
-   allocate (ndays_leap(13))
-   allocate (ndays_noleap(13))
-   allocate (idg(9))
-   allocate (ndmo(12))
+!   allocate (ndays(13))
+!   allocate (ndays_leap(13))
+!   allocate (ndays_noleap(13))
+!   allocate (idg(9))
+!   allocate (ndmo(12))
    !   allocate (halgae(24))
    !   allocate (hbactlp(24))
    !   allocate (hbactp(24))
@@ -1549,22 +1537,22 @@ subroutine allocate_parms
    allocate (hsolp(nstep))
    allocate (hsolpst(nstep))
    allocate (hsorpst(nstep))
-   allocate (wshdaao(mstdo))
-   allocate (wshddayo(mstdo))
-   allocate (wshdmono(mstdo))
-   allocate (wshdyro(mstdo))
-   allocate (fcstaao(16))
+!   allocate (wshdaao(mstdo))
+!   allocate (wshddayo(mstdo))
+!   allocate (wshdmono(mstdo))
+!   allocate (wshdyro(mstdo))
+!   allocate (fcstaao(16))
 
    allocate (wpstaao(mpst,5))
    allocate (wpstmono(mpst,5))
    allocate (wpstyro(mpst,5))
    allocate (wpstdayo(mpst,5))
 
-   allocate (wshd_aamon(12,8))
+!   allocate (wshd_aamon(12,8))
 
 !!arrays that store initial values
-   allocate (ivar_orig(10))
-   allocate (rvar_orig(10))
+!   allocate (ivar_orig(10))
+!   allocate (rvar_orig(10))
    allocate (wattemp(mch))
 !! sj, june 07 modifications to carbon balance routines
    allocate (sol_n(mlyr,mhru))

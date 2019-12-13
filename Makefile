@@ -871,10 +871,10 @@ urb_bmp.o: urb_bmp.f90 parm.mod Makefile
 varinit.o: varinit.f90 parm.mod Makefile
 	$(cc) $(cflags) varinit.f90 -o varinit.o
 
-vbl.o: vbl.f90 parm.mod Makefile
+vbl.o: vbl.f90 Makefile
 	$(cc) $(cflags) vbl.f90 -o vbl.o
 
-virtual.o: virtual.f90 Makefile
+virtual.o: virtual.f90 parm.mod Makefile
 	$(cc) $(cflags) virtual.f90 -o virtual.o
 
 volq.o: volq.f90 parm.mod Makefile
