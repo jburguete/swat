@@ -4,30 +4,6 @@
 !> @brief
 !> main module contatining the global variables
 module parm
-!!    mres        |none        |maximum number of reservoirs
-!!    mrg         |none        |max number of rainfall/temp gages
-!!    nhtot       |none        |number of relative humidity records in file
-!!    nrgage      |none        |number of raingage files
-!!    nrgfil      |none        |number of rain gages per file
-!!    nrtot       |none        |total number of rain gages
-!!    nsave       |none        |number of save commands in .fig file
-!!    nstep       |none        |max number of time steps per day
-!!    nstot       |none        |number of solar radiation records in file
-!!    ntgage      |none        |number of temperature gage files
-!!    ntgfil      |none        |number of temperature gages per file
-!!    nttot       |none        |total number of temperature gages
-!!    nwtot       |none        |number of wind speed records in file
-!!    msub        |none        |maximum number of subbasins
-!!    mtil        |none        |max number of tillage types in till.dat
-!!    mudb        |none        |maximum number of urban land types in urban.dat
-!!    myr         |none        |max number of years of simulation
-!!    pstflg(:)   |none        |flag for types of pesticide used in watershed
-!!                             |array location is pesticide ID number
-!!                             |0: pesticide not used
-!!                             |1: pesticide used
-!!    septdb      |NA          |name of septic tank database file
-!!                             |(septwq1.dat)  !!
-!!    title       |NA          |description lines in file.cio(1st 3 lines)
    integer icalen
    real*8 :: prf_bsn
 
@@ -148,18 +124,24 @@ module parm
    integer :: mhru !< maximum number of HRUs in watershed
    integer :: mhyd !< maximum number of hydrograph nodes
    integer :: mpdb !< max number of pesticides in pest.dat
-   integer :: mrg
+   integer :: mrg !< max number of rainfall/temp gages
    integer :: mcut !< maximum number of cuttings per year
    integer :: mgr !< maximum number of grazings per year
    integer :: mnr !< max number of years of rotation
-   integer :: myr, msubo, mrcho, isubwq, ffcst
+   integer :: myr !< max number of years of simulation
+   integer :: msubo, mrcho, isubwq, ffcst
 !> special project code: 1 test rewind (run simulation twice)
    integer :: isproj
    integer :: nhru, mo, nbyr, immo, nrch, nres, irte, i_mo
    integer :: icode, ihout, inum1, inum2, inum3, inum4, wndsim, ihru
    integer :: inum5, inum6, inum7, inum8, icfac
    integer :: mrech !< maximum number of rechour files
-   integer :: nrgage, ntgage, nrgfil, ntgfil, nrtot, nttot
+   integer :: nrgage !< number of raingage files
+   integer :: nrgfil !< number of rain gages per file
+   integer :: nrtot !< total number of rain gages
+   integer :: ntgage !< number of temperature gage files
+   integer :: ntgfil !< number of temperature gages per file
+   integer :: nttot !< total number of temperature gages
    integer :: lao, igropt, npmx, irtpest, curyr, tmpsim, icrk, iihru
 !    Drainmod tile equations  01/2006
    integer :: ismax, itdrn, iwtdn, iroutunit, ires_nut
@@ -168,11 +150,16 @@ module parm
    integer :: mrecc !< maximum number of reccnst files
    integer :: mrecd !< maximum number of recday files
    integer :: mrecm !< maximum number of recmon files
-   integer :: mtil, mvaro, idist, mudb
+   integer :: mtil !< max number of tillage types in till.dat
+   integer :: mudb !< maximum number of urban land types in urban.dat
+   integer :: mvaro, idist
    integer :: mrecy !< maximum number of recyear files
    integer :: ipet, nyskip, ideg, ievent, slrsim, iopera
    integer :: id1, idaf, idal, leapyr, mo_chk, rhsim, mstdo
-   integer :: ifirsts, ifirsth, ifirstw, nstot, nhtot, nwtot, icst
+   integer :: nhtot !< number of relative humidity records in file
+   integer :: nstot !< number of solar radiation records in file
+   integer :: nwtot !< number of wind speed records in file
+   integer :: ifirsts, ifirsth, ifirstw, icst
    integer :: ilog, i, iyr, itotr, iwq, iskip, ifirstpet
    integer :: itotb,itots,iprp,pcpsim,itoth,nd_30,iops,iphr,isto,isol
 !> number of times forecast period is simulated (using different weather
@@ -185,7 +172,9 @@ module parm
    integer :: mapp !< maximum number of applications
    integer :: mlyr !< maximum number of soil layers
    integer :: mpst !< max number of pesticides used in wshed
-   integer :: msub, mhruo, mres, igen, iprint, iida
+   integer :: mres !< maximum number of reservoirs
+   integer :: msub !< maximum number of subbasins
+   integer :: mhruo, igen, iprint, iida
    integer :: fcstcnt, icn, ised_det, mtran, idtill, motot
    integer, dimension(100) :: ida_lup, iyr_lup
    integer :: no_lup, no_up, nostep
@@ -204,6 +193,7 @@ module parm
    character(len=80) :: prog !< SWAT program header string
    character(len=13) :: slrfile, wndfile, rhfile, petfile, calfile
    character(len=13) :: atmofile, lucfile
+!> name of septic tank database file (septwq1.dat)
    character(len=13) :: septdb
    character(len=13) :: dpd_file, wpd_file, rib_file, sfb_file,&
    &lid_file
@@ -486,7 +476,12 @@ module parm
    real*8, dimension (:), allocatable :: hlife_f,hlife_s,decay_s
    real*8, dimension (:), allocatable :: pst_wsol,pst_wof, irramt
    real*8, dimension (:), allocatable :: phusw, phusw_nocrop
-   integer, dimension (:), allocatable :: nope, pstflg, nop
+!> flag for types of pesticide used in watershed array location is pesticide ID
+!> number\n
+!> 0: pesticide not used\n
+!> 1: pesticide used
+   integer, dimension (:), allocatable :: pstflg
+   integer, dimension (:), allocatable :: nope, nop
    integer, dimension (:), allocatable :: yr_skip, isweep
    integer, dimension (:), allocatable :: icrmx, nopmx
 ! new management scehduling variables
@@ -738,7 +733,8 @@ module parm
 !!    adding qtile to output.hru write 3/2/2010 gsm  increased heds(70) to heds(71)
    character(len=13) :: heds(79),hedb(24),hedr(46),hedrsv(41)
    character(len=13) :: hedwtr(40)
-   character(len=4) :: title(60), cpnm(5000)
+   character(len=4) :: title(60) !< description lines in file.cio(1st 3 lines)
+   character(len=4) :: cpnm(5000)
    character(len=17), dimension(50) :: fname
 ! measured input files
    real*8, dimension (:,:,:), allocatable :: flomon,solpstmon,srbpstmon
@@ -762,7 +758,8 @@ module parm
    real*8, dimension (:), allocatable :: cbodcnst,solpstcnst,srbpstcnst
 
 ! hourly time step (by AVG)
-   integer :: idt, nstep
+   integer :: nstep !< max number of time steps per day
+   integer :: idt
    real*8, dimension (:), allocatable :: hrtwtr,hhstor,hdepth,hsdti
    real*8, dimension (:), allocatable :: hrchwtr,halgae,horgn,hnh4
    real*8, dimension (:), allocatable :: hno2,hno3,horgp,hsolp,hbod
@@ -774,7 +771,8 @@ module parm
    integer, dimension (:), allocatable :: ivar_orig
    real*8, dimension (:), allocatable :: rvar_orig
 ! Input Uncertainty, added by Ann van Griensven
-   integer ::  nauto, nsave, iatmodep
+   integer :: nsave !< number of save commands in .fig file
+   integer ::  nauto, iatmodep
 ! additional reach variables , added by Ann van Griensven
    real*8, dimension (:), allocatable :: wattemp
 ! Modifications to Pesticide and Water routing routines by Balaji Narasimhan
