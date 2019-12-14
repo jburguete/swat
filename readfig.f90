@@ -145,7 +145,6 @@ subroutine readfig
          else
             read (102,5000) a, icodes(idum), ihouts(idum), inum1s(idum),&
             &inum2s(idum), inum3s(idum), rnum1s(idum), inum4s(idum),&
-            !!    &    inum5s(idum), inum6s(idum), inum7s(idum), inum8s(idum)
             &inum5s(idum), char6(idum), char7(idum), char8(idum)
          end if
          mhyd_bsn = mhyd_bsn + 1
@@ -283,8 +282,7 @@ subroutine readfig
                else
                   iida = idaf
                   call xmon
-                  write (40+inum1s(idum),5501) iyr, i_mo,&
-                  &(iida - ndays(i_mo))
+                  write (40+inum1s(idum),5501) iyr, i_mo, (iida - ndays(i_mo))
                end if
             end if
 
@@ -303,7 +301,7 @@ subroutine readfig
             !! the nutrients in kg
             annual_in = ""
             read (102,5100) annual_in
-            reccnstps(ihouts(idum))=annual_in(1:index(annual_in,'.')-1)
+            reccnstps(ihouts(idum)) = annual_in(1:index(annual_in,'.')-1)
             call caps(annual_in)
             i = inum1s(idum)
             open (109,file=annual_in,recl=350)
@@ -376,7 +374,6 @@ subroutine readfig
          elseif (icodes(idum)==18) then  !routels
             subdr_km(ihouts(idum)) = subdr_km(inum2s(idum))
             ru_a(inum3s(idum),inum1s(idum)) = subdr_km(ihouts(idum)) *&
-!     &                        daru_km(inum3s(idum),inum1s(idum))) /
             &100. / ru_ovsl(inum3s(idum),inum1s(idum))
          end if
 

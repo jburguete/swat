@@ -112,8 +112,7 @@ subroutine resnut
    res_solp(jres) = res_solp(jres) + varoute(7,inum2)
 
    conc_p = (res_orgp(jres) + res_solp(jres)) / res_vol(jres)
-   conc_n = (res_orgn(jres) + res_no3(jres) + res_nh3(jres) +&
-   &res_no2(jres)) / res_vol(jres)
+   conc_n = (res_orgn(jres) + res_no3(jres) + res_nh3(jres) + res_no2(jres)) / res_vol(jres)
    conc_n = res_no3(jres) / res_vol(jres)
 
    !! settling rate/mean depth
@@ -125,10 +124,8 @@ subroutine resnut
       nitrok = ressa * 10000. * (conc_n - con_nirr(jres)) *&
       &theta(nsetlr(iseas,jres), theta_n(jres), tmpav(res_sub(jres)))
    else
-      phosk = psetlr(iseas,jres) * ressa * 10000. /&
-      &(res_vol(jres) + resflwo)
-      nitrok = nsetlr(iseas,jres) * ressa * 10000. /&
-      &(res_vol(jres) + resflwo)
+      phosk = psetlr(iseas,jres) * ressa * 10000. / (res_vol(jres) + resflwo)
+      nitrok = nsetlr(iseas,jres) * ressa * 10000. / (res_vol(jres) + resflwo)
    endif
    nitrok = Max(nitrok, 0.)
    phosk = Max(phosk, 0.)
@@ -154,8 +151,7 @@ subroutine resnut
    chlaco = 0.
    res_chla(jres) = 0.
    res_seci(jres) = 0.
-   tpco = 1.e+6 * (res_solp(jres) + res_orgp(jres)) /&
-   &(res_vol(jres) + resflwo)
+   tpco = 1.e+6 * (res_solp(jres) + res_orgp(jres)) / (res_vol(jres) + resflwo)
    if (tpco > 1.e-4) then
       !! equation 29.1.6 in SWAT manual
       chlaco = chlar(jres) * 0.551 * (tpco**0.76)

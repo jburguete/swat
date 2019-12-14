@@ -121,8 +121,7 @@ subroutine pgenhr(jj)
    !! do while pt less than rtp
    do
       if (pt >= Int(rtp)) exit
-      rx = pkrain - pkrr * xkp1 *&
-      &(1. - Exp((dfloat(pt) - rtp) / (60. * xkp1)))
+      rx = pkrain - pkrr * xkp1 * (1. - Exp((dfloat(pt) - rtp) / (60. * xkp1)))
       rainsub(jj,itime) = rx - sumrain
       pt = pt + idt
       itime = itime + 1
@@ -133,8 +132,7 @@ subroutine pgenhr(jj)
    !! after peak rainfall and before end of storm
    do
       if (pt >= Int(dur * 60.)) exit
-      rx = pkrain + pkrr * xkp2 *&
-      &(1. - Exp((rtp - dfloat(pt)) / (60. * xkp2)))
+      rx = pkrain + pkrr * xkp2 * (1. - Exp((rtp - dfloat(pt)) / (60. * xkp2)))
       rainsub(jj,itime) = rx - sumrain
       pt = pt + idt
       itime = itime + 1

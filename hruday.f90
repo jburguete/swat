@@ -499,15 +499,15 @@ subroutine hruday
                   * sol_bd(k,j)* 1000. * (1- sol_rock(k,j) / 100.)
             end if
             sol_cmass = sol_LSC(k,j)+sol_LMC(k,j)+sol_HPC(k,j)+sol_HSC(k,j) &
-               +sol_BMC(k,j)
+               &+sol_BMC(k,j)
             sol_nmass = sol_LSN(k,j)+sol_LMN(k,j)+sol_HPN(k,j)+sol_HSN(k,j) &
-               +sol_BMN(k,j)
-            write (98,9000) iyr, i, k, j, sol_mass,sol_cmass,             &
-               sol_nmass,sol_LS(k,j),sol_LM(k,j),                         &
-               sol_LSC(k,j),sol_LMC(k,j),sol_HSC(k,j),sol_HPC(k,j),       &
-               sol_BMC(k,j),sol_LSN(k,j),sol_LMN(k,j),sol_HPN(k,j),       &
-               sol_HSN(k,j),sol_BMN(k,j),sol_no3(k,j),sol_fop(k,j),       &
-               sol_orgp(k,j),sol_solp(k,j)
+               &+sol_BMN(k,j)
+            write (98,9000) iyr, i, k, j, sol_mass,sol_cmass,              &
+               &sol_nmass,sol_LS(k,j),sol_LM(k,j),                         &
+               &sol_LSC(k,j),sol_LMC(k,j),sol_HSC(k,j),sol_HPC(k,j),       &
+               &sol_BMC(k,j),sol_LSN(k,j),sol_LMN(k,j),sol_HPN(k,j),       &
+               &sol_HSN(k,j),sol_BMN(k,j),sol_no3(k,j),sol_fop(k,j),       &
+               &sol_orgp(k,j),sol_solp(k,j)
 
             tot_mass = tot_mass + sol_mass
             tot_cmass = tot_cmass + sol_cmass
@@ -524,12 +524,12 @@ subroutine hruday
             tot_no3_nh3 = tot_no3_nh3  + sol_no3(k,j) + sol_nh3(k,j)
          end do
 
-         write (1001,9001) iyr, i, j, rsdc_d(j), sedc_d(j), percc_d(j),             &
-            latc_d(j),emitc_d(j), grainc_d(j), surfqc_d(j), stoverc_d(j),         &
-            NPPC_d(j), foc_d(j),rspc_d(j),tot_mass,tot_cmass,tot_nmass,           &
-            tot_LSC,tot_LMC,tot_HSC,tot_HPC,tot_BMC,                              &
-            bio_ms(j)*0.42, rwt(j), tot_no3_nh3,wdntl,etday,tillage_factor(j),    &
-            (soilwater(ii), ii = 1, 11), (wfsc(ii), ii = 1, 11)
+         write (1001,9001) iyr, i, j, rsdc_d(j), sedc_d(j), percc_d(j),            &
+            &latc_d(j),emitc_d(j), grainc_d(j), surfqc_d(j), stoverc_d(j),         &
+            &NPPC_d(j), foc_d(j),rspc_d(j),tot_mass,tot_cmass,tot_nmass,           &
+            &tot_LSC,tot_LMC,tot_HSC,tot_HPC,tot_BMC,                              &
+            &bio_ms(j)*0.42, rwt(j), tot_no3_nh3,wdntl,etday,tillage_factor(j),    &
+            &(soilwater(ii), ii = 1, 11), (wfsc(ii), ii = 1, 11)
       end if
    end if
    !!add by zhang

@@ -173,7 +173,7 @@ subroutine harvestop
    yieldrsd = 0.
 
    ssb = bio_ms(j)                            ! Armen 16 Jan 2009 storing info
-   ssabg = bio_ms(j) * (1.- rwt(j))     ! Armen 16 Jan 2009 storing info
+   ssabg = bio_ms(j) * (1.- rwt(j))           ! Armen 16 Jan 2009 storing info
    ssr = ssb * rwt(j)                         ! Armen 16 Jan 2009 storing info
    ssn = plantn(j)                            ! Armen 20 May 2006 storing info
    ssp = plantp(j)                            ! Armen 20 May 2006 storing info
@@ -504,9 +504,8 @@ subroutine harvestop
       !     bio_hv(nro(j),icr(j),j) = (yield + clip) + bio_hv(nro(j),icr(j),j)
       !     bio_yrms(j) = bio_yrms(j) + (yield + clip) / 1000.
       !   case default
-      bio_hv(icr(j),j) = (yield + clip + rtresnew) +&
-      &bio_hv(icr(j),j)                       !! Jeff, is this the intention
-      bio_yrms(j) = bio_yrms(j) + (yield + clip + rtresnew) / 1000.              !! Jeff, is this the intention
+      bio_hv(icr(j),j) = (yield + clip + rtresnew) + bio_hv(icr(j),j) !! Jeff, is this the intention
+      bio_yrms(j) = bio_yrms(j) + (yield + clip + rtresnew) / 1000.            !! Jeff, is this the intention
       ! end select
    endif
 

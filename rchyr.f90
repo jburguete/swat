@@ -190,8 +190,7 @@ subroutine rchyr
       pdvar(41) = rchyro(13,j)     !!metal #2
       pdvar(42) = rchyro(14,j)     !!metal #3
       !! added for Total N (org N + no3 + no2 + nh4 outs) to output.rch gsm 10/17/2011
-      pdvar(43) = rchyro(7,j)+ rchyro(16,j) + rchyro(35,j) +&
-      &rchyro(33,j)                                                  !! Total N
+      pdvar(43) = rchyro(7,j)+ rchyro(16,j) + rchyro(35,j) + rchyro(33,j) !! Total N
       !! added for Total P (org P + sol p outs)to output.rch gsm 10/17/2011
       pdvar(44) = rchyro(9,j) + rchyro(18,j)                        !! Total P
       !! added NO3 Concentration to output.rch (for daily only) gsm 10/26/2011

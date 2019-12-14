@@ -32,29 +32,24 @@ subroutine latsed
    implicit none
 
    integer :: j
+   real*8 :: xx, qq
 
    j = ihru
 
    !! update sediment yield for sediment in lateral flow
-   sedyld(j) = sedyld(j) +&
-   &(latq(j) + gw_q(j)) * hru_km(j) * lat_sed(j)
-   sanyld(j) = sanyld(j) +&
-   &(latq(j) + gw_q(j)) * hru_km(j) * lat_sed(j) * det_san(j)
-   silyld(j) = silyld(j) +&
-   &(latq(j) + gw_q(j)) * hru_km(j) * lat_sed(j) * det_sil(j)
-   clayld(j) = clayld(j) +&
-   &(latq(j) + gw_q(j)) * hru_km(j) * lat_sed(j) * det_cla(j)
-   sagyld(j) = sagyld(j) +&
-   &(latq(j) + gw_q(j)) * hru_km(j) * lat_sed(j) * det_sag(j)
-   lagyld(j) = lagyld(j) +&
-   &(latq(j) + gw_q(j)) * hru_km(j) * lat_sed(j) * det_lag(j)
+   qq = latq(j) + gw_q(j)
+   xx = qq * hru_km(j) * lat_sed(j)
+   sedyld(j) = sedyld(j) + xx
+   sanyld(j) = sanyld(j) + xx * det_san(j)
+   silyld(j) = silyld(j) + xx * det_sil(j)
+   clayld(j) = clayld(j) + xx * det_cla(j)
+   sagyld(j) = sagyld(j) + xx * det_sag(j)
+   lagyld(j) = lagyld(j) + xx * det_lag(j)
 
    !! organic n and p in the lateral flow     - by J.Jeong BREC 2011 revised 2014
    !1mm*mg/L*1000L/m3*kg/1000000mg*10m3/(ha-mm)=0.01kg/ha
-   sedorgn(j) = sedorgn(j) +&
-   &(latq(j) + gw_q(j)) * lat_orgn(j) / 100.
-   sedorgp(j) = sedorgp(j) +&
-   &(latq(j) + gw_q(j)) * lat_orgp(j) / 100.
+   sedorgn(j) = sedorgn(j) + qq * lat_orgn(j) / 100.
+   sedorgp(j) = sedorgp(j) + qq * lat_orgp(j) / 100.
 
    !! bmp adjustments
    sedyld(j) = sedyld(j) * bmp_seds(j)

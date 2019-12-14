@@ -393,8 +393,7 @@ subroutine watqual2
       end if
       ww = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
 
-      if(rchdep.gt.0.001) xx = Theta(rk4(jrch),thrk4,wtmp)&
-      &/ (rchdep * 1000.)
+      if(rchdep.gt.0.001) xx = Theta(rk4(jrch),thrk4,wtmp) / (rchdep * 1000.)
       if (nh3con.gt.0.001) then
          yy = ai5 * Theta(bc1mod,thbc1,wtmp) * nh3con
       else
@@ -421,8 +420,7 @@ subroutine watqual2
 
       !! calculate fraction of algal nitrogen uptake from ammonia
       !! pool QUAL2E equation III-18
-      f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con +&
-      &1.e-6)
+      f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con + 1.e-6)
 
       !! calculate ammonia nitrogen concentration at end of day
       !! QUAL2E section 3.3.2 equation III-17

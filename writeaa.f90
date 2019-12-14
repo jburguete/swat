@@ -465,10 +465,8 @@ subroutine writeaa
             sumorgp = sumorgp + sol_fop(ly,j) + sol_orgp(ly,j)
          end if
          if (cswat == 1) then
-            sumorgn = sumorgn + sol_orgn(ly,j) + sol_fon(ly,j) +&
-            &sol_mn(ly,j)
-            sumorgp = sumorgp + sol_fop(ly,j) + sol_orgp(ly,j) +&
-            &sol_mp(ly,j)
+            sumorgn = sumorgn + sol_orgn(ly,j) + sol_fon(ly,j) + sol_mn(ly,j)
+            sumorgp = sumorgp + sol_fop(ly,j) + sol_orgp(ly,j) + sol_mp(ly,j)
          end if
          !!add by zhang
          !!=======================
@@ -480,8 +478,7 @@ subroutine writeaa
          !!add by zhang
          !!=======================
 
-         summinp = summinp + sol_solp(ly,j) + sol_actp(ly,j) +&
-         &sol_stap(ly,j)
+         summinp = summinp + sol_solp(ly,j) + sol_actp(ly,j) + sol_stap(ly,j)
       end do
       basno3f = basno3f + sumno3 * hru_dafr(j)
       basorgnf = basorgnf + sumorgn * hru_dafr(j)

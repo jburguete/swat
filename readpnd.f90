@@ -276,7 +276,7 @@ subroutine readpnd
       if (eof < 0) exit
       read (104,5100,iostat=eof) titldum
       if (eof < 0) exit
-      if (titldum == '             '.or.titldum == 'Inputs used in')then
+      if (titldum == '             ' .or. titldum == 'Inputs used in') then
          velsetlpnd = 10.0
       else
          backspace 104

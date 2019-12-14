@@ -128,8 +128,7 @@ subroutine reshr
       respcp = sub_subp_dt(res_sub(jres),k) * ressa * 10. !! urban modeling by J.Jeong
 
 !! new water volume for day
-      res_vol(jres) = res_vol(jres) + respcp + hhresflwi(k) -&
-      &resev - ressep
+      res_vol(jres) = res_vol(jres) + respcp + hhresflwi(k) - resev - ressep
 
 !! if reservoir volume is zero
       if (res_vol(jres) < 0.001) then
@@ -179,8 +178,7 @@ subroutine reshr
             else
                !! target storage based on flood season and soil water
                if (iflod2r(jres) > iflod1r(jres)) then
-                  if (i_mo > iflod1r(jres) .and. i_mo < iflod2r(jres))&
-                  &then
+                  if (i_mo > iflod1r(jres) .and. i_mo < iflod2r(jres)) then
                      targ = res_evol(jres)
                   else
                      xx = Min(sub_sw(res_sub(jres)) /&
@@ -189,8 +187,7 @@ subroutine reshr
                      &(res_evol(jres) - res_pvol(jres))
                   end if
                else
-                  if (i_mo > iflod1r(jres) .or. i_mo < iflod2r(jres))&
-                  &then
+                  if (i_mo > iflod1r(jres) .or. i_mo < iflod2r(jres)) then
                      targ = res_evol(jres)
                   else
                      xx = Min(sub_sw(res_sub(jres)) /&
@@ -201,8 +198,7 @@ subroutine reshr
                end if
             endif
             if (res_vol(jres) > targ) then
-               hhresflwo(k) = (res_vol(jres) - targ) / ndtargr(jres) /&
-               &nstep
+               hhresflwo(k) = (res_vol(jres) - targ) / ndtargr(jres) / nstep
             else
                hhresflwo(k) = 0.
             end if

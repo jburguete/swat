@@ -66,7 +66,6 @@ subroutine rtsed_kodatie
 !!    dep         |metric tons   |sediment deposited on river bottom
 !!    depdeg      |m             |depth of degradation/deposition from original
 !!    depnet      |metric tons   |
-!!    dot         |
 !!    jrch        |none          |reach number
 !!    qdin        |m^3 H2O       |water in reach during time step
 !!    vc          |m/s           |flow velocity in reach
@@ -87,7 +86,7 @@ subroutine rtsed_kodatie
 
    integer :: jrch
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg, dep
-   real*8 :: depdeg, dot, x, Tbank,Tbed,asinea,Tou
+   real*8 :: depdeg, x, Tbank,Tbed,asinea,Tou
    real*8 :: sanin, silin, clain, sagin, lagin, grain, outfract
    real*8 :: depsan, depsil, depcla, depsag, deplag, depgra
    real*8 :: degsan, degsil, degcla, deggra, degrte
@@ -145,7 +144,6 @@ subroutine rtsed_kodatie
          deg1gra = 0.
 
          degrte = 0.
-         degremain = 0.
          deggra = 0.
          degsan = 0.
          degsil = 0.
@@ -180,7 +178,7 @@ subroutine rtsed_kodatie
             topw = 5 * ch_w(2,jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
             adddep = rchdep - ch_d(jrch)
             !! Area Ratio of water in flood plain to total cross sectional area
-            fpratio = (rcharea - phi(1,jrch) - ch_w(2,jrch)*adddep)/rcharea
+            fpratio = (rcharea - phi(1,jrch) - ch_w(2,jrch) * adddep) / rcharea
             fpratio = max(0.,fpratio)
             watdep = ch_d(jrch)
          end if
@@ -193,7 +191,7 @@ subroutine rtsed_kodatie
 
          asinea = 1. / sqrt((1.**2) + (c**2))
 
-         Tbank = Tou * (SFbank/100.) * (topw + pbed) * asinea/ (4.*rchdep)
+         Tbank = Tou * (SFbank/100.) * (topw + pbed) * asinea / (4. * rchdep)
 
          Tbed  = Tou * (1. - (SFbank/100.)) * (topw/(2.*pbed) + 0.5)
 
@@ -323,7 +321,6 @@ subroutine rtsed_kodatie
                if (depclach(jrch) >= depnet) then
                   depclach(jrch) = depclach(jrch) - depnet
                   deg1cla = depnet
-                  degremain = 0.
                else
                   degremain = depnet - depclach(jrch)
                   deg1cla = depclach(jrch)
@@ -331,7 +328,6 @@ subroutine rtsed_kodatie
                   if (depsilch(jrch) >= degremain) then
                      depsilch(jrch) = depsilch(jrch) - degremain
                      deg1sil = degremain
-                     degremain = 0.
                   else
                      degremain = degremain - depsilch(jrch)
                      deg1sil = depsilch(jrch)
@@ -339,7 +335,6 @@ subroutine rtsed_kodatie
                      if (depsagch(jrch) >= degremain) then
                         depsagch(jrch) = depsagch(jrch) - degremain
                         deg1sag = degremain
-                        degremain = 0.
                      else
                         degremain = degremain - depsagch(jrch)
                         deg1sag = depsagch(jrch)
@@ -347,7 +342,6 @@ subroutine rtsed_kodatie
                         if (depsanch(jrch) >= degremain) then
                            depsanch(jrch) = depsanch(jrch) - degremain
                            deg1san = degremain
-                           degremain = 0.
                         else
                            degremain = degremain - depsanch(jrch)
                            deg1san = depsanch(jrch)
@@ -355,7 +349,6 @@ subroutine rtsed_kodatie
                            if (deplagch(jrch) >= degremain) then
                               deplagch(jrch) = deplagch(jrch) - degremain
                               deg1lag = degremain
-                              degremain = 0.
                            else
                               degremain = degremain - deplagch(jrch)
                               deg1lag = deplagch(jrch)
@@ -363,9 +356,7 @@ subroutine rtsed_kodatie
                               if (depgrach(jrch) >= degremain) then
                                  depgrach(jrch) = depgrach(jrch) - degremain
                                  deg1gra = degremain
-                                 degremain = 0.
                               else
-                                 degremain = degremain - depgrach(jrch)
                                  deg1gra = depgrach(jrch)
                                  depgrach(jrch) = 0.
                               endif
@@ -447,7 +438,7 @@ subroutine rtsed_kodatie
          depclafp(jrch) = depclafp(jrch) + depcla * fpratio
 
 !!    Remaining is deposited in the channel
-         depch(jrch)    = depch(jrch)   + dep - (depsil + depcla)*fpratio
+         depch(jrch)    = depch(jrch)    + dep - (depsil + depcla) * fpratio
          depsilch(jrch) = depsilch(jrch) + depsil * (1. - fpratio)
          depclach(jrch) = depclach(jrch) + depcla * (1. - fpratio)
          depsanch(jrch) = depsanch(jrch) + depsan
@@ -558,9 +549,7 @@ subroutine rtsed_kodatie
             depdeg = ch_d(jrch) - ch_di(jrch)
             if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
                if (qdin > 1400000.) then
-                  dot = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
-                  dat2 = 1.
-                  dat2 =  dat2 * dot
+                  dat2 = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
                   ch_d(jrch) = ch_d(jrch) + dat2
                   ch_w(2,jrch) = ch_wdr(jrch) * ch_d(jrch)
                   ch_s(2,jrch) = ch_s(2,jrch) - dat2 / (ch_l2(jrch) * 1000.)

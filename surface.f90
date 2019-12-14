@@ -57,13 +57,11 @@ subroutine surface
 
    !! output by elevation band to output.snw
    if (isnow == 1) then
-      write(115,1010) i, iyr, subnum(j), hruno(j),&
-      &(snoeb(ib,j), ib = 1,10)
+      write(115,1010) i, iyr, subnum(j), hruno(j), (snoeb(ib,j), ib = 1,10)
    end if
 
    if (isnow ==1) then
-      write (116,1010) i, iyr, subnum(j), hruno(j),&
-      &(tavband(ib,j), ib = 1, 10)
+      write (116,1010) i, iyr, subnum(j), hruno(j), (tavband(ib,j), ib = 1, 10)
    end if
 
    !! compute crack volume

@@ -104,8 +104,7 @@ subroutine soil_phys
 
 !!    calculate composite usle value
    sol_rock(1,i) = Exp(-.053 * sol_rock(1,i))
-   usle_mult(i) = sol_rock(1,i) * usle_k(i) * usle_p(i)&
-   &* usle_ls(i) * 11.8
+   usle_mult(i) = sol_rock(1,i) * usle_k(i) * usle_p(i) * usle_ls(i) * 11.8
 
 
 !!    calculate water content of soil at -1.5 MPa and -0.033 MPa
@@ -144,8 +143,7 @@ subroutine soil_phys
       det_sag(i) = .28 * (cl - .25) + .5
    end if
 
-   det_lag(i) = 1. - det_san(i) - det_sil(i) - det_cla(i)&
-   &- det_sag(i)                                           !! Large Aggregate fraction
+   det_lag(i) = 1. - det_san(i) - det_sil(i) - det_cla(i) - det_sag(i) !! Large Aggregate fraction
 
 !! Error check. May happen for soils with more sand
 !!    Soil not typical of mid-western USA
@@ -177,8 +175,7 @@ subroutine soil_phys
       sol_wpmm(j,i) = sol_wp(j,i) * dg
       sol_sumwp(i) = sol_sumwp(i) + sol_wpmm(j,i)
       crdep(j,i) = sol_crk(i) * 0.916 * Exp(-.0012 * sol_z(j,i)) * dg
-      volcr(j,i) = crdep(j,i) * (sol_fc(j,i) - sol_st(j,i)) /&
-      &(sol_fc(j,i))
+      volcr(j,i) = crdep(j,i) * (sol_fc(j,i) - sol_st(j,i)) / (sol_fc(j,i))
       xx = sol_z(j,i)
    end do
    !! initialize water table depth and soil water for Daniel

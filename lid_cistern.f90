@@ -47,8 +47,7 @@ subroutine lid_cistern(sb,j,k,lid_prec)
    implicit none
 
    integer :: jj,sb,j,k
-   real*8 :: lid_str,lid_vbypass,lid_bypass,lid_irr,lid_vol,&
-   &lid_cumirr
+   real*8 :: lid_str,lid_vbypass,lid_bypass,lid_irr,lid_vol,lid_cumirr
    real*8 :: lid_prec
 
    jj = urblu(j)
@@ -73,16 +72,13 @@ subroutine lid_cistern(sb,j,k,lid_prec)
       lid_str = lid_str_last(j,3) + (lid_prec / 1000.) *&
       &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)           ! m3
    else
-      lid_str = lid_str_last(j,3) + (lid_prec / 1000.) *&
-      &(hru_ha(j) * 10000.)                                              ! m3
+      lid_str = lid_str_last(j,3) + (lid_prec / 1000.) * (hru_ha(j) * 10000.) ! m3
    end if
 
    if (lid_str > lid_vol) then
       lid_vbypass = lid_str - lid_vol ! assuming water stored in a cistern is used
       lid_str = lid_vol
-      lid_bypass = lid_vbypass /&
-      &(hru_ha(j) * 10000.) * 1000.  ! mm
-!     & (lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.) * 1000.  ! mm
+      lid_bypass = lid_vbypass / (hru_ha(j) * 10000.) * 1000.  ! mm
    else
       lid_vbypass = 0.
    end if

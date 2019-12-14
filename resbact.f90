@@ -69,10 +69,8 @@ subroutine resbact
 
 !! daily mass balance
    !! total bacteria mass in reservoir
-   totbactp = varoute(18,inum2) * varoute(2,inum2)&
-   &+ res_bactp(jres) * reswtr
-   totbactlp = varoute(19,inum2) * varoute(2,inum2)&
-   &+ res_bactlp(jres) * reswtr
+   totbactp = varoute(18,inum2) * varoute(2,inum2) + res_bactp(jres) * reswtr
+   totbactlp = varoute(19,inum2) * varoute(2,inum2) + res_bactlp(jres) * reswtr
 
    !! compute bacteria die-off
    totbactp = totbactp * Exp(-Theta(wdpres,thbact,wtmp))

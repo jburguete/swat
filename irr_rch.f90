@@ -159,7 +159,7 @@ subroutine irr_rch
                !! compute maximum amount of water available for irrigation
                !! from reach
                wtr_avail = rtwtr + rchstor(jrch)
-               vminmm = (wtr_avail - flowmin(k) * 86400.) * flowfr(k)/cnv
+               vminmm = (wtr_avail - flowmin(k) * 86400.) * flowfr(k) / cnv
                vmm = Min(vminmm, vmm)
 
                !! check available against set amount in scheduled operation

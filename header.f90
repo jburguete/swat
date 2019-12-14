@@ -65,7 +65,6 @@ subroutine header
    &"    WYLDmm","  SYLDt/ha"," ORGNkg/ha"," ORGPkg/ha",&
    &"NSURQkg/ha"," SOLPkg/ha"," SEDPkg/ha"," LAT Q(mm)",&
    &"LATNO3kg/h","GWNO3kg/ha","CHOLAmic/L","CBODU mg/L",&
-!    &        " DOXQ mg/L","   QTILEmm"," TNO3kg/ha"," TVAPkg/ha"/)
    &" DOXQ mg/L"," TNO3kg/ha","   QTILEmm"," TVAPkg/ha"/)
 
 !!    numbers printed to VB interface subbasin output file

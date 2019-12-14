@@ -97,7 +97,7 @@ subroutine hhnoqual
    real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
    real*8 :: orgpin, dispin, cbodin, disoxin, wtmp
    real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot
-   real*8 :: algcon, orgncon, nh3con, no2con, no3con
+   real*8 :: algcon, orgncon, nh3con, no2con, no3con, xx
 
    jrch = inum1
 
@@ -120,17 +120,17 @@ subroutine hhnoqual
          cbodin = 0.
          disoxin = 0.
          if (wtrin > 0.001) then
-            chlin = 1000. * hhvaroute(13,inum2,ii) * (1. - rnum1) / wtrin
+            xx = 1000. * (1. - rnum1) / wtrin
+            chlin = xx * hhvaroute(13,inum2,ii) 
             algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-            orgnin = 1000. * hhvaroute(4,inum2,ii) * (1. - rnum1) / wtrin
-            ammoin = 1000. * hhvaroute(14,inum2,ii) * (1. - rnum1) / wtrin
-            nitritin = 1000. * hhvaroute(15,inum2,ii) * (1. - rnum1) /&
-            &wtrin
-            nitratin = 1000. * hhvaroute(6,inum2,ii) * (1. - rnum1) / wtrin
-            orgpin = 1000. * hhvaroute(5,inum2,ii) * (1. - rnum1) / wtrin
-            dispin = 1000. * hhvaroute(7,inum2,ii) * (1. - rnum1) / wtrin
-            cbodin = 1000. * hhvaroute(16,inum2,ii) * (1. - rnum1) / wtrin
-            disoxin= 1000. * hhvaroute(17,inum2,ii) * (1. - rnum1) / wtrin
+            orgnin = xx * hhvaroute(4,inum2,ii)
+            ammoin = xx * hhvaroute(14,inum2,ii)
+            nitritin = xx * hhvaroute(15,inum2,ii)
+            nitratin = xx * hhvaroute(6,inum2,ii)
+            orgpin = xx * hhvaroute(5,inum2,ii)
+            dispin = xx * hhvaroute(7,inum2,ii)
+            cbodin = xx * hhvaroute(16,inum2,ii)
+            disoxin= xx * hhvaroute(17,inum2,ii)
          end if
 
          if (chlin < 1.e-6) chlin = 0.0
@@ -148,22 +148,14 @@ subroutine hhnoqual
          wtrtot = wtrin + hrchwtr(ii)
          if (ii == 1) then
             algcon = (algin * wtrin + algae(jrch) * hrchwtr(ii)) / wtrtot
-            orgncon = (orgnin * wtrin + organicn(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            nh3con = (ammoin * wtrin + ammonian(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            no2con = (nitritin * wtrin + nitriten(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            no3con = (nitratin * wtrin + nitraten(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            orgpcon = (orgpin * wtrin + organicp(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            solpcon = (dispin * wtrin + disolvp(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            cbodcon = (cbodin * wtrin + rch_cbod(jrch) * hrchwtr(ii))&
-            &/ wtrtot
-            o2con = (disoxin * wtrin + rch_dox(jrch) * hrchwtr(ii))&
-            &/ wtrtot
+            orgncon = (orgnin * wtrin + organicn(jrch) * hrchwtr(ii)) / wtrtot
+            nh3con = (ammoin * wtrin + ammonian(jrch) * hrchwtr(ii)) / wtrtot
+            no2con = (nitritin * wtrin + nitriten(jrch) * hrchwtr(ii)) / wtrtot
+            no3con = (nitratin * wtrin + nitraten(jrch) * hrchwtr(ii)) / wtrtot
+            orgpcon = (orgpin * wtrin + organicp(jrch) * hrchwtr(ii)) / wtrtot
+            solpcon = (dispin * wtrin + disolvp(jrch) * hrchwtr(ii)) / wtrtot
+            cbodcon = (cbodin * wtrin + rch_cbod(jrch) * hrchwtr(ii)) / wtrtot
+            o2con = (disoxin * wtrin + rch_dox(jrch) * hrchwtr(ii)) / wtrtot
          else
             algcon = (algin * wtrin + halgae(ii-1) * hrchwtr(ii)) / wtrtot
             orgncon = (orgnin * wtrin + horgn(ii-1) * hrchwtr(ii)) / wtrtot

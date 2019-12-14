@@ -121,8 +121,7 @@ subroutine urbanhr
          if (qdt > 0.025 .and. surfq(j) > 0.1) then   ! SWMM : 0.001 in/hr (=0.0254mm/hr)
 
             !! calculate amount of dirt on streets prior to wash-off
-            dirto = dirtmx(urblu(j)) * twash(j) /&
-            &(thalf(urblu(j)) + twash(j))
+            dirto = dirtmx(urblu(j)) * twash(j) / (thalf(urblu(j)) + twash(j))
 
             !! calculate wash-off of solids
             urbk = urbcoef(urblu(j)) * qdt
@@ -131,8 +130,7 @@ subroutine urbanhr
             if (dirt < 1.e-6) dirt = 0.0
 
             !! set time to correspond to lower amount of dirt
-            twash(j) = thalf(urblu(j)) * dirt&
-            &/ (dirtmx(urblu(j)) - dirt)
+            twash(j) = thalf(urblu(j)) * dirt / (dirtmx(urblu(j)) - dirt)
             !! amounts are kg/ha
             sus_sol = Max(0., (dirto - dirt) * curbden(urblu(j)))
             tn = tnconc(urblu(j)) * sus_sol / 1.e6

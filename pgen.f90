@@ -83,8 +83,7 @@ subroutine pgen(j)
          pcpgen = pcpgen * pcf(i_mo,hru_sub(j))
       else
          !! mixed exponential rainfall distribution
-         pcpgen = ((-Log(v8))**rexp) * pcp_stat(i_mo,1,hru_sub(j)) *&
-         &rcor
+         pcpgen = ((-Log(v8))**rexp) * pcp_stat(i_mo,1,hru_sub(j)) * rcor
       end if
       if (pcpgen < .1) pcpgen = .1
    end if

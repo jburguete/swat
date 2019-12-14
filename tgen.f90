@@ -61,8 +61,7 @@ subroutine tgen(j)
    if (subp(j) > 0.0) txxm = txxm - tamp
 
    tmxg = txxm + tmpstdmx(i_mo,hru_sub(j)) * wgncur(1,j)
-   tmng = tmpmn(i_mo,hru_sub(j)) + tmpstdmn(i_mo,hru_sub(j)) *&
-   &wgncur(2,j)
+   tmng = tmpmn(i_mo,hru_sub(j)) + tmpstdmn(i_mo,hru_sub(j)) * wgncur(2,j)
    if (tmng > tmxg) tmng = tmxg - .2 * abs(tmxg)
 
    tmx(j) = tmxg

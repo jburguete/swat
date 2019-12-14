@@ -165,12 +165,10 @@ subroutine res
       else
          !! target storage based on flood season and soil water
          if (iflod2r(jres) > iflod1r(jres)) then
-            if (i_mo > iflod1r(jres) .and. i_mo < iflod2r(jres))&
-            &then
+            if (i_mo > iflod1r(jres) .and. i_mo < iflod2r(jres)) then
                targ = res_evol(jres)
             else
-               xx = Min(sub_sw(res_sub(jres))/sub_sumfc(res_sub(jres)),&
-               &1.)
+               xx = Min(sub_sw(res_sub(jres)) /sub_sumfc(res_sub(jres)), 1.)
                targ = res_pvol(jres) + .5 * (1. - xx) *&
                &(res_evol(jres) - res_pvol(jres))
             end if
@@ -178,8 +176,7 @@ subroutine res
             if (i_mo > iflod1r(jres) .or. i_mo < iflod2r(jres)) then
                targ = res_evol(jres)
             else
-               xx = Min(sub_sw(res_sub(jres))/sub_sumfc(res_sub(jres)),&
-               &1.)
+               xx = Min(sub_sw(res_sub(jres)) /sub_sumfc(res_sub(jres)), 1.)
                targ = res_pvol(jres) + .5 * (1. - xx) *&
                &(res_evol(jres) - res_pvol(jres))
             end if
@@ -229,8 +226,7 @@ subroutine res
             res_qi = 0.
             res_h = 0.
          else
-            res_qi = weirc(jres) * weirk(jres) * weirw(jres) *&
-            &(res_h ** 1.5)
+            res_qi = weirc(jres) * weirk(jres) * weirw(jres) * (res_h ** 1.5)
          end  if
          resflwo = resflwo + res_qi
          res_vol(jres) = res_vol(jres) + (respcp + resflwi - resev&
@@ -266,8 +262,7 @@ subroutine res
 
       !! check calculated outflow against specified max and min values
       if (resflwo < oflowmn(i_mo,jres)) resflwo = oflowmn(i_mo,jres)
-      if (resflwo > oflowmx(i_mo,jres) .and. oflowmx(i_mo,jres) > 0.)&
-      &then
+      if (resflwo > oflowmx(i_mo,jres) .and. oflowmx(i_mo,jres) > 0.) then
          resflwo = oflowmx(i_mo,jres)
       endif
 
@@ -379,8 +374,7 @@ subroutine res
       resgrao = res_gra(jres) * resflwo
 
       !! net change in amount of sediment in reservoir for day
-      ressedc = vol * sed + ressedi - ressedo - res_sed(jres) *&
-      &res_vol(jres)
+      ressedc = vol * sed + ressedi - ressedo - res_sed(jres) * res_vol(jres)
 !      write (130,5999) i, jres, res_sed(jres), sed_stlr(jres),
 !     & res_nsed(jres), ressedi, ressedo, resflwi, resflwo
 !5999  format (2i4,7e12.4)

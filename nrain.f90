@@ -51,10 +51,8 @@ subroutine nrain
 !! calculate nitrate in precipitation
       nh3pcp = .01 * rammo_sub(hru_sub(j)) * precipday
       no3pcp = .01 * rcn_sub(hru_sub(j)) * precipday
-      sol_nh3(1,j) = sol_nh3(1,j) + nh3pcp +&
-      &drydep_nh4(hru_sub(j))/365.
-      sol_no3(1,j) = sol_no3(1,j) + no3pcp +&
-      &drydep_no3(hru_sub(j))/365.
+      sol_nh3(1,j) = sol_nh3(1,j) + nh3pcp + drydep_nh4(hru_sub(j)) / 365.
+      sol_no3(1,j) = sol_no3(1,j) + no3pcp + drydep_no3(hru_sub(j)) / 365.
 
     case (1)  !! monthly
       nh3pcp = .01 * rammo_mo(mo_atmo,hru_sub(j)) * precipday
@@ -67,10 +65,8 @@ subroutine nrain
     case (2)  !! daily
       nh3pcp = .01 * rammo_d(hru_sub(j)) * precipday
       no3pcp = .01 * rcn_d(hru_sub(j)) * precipday
-      sol_nh3(2,j) = sol_nh3(2,j) + nh3pcp  +&
-      &drydep_nh4_d(hru_sub(j))
-      sol_no3(2,j) = sol_no3(2,j) + no3pcp +&
-      &drydep_no3_d(hru_sub(j))
+      sol_nh3(2,j) = sol_nh3(2,j) + nh3pcp  + drydep_nh4_d(hru_sub(j))
+      sol_no3(2,j) = sol_no3(2,j) + no3pcp + drydep_no3_d(hru_sub(j))
    end select
 
 !! summary calculations

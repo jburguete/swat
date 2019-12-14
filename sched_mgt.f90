@@ -144,8 +144,7 @@ subroutine sched_mgt
          &strsn_sum(j), strsp_sum(j), strstmp_sum(j), strsw_sum(j),&
          &strsa_sum(j)
 !!1001  format (a5,1x,a4,3i6,2a15,8f10.2,30x,11f10.2)
-1001     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,8f10.2,30x,5f10.2,14x,&
-         &6f10.2)
+1001     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,8f10.2,30x,5f10.2, 14x,6f10.2)
       end if
 
       phubase(j) = 0.

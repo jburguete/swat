@@ -209,8 +209,7 @@ subroutine readwgn
    rain_hhsm = 0.
    rain_hhsm(1) = (rainhhmx(12) + rainhhmx(1) + rainhhmx(2)) / 3.
    do mon = 2, 11
-      rain_hhsm(mon) = (rainhhmx(mon-1) + rainhhmx(mon) +&
-      &rainhhmx(mon+1)) / 3.
+      rain_hhsm(mon) = (rainhhmx(mon-1) + rainhhmx(mon) + rainhhmx(mon+1)) / 3.
    end do
    rain_hhsm(12) = (rainhhmx(11) + rainhhmx(12) + rainhhmx(1)) / 3.
 

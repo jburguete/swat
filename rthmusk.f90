@@ -142,8 +142,7 @@ subroutine rthmusk
 
       !! Compute water leaving reach at the end of time step
       if (curyr == 1 .and. i == id1 .and. ii == 1) then
-         hrtwtr(ii) = c1 * wtrin + c2 * rchstor(jrch) +&
-         &c3 * rchstor(jrch) + c4
+         hrtwtr(ii) = c1 * wtrin + c2 * rchstor(jrch) + c3 * rchstor(jrch) + c4
       else
          hrtwtr(ii) = c1 * wtrin + c2 * flwin(jrch) + c3 * flwout(jrch)
       end if

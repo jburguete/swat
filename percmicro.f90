@@ -93,8 +93,7 @@ subroutine percmicro(ly1)
    else
       ho = 2. * sw_excess / ((sol_ul(ly1,j) - sol_fc(ly1,j)) /  dg)
    end if
-   latlyr = adjf * ho * sol_k(ly1,j) * hru_slp(j) / slsoil(j)&
-   &* .024
+   latlyr = adjf * ho * sol_k(ly1,j) * hru_slp(j) / slsoil(j) * .024
 
    if (latlyr < 0.) latlyr = 0.
    if (latlyr > sw_excess) latlyr = sw_excess
@@ -110,8 +109,7 @@ subroutine percmicro(ly1)
          sol_k_sep = Max(1.e-6, sol_k_sep)
          sol_k_sep = Min(sol_k(ly1,j), sol_k_sep)
 
-         sol_hk(ly1,j) = (sol_ul(ly1,j) - sol_fc(ly1,j))&
-         &/ sol_k_sep
+         sol_hk(ly1,j) = (sol_ul(ly1,j) - sol_fc(ly1,j)) / sol_k_sep
 
       elseif (isep_opt(j) == 2) then !failing system
          sol_hk(ly1,j) = 1.e10

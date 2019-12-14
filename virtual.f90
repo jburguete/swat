@@ -360,17 +360,13 @@ subroutine virtual
       end if
 
       !! subbasin averages: bacteria
-      sub_bactp(sb) = sub_bactp(sb) + (bactrop + bactsedp)&
-      &* hru_fr(j)
-      sub_bactlp(sb) = sub_bactlp(sb) + (bactrolp + bactsedlp)&
-      &* hru_fr(j)
+      sub_bactp(sb) = sub_bactp(sb) + (bactrop + bactsedp) * hru_fr(j)
+      sub_bactlp(sb) = sub_bactlp(sb) + (bactrolp + bactsedlp) * hru_fr(j)
 
       !! subbasin averages: water quality indicators
-      sub_chl(sb) = sub_chl(sb) + chl_a(j) * (qday * qdfr * cnv)&
-      &* 1.e-6
+      sub_chl(sb) = sub_chl(sb) + chl_a(j) * (qday * qdfr * cnv) * 1.e-6
 
-      sub_cbod(sb) = sub_cbod(sb) + cbodu(j) * (qdr(j) * qdfr * cnv)&
-      &* 1.e-3
+      sub_cbod(sb) = sub_cbod(sb) + cbodu(j) * (qdr(j) * qdfr * cnv) * 1.e-3
       sub_dox(sb) = sub_dox(sb) + (doxq(j) * (qdr(j) * qdfr * cnv) +&
       &soxy * (qdr(j) * (1. - qdfr) * cnv)) * 1.e-3
       !! subbasin averages: water temperature
@@ -467,8 +463,7 @@ subroutine virtual
          do ii = 1, nstep
             do ib = 1, itb(sb)
                hqd(ib+ii-1) = hqd(ib+ii-1) + sub_hhqd(sb,ii) * uh(sb,ib)
-               hsd(ib+ii-1) = hsd(ib+ii-1) + sub_hhsedy(sb,ii) *&
-               &uh(sb,ib)
+               hsd(ib+ii-1) = hsd(ib+ii-1) + sub_hhsedy(sb,ii) * uh(sb,ib)
             end do
          end do
 
@@ -606,8 +601,7 @@ subroutine virtual
          !! storage locations set to zero are not currently used
          do ii = 1, nstep
             ratio = 0.
-            if (sub_wyld(sb) > 1.e-3)&
-            &ratio = sub_hwyld(ii) / sub_wyld(sb)
+            if (sub_wyld(sb) > 1.e-3) ratio = sub_hwyld(ii) / sub_wyld(sb)
             if (sub_hwyld(ii) > 0.) then
                hhvaroute(1,ihout,ii) = sub_hhwtmp(sb,ii)            !!wtmp
                hhvaroute(2,ihout,ii) = sub_hwyld(ii) * sub_ha * 10. !!water

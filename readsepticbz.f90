@@ -117,8 +117,7 @@ subroutine readsepticbz
    coeff_denitr(ihru) = 0.01 * coeff_denitr(ihru)
 
    !!Convert QSTE from volume to depth unit, mm
-   qstemm(ihru) = sptqs(isep_typ(ihru)) * sep_cap(ihru) /&
-   &bz_area(ihru) * 1000.
+   qstemm(ihru) = sptqs(isep_typ(ihru)) * sep_cap(ihru) / bz_area(ihru) * 1000.
 
 !!    set default values for undefined parameters
    if (isep_iyr(ihru)==0) isep_iyr(ihru) = iyr

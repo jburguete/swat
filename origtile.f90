@@ -46,8 +46,7 @@ subroutine origtile(d)
    dmod_m = wt_shall - d
 
    if (sol_sw(j) > sol_sumfc(j)) then
-      sw_excess = (dmod_m / wt_shall) * (sol_sw(j) -&
-      &sol_sumfc(j))
+      sw_excess = (dmod_m / wt_shall) * (sol_sw(j) - sol_sumfc(j))
       qtile = sw_excess * (1. - Exp(-24. / tdrain(j)))
       !if (qtile > 30.) then
          !xyz = 0. !not used

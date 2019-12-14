@@ -240,10 +240,8 @@ subroutine potholehr()
       gw_q(j) = gw_q(j) * (1. - 1. / nstep * pot_fr(j))
 
       !! update sediment in pothole
-      pot_sed(j) = pot_sed(j) + hhsedy(j,k) *&
-      &abs(pot_fr(j))
-      potsedi(j) = potsedi(j) + hhsedy(j,k) *&  ! incoming sediment cumulative for the day, tons
-      &abs(pot_fr(j))
+      pot_sed(j) = pot_sed(j) + hhsedy(j,k) * abs(pot_fr(j))
+      potsedi(j) = potsedi(j) + hhsedy(j,k) * abs(pot_fr(j))  ! incoming sediment cumulative for the day, tons
 
       pot_san(j) = pot_san(j) + sanyld(j) / nstep * pot_fr(j)
       potsani(j) = pot_san(j)

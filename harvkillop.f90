@@ -394,7 +394,6 @@ subroutine harvkillop
          end if
 
          !kg/ha
-         sol_min_n = 0.
          sol_min_n = (sol_no3(l,j)+sol_nh3(l,j))
 
          resnew = rtfr(l) *rtresnew

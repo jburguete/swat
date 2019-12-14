@@ -157,8 +157,7 @@ subroutine routels(iru_sub)
          !    surfq_ru(jj) = surfqout / (10. * xx)
          !    latq_ru(jj) = latqout / (10. * xx)
          !    infl_ru(jj) = inflpcp
-         varoute(2,ihout) = varoute(2,ihout) + surfqout + latqout +&
-         &gwqout
+         varoute(2,ihout) = varoute(2,ihout) + surfqout + latqout + gwqout
       end if
    end if
 

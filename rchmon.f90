@@ -188,8 +188,7 @@ subroutine rchmon(mdays)
       pdvar(41) = rchmono(13,j)  !!metal #2
       pdvar(42) = rchmono(14,j)  !!metal #3
       !! added for Total N (org N + no3 + no2 + nh4 outs) to output.rch gsm 10/17/2011
-      pdvar(43) = rchmono(7,j)+ rchmono(16,j) + rchmono(35,j) +&
-      &rchmono(33,j)                                                  !! Total N
+      pdvar(43) = rchmono(7,j)+ rchmono(16,j) + rchmono(35,j) + rchmono(33,j) !! Total N
       !! added for Total P (org P + sol p outs)to output.rch gsm 10/17/2011
       pdvar(44) = rchmono(9,j) + rchmono(18,j)                        !! Total P
       !! added NO3 Concentration to output.rch (for daily only) gsm 10/26/2011

@@ -126,12 +126,10 @@ subroutine swu
 
 !!  compute aeration stress
       if (sol_sw(j) > sol_sumfc(j)) then
-         satco = (sol_sw(j) - sol_sumfc(j)) / (sol_sumul(j) -&
-         &sol_sumfc(j))
+         satco = (sol_sw(j) - sol_sumfc(j)) / (sol_sumul(j) - sol_sumfc(j))
          scparm = 100. * (satco - pl_aerfac) / (1.0001 - pl_aerfac)
          if (scparm > 0.) then
-            strsa(j) = 1. - (scparm / (scparm + Exp(2.9014 - .03867 *&
-            &scparm)))
+            strsa(j) = 1. - (scparm / (scparm + Exp(2.9014 - .03867 * scparm)))
          else
             strsa(j) = 1.
          end if

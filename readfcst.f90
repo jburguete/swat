@@ -92,8 +92,7 @@ subroutine readfcst
          mdays = ndays(mon+1) - ndays(mon)
 
          !! calculate values for fpr_w if missing or bad
-         if (fpr_w(2,mon,i) <= fpr_w(1,mon,i).or.fpr_w(1,mon,i) <= 0.)&
-         &then
+         if (fpr_w(2,mon,i) <= fpr_w(1,mon,i) .or. fpr_w(1,mon,i) <= 0.) then
             if (pcpd(mon) < .1) pcpd(mon) = 0.1
             fpr_w(1,mon,i) = .75 * pcpd(mon) / mdays
             fpr_w(2,mon,i) = .25 + fpr_w(1,mon,i)

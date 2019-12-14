@@ -165,12 +165,9 @@ subroutine psed(iwave)
       psedd = sol_actp(1,j) + sol_stap(1,j)
       porgg = sol_orgp(1,j) + sol_fop(1,j)
       if (porgg > 1.e-3) then
-         sol_orgp(1,j) = sol_orgp(1,j) - sedorgp(j) * (sol_orgp(1,j) /&
-         &porgg)
-         sol_fop(1,j) = sol_fop(1,j) - sedorgp(j) * (sol_fop(1,j) /&
-         &porgg)
-         sol_mp(1,j) = sol_mp(1,j) - sedorgp(j) * (sol_mp(1,j) /&
-         &porgg)
+         sol_orgp(1,j) = sol_orgp(1,j) - sedorgp(j) * (sol_orgp(1,j) / porgg)
+         sol_fop(1,j) = sol_fop(1,j) - sedorgp(j) * (sol_fop(1,j) / porgg)
+         sol_mp(1,j) = sol_mp(1,j) - sedorgp(j) * (sol_mp(1,j) / porgg)
       end if
       sol_actp(1,j) = sol_actp(1,j) - sedminpa(j)
       sol_stap(1,j) = sol_stap(1,j) - sedminps(j)

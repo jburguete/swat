@@ -148,31 +148,20 @@ subroutine std1
 1010 format (/(t5,20a4))
 1020 format (t10,'Number of years in run: ',i4/t10,&
    &'Area of watershed: ',f12.3,' km2')
-1030 format (t10,'Random number generator cycles: 0, use default number&
-   &s')
+1030 format (t10,'Random number generator cycles: 0, use default numbers')
 1040 format (t10,'Random number generator cycles: ',i4)
-1050 format (/t10,'Initial random number seed: wet/dry day prob  ',1x,&
-   &i14)
-1051 format (t10,'Initial random number seed: radiation         ',1x,&
-   &i14)
-1052 format (t10,'Initial random number seed: precipitation     ',1x,&
-   &i14)
-1053 format (t10,'Initial random number seed: 0.5 hr rainfall   ',1x,&
-   &i14)
-1054 format (t10,'Initial random number seed: wind speed        ',1x,&
-   &i14)
-1055 format (t10,'Initial random number seed: irrigation        ',1x,&
-   &i14)
-1056 format (t10,'Initial random number seed: relative humidity ',1x,&
-   &i14)
-1057 format (t10,'Initial random number seed: max temperature   ',1x,&
-   &i14)
-1058 format (t10,'Initial random number seed: min temperature   ',1x,&
-   &i14)
+1050 format (/t10,'Initial random number seed: wet/dry day prob  ',1x,i14)
+1051 format (t10,'Initial random number seed: radiation         ',1x,i14)
+1052 format (t10,'Initial random number seed: precipitation     ',1x,i14)
+1053 format (t10,'Initial random number seed: 0.5 hr rainfall   ',1x,i14)
+1054 format (t10,'Initial random number seed: wind speed        ',1x,i14)
+1055 format (t10,'Initial random number seed: irrigation        ',1x,i14)
+1056 format (t10,'Initial random number seed: relative humidity ',1x,i14)
+1057 format (t10,'Initial random number seed: max temperature   ',1x,i14)
+1058 format (t10,'Initial random number seed: min temperature   ',1x,i14)
 1060 format (/t10,'Precipitation data used in run:')
 1061 format (t11,'Multiple gages read for watershed')
-1062 format (t14,'Subdaily rainfall data used, summarized every ',i3,&
-   &'min')
+1062 format (t14,'Subdaily rainfall data used, summarized every ',i3,'min')
 1063 format (t14,'Daily rainfall data used')
 1064 format (t11,'Multiple gages simulated for watershed')
 1070 format (/t10,'Temperature data used in run:')
@@ -190,8 +179,7 @@ subroutine std1
 1095 format (t12,'Variable Storage routing method')
 1096 format (t12,'Muskingum routing method')
 1097 format (t12,'Channel dimensions remain constant')
-1098 format (t12,'Channel dimensions change due to deposition/degrad',&
-   &'ation')
+1098 format (t12,'Channel dimensions change due to deposition/degradation')
 1099 format (t12,'In-stream nutrient transformations not modeled')
 1100 format (t12,'In-stream nutrient transformations modeled using',&
    &' QUAL2E equations')

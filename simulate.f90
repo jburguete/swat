@@ -181,8 +181,7 @@ subroutine simulate
          sol_sumsolp = 0.
          do j = 1, mhru
             do ly = 1, sol_nly(j)
-               sol_sumno3(j) = sol_sumno3(j) + sol_no3(ly,j) +&
-               &sol_nh3(ly,j)
+               sol_sumno3(j) = sol_sumno3(j) + sol_no3(ly,j) + sol_nh3(ly,j)
                sol_sumsolp(j) = sol_sumsolp(j) + sol_solp(ly,j)
             enddo
          enddo
@@ -310,8 +309,7 @@ subroutine simulate
          if (idplt(j) > 0) then
             if (idc(idplt(j)) == 7) then
                curyr_mat(j) = curyr_mat(j) + 1
-               curyr_mat(j) = Min(curyr_mat(j),&
-               &mat_yrs(idplt(j)))
+               curyr_mat(j) = Min(curyr_mat(j), mat_yrs(idplt(j)))
             end if
          end if
 

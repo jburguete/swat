@@ -105,9 +105,7 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
    lid_qbypass = lid_str - lid_vol
    if (lid_qbypass > 0.) lid_str = lid_vol
    if (lid_qbypass < 0.) lid_qbypass = 0.
-   lid_bypass = lid_qbypass /&
-   &(hru_ha(j) * 10000.) * 1000.
-!     & (lid_farea(j,4) * fcimp(urblu(j)) * hru_ha(j) * 10000.) * 1000.
+   lid_bypass = lid_qbypass / (hru_ha(j) * 10000.) * 1000.
 
    lid_str_depth = lid_str / (lid_farea(j,4) * fcimp(urblu(j)) *&
    &hru_ha(j) * 10000.) * 1000.

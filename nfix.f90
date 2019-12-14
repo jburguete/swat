@@ -86,13 +86,9 @@ subroutine nfix
 
    !! compute growth stage factor
    fxg = 0.
-   if (phuacc(j) > .15 .and. phuacc(j) <= .30) then
-      fxg = 6.67 * phuacc(j) - 1.
-   endif
+   if (phuacc(j) > .15 .and. phuacc(j) <= .30) fxg = 6.67 * phuacc(j) - 1.
    if (phuacc(j) > .30 .and. phuacc(j) <= .55) fxg = 1.
-   if (phuacc(j) > .55 .and. phuacc(j) <= .75) then
-      fxg = 3.75 - 5. * phuacc(j)
-   endif
+   if (phuacc(j) > .55 .and. phuacc(j) <= .75) fxg = 3.75 - 5. * phuacc(j)
 
    fxr = Min(1., fxw, fxn) * fxg
    fxr = Max(0., fxr)

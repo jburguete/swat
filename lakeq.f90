@@ -201,8 +201,7 @@ subroutine lakeq
       lkpst_mass(jres) = tpest1
       lkspst_mass(jres) = tpest2
       lkpst_conc(jres) = tpest1 / res_vol(jres)
-      lkspst_conc(jres) = tpest2 /&
-      &(lkspst_act(jres) * ressa * 10000. + 1.)
+      lkspst_conc(jres) = tpest2 / (lkspst_act(jres) * ressa * 10000. + 1.)
    else
       solpesto = 0.
       sorpesto = 0.

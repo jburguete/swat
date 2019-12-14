@@ -61,7 +61,7 @@ subroutine hruallo
       mgtfile = ""
       solfile = ""
       chmfile = ""
-      read (25,5300,iostat=eof)hrufile, mgtfile, solfile, chmfile, ilnds
+      read (25,5300,iostat=eof) hrufile, mgtfile, solfile, chmfile, ilnds
       if (eof < 0) return
       if (ilnds > 0) then
          ils_nofig = 1

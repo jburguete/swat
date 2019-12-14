@@ -205,8 +205,7 @@ subroutine nminrl
          csf = Sqrt(xx)
 
          !! compute flow from active to stable pools
-         rwn = .1e-4 * (sol_aorgn(k,j) * (1. / nactfr - 1.) -&
-         &sol_orgn(k,j))
+         rwn = .1e-4 * (sol_aorgn(k,j) * (1. / nactfr - 1.) - sol_orgn(k,j))
          if (rwn > 0.) then
             rwn = Min(rwn, sol_aorgn(k,j))
          else

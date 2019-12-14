@@ -411,8 +411,7 @@ subroutine watqual
 
       rch_cbod(jrch) = cbodrch
       if (rch_cbod(jrch) < 1.e-6) rch_cbod(jrch) = 0.
-      if (rch_cbod(jrch) > dcoef * cbodcon) rch_cbod(jrch) = dcoef *&
-      &cbodcon
+      if (rch_cbod(jrch) > dcoef * cbodcon) rch_cbod(jrch) = dcoef * cbodcon
 
       !! calculate dissolved oxygen concentration if reach at
       !! end of day QUAL2E section 3.6 equation III-28
@@ -473,13 +472,11 @@ subroutine watqual
       organicn(jrch) = 0.
       organicn(jrch) = orgncon + (xx - yy - zz) * tday
       if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.
-      if(organicn(jrch) > dcoef * orgncon) organicn(jrch) = dcoef *&
-      &orgncon
+      if(organicn(jrch) > dcoef * orgncon) organicn(jrch) = dcoef * orgncon
 
       !! calculate fraction of algal nitrogen uptake from ammonia
       !! pool QUAL2E equation III-18
-      f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con +&
-      &1.e-6)
+      f1 = p_n * nh3con / (p_n * nh3con + (1. - p_n) * no3con + 1.e-6)
 
       !! calculate ammonia nitrogen concentration at end of day
       !! QUAL2E section 3.3.2 equation III-17
@@ -506,8 +503,7 @@ subroutine watqual
       yy = Theta(bc2mod,thbc2,wtmp) * no2con
       zz = (1. - f1) * ai1 * algcon * Theta(gra,thgra,wtmp)
       nitraten(jrch) = no3con + (yy - zz) * tday
-      if (nitraten(jrch) > dcoef * no3con) nitraten(jrch) = dcoef *&
-      &no3con
+      if (nitraten(jrch) > dcoef * no3con) nitraten(jrch) = dcoef * no3con
 
       if (nitraten(jrch) < 1.e-6) nitraten(jrch) = 0.
 !! end nitrogen calculations
@@ -520,8 +516,7 @@ subroutine watqual
       zz = Theta(rs5(jrch),thrs5,wtmp) * orgpcon
       organicp(jrch) = orgpcon + (xx - yy - zz) * tday
       if (organicp(jrch) < 1.e-6) organicp(jrch) = 0.
-      if (organicp(jrch) > dcoef * orgpcon) organicp(jrch) = dcoef *&
-      &orgpcon
+      if (organicp(jrch) > dcoef * orgpcon) organicp(jrch) = dcoef * orgpcon
 
       !! calculate dissolved phosphorus concentration at end
       !! of day QUAL2E section 3.4.2 equation III-25
@@ -530,8 +525,7 @@ subroutine watqual
       zz = ai2 * Theta(gra,thgra,wtmp) * algcon
       disolvp(jrch) = solpcon + (xx + yy - zz) * tday
       if (disolvp(jrch) < 1.e-6) disolvp(jrch) = 0.
-      if (disolvp(jrch) > dcoef * solpcon) disolvp(jrch) = dcoef *&
-      &solpcon
+      if (disolvp(jrch) > dcoef * solpcon) disolvp(jrch) = dcoef * solpcon
 !! end phosphorus calculations
 
    else

@@ -214,8 +214,7 @@ subroutine hydroinit
             a = sub_tc(hru_sub(j)) / dthy !# of timesteps
             b = itb(isb)
             c = phi(13,isb) / dthy
-            NHY(isb) = max(4*nstep,ceiling(a),ceiling(b),ceiling(c),&
-            &NHY(isb))
+            NHY(isb) = max(4*nstep,ceiling(a),ceiling(b), ceiling(c),NHY(isb))
          end do
          RCSS(isb) = .5 * (ch_w(2,isb) - phi(6,isb)) / ch_d(isb)
          RCHX(isb) = SQRT(ch_s(2,isb)) / ch_n(2,isb)

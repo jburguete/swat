@@ -112,8 +112,7 @@ subroutine saveconc
             varii = 0.
             if (hhvaroute(2,ihout,ii) > 0.001) then
                varii(1) = hhvaroute(2,ihout,ii) / (idt * 60.)  !! urban modeling by J.Jeong 4/17/2008
-               varii(2) = hhvaroute(3,ihout,ii) * 1.e6&
-               &/ hhvaroute(2,ihout,ii)
+               varii(2) = hhvaroute(3,ihout,ii) * 1.e6 / hhvaroute(2,ihout,ii)
                !!       varii(3) = hhvaroute(4,ihout,ii) * 1000.
                !!&                                           / hhvaroute(2,ihout,ii)
                !!       varii(4) = hhvaroute(5,ihout,ii) * 1000.

@@ -215,8 +215,7 @@ subroutine soil_chem
       end if
       sol_aorgn(j,i) = sol_orgn(j,i) * nactfr
       sol_orgn(j,i) = sol_orgn(j,i) * (1. - nactfr)
-      sumorgn = sumorgn + sol_aorgn(j,i) + sol_orgn(j,i) +&
-      &sol_fon(j,i)
+      sumorgn = sumorgn + sol_aorgn(j,i) + sol_orgn(j,i) + sol_fon(j,i)
 
       if (sol_orgp(j,i) > 0.0001) then
          sol_orgp(j,i) = sol_orgp(j,i) * wt1      !! mg/kg => kg/ha
@@ -273,8 +272,7 @@ subroutine soil_chem
 
       sol_hum(j,i) = sol_cbn(j,i) * wt1 * 17200.
       xx = sol_z(j,i)
-      summinp = summinp + sol_solp(j,i) + sol_actp(j,i) +&
-      &sol_stap(j,i)
+      summinp = summinp + sol_solp(j,i) + sol_actp(j,i) + sol_stap(j,i)
       sumorgp = sumorgp + sol_orgp(j,i) + sol_fop(j,i)
    end do
 

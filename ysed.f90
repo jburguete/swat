@@ -82,8 +82,7 @@ subroutine ysed(iwave)
       &** .56 * cklsp(j)
    else
       !! HRU sediment calculations
-      sedyld(j) = (surfq(j) * peakr * 1000. * hru_km(j)) ** .56&
-      &* cklsp(j)
+      sedyld(j) = (surfq(j) * peakr * 1000. * hru_km(j)) ** .56 * cklsp(j)
    end if
 
    if (isproj == 2) then

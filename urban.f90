@@ -148,8 +148,7 @@ subroutine urban
          !! rainy day: no build-up, street cleaning allowed
 
          !! calculate amount of dirt on streets prior to wash-off
-         dirt = dirtmx(urblu(j)) * twash(j) /&
-         &(thalf(urblu(j)) + twash(j))
+         dirt = dirtmx(urblu(j)) * twash(j) / (thalf(urblu(j)) + twash(j))
          dirto = dirt
 
          !! calculate wash-off of solids

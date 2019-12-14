@@ -300,8 +300,7 @@ subroutine wetlan
          if (sed_stl(j) < 1.e-6) sed_stl(j) = 0.0
          inised = wet_sed(j)
          if (wet_sed(j) > wet_nsed(j)) then
-            wet_sed(j) = (wet_sed(j) - wet_nsed(j)) * sed_stl(j) +&
-            &wet_nsed(j)
+            wet_sed(j) = (wet_sed(j) - wet_nsed(j)) * sed_stl(j) + wet_nsed(j)
          end if
          finsed = wet_sed(j)
          setsed = inised - finsed
@@ -355,8 +354,7 @@ subroutine wetlan
          lagyld(j) = lagyld(j) + wetlago
 
          !! net change in amount of sediment in wetland for day
-         wetsedc = vol * sed + wetsedi - wetsedo - wet_sed(j) *&
-         &wet_vol(j)
+         wetsedc = vol * sed + wetsedi - wetsedo - wet_sed(j) * wet_vol(j)
          !! determine settling rate for nutrients
          !! part of equation 29.1.3 in SWAT manual
          if (i_mo >= ipnd1(j) .and. i_mo <= ipnd2(j)) then

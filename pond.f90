@@ -250,8 +250,7 @@ subroutine pond(k)
       if (sed_stl(k) < 1.e-6) sed_stl(k) = 0.0
       if (pnd_sed(k) > pnd_nsed(k)) then
          inised = pnd_sed(k)
-         pnd_sed(k) = (pnd_sed(k) - pnd_nsed(k)) * sed_stl(k) +&
-         &pnd_nsed(k)
+         pnd_sed(k) = (pnd_sed(k) - pnd_nsed(k)) * sed_stl(k) + pnd_nsed(k)
          finsed = pnd_sed(k)
          setsed = inised - finsed
 
@@ -295,8 +294,7 @@ subroutine pond(k)
       pndlago = pnd_lag(k) * pndflwo
 
       !! net change in amount of sediment in pond for day
-      pndsedc = vol * sed + pndsedin - pndsedo - pnd_sed(k) *&
-      &pnd_vol(k)
+      pndsedc = vol * sed + pndsedin - pndsedo - pnd_sed(k) * pnd_vol(k)
 
       !! determine settling rate
       !! part of equation 29.1.3 in SWAT manual
@@ -312,14 +310,16 @@ subroutine pond(k)
 
       !! remove nutrients by settling
       !! other part of equation 29.1.3 in SWAT manual
-      pnd_solp(k) = pnd_solp(k) * (1. - phosk)
-      pnd_psed(k) = pnd_psed(k) * (1. - phosk)
-      pnd_orgp(k) = pnd_orgp(k) * (1. - phosk)
-      pnd_solpg(k) = pnd_solpg(k) * (1. - phosk)
-      pnd_orgn(k) = pnd_orgn(k) * (1. - nitrok)
-      pnd_no3(k) = pnd_no3(k) * (1. - nitrok)
-      pnd_no3s(k) = pnd_no3s(k) * (1. - nitrok)
-      pnd_no3g(k) = pnd_no3g(k) * (1. - nitrok)
+      xx = 1. - phosk
+      pnd_solp(k) = pnd_solp(k) * xx
+      pnd_psed(k) = pnd_psed(k) * xx
+      pnd_orgp(k) = pnd_orgp(k) * xx
+      pnd_solpg(k) = pnd_solpg(k) * xx
+      xx = 1. - nitrok
+      pnd_orgn(k) = pnd_orgn(k) * xx
+      pnd_no3(k) = pnd_no3(k) * xx
+      pnd_no3s(k) = pnd_no3s(k) * xx
+      pnd_no3g(k) = pnd_no3g(k) * xx
 
       if (pnd_vol(k) + pndflwo > 0.1) then
          tpco = 1.e+6 * (pnd_solp(k) + pnd_orgp(k) + pnd_psed(k) +&

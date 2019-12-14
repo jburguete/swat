@@ -179,8 +179,7 @@ subroutine rthpest
          chpstmass = chpstmass - reactw
 
          !! calculate amount of pesticide that volatilizes from reach
-         volatpst = chpst_vol(jrch) * frsol * chpstmass * thour&
-         &/ (depth * 24.)
+         volatpst = chpst_vol(jrch) * frsol * chpstmass * thour / (depth * 24.)
          if (volatpst > chpstmass) then
             volatpst = chpstmass
             chpstmass = 0.
@@ -190,8 +189,7 @@ subroutine rthpest
 
          !! calculate amount of pesticide removed from reach by
          !! settling
-         setlpst = chpst_stl(jrch) * frsrb * chpstmass * thour&
-         &/ (depth * 24.)
+         setlpst = chpst_stl(jrch) * frsrb * chpstmass * thour / (depth * 24.)
          if (setlpst > chpstmass) then
             setlpst = chpstmass
             chpstmass = 0.

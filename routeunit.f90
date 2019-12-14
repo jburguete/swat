@@ -41,8 +41,7 @@ subroutine routeunit
       if (xx > 1.e-9) then
          jj= hru1(inum2) + kk - 1
          sumc = sumc + usle_cfac(jj) * hru_rufr(inum1,kk)
-         sumeiq = sumeiq + usle_eifac(jj) * qdayout(jj) *&
-         &hru_rufr(inum1,kk)
+         sumeiq = sumeiq + usle_eifac(jj) * qdayout(jj) * hru_rufr(inum1,kk)
          varoute(1,ihout) = 5.0 + 0.75 * tmpav(jj)
          varoute(2,ihout) = varoute(2,ihout) + qdr(jj) * xx * 10.     !! mm*ha*10 = m3
          varoute(3,ihout) = varoute(3,ihout) + sedyld(jj)             !! t
@@ -50,8 +49,7 @@ subroutine routeunit
          varoute(5,ihout) = varoute(5,ihout) + sedorgp(jj) * xx
          varoute(6,ihout) = varoute(6,ihout) + (latno3(jj) + no3gw(jj)&
          &+ surqno3(jj)) * xx
-         varoute(7,ihout) = varoute(7,ihout) + (surqsolp(jj) +&
-         &minpgw(jj)) * xx
+         varoute(7,ihout) = varoute(7,ihout) + (surqsolp(jj) + minpgw(jj)) * xx
          varoute(8,ihout) = 0.
          varoute(9,ihout) = 0.
          varoute(10,ihout) = 0.

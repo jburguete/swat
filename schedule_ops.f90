@@ -105,8 +105,7 @@ subroutine schedule_ops
 
        case (5)
          call curno(strip_cn(iops,j),j)
-         usle_mult(j) = usle_mult(j) * strip_p(iops,j) /&
-         &usle_p(j)
+         usle_mult(j) = usle_mult(j) * strip_p(iops,j) / usle_p(j)
          tover = .0556 * (slsubbsn(j) * strip_n(iops,j)) ** .6 /&
          &hru_slp(j) ** .3
 

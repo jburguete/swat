@@ -171,8 +171,7 @@ subroutine rtpest
       !! biological degradation on day in reach
       !! MFW, 3/12/12: modify decay to be 1st order
       !! reactw = chpst_rea(jrch) * chpstmass * tday
-      reactw = chpstmass - (chpstmass * EXP(-1. * chpst_rea(jrch)&
-      &* tday))
+      reactw = chpstmass - (chpstmass * EXP(-1. * chpst_rea(jrch) * tday))
       chpstmass = chpstmass - reactw
 
       !! calculate amount of pesticide that volatilizes from reach

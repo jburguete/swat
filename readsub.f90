@@ -323,8 +323,7 @@ subroutine readsub
             if (kk>30) exit
          end do
          if(bmpdrain(ihru)==1) then
-            sub_ha_imp(i) = sub_ha_imp(i) + hru_ha(ihru)&
-            &* fimp(urblu(ihru))
+            sub_ha_imp(i) = sub_ha_imp(i) + hru_ha(ihru) * fimp(urblu(ihru))
             sub_ha_urb(i) = sub_ha_urb(i) + hru_ha(ihru)
          end if
       end if
@@ -346,15 +345,13 @@ subroutine readsub
          end do
 
          if (ri_luflg(ihru) == 1) then
-            ri_subkm(i) = ri_subkm(i) + hru_km(ihru)*&
-            &(1.-fimp(urblu(ihru))) !km2
+            ri_subkm(i) = ri_subkm(i) + hru_km(ihru) * (1.-fimp(urblu(ihru))) !km2
          end if
       end if
 
       ! estimate impervious cover in the upstream drainage area for on-line bmps
       if (iurban(ihru) > 0) then
-         subdr_ickm(i) = subdr_ickm(i) + hru_km(ihru)&
-         &*  fimp(urblu(ihru))
+         subdr_ickm(i) = subdr_ickm(i) + hru_km(ihru) * fimp(urblu(ihru))
       end if
       ! estimate average Curve Number for the subbasin
       sub_cn2(i) = sub_cn2(i) + cn2(ihru) * hru_fr(ihru)
@@ -426,8 +423,7 @@ subroutine readsub
    end if
 
 !!    This equation given to us by EPA, in the process of getting reference
-   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) +&
-   &.2267) / 2.
+   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) + .2267) / 2.
 
 !! assign subbasin values to HRUs where needed
    do j = 1, hrutot(i)

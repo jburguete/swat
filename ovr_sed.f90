@@ -147,8 +147,7 @@ subroutine ovr_sed()
       endif
 
       !! total kinetic energy by rainfall (J/m^2)
-      ke_total = 0.001 * (rdepth_direct * ke_direct + rdepth_leaf *&
-      &ke_leaf)
+      ke_total = 0.001 * (rdepth_direct * ke_direct + rdepth_leaf * ke_leaf)
 
       !! total soil detachment by raindrop impact
       sedspl = erod_k * ke_total * exp(-eros_spl * hhqday(k) / 1000.) *&

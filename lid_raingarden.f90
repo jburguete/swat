@@ -152,9 +152,7 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
    lid_qbypass = lid_str - lid_vol
    if (lid_qbypass > 0.) lid_str = lid_vol
    if (lid_qbypass < 0.) lid_qbypass = 0.
-   lid_bypass = lid_qbypass /&
-   &(hru_ha(j) * 10000.) * 1000.
-!     & (lid_farea(j,2) * fcimp(urblu(j)) * hru_ha(j) * 10000.) * 1000.
+   lid_bypass = lid_qbypass / (hru_ha(j) * 10000.) * 1000.
 
    lid_str_depth = lid_str / ((lid_sarea + lid_barea)/2) * 1000.
 
@@ -279,11 +277,9 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
       lid_vorifice = 0.
    end if
 
-   if (lid_vorifice > (lid_str - lid_ostr)) lid_vorifice =&
-   &lid_str - lid_ostr
+   if (lid_vorifice > (lid_str - lid_ostr)) lid_vorifice = lid_str - lid_ostr
    if (lid_vorifice < 0.) lid_vorifice = 0.
-   lid_dorifice = lid_vorifice /&
-   &(hru_ha(j) * 10000.) * 1000. ! mm
+   lid_dorifice = lid_vorifice / (hru_ha(j) * 10000.) * 1000. ! mm
 !     & (lid_farea(j,2) * fcimp(urblu(j)) * hru_ha(j) * 10000.) * 1000. ! mm
 
 !!    Amount of water seeped out of the amended soil layer (mm)
@@ -307,8 +303,7 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
       lid_sw = lid_sw_last(j,2) + (lid_qinf - lid_qperc - lid_et) /&
       &(lid_soldpt * 1000)
    else
-      lid_sw = lid_sw_last(j,2) + (lid_qinf - lid_qperc) /&
-      &(lid_soldpt * 1000)
+      lid_sw = lid_sw_last(j,2) + (lid_qinf - lid_qperc) / (lid_soldpt * 1000)
    end if
    if (lid_sw < lid_wp) lid_sw = lid_wp
    if (lid_sw > lid_fc) lid_sw = lid_fc

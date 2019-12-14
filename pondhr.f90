@@ -225,16 +225,14 @@ subroutine pondhr(j,k)
 
       !! compute change in sediment concentration due to settling
       if (pnd_sed(j) > pnd_nsed(j)) then
-         pnd_sed(j) = (pnd_sed(j) - pnd_nsed(j)) *&
-         &sed_stl(j) + pnd_nsed(j)
+         pnd_sed(j) = (pnd_sed(j) - pnd_nsed(j)) * sed_stl(j) + pnd_nsed(j)
       end if
 
       !! compute sediment leaving pond
       pndsedo = pnd_sed(j) * pndflwo
 
       !! net change in amount of sediment in pond for day
-      pndsedc = vol * sed + pndsedin - pndsedo -&
-      &pnd_sed(j) * pnd_vol(j)
+      pndsedc = vol * sed + pndsedin - pndsedo - pnd_sed(j) * pnd_vol(j)
 
       !! determine settling rate
       !! part of equation 29.1.3 in SWAT manual
@@ -243,11 +241,9 @@ subroutine pondhr(j,k)
       else
          iseas = 2
       endif
-      phosk = psetlp(iseas,j) * pndsa * 10000. /&
-      &pnd_vol(j)  !setl/mean depth
+      phosk = psetlp(iseas,j) * pndsa * 10000. / pnd_vol(j)  !setl/mean depth
       phosk = Min(phosk, 1.)
-      nitrok = nsetlp(iseas,j) * pndsa * 10000. /&
-      &pnd_vol(j) !setl/mean depth
+      nitrok = nsetlp(iseas,j) * pndsa * 10000. / pnd_vol(j) !setl/mean depth
       nitrok = Min(nitrok, 1.)
 
       !! remove nutrients by settling

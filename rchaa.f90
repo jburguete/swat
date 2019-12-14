@@ -195,8 +195,7 @@ subroutine rchaa(years)
       pdvar(41) = rchaao(13,j)     !!metal #2
       pdvar(42) = rchaao(14,j)     !!metal #3
       !! added for Total N (org N + no3 + no2 + nh4 outs) to output.rch gsm 10/17/2011
-      pdvar(43) = rchaao(7,j) + rchaao(16,j) + rchaao(35,j) +&
-      &rchaao(33,j)                                               !! Total N
+      pdvar(43) = rchaao(7,j) + rchaao(16,j) + rchaao(35,j) + rchaao(33,j) !! Total N
       !! added for Total P (org P + sol p outs)to output.rch gsm 10/17/2011
       pdvar(44) = rchaao(9,j) + rchaao(18,j)                      !! Total P
 

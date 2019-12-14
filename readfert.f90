@@ -48,8 +48,7 @@ subroutine readfert
    implicit none
 
    integer :: it, ifnum, eof
-   real*8 :: ffminn, ffminp, fforgn, fforgp, ffnh3n, bctpdb, bctlpdb
-   real*8 :: bctkddb
+   real*8 :: ffminn, ffminp, fforgn, fforgp, ffnh3n, bctpdb, bctlpdb, bctkddb
    character (len=8) :: fnm
 
    ifnum = 0

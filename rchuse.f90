@@ -46,8 +46,7 @@ subroutine rchuse
 
    if (ievent > 0) then
       do ii = 1, nstep
-         hrtwtr(ii) = hrtwtr(ii) - wurch(i_mo,jrch) * 10000.&
-         &/ dfloat(nstep)
+         hrtwtr(ii) = hrtwtr(ii) - wurch(i_mo,jrch) * 10000. / dfloat(nstep)
          if (hrtwtr(ii) < 0.) hrtwtr(ii) = 0.
       end do
    end if

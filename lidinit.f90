@@ -97,8 +97,7 @@ subroutine lidinit
          if (rg_dimop(i,kk)==0) then
             ! setting the defailt orifice
 !          else
-            if (rg_vol(i,kk)<=0)        rg_vol(i,kk) = rg_farea(i,kk)&
-            &* 0.1 ! assuming the depth of 0.1 m
+            if (rg_vol(i,kk)<=0)        rg_vol(i,kk) = rg_farea(i,kk) * 0.1 ! assuming the depth of 0.1 m
             if (rg_sarea(i,kk)<=0)      rg_sarea(i,kk) = 0.1
             if (rg_sth(i,kk)<=0)        rg_sth(i,kk) = 0.1
             if (rg_sdia(i,kk)<=0)       rg_sdia(i,kk) = 0.1

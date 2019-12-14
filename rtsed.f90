@@ -65,7 +65,6 @@ subroutine rtsed
 !!    dep         |metric tons   |sediment deposited on river bottom
 !!    depdeg      |m             |depth of degradation/deposition from original
 !!    depnet      |metric tons   |
-!!    dot         |
 !!    jrch        |none          |reach number
 !!    qdin        |m^3 H2O       |water in reach during time step
 !!    vc          |m/s           |flow velocity in reach
@@ -82,7 +81,7 @@ subroutine rtsed
 
    integer :: jrch
    real*8 :: qdin, sedin, vc, cyin, cych, depnet, deg1, deg2, dep
-   real*8 :: depdeg, dot, outfract, deg, dat2
+   real*8 :: depdeg, outfract, deg, dat2
 
    jrch = inum1
    sedin = 0.0
@@ -134,7 +133,7 @@ subroutine rtsed
             !! First the deposited material will be degraded before channel bed
             if (deg >= depch(jrch)) then
                deg1 = depch(jrch)
-               deg2 = (deg - deg1) * ch_erodmo(jrch,i_mo)*ch_cov2(jrch)
+               deg2 = (deg - deg1) * ch_erodmo(jrch,i_mo) * ch_cov2(jrch)
             else
                deg1 = deg
                deg2 = 0.
@@ -194,14 +193,10 @@ subroutine rtsed
 
 !! compute changes in channel dimensions
          if (ideg == 1) then
-            depdeg = 0.
             depdeg = ch_d(jrch) - ch_di(jrch)
             if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
                if (qdin > 1400000.) then
-                  dot = 0.
-                  dot = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
-                  dat2 = 1.
-                  dat2 =  dat2 * dot
+                  dat2 =  358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
                   ch_d(jrch) = ch_d(jrch) + dat2
                   ch_w(2,jrch) = ch_wdr(jrch) * ch_d(jrch)
                   ch_s(2,jrch) = ch_s(2,jrch) - dat2 / (ch_l2(jrch) * 1000.)
