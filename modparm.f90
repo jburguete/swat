@@ -281,8 +281,34 @@ module parm
 !> Fraction of SNOCOVMX that corresponds to 50% snow cover. SWAT assumes a
 !> nonlinear relationship between snow water and snow cover
    real*8 :: sno50cov
-   real*8 :: ai0, ai1, ai2, ai3, ai4, ai5, ai6, rhoq, tfact
-   real*8 :: mumax, lambda0, lambda1, lambda2, k_l, k_n, k_p, p_n
+   real*8 :: ai0 !< ratio of chlorophyll-a to algal biomass (ug chla/mg alg)
+   real*8 :: ai1 !< fraction of algal biomass that is nitrogen (mg N/mg alg)
+   real*8 :: ai2 !< fraction of algal biomass that is phosphorus (mg P/mg alg)
+!> the rate of oxygen production per unit of algal photosynthesis (mg O2/mg alg)
+   real*8 :: ai3
+!> the rate of oxygen uptake per unit of algae respiration (mg O2/mg alg)
+   real*8 :: ai4
+!> the rate of oxygen uptake per unit of NH3 nitrogen oxidation (mg O2/mg N)
+   real*8 :: ai5
+!> the rate of oxygen uptake per unit of NO2 nitrogen oxidation (mg O2/mg N)
+   real*8 :: ai6
+   real*8 :: rhoq !< algal respiration rate (1/day or 1/hr)
+!> fraction of solar radiation computed in the temperature heat balance that is
+!> photosynthetically active
+   real*8 :: tfact
+!> half-saturation coefficient for light (MJ/(m2*hr))
+   real*8 :: k_l
+!> michaelis-menton half-saturation constant for nitrogen (mg N/L)
+   real*8 :: k_n
+!> michaelis-menton half saturation constant for phosphorus (mg P/L)
+   real*8 :: k_p
+!> non-algal portion of the light extinction coefficient (1/m)
+   real*8 :: lambda0
+   real*8 :: lambda1 !< linear algal self-shading coefficient (1/(m*ug chla/L))
+!> nonlinear algal self-shading coefficient ((1/m)(ug chla/L)**(-2/3))
+   real*8 :: lambda2
+   real*8 :: mumax !< maximum specific algal growth rate (1/day or 1/hr)
+   real*8 :: p_n !< algal preference factor for ammonia
    real*8 :: rnum1, autop, auton, etday, hmntl, rwntl, hmptl, rmn2tl
    real*8 :: rmptl,wdntl,cmn_bsn,rmp1tl,roctl,gwseep,revapday,reswtr
 !> die-off factor for less persistent bacteria in streams (1/day)
@@ -330,7 +356,7 @@ module parm
    real*8 :: dorm_hr !< time threshold used to define dormant (hours)
    real*8 :: smxco !< adjustment factor for max curve number s factor (0-1)
    real*8 :: tb_adj !< adjustment factor for subdaily unit hydrograph basetime
-   real*8 :: chla_subco
+   real*8 :: chla_subco !< regional adjustment on sub chla_a loading (fraction)
 !> depth to impervious layer. Used to model perched water tables in all HRUs in
 !> watershed (mm)
    real*8 :: depimp_bsn
@@ -417,7 +443,14 @@ module parm
    integer :: icrk
 !> number of pesticide to be routed through the watershed
    integer :: irtpest
-   integer :: lao, igropt, npmx, curyr, iihru
+!> Qual2E option for calculating the local specific growth rate of algae\n
+!> 1: multiplicative \f\[u=mumax\,fll\,fnn\,fpp\f\]
+!> 2: limiting nutrient \f\[u=mumax\,fll\,\min(fnn,\,fpp)\f\]
+!> 3: harmonic mean \f\[u=mumax\,fll\,\frac2{\frac1{fnn}+\frac1{fpp}}\f\]
+   integer :: igropt
+!> Qual2E light averaging option. Qual2E defines four light averaging options. 
+!> The only option currently available in SWAT is #2.
+   integer :: lao, npmx, curyr, iihru
 !    Drainmod tile equations  01/2006
 !> tile drainage equations flag/code\n
 !> 1 simulate tile flow using subroutine drains(wt_shall)\n
@@ -484,7 +517,8 @@ module parm
 !> 0 do not model stream water quality\n
 !> 1 model stream water quality (QUAL2E & pesticide transformations)
    integer :: iwq
-   integer :: i, iskip, ifirstpet
+   integer :: i !< forecast region number (none)
+   integer :: iskip, ifirstpet
 !> print code for output.pst file\n
 !> 0 do not print pesticide output\n
 !> 1 print pesticide output
@@ -563,6 +597,8 @@ module parm
 !> values(7): second simulation is performed\n
 !> values(8): millisecond simulation is performed
    integer, dimension (8) :: values
+!> julian date for last day of preceding month (where the array location is the
+!> number of the month) The dates are for leap years (julian date)
    integer, dimension (13) :: ndays
    integer, dimension (13) :: ndays_noleap, ndays_leap
 !     apex/command output files
@@ -663,9 +699,25 @@ module parm
    integer, dimension (:), allocatable :: ifirstt,ifirstpcp
    integer, dimension (:), allocatable :: elevp,elevt
 ! mfcst = max number of forecast regions
-   real*8, dimension (:,:), allocatable :: ftmpstdmn,ftmpmn,ftmpmx
+!> avg monthly minimum air temperature (deg C)
+   real*8, dimension (:,:), allocatable :: ftmpmn
+!> avg monthly maximum air temperature (deg C)
+   real*8, dimension (:,:), allocatable :: ftmpmx
+!> standard deviation for avg monthly minimum air temperature (deg C)
+   real*8, dimension (:,:), allocatable :: ftmpstdmn
+!> standard deviation for avg monthly maximum air temperature (deg C)
    real*8, dimension (:,:), allocatable :: ftmpstdmx
-   real*8, dimension (:,:,:), allocatable :: fpr_w,fpcp_stat
+!> fpcp_stat(:,1,:): average amount of precipitation falling in one day for the
+!> month (mm/day)\n
+!> fpcp_stat(:,2,:): standard deviation for the average daily precipitation
+!> (mm/day)\n
+!> fpcp_stat(:,3,:): skew coefficient for the average daily precipitationa
+!> (none)
+   real*8, dimension (:,:,:), allocatable :: fpcp_stat
+!> fpr_w(1,:,:): probability of wet day after dry day in month (none)\n
+!> fpr_w(2,:,:): probability of wet day after wet day in month (none)\n
+!> fpr_w(3,:,:): proportion of wet days in the month (none)
+   real*8, dimension (:,:,:), allocatable :: fpr_w
 ! mch = max number of channels
    real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi,ch_d
 !> channel organic n concentration (ppm)
