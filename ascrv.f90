@@ -1,3 +1,33 @@
+!> @file ascrv.f90
+!> @author
+!> modified by Javier Burguete
+!> @brief
+!> this subroutine computes shape parameters x5 and x6 for the S curve equation
+!>
+!> this subroutine computes shape parameters x5 and x6 for the S curve equation
+!> \f\[x=\frac{y}{y+\exp(x5+x6\,y)}\f\]
+!> given 2 (x,y) points along the curve. x5 is determined by solving the
+!> equation with \f$x\f$ and \f$y\f$ values measured around the midpoint of the
+!> curve (approx. 50% of the maximum value for \f$x\f$) and x6 is determined by
+!> solving the equation with \f$x\f$ and \f$y\f$ values measured close to one of
+!> the endpoints of the curve (100% of the maximum value for \f$x\f$). This
+!> subroutine is called from readbsn.f90 and readplant.f90
+!> @param[in] x1
+!> value for x in the above equation for first datapoint, x1 should be close to
+!> 0.5 (the midpoint of the curve)
+!> @param[in] x2
+!> value for x in the above equation for second datapoint, x2 should be close to
+!> 0.0 or 1.0
+!> @param[in] x3
+!> value for y in the above equation corresponding to x1
+!> @param[in] x4
+!> value for y in the above equation corresponding to x2
+!> @param[out] x5
+!> 1st shape parameter for S curve equation characterizing the midpoint of the
+!> curve
+!> @param[out] x6
+!> 2nd shape parameter for S curve equation characterizing the regions close to
+!> the endpoints of the curve
 subroutine ascrv(x1,x2,x3,x4,x5,x6)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -7,7 +37,7 @@ subroutine ascrv(x1,x2,x3,x4,x5,x6)
 !!    around the midpoint of the curve (approx. 50% of the maximum value for x)
 !!    and x6 is determined by solving the equation with x and y values measured
 !!    close to one of the endpoints of the curve (100% of the maximum value for
-!!    x) This subroutine is called from readbsn.f and readcrop.f
+!!    x) This subroutine is called from readbsn.f90 and readplant.f90
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
