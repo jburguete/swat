@@ -38,7 +38,8 @@ foreach $source (@sources)
 			"\t\$(cc) \$(cflags) ".$source." -o ".$obj."\n"
 	}
 }
-print DATA "\nlatex/refman.pdf: \$(sources) README.md Makefile Doxyfile\n".
+print DATA
+	"\nlatex/refman.pdf: \$(sources) bib.bib README.md Makefile Doxyfile\n".
 	"\tdoxygen\n\tcd latex; make";
 close DATA;
 @sources = (

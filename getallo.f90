@@ -105,14 +105,12 @@ subroutine getallo
    use parm
    implicit none
 
-   character (len=13) :: urbandb, plantdb, tilldb, pestdb, figfile,&
-   &fertdb, subfile, fcstfile, bsnfile
-   character (len=1) ::  a
    character (len=80) ::  titldum
-   integer :: icd, inm1, inm2, inm3, iht, eof, numhru, ic, nlines
-   integer :: ipnum, ifnum, iunum, itnum, j, ifcst, fcsttot, k
-!     septic database
-   integer  :: isnum   !! CS
+   character (len=13) :: bsnfile, fertdb, fcstfile, figfile, pestdb, plantdb,&
+      &subfile, tilldb, urbandb
+   integer :: eof, fcsttot, ic, icd, ifcst, ifnum, iht, inm1, inm2, inm3,&
+      &ipnum, isnum, itnum, iunum, j, k, nlines, numhru
+   character (len=1) ::  a
 
 !!    initialize variables
    title = ""

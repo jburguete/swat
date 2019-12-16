@@ -1,6 +1,5 @@
 !> @author
 !> modified by Javier Burguete Tolosa
-!
 !> @brief
 !> main module contatining the global variables
 module parm
@@ -15,17 +14,43 @@ module parm
    integer, parameter :: motot = 600 !! (50 years limit)
 
    integer icalen
+!> Basinwide peak rate adjustment factor for sediment routing in the channel.
+!> Allows impact of peak flow rate on sediment routing and channel reshaping to
+!> be taken into account.
    real*8 :: prf_bsn
 
 !!    srin - co2 (EPA)
    real*8 :: co2_x2, co2_x
 
    real*8, dimension (:), allocatable :: alph_e
-   real*8, dimension (:), allocatable :: co_p, surlag, cdn, nperco
-   real*8, dimension (:), allocatable :: cmn, phoskd, psp, sdnco
+!> denitrification exponential rate coefficient
+   real*8, dimension (:), allocatable :: cdn
+!> nitrate percolation coefficient (0-1)\n
+!> 0:concentration of nitrate in surface runoff is zero\n
+!> 1:percolate has same concentration of nitrate as surface runoff
+   real*8, dimension (:), allocatable :: nperco
+!> Surface runoff lag time. This parameter is needed in subbasins where the time
+!> of concentration is greater than 1 day. SURLAG is used to create a "storage"
+!> for surface runoff to allow the runoff to take longer than 1 day to reach the
+!> subbasin outlet (days)
+   real*8, dimension (:), allocatable :: surlag
+   real*8, dimension (:), allocatable :: co_p
+!> rate factor for humus mineralization on active organic N
+   real*8, dimension (:), allocatable :: cmn
+!> Phosphorus soil partitioning coefficient. Ratio of soluble phosphorus in
+!> surface layer to soluble phosphorus in runoff
+   real*8, dimension (:), allocatable :: phoskd
+!> Phosphorus availibility index. The fraction of fertilizer P remaining in
+!> labile pool after initial rapid phase of P sorption.
+   real*8, dimension (:), allocatable :: psp
+!> denitrification threshold: fraction of field capacity triggering
+!> denitrification
+   real*8, dimension (:), allocatable :: sdnco
 
 !!   change per JGA 8/31/2011 gsm for output.mgt
-   real*8 :: yield, burn_frlb, pst_kg, r2adj_bsn
+!> basinwide retention parameter adjustment factor (greater than 1)
+   real*8 :: r2adj_bsn
+   real*8 :: yield, burn_frlb, pst_kg
    real*8 :: yieldgrn, yieldbms, yieldtbr, yieldn, yieldp
    real*8 :: hi_bms, hi_rsd, yieldrsd
 !!    arrays for Landscape Transport Capacity 5/28/2009 nadia
@@ -55,74 +80,289 @@ module parm
    real*8 :: wshd_sepmm
    integer, dimension (:), allocatable :: isep_hru
 !! septic variables for output.std
-   real*8 :: fixco, nfixmx, rsd_covco, vcrit, res_stlr_co
+   real*8 :: fixco !< nitrogen fixation coefficient
+   real*8 :: nfixmx !< maximum daily n-fixation (kg/ha) 
+   real*8 :: res_stlr_co !< reservoir sediment settling coefficient
+   real*8 :: rsd_covco !< residue cover factor for computing frac of cover
+   real*8 :: vcrit !< critical velocity
    real*8 :: wshd_sw, wshd_snob, wshd_pndfr, wshd_pndv, wshd_pndsed
-   real*8 :: wshd_wetfr, wshd_resfr, wshd_resha, wshd_pndha, percop
+!> pesticide percolation coefficient (0-1)\n
+!> 0: concentration of pesticide in surface runoff is zero\n
+!> 1: percolate has same concentration of pesticide as surface runoff
+   real*8 :: percop
+   real*8 :: wshd_wetfr, wshd_resfr, wshd_resha, wshd_pndha
    real*8 :: wshd_fminp, wshd_ftotn, wshd_fnh3, wshd_fno3, wshd_forgn
    real*8 :: wshd_forgp, wshd_ftotp, wshd_yldn, wshd_yldp, wshd_fixn
    real*8 :: wshd_pup, wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
    real*8 :: wshd_astrs
-   real*8 :: wshd_hmn, wshd_rwn, wshd_hmp, wshd_rmn, wshd_dnit, ffcb
-   real*8 :: wshd_rmp, wshd_voln, wshd_nitn, wshd_pas, wshd_pal, wdpq
-   real*8 :: wshd_plch, wshd_raino3, ressedc, basno3f, basorgnf, wof_p
+!> initial soil water content expressed as a fraction of field capacity
+   real*8 :: ffcb
+   real*8 :: wshd_hmn, wshd_rwn, wshd_hmp, wshd_rmn, wshd_dnit
+!> die-off factor for persistent bacteria in soil solution (1/day)
+   real*8 :: wdpq
+   real*8 :: wshd_rmp, wshd_voln, wshd_nitn, wshd_pas, wshd_pal
+!> wash off fraction for persistent bacteria on foliage during a rainfall event
+   real*8 :: wof_p
+   real*8 :: wshd_plch, wshd_raino3, ressedc, basno3f, basorgnf
    real*8 :: wshd_pinlet, wshd_ptile
-   real*8 :: basminpf, basorgpf, sftmp, smtmp, smfmx, smfmn, wgpq
-   real*8 :: wshd_resv, wshd_ressed, basno3i, basorgni, basminpi, wdlpq
-   real*8 :: basorgpi, peakr, pndsedin, sw_excess, albday, wglpq, wdps
-   real*8 :: wtabelo, timp, tilep, wt_shall
+   real*8 :: sftmp !< Snowfall temperature (deg C)
+!> Minimum melt rate for snow during year (Dec. 21) where deg C refers to the
+!> air temperature. (mm/deg C/day)
+   real*8 :: smfmn
+!> Maximum melt rate for snow during year (June 21) where deg C refers to the
+!> air temperature. SMFMX and SMFMN allow the rate of snow melt to vary through
+!> the year. These parameters are accounting for the impact of soil temperature
+!> on snow melt. (mm/deg C/day)
+   real*8 :: smfmx
+!> Snow melt base temperature. Mean air temperature at which snow melt will
+!> occur. (deg C)
+   real*8 :: smtmp
+!> growth factor for persistent bacteria in soil solution (1/day)
+   real*8 :: wgpq
+   real*8 :: basminpf, basorgpf
+!> die-off factor for less persistent bacteria in soil solution (1/day)
+   real*8 :: wdlpq
+   real*8 :: wshd_resv, wshd_ressed, basno3i, basorgni, basminpi
+!> die-off factor for persistent bacteria adsorbed to soil particles (1/day)
+   real*8 :: wdps
+!> growth factor for less persistent bacteria in soil solution (1/day)
+   real*8 :: wglpq
+   real*8 :: basorgpi, peakr, pndsedin, sw_excess, albday
+!> Snow pack temperature lag factor (0-1)\n
+!> 1 = no lag (snow pack temp=current day air temp) as the lag factor goes to
+!> zero, the snow pack's temperature will be less influenced by the current
+!> day's air temperature
+   real*8 :: timp
+   real*8 :: wtabelo, tilep, wt_shall
    real*8 :: sq_rto
    real*8 :: tloss, inflpcp, snomlt, snofall, fixn, qtile, crk, latlyr
    real*8 :: pndloss, wetloss,potloss, lpndloss, lwetloss
    real*8 :: sedrch, fertn, sol_rd, cfertn, cfertp, sepday, bioday
    real*8 :: sepcrk, sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
    real*8 :: fertorgp
-   real*8 :: fertp, grazn, grazp, soxy, qdfr, sdti, rtwtr, ressa, wgps
-   real*8 :: rttime, rchdep, rtevp, rttlc, da_km, resflwi, wdlps, wglps
-   real*8 :: resflwo, respcp, resev, ressep,ressedi,ressedo,dtot,wdprch
-   real*8 :: nperco_bsn,pperco_bsn,rsdco,phoskd_bsn,voltot
-   real*8 :: volcrmin, msk_x
-   real*8 :: uno3d, canev, usle, rcn, surlag_bsn,bactkdq,precipday,wdpf
-   real*8 :: thbact, wpq20, wlpq20, wps20, wlps20, bactrop, bactsedp
-   real*8 :: bactlchp, bactlchlp, enratio, wetpcp, pndpcp, wetsep, wgpf
+!> growth factor for persistent bacteria adsorbed to soil particles (1/day)
+   real*8 :: wgps
+   real*8 :: fertp, grazn, grazp, soxy, qdfr, sdti, rtwtr, ressa
+!> die-off factor for less persistent bacteria absorbed to soil particles
+!> (1/day)
+   real*8 :: wdlps
+!> growth factor for less persistent bacteria adsorbed to soil particles
+!> (1/day)
+   real*8 :: wglps
+   real*8 :: rttime, rchdep, rtevp, rttlc, da_km, resflwi
+!> die-off factor for persistent bacteria in streams (1/day)
+   real*8 :: wdprch
+   real*8 :: resflwo, respcp, resev, ressep,ressedi,ressedo,dtot
+!> phosphorus percolation coefficient. Ratio of soluble phosphorus in surface to
+!> soluble phosphorus in percolate
+   real*8 :: pperco_bsn
+!> basin nitrate percolation coefficient (0-1)\n
+!> 0:concentration of nitrate in surface runoff is zero\n
+!> 1:percolate has same concentration of nitrate as surface runoff
+   real*8 :: nperco_bsn
+!> residue decomposition coefficient. The fraction of residue which will
+!> decompose in a day assuming optimal moisture, temperature, C:N ratio, and C:P
+!> ratio
+   real*8 :: rsdco
+   real*8 :: phoskd_bsn,voltot
+!> weighting factor controling relative importance of inflow rate and outflow
+!> rate in determining storage on reach
+   real*8 :: msk_x
+   real*8 :: volcrmin
+!> bacteria soil partitioning coefficient. Ratio of solution bacteria in surface
+!> layer to solution bacteria in runoff soluble and sorbed phase in surface
+!> runoff.
+   real*8 :: bactkdq
+!> die-off factor for persistent bacteria on foliage (1/day)
+   real*8 :: wdpf
+   real*8 :: uno3d, canev, usle, rcn, surlag_bsn, precipday
+   real*8 :: thbact !< temperature adjustment factor for bacteria die-off/growth
+!> overall rate change for less persistent bacteria in soil solution (1/day)
+   real*8 :: wlpq20
+!> overall rate change for less persistent bacteria adsorbed to soil particles
+!> (1/day)
+   real*8 :: wlps20
+!> overall rate change for persistent bacteria in soil solution (1/day)
+   real*8 :: wpq20
+!> overall rate change for persistent bacteria adsorbed to soil particles
+!> (1/day)
+   real*8 :: wps20
+   real*8 :: bactrop, bactsedp
+   real*8 :: wgpf !< growth factor for persistent bacteria on foliage (1/day)
+   real*8 :: bactlchp, bactlchlp, enratio, wetpcp, pndpcp, wetsep
    real*8 :: pndsep, wetev, pndev, pndsedo, wetsedo, pndflwi, wetflwi
    real*8 :: pndflwo, wetflwo, wetsedi, da_ha, vpd
-   real*8 :: bactrolp, bactsedlp, evrch, evlai, pet_day, ep_day, wdlpf
-   real*8 :: snoev, sno3up, adj_pkr, n_updis,p_updis,nactfr,reactw
+!> leaf area index at which no evaporation occurs.  This variable is used in
+!> ponded HRUs where evaporation from the water surface is restricted by the
+!> plant canopy cover. Evaporation from the water surface equals potential ET
+!> when LAI = 0 and decreased linearly to O when LAI = EVLAI
+   real*8 :: evlai
+!> Reach evaporation adjustment factor. Evaporation from the reach is multiplied
+!> by EVRCH. This variable was created to limit the evaporation predicted in
+!> arid regions.
+   real*8 :: evrch
+!> die-off factor for less persistent bacteria on foliage (1/day)
+   real*8 :: wdlpf
+   real*8 :: bactrolp, bactsedlp, pet_day, ep_day
+!> peak rate adjustment factor in the subbasin. Used in the MUSLE equation to
+!> account for impact of peak flow on erosion.
+   real*8 :: adj_pkr
+!> nitrogen uptake distribution parameter. This parameter controls the amount of
+!> nitrogen removed from the different soil layer layers by the plant. In
+!> particular, this parameter allows the amount of nitrogen removed from the
+!> surface layer via plant uptake to be controlled. While the relationship
+!> between UBN and N removed from the surface layer is affected by the depth of
+!> the soil profile, in general, as UBN increases the amount of N removed from
+!> the surface layer relative to the amount removed from the entire profile
+!> increases
+   real*8 :: n_updis
+!> nitrogen active pool fraction. The fraction of organic nitrogen in the active
+!> pool.
+   real*8 :: nactfr
+!> phosphorus uptake distribution parameter This parameter controls the amount
+!> of phosphorus removed from the different soil layers by the plant. In
+!> particular, this parameter allows the amount of phosphorus removed from the
+!> surface layer via plant uptake to be controlled. While the relationship
+!> between UBP and P uptake from the surface layer is affected by the depth of
+!> the soil profile, in general, as UBP increases the amount of P removed from
+!> the surface layer relative to the amount removed from the entire profile
+!> increases
+   real*8 :: p_updis
+   real*8 :: snoev, sno3up, reactw
    real*8 :: sdiegropq, sdiegrolpq, sdiegrops, sdiegrolps, es_day
-   real*8 :: sbactrop, sbactrolp, sbactsedp, sbactsedlp, ep_max, wof_lp
+!> wash off fraction for less persistent bacteria on foliage during a rainfall
+!> event
+   real*8 :: wof_lp
+   real*8 :: sbactrop, sbactrolp, sbactsedp, sbactsedlp, ep_max
    real*8 :: sbactlchp, sbactlchlp, psp_bsn, rchwtr, resuspst, setlpst
    real*8 :: bsprev, bssprev, spadyo, spadyev, spadysp, spadyrfv
    real*8 :: spadyosp
    real*8 :: qday, usle_ei, al5, pndsedc, no3pcp, rcharea, volatpst
-   real*8 :: wetsedc, uobw, ubw, uobn, uobp, respesti, wglpf
-   real*8 :: snocovmx, snocov1, snocov2, rexp, rcor, lyrtile, lyrtilex
-   real*8 :: ai0, ai1, ai2, ai3, ai4, ai5, ai6, rhoq, tfact, sno50cov
+!> water uptake distribution parameter. This parameter controls the amount of
+!> water removed from the different soil layers by the plant. In particular,
+!> this parameter allows the amount of water removed from the surface layer via
+!> plant uptake to be controlled. While the relationship between UBW and H2O
+!> removed from the surface layer is affected by the depth of the soil profile,
+!> in general, as UBW increases the amount of water removed from the surface
+!> layer relative to the amount removed from the entire profile increases
+   real*8 :: ubw
+!> nitrogen uptake normalization parameter. This variable normalizes the
+!> nitrogen uptake so that the model can easily verify that upake from the
+!> different soil layers sums to 1.0
+   real*8 :: uobn
+!> phosphorus uptake normalization parameter. This variable normalizes the
+!> phosphorus uptake so that the model can easily verify that uptake from the
+!> different soil layers sums to 1.0
+   real*8 :: uobp
+!> water uptake normalization parameter. This variable normalizes the water
+!> uptake so that the model can easily verify that uptake from the different
+!> soil layers sums to 1.0
+   real*8 :: uobw
+!> growth factor for less persistent bacteria on foliage (1/day)
+   real*8 :: wglpf
+   real*8 :: wetsedc, respesti
+!> correction coefficient for generated rainfall to ensure that the annual
+!> means for generated and observed values are comparable (needed only if
+!> IDIST=1)
+   real*8 :: rcor
+!> value of exponent for mixed exponential rainfall distribution (needed only if
+!> IDIST=1)
+   real*8 :: rexp
+!> 1st shape parameter for snow cover equation. This parameter is determined by
+!> solving the equation for 50% snow cover
+   real*8 :: snocov1
+!> 2nd shape parameter for snow cover equation. This parameter is determined by
+!> solving the equation for 95% snow cover
+   real*8 :: snocov2
+!> Minimum snow water content that corresponds to 100% snow cover. If the snow
+!> water content is less than SNOCOVMX, then a certain percentage of the ground
+!> will be bare (mm H2O)
+   real*8 :: snocovmx, lyrtile, lyrtilex
+!> Fraction of SNOCOVMX that corresponds to 50% snow cover. SWAT assumes a
+!> nonlinear relationship between snow water and snow cover
+   real*8 :: sno50cov
+   real*8 :: ai0, ai1, ai2, ai3, ai4, ai5, ai6, rhoq, tfact
    real*8 :: mumax, lambda0, lambda1, lambda2, k_l, k_n, k_p, p_n
    real*8 :: rnum1, autop, auton, etday, hmntl, rwntl, hmptl, rmn2tl
    real*8 :: rmptl,wdntl,cmn_bsn,rmp1tl,roctl,gwseep,revapday,reswtr
-   real*8 :: bury, difus, reactb, solpesto, petmeas, wdlprch, wdpres
-   real*8 :: sorpesto, spcon_bsn, spexp_bsn, solpesti, sorpesti,wdlpres
-   real*8 :: snoprev, swprev, shallstp, deepstp, msk_co1, msk_co2
+!> die-off factor for less persistent bacteria in streams (1/day)
+   real*8 :: wdlprch
+!> die-off factor for persistent bacteria in reservoirs (1/day)
+   real*8 :: wdpres
+   real*8 :: bury, difus, reactb, solpesto, petmeas
+!> die-off factor for less persistent bacteria in reservoirs (1/day)
+   real*8 :: wdlpres
+   real*8 :: sorpesto, spcon_bsn, spexp_bsn, solpesti, sorpesti
+!> calibration coefficient to control impact of the storage time constant for
+!> the reach at bankfull depth (phi(10,:) upon the storage time constant for the
+!> reach used in the Muskingum flow method
+   real*8 :: msk_co1
+!> calibration coefficient to control impact of the storage time constant for
+!> the reach at 0.1 bankfull depth (phi(13,:) upon the storage time constant for
+!> the reach used in the Muskingum flow method
+   real*8 :: msk_co2
+   real*8 :: snoprev, swprev, shallstp, deepstp
    real*8 :: ressolpo, resorgno, resorgpo, resno3o, reschlao, resno2o
    real*8 :: resnh3o, qdbank, potpcpmm, potevmm, potsepmm, potflwo
-   real*8 :: potsedo, pest_sol, trnsrch, wp20p_plt, bactminp, bactminlp
-   real*8 :: wp20lp_plt,cncoef,cdn_bsn,sdnco_bsn,bact_swf,bactmx,bactmin
-   real*8 :: chla_subco, tb_adj, cn_froz, dorm_hr, smxco
-   real*8 :: depimp_bsn, ddrain_bsn, tdrain_bsn, gdrain_bsn
+!> Threshold detection level for less persistent bacteria. When bacteria levels
+!> drop to this amount the model considers bacteria in the soil to be
+!> insignificant and sets the levels to zero (cfu/m^2)
+   real*8 :: bactminlp
+!> Threshold detection level for persistent bacteria. When bacteria levels
+!> drop to this amount the model considers bacteria in the soil to be
+!> insignificant and sets the levels to zero (cfu/m^2)
+   real*8 :: bactminp
+!> fraction of transmission losses from main channel that enter deep aquifer
+   real*8 :: trnsrch
+!> overall rate change for persistent bacteria on foliage (1/day)
+   real*8 :: wp20p_plt
+   real*8 :: potsedo, pest_sol
+!> fraction of manure containing active colony forming units (cfu)
+   real*8 :: bact_swf
+!> bacteria percolation coefficient. Ratio of solution bacteria in surface layer
+!> to solution bacteria in percolate
+   real*8 :: bactmx
+   real*8 :: cncoef !< plant ET curve number coefficient
+!> overall rate change for less persistent bacteria on foliage (1/day)
+   real*8 :: wp20lp_plt
+   real*8 :: cdn_bsn,sdnco_bsn,bactmin
+   real*8 :: cn_froz !< drainge coefficient (mm day -1)
+   real*8 :: dorm_hr !< time threshold used to define dormant (hours)
+   real*8 :: smxco !< adjustment factor for max curve number s factor (0-1)
+   real*8 :: tb_adj !< adjustment factor for subdaily unit hydrograph basetime
+   real*8 :: chla_subco
+!> depth to impervious layer. Used to model perched water tables in all HRUs in
+!> watershed (mm)
+   real*8 :: depimp_bsn
+   real*8 :: ddrain_bsn !< depth to the sub-surface drain (mm)
+   real*8 :: tdrain_bsn !< time to drain soil to field capacity (hours)
+   real*8 :: gdrain_bsn
    real*8 :: rch_san, rch_sil, rch_cla, rch_sag, rch_lag, rch_gra
 
 
 !!    declare mike van liew variables
-   real*8 :: hlife_ngw_bsn, ch_opco_bsn, ch_onco_bsn
-   real*8 :: bc1_bsn, bc2_bsn, bc3_bsn, bc4_bsn, rcn_sub_bsn, decr_min
+   real*8 :: hlife_ngw_bsn !< Half-life of nitrogen in groundwater? (days) 
+   real*8 :: ch_opco_bsn, ch_onco_bsn
+   real*8 :: decr_min !< Minimum daily residue decay
+   real*8 :: rcn_sub_bsn !< Concentration of nitrogen in the rainfall (mg/kg)
+   real*8 :: bc1_bsn, bc2_bsn, bc3_bsn, bc4_bsn
    real*8 :: anion_excl_bsn
 !!    delcare mike van liew variables
 
 !    Drainmod tile equations  01/2006
    real*8, dimension (:), allocatable :: wat_tbl,sol_swpwt
    real*8, dimension (:,:), allocatable :: vwt
-   real*8 :: re_bsn, sdrain_bsn, sstmaxd_bsn
-   real*8 :: drain_co_bsn, pc_bsn, latksatf_bsn
+   real*8 :: re_bsn !< Effective radius of drains (range 3.0 - 40.0) (mm)
+!> Distance bewtween two drain or tile tubes (range 7600.0 - 30000.0) (mm)
+   real*8 :: sdrain_bsn
+   real*8 :: sstmaxd_bsn
+!> Drainage coeffcient (range 10.0 - 51.0) (mm-day-1)
+   real*8 :: drain_co_bsn
+!> Multiplication factor to determine lateral ksat from SWAT ksat input value
+!>for HRU (range 0.01 - 4.0)
+   real*8 :: latksatf_bsn
+!> Pump capacity (def val = 1.042 mm h-1 or 25 mm day-1) (mm h-1)
+   real*8 :: pc_bsn
 !    Drainmod tile equations  01/2006
    integer :: i_subhw, imgt, idlast, iwtr, ifrttyp, mo_atmo, mo_atmo1
    integer :: ifirstatmo, iyr_atmo, iyr_atmo1, matmo
@@ -139,12 +379,28 @@ module parm
    integer :: mgr !< maximum number of grazings per year
    integer :: mnr !< max number of years of rotation
    integer :: myr !< max number of years of simulation
-   integer :: isubwq, ffcst
+!> subbasin water quality code\n
+!> 0 do not calculate algae/CBOD
+!> 1 calculate algae/CBOD drainmod tile equations
+   integer :: isubwq
+   integer :: ffcst
 !> special project code: 1 test rewind (run simulation twice)
    integer :: isproj
-   integer :: nhru, mo, nbyr, immo, nrch, nres, irte, i_mo
-   integer :: icode, ihout, inum1, inum2, inum3, inum4, wndsim, ihru
-   integer :: inum5, inum6, inum7, inum8, icfac
+   integer :: nbyr !< number of calendar years simulated
+!> water routing method:\n
+!> 0 variable storage method\n
+!> 1 Muskingum method\n
+   integer :: irte
+   integer :: nhru, mo, immo, nrch, nres, i_mo
+!> wind speed input code\n
+!> 1 measured data read for each subbasin\n
+!> 2 data simulated for each subbasin
+   integer :: wndsim
+   integer :: icode, ihout, inum1, inum2, inum3, inum4, ihru
+!> icfac = 0 for C-factor calculation using Cmin (as described in manual)\n
+!> = 1 for new C-factor calculation from RUSLE (no minimum needed)
+   integer :: icfac
+   integer :: inum5, inum6, inum7, inum8
    integer :: mrech !< maximum number of rechour files
    integer :: nrgage !< number of raingage files
    integer :: nrgfil !< number of rain gages per file
@@ -152,9 +408,32 @@ module parm
    integer :: ntgage !< number of temperature gage files
    integer :: ntgfil !< number of temperature gages per file
    integer :: nttot !< total number of temperature gages
-   integer :: lao, igropt, npmx, irtpest, curyr, tmpsim, icrk, iihru
+!> temperature input code\n
+!> 1 measured data read for each subbasin\n
+!> 2 data simulated for each subbasin
+   integer :: tmpsim
+!> crack flow code\n
+!> 1: compute flow in cracks
+   integer :: icrk
+!> number of pesticide to be routed through the watershed
+   integer :: irtpest
+   integer :: lao, igropt, npmx, curyr, iihru
 !    Drainmod tile equations  01/2006
-   integer :: ismax, itdrn, iwtdn, iroutunit, ires_nut
+!> tile drainage equations flag/code\n
+!> 1 simulate tile flow using subroutine drains(wt_shall)\n
+!> 0 simulate tile flow using subroutine origtile(wt_shall,d)
+   integer :: itdrn
+!> water table depth algorithms flag/code\n
+!> 1 simulate wt_shall using subroutine new water table depth routine\n
+!> 0 simulate wt_shall using subroutine original water table depth routine
+   integer :: iwtdn
+!> maximum depressional storage selection flag/code\n
+!> 0 = static depressional storage\n
+!> 1 = dynamic storage based on tillage and cumulative rainfall
+   integer :: ismax
+!> not being implemented in this version drainmod tile equations
+   integer :: iroutunit
+   integer :: ires_nut
 !    Drainmod tile equations  01/2006
    integer :: iclb !< auto-calibration flag
    integer :: mrecc !< maximum number of reccnst files
@@ -162,16 +441,62 @@ module parm
    integer :: mrecm !< maximum number of recmon files
    integer :: mtil !< max number of tillage types in till.dat
    integer :: mudb !< maximum number of urban land types in urban.dat
+!> rainfall distribution code\n
+!>   0 for skewed normal dist\n
+!>   1 for mixed exponential distribution
    integer :: idist
    integer :: mrecy !< maximum number of recyear files
-   integer :: ipet, nyskip, ideg, ievent, slrsim, iopera
-   integer :: id1, idaf, idal, leapyr, mo_chk, rhsim
+   integer :: nyskip !< number of years to not print output
+!> solar radiation input code\n
+!> 1 measured data read for each subbasin\n
+!> 2 data simulated for each subbasin
+   integer :: slrsim
+!> channel degredation code\n
+!> 1: compute channel degredation (downcutting and widening)
+   integer :: ideg
+!> rainfall/runoff code\n
+!> 0 daily rainfall/curve number technique
+!> 1 sub-daily rainfall/Green&Ampt/hourly routing
+!> 3 sub-daily rainfall/Green&Ampt/hourly routing
+   integer :: ievent
+!> code for potential ET method\n
+!> 0 Priestley-Taylor method\n
+!> 1 Penman/Monteith method\n
+!> 2 Hargreaves method\n
+!> 3 read in daily potential ET data
+   integer :: ipet
+   integer :: iopera
+   integer :: idaf !< beginning day of simulation (julian date)
+   integer :: idal !< ending day of simulation (julian date)
+!> relative humidity input code\n
+!> 1 measured data read for each subbasin\n
+!> 2 data simulated for each subbasin
+   integer :: rhsim
+   integer :: id1, leapyr, mo_chk
    integer :: nhtot !< number of relative humidity records in file
    integer :: nstot !< number of solar radiation records in file
    integer :: nwtot !< number of wind speed records in file
    integer :: ifirsts, ifirsth, ifirstw, icst
-   integer :: ilog, i, iyr, itotr, iwq, iskip, ifirstpet
-   integer :: itotb,itots,iprp,pcpsim,itoth,nd_30,iops,iphr,isto,isol
+   integer :: ilog !< streamflow print code
+   integer :: itotr !< number of output variables printed (output.rch)
+   integer :: iyr !< beginning year of simulation (year)
+!> stream water quality code\n
+!> 0 do not model stream water quality\n
+!> 1 model stream water quality (QUAL2E & pesticide transformations)
+   integer :: iwq
+   integer :: i, iskip, ifirstpet
+!> print code for output.pst file\n
+!> 0 do not print pesticide output\n
+!> 1 print pesticide output
+   integer :: iprp
+   integer :: itotb !< number of output variables printed (output.sub)
+   integer :: itots !< number of output variables printed (output.hru)
+   integer :: itoth !< number of HRUs printed (output.hru/output.wtr)
+!> rainfall input code\n
+!> 1 measured data read for each subbasin\n
+!> 2 data simulated for each subbasin
+   integer :: pcpsim
+   integer :: nd_30,iops,iphr,isto,isol
 !> number of times forecast period is simulated (using different weather
 !> generator seeds each time)
    integer :: fcstcycles
@@ -184,8 +509,21 @@ module parm
    integer :: mpst !< max number of pesticides used in wshed
    integer :: mres !< maximum number of reservoirs
    integer :: msub !< maximum number of subbasins
-   integer :: igen, iprint, iida
-   integer :: fcstcnt, icn, ised_det, mtran, idtill
+!> random number generator code:\n
+!> 0: use default numbers\n
+!> 1: generate new numbers in every simulation
+   integer :: igen
+   integer :: iprint !< print code: 0=monthly, 1=daily, 2=annual
+   integer :: iida
+!> CN method flag (for testing alternative method):\n
+!> 0 use traditional SWAT method which bases CN on soil moisture\n
+!> 1 use alternative method which bases CN on plant ET
+   integer :: icn
+!> max half-hour rainfall fraction calc option:\n
+!> 0 generate max half-hour rainfall fraction from triangular distribution\n
+!> 1 use monthly mean max half-hour rainfall fraction
+   integer :: ised_det
+   integer :: fcstcnt, mtran, idtill
    integer, dimension(100) :: ida_lup, iyr_lup
    integer :: no_lup, no_up, nostep
 !  routing 5/3/2010 gsm per jga
@@ -201,12 +539,18 @@ module parm
 !> Time)
    character(len=5) :: zone
    character(len=80) :: prog !< SWAT program header string
-   character(len=13) :: slrfile, wndfile, rhfile, petfile, calfile
+!> name of file containing calibration parameters
+   character(len=13) :: calfile
+   character(len=13) :: rhfile !< relative humidity file name (.hmd)
+   character(len=13) :: slrfile !< solar radiation file name (.slr)
+   character(len=13) :: wndfile !< wind speed file name (.wnd)
+   character(len=13) :: petfile !< potential ET file name (.pet)
    character(len=13) :: atmofile, lucfile
 !> name of septic tank database file (septwq1.dat)
    character(len=13) :: septdb
    character(len=13) :: dpd_file, wpd_file, rib_file, sfb_file,&
    &lid_file
+!> array location of random number seed used for a given process
    integer, dimension (9) :: idg
    integer, dimension (:), allocatable :: ifirstr, ifirsthr
 !> values(1): year simulation is performed\n
@@ -292,9 +636,14 @@ module parm
    integer, dimension (mhruo) :: icols
    integer, dimension (mrcho) :: icolr
    integer, dimension (msubo) :: icolb
+!> output variable codes for output.rch file
    integer, dimension (46) :: ipdvar
+!> output varaible codes for output.hru file
    integer, dimension (mhruo) :: ipdvas
+!> output variable codes for output.sub file
    integer, dimension (msubo) :: ipdvab
+!> HRUs whose output information will be printed to the output.hru and 
+!> output.wtr files
    integer, dimension (:), allocatable :: ipdhru
    real*8, dimension (mstdo) :: wshddayo,wshdmono,wshdyro
    real*8, dimension (16) :: fcstaao
@@ -319,7 +668,10 @@ module parm
    real*8, dimension (:,:,:), allocatable :: fpr_w,fpcp_stat
 ! mch = max number of channels
    real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi,ch_d
-   real*8, dimension (:), allocatable :: ch_onco, ch_opco
+!> channel organic n concentration (ppm)
+   real*8, dimension (:), allocatable :: ch_onco
+!> channel organic p concentration (ppm)
+   real*8, dimension (:), allocatable :: ch_opco
    real*8, dimension (:), allocatable :: ch_orgn, ch_orgp
    real*8, dimension (:), allocatable :: drift,rch_dox,rch_bactp
    real*8, dimension (:), allocatable :: alpha_bnk,alpha_bnke
@@ -344,7 +696,12 @@ module parm
    real*8, dimension (:), allocatable :: depclach,depsagch,deplagch
    real*8, dimension (:), allocatable :: depgrach,depgrafp,grast
    real*8, dimension (:), allocatable :: depprch,depprfp,prf,r2adj
-   real*8, dimension (:), allocatable :: spcon, spexp
+!> linear parameter for calculating sediment reentrained in channel sediment
+!> routing
+   real*8, dimension (:), allocatable :: spcon
+!> exponent parameter for calculating sediment reentrained in channel sediment
+!> routing
+   real*8, dimension (:), allocatable :: spexp
    real*8, dimension (:), allocatable :: sanst,silst,clast,sagst,lagst
    real*8, dimension (:), allocatable :: pot_san,pot_sil,pot_cla
    real*8, dimension (:), allocatable :: pot_sag,pot_lag
@@ -377,7 +734,19 @@ module parm
    real*8, dimension (:), allocatable :: sedpst_act,rch_cbod,rch_bactlp
    real*8, dimension (:), allocatable :: chside,rs1,rs2,rs3,rs4,rs5
    real*8, dimension (:), allocatable :: rs6,rs7,rk1,rk2,rk3,rk4,rk5
-   real*8, dimension (:), allocatable :: rk6,bc1,bc2,bc3,bc4,ammonian
+!> rate constant for biological oxidation of NH3 to NO2 in reach at 20 deg C
+!> (1/hr)          
+   real*8, dimension (:), allocatable :: bc1
+!> rate constant for biological oxidation of NO2 to NO3 in reach at 20 deg C
+!> (1/hr)
+   real*8, dimension (:), allocatable :: bc2
+!> rate constant for hydrolysis of organic N to ammonia in reach at 20 deg C
+!> (1/hr)          
+   real*8, dimension (:), allocatable :: bc3
+!> rate constant for the decay of organic P to dissolved P in reach at 20 deg C
+!> (1/hr)          
+   real*8, dimension (:), allocatable :: bc4
+   real*8, dimension (:), allocatable :: rk6,ammonian
    real*8, dimension (:), allocatable :: orig_sedpstconc
    real*8, dimension (:,:), allocatable :: wurch
    integer, dimension (:), allocatable :: icanal
@@ -434,6 +803,8 @@ module parm
 ! mlyr = max number of soil layers
    real*8, dimension (:,:), allocatable :: sol_aorgn,sol_tmp,sol_fon
    real*8, dimension (:,:), allocatable :: sol_awc,sol_prk,volcr
+!> subbasin phosphorus percolation coefficient. Ratio of soluble phosphorus in
+!> surface to soluble phosphorus in percolate
    real*8, dimension (:,:), allocatable :: pperco_sub
    real*8, dimension (:,:), allocatable :: sol_actp,sol_stap,conv_wt
    real*8, dimension (:,:), allocatable :: sol_solp,sol_ul,sol_fc,crdep
@@ -572,7 +943,11 @@ module parm
    integer, dimension (:), allocatable :: ioper
    integer, dimension (:), allocatable :: ngrwat
    real*8, dimension (:), allocatable :: filterw,sumix,usle_ls,phuacc
-   real*8, dimension (:), allocatable :: esco,epco,slsubbsn,hru_slp
+!> plant water uptake compensation factor (0-1)
+   real*8, dimension (:), allocatable :: epco
+!> soil evaporation compensation factor (0-1)
+   real*8, dimension (:), allocatable :: esco
+   real*8, dimension (:), allocatable :: slsubbsn,hru_slp
    real*8, dimension (:), allocatable :: erorgn,erorgp,biomix,pnd_seci
    real*8, dimension (:), allocatable :: flowmin,divmax,canmx,usle_p
    real*8, dimension (:), allocatable :: lat_sed,rch_dakm,pnd_no3s,cn1
@@ -628,15 +1003,20 @@ module parm
    real*8, dimension (:), allocatable :: alpha_bf_d,alpha_bfe_d
    real*8, dimension (:), allocatable :: gw_qdeep
    real*8, dimension (:), allocatable :: gw_delaye,gw_revap,rchrg_dp
-   real*8, dimension (:), allocatable :: revapmn,anion_excl,rchrg
+!> fraction of porosity from which anions are excluded
+   real*8, dimension (:), allocatable :: anion_excl
+   real*8, dimension (:), allocatable :: revapmn,rchrg
    real*8, dimension (:), allocatable :: ffc,bio_min,surqsolp
    real*8, dimension (:), allocatable :: cklsp,deepst,shallst,wet_solpg
    real*8, dimension (:), allocatable :: rchrg_src
    real*8, dimension (:), allocatable :: wet_no3g,sol_avbd,trapeff
    real*8, dimension (:), allocatable :: gwqmn,tdrain,pplnt,snotmp
-   real*8, dimension (:), allocatable :: ddrain,gdrain,sol_crk,dayl,brt
+   real*8, dimension (:), allocatable :: gdrain !< drain tile lag time (hours)
+   real*8, dimension (:), allocatable :: ddrain,sol_crk,dayl,brt
 !    Drainmod tile equations  01/2006
-   real*8, dimension (:), allocatable ::ddrain_hru,re,sdrain,sstmaxd
+!> static maximum depressional storage; read from .sdr (mm)
+   real*8, dimension (:), allocatable :: sstmaxd
+   real*8, dimension (:), allocatable :: ddrain_hru,re,sdrain
    real*8, dimension (:), allocatable :: stmaxd,drain_co,pc,latksatf
 !    Drainmod tile equations  01/2006
    real*8, dimension (:), allocatable :: twash,rnd2,rnd3,sol_cnsw,doxq
@@ -726,7 +1106,20 @@ module parm
    integer, dimension (:), allocatable :: ncpest,icpst,ndcpst
    integer, dimension (:), allocatable :: iday_pest, irr_flag
    integer, dimension (:), allocatable :: irra_flag
-   integer, dimension (:,:), allocatable :: rndseed, iterr, iyterr
+!> random number generator seed. The seeds in the array are used to generate
+!> random numbers for the following purposes:\n
+!> (1) wet/dry day probability\n
+!> (2) solar radiation\n
+!> (3) precipitation\n
+!> (4) USLE rainfall erosion index\n
+!> (5) wind speed\n
+!> (6) 0.5 hr rainfall fraction\n
+!> (7) relative humidity\n
+!> (8) maximum temperature\n
+!> (9) minimum temperature\n
+!> (10) generate new random numbers
+   integer, dimension (:,:), allocatable :: rndseed
+   integer, dimension (:,:), allocatable :: iterr, iyterr
    integer, dimension (:,:), allocatable :: itdrain, iydrain, ncrops
    integer, dimension (:), allocatable :: manure_id
 
@@ -739,12 +1132,10 @@ module parm
    real*8, dimension (:), allocatable :: wshd_pstap, wshd_pstdg
    integer, dimension (12) :: ndmo
    integer, dimension (:), allocatable :: npno,mcrhru
-   character(len=13), dimension (18) :: rfile,tfile
-!!      character(len=1), dimension (50000) :: hydgrp, kirr  !!for srin's big run
+   character(len=13), dimension (18) :: rfile !< rainfall file names (.pcp)
+   character(len=13), dimension (18) :: tfile !< temperature file names (.tmp)
 
-!     character(len=4), dimension (50) :: urbname
    character(len=4), dimension (1000) :: urbname
-!!      character(len=16), dimension (50000) :: snam   !! for srin's big runs
 
    character(len=1), dimension (:), allocatable :: hydgrp, kirr
    character(len=16), dimension (:), allocatable :: snam
@@ -752,7 +1143,7 @@ module parm
 !!    adding qtile to output.hru write 3/2/2010 gsm  increased heds(70) to heds(71)
    character(len=13) :: heds(79),hedb(24),hedr(46),hedrsv(41)
    character(len=13) :: hedwtr(40)
-   character(len=4) :: title(60) !< description lines in file.cio(1st 3 lines)
+   character(len=4) :: title(60) !< description lines in file.cio (1st 3 lines)
    character(len=4) :: cpnm(5000)
    character(len=17), dimension(50) :: fname
 ! measured input files
@@ -777,7 +1168,11 @@ module parm
    real*8, dimension (:), allocatable :: cbodcnst,solpstcnst,srbpstcnst
 
 ! hourly time step (by AVG)
+!!    nstep       |none        |number of lines of rainfall data for each
+!!                             |day
    integer :: nstep !< max number of time steps per day
+!> length of time step used to report precipitation data for sub-daily modeling
+!> (minutes)
    integer :: idt
    real*8, dimension (:), allocatable :: hrtwtr,hhstor,hdepth,hsdti
    real*8, dimension (:), allocatable :: hrchwtr,halgae,horgn,hnh4
@@ -803,6 +1198,9 @@ module parm
    real*8, dimension (:,:), allocatable :: filter_con,filter_ch
 !! sj, june 07 modifications to carbon balance routines
    real*8, dimension (:,:), allocatable :: sol_n
+!> = 0 Static soil carbon (old mineralization routines)\n
+!> = 1 C-FARM one carbon pool model\n
+!> = 2 Century model
    integer :: cswat
 !! sj, june 07 end
 
@@ -823,9 +1221,25 @@ module parm
    real*8, dimension (:,:,:), allocatable :: hhsurf_bs
 
 !! subdaily erosion modeling by Jaehak Jeong
-   integer:: sed_ch,iuh
-   real*8 :: eros_spl, rill_mult, eros_expo, sedprev, c_factor
-   real*8 :: sig_g, ch_d50, uhalpha, abstinit,abstmax
+!> unit hydrograph method: 1=triangular UH; 2=gamma funtion UH;
+   integer:: iuh
+!> channel routing for HOURLY; 0=Bagnold; 2=Brownlie; 3=Yang;
+   integer:: sed_ch
+!> an exponent in the overland flow erosion equation ranges 1.5-3.0
+   real*8 :: eros_expo
+   real*8 :: eros_spl !< coefficient of splash erosion varing 0.9-3.1
+!> Multiplier to USLE_K for soil susceptible to rill erosion, range 0.5-2.0
+   real*8 :: rill_mult
+   real*8 :: sedprev, c_factor
+   real*8 :: ch_d50 !< median particle diameter of channel bed (mm)
+!> geometric standard deviation of particle sizes for the main channel. Mean air
+!> temperature at which precipitation is equally likely to be rain as
+!> snow/freezing rain.
+   real*8 :: sig_g
+!> alpha coefficient for estimating unit hydrograph using a gamma function
+!> (*.bsn)
+   real*8 :: uhalpha
+   real*8 :: abstinit,abstmax
    real*8, dimension(:,:), allocatable:: hhsedy, sub_subp_dt
    real*8, dimension(:,:), allocatable:: sub_hhsedy,sub_atmp
    real*8, dimension(:), allocatable:: rhy,init_abstrc

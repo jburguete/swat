@@ -946,6 +946,6 @@ zeroini.o: zeroini.f90 parm.mod Makefile
 zero_urbn.o: zero_urbn.f90 parm.mod Makefile
 	$(cc) $(cflags) zero_urbn.f90 -o zero_urbn.o
 
-latex/refman.pdf: $(sources) README.md Makefile Doxyfile
+latex/refman.pdf: $(sources) README.md Makefile Doxyfile bib.bib
 	doxygen
 	cd latex; make

@@ -1,3 +1,19 @@
+!> @file aunif.f90
+!> @author
+!> modified by Javier Burguete
+!> @brief
+!> This function generates random numbers ranging from 0.0 to 1.0.
+!> @param x1
+!> random number generator seed (integer) where \f$0 < x1 < 2147483647\f$
+!> @return random number ranging from 0.0 to 1.0
+!>
+!> In the process of calculating the random number, the seed (x1) is
+!> set to a new value.
+!> This function implements the prime-modulus generator
+!> \f\[xi=16807\,xi\,\textrm{mod}\left(2^{31}-1\right)\f\]
+!> using code which ensures that no intermediate result uses more than
+!> 31 bits.
+!> The theory behind the code is summarized in \cite Bratley83
 real*8 function aunif (x1) result (unif)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~

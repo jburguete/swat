@@ -1,3 +1,11 @@
+!> @file gcycl.f90
+!> @author
+!> modified by Javier Burguete
+!> @brief
+!> This subroutine initializes the random number seeds. If the user
+!> desires a different set of random numbers for each simulation run,
+!> the random number generator is used to reset the values of the
+!> seeds.
 subroutine gcycl
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~

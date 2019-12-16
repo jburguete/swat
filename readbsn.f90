@@ -1,3 +1,10 @@
+!> @file readbsn.f90
+!> @author
+!> modified by Javier Burguete
+!> @brief
+!> this subroutine reads data from the basin input file (.bsn). This file
+!> contains information related to processes modeled or defined at the
+!> watershed level
 subroutine readbsn
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -42,25 +49,24 @@ subroutine readbsn
 !!                                    |to dissolved P in reach at 20 deg C
 !!    bf_flag          |
 !!    cdn              |none          |denitrification exponential rate coefficient
-!!    cfactor          |              |scaling parameter for cover and mgt factor in ANSWERS erosion model
 !!    ch_d50           |mm            |median particle diameter of channel bed
 !!    ch_onco(:)       |ppm           |channel organic n concentration
 !!    ch_opco(:)       |ppm           |channel organic p concentration
 !!    cmn              |none          |rate factor for humus mineralization on
 !!                                    |active organic N
 !!    cncoef           |none          |plant ET curve number coefficient
-!!    cnfroz           |              |Drainge coefficient (mm day -1)
+!!    cn_froz          |              |Drainge coefficient (mm day -1)
 !!    cswat                           | = 0 Static soil carbon (old mineralization routines)
 !!                                 = 1 C-FARM one carbon pool model
 !!                                 = 2 Century model
 !!    decr_min    |              |Minimum daily residue decay
 !!    depimp_bsn  |mm            |depth to impervious layer. Used to model
 !!                               |perched water tables in all HRUs in watershed
-!!    drain_co_bsn |mm-day-1     |Drainage coeffcient (range 10.0 - 51.0)
 !!    ddrain_bsn  |mm            |depth to the sub-surface drain
 !!    dorm_hr     |hours         |time threshold used to define dormant
+!!    drain_co_bsn |mm-day-1     |Drainage coeffcient (range 10.0 - 51.0)
 !!    epco(:)     |none          |plant water uptake compensation factor (0-1)
-!!    eros_expo   |              |an expoenet in the overland flow erosion equ ranges 1.5-3.0
+!!    eros_expo   |              |an exponent in the overland flow erosion eq. ranges 1.5-3.0
 !!    eros_spl    |none          |coefficient of splash erosion varing 0.9-3.1
 !!    esco(:)     |none          |soil evaporation compensation factor (0-1)
 !!    evlai       |none          |leaf area index at which no evaporation
@@ -78,7 +84,7 @@ subroutine readbsn
 !!                               |fraction of field capacity
 !!    fixco       |none          |nitrogen fixation coefficient
 !!    gdrain      |hours         |drain tile lag time
-!!    hlife_ngw   |days          |?Half-life of nitrogen in groundwater
+!!    hlife_ngw_bsn|days         |?Half-life of nitrogen in groundwater
 !!    icfac       |              | icfac = 0 for C-factor calculation using
 !!                                  Cmin (as described in manual)
 !!                                       = 1 for new C-factor calculation
@@ -224,7 +230,6 @@ subroutine readbsn
 !!    sstmaxd(:)  |mm            |static maximum depressional storage; read from .sdr
 !----------------------------retention parameter adjustment factor D. Moriasi 4/8/2014
 !!    r2adj_bsn   |none          |basinwide retention parameter adjustment factor (greater than 1)! D. Moriasi 4/8/2014
-!!    smfmn       |mm/deg C/day  |Minimum melt rate for snow during year (Dec.
 !!    smfmn       |mm/deg C/day  |Minimum melt rate for snow during year (Dec.
 !!                               |21) where deg C refers to the air temperature.
 !!    smfmx       |mm/deg C/day  |Maximum melt rate for snow during year (June

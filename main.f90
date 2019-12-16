@@ -86,9 +86,9 @@ program main
    !! convert integer to string for output.mgt file
    subnum = ""
    hruno = ""
-   do ii = 1, mhru
-      write (subnum(ii),fmt=' (i5.5)') hru_sub(ii)
-      write (hruno(ii),fmt=' (i4.4)') hru_seq(ii)
+   do i = 1, mhru
+      write (subnum(i),fmt=' (i5.5)') hru_sub(i)
+      write (hruno(i),fmt=' (i4.4)') hru_seq(i)
    end do
 
    if (isproj == 2) then
