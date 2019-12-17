@@ -2,7 +2,7 @@
 !> file containing the subroutine ascrv
 !> @author
 !> modified by Javier Burguete
-!>
+
 !> this subroutine computes shape parameters x5 and x6 for the S curve equation
 !> \f\[x=\frac{y}{y+\exp(x5+x6\,y)}\f\]
 !> given 2 (x,y) points along the curve. x5 is determined by solving the
@@ -28,15 +28,6 @@
 !> 2nd shape parameter for S curve equation characterizing the regions close to
 !> the endpoints of the curve
 subroutine ascrv(x1,x2,x3,x4,x5,x6)
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes shape parameters x5 and x6 for the S curve
-!!    equation x = y/(y + exp(x5 + x6*y)) given 2 (x,y) points along the curve.
-!!    x5 is determined by solving the equation with x and y values measured
-!!    around the midpoint of the curve (approx. 50% of the maximum value for x)
-!!    and x6 is determined by solving the equation with x and y values measured
-!!    close to one of the endpoints of the curve (100% of the maximum value for
-!!    x) This subroutine is called from readbsn.f90 and readplant.f90
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

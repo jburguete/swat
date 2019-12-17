@@ -1,9 +1,12 @@
-subroutine readsdr
+!> @file readsdr.f90
+!> file containing the subroutine readsdr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU/subbasin management input file
-!!    (.mgt). This file contains data related to management practices used in
-!!    the HRU/subbasin.
+!> this subroutine reads data from the HRU/subbasin management input file
+!> (.mgt). This file contains data related to management practices used in
+!> the HRU/subbasin.
+subroutine readsdr
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name      |units            |definition
@@ -24,17 +27,10 @@ subroutine readsdr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
 !!    eof         |none          |end of file flag (=-1 if eof, else = 0)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mgt3i       |none          |third management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
 !!    titldum     |NA            |title line from input dataset
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: Jdt
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -42,23 +38,24 @@ subroutine readsdr
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
+   integer :: j, eof
 
+   j = ihru
    do
       read (112,5000,iostat=eof) titldum
       if (eof < 0) exit
 !!      read scheduled operations
-      read (112,*,iostat=eof) re(ihru)
+      read (112,*,iostat=eof) re(j)
       if (eof < 0) exit
-      read (112,*,iostat=eof) sdrain(ihru)
+      read (112,*,iostat=eof) sdrain(j)
       if (eof < 0) exit
-      read (112,*,iostat=eof) drain_co(ihru)
+      read (112,*,iostat=eof) drain_co(j)
       if (eof < 0) exit
-      read (112,*,iostat=eof) pc(ihru)
+      read (112,*,iostat=eof) pc(j)
       if (eof < 0) exit
-      read (112,*,iostat=eof) latksatf(ihru)
+      read (112,*,iostat=eof) latksatf(j)
       if (eof < 0) exit
-      read (112,*,iostat=eof) sstmaxd(ihru)
+      read (112,*,iostat=eof) sstmaxd(j)
       if (eof < 0) exit
    end do
 

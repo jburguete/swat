@@ -1,7 +1,10 @@
-subroutine readsno
+!> @file readsno.f90
+!> file containing the subroutine readsno
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine reads snow data from the HRU/subbasin soil chemical input
+!> this subroutine reads snow data from the HRU/subbasin soil chemical input
+subroutine readsno
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -11,7 +14,7 @@ subroutine readsno
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
-!!    name          |units         |definition
+!!    name         |units         |definition
 !!    sub_sftmp    |deg C         |Snowfall temperature
 !!                                |Mean air temperature at which precipitation
 !!                                |is equally likely to be rain as snow/freezing
@@ -29,7 +32,7 @@ subroutine readsno
 !!                                |occur.
 !!    sub_timp     |none          |snow pack temperature lag factor (0-1)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hrupest(:)    |none          |pesticide use flag:
+!!    hrupest(:)   |none          |pesticide use flag:
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~

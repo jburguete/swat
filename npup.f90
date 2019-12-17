@@ -36,9 +36,9 @@ subroutine npup
 !!                                |entire profile increases
 !!    phuacc(:)   |none           |fraction of plant heat units accumulated
 !!    plantp(:)   |kg P/ha        |amount of phosphorus stored in plant
-!!    pltpfr(1,:) |kg P/kg biomass|phosphorus uptake parameter #1: normal
+!!    pltpfr1(:) |kg P/kg biomass|phosphorus uptake parameter #1: normal
 !!                                |fraction of P in crop biomass at emergence
-!!    pltpfr(3,:) |kg P/kg biomass|phosphorus uptake parameter #3: normal
+!!    pltpfr3(:) |kg P/kg biomass|phosphorus uptake parameter #3: normal
 !!                                |fraction of P in crop biomass at maturity
 !!    sol_nly(:)  |none           |number of soil layers in profile
 !!    sol_solp(:,:)|kg P/ha       |amount of phosohorus stored in solution
@@ -97,14 +97,14 @@ subroutine npup
    j = ihru
 
    icrop = idplt(j)
-   pltfr_p(j) = (pltpfr(1,icrop) - pltpfr(3,icrop)) * (1. - phuacc(j)&
+   pltfr_p(j) = (pltpfr1(icrop) - pltpfr3(icrop)) * (1. - phuacc(j)&
    &/ (phuacc(j) + Exp(bio_p1(icrop) - bio_p2(icrop) * phuacc(j))))&
-   &+ pltpfr(3,icrop)
+   &+ pltpfr3(icrop)
 
    up2 = pltfr_p(j) * bio_ms(j)
    if (up2 < plantp(j)) up2 = plantp(j)
    uapd = up2 - plantp(j)
-   !uapd = Min(4. * pltpfr(3,icrop) * bioday, uapd)
+   !uapd = Min(4. * pltpfr3(icrop) * bioday, uapd)
    uapd = 1.5 * uapd                         !! luxury p uptake
 
    strsp(j) = 1.

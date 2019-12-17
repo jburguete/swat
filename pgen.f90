@@ -69,14 +69,11 @@ subroutine pgen(j)
    real*8 :: xx, vv, pcpgen, v8, r6, xlv
 
    k = hru_sub(j)
-   select case (npcp(j))
-    case (1)
+   if (npcp(j) == 1) then
       xx = pr_w1(i_mo,k)
-    case (2)
+   else
       xx = pr_w2(i_mo,k)
-    case default
-      xx = pr_w3(i_mo,k)
-   end select
+   end if
    vv = Aunif(rndseed(idg(1),j))
    if (vv > xx) then
       pcpgen = 0.

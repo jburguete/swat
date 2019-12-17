@@ -431,8 +431,12 @@ subroutine zero0
    pc_bsn = 0.
 !    Drainmod tile equations  01/2006
    phubase = 0.
-   pltnfr = 0.
-   pltpfr = 0.
+   pltnfr1 = 0.
+   pltnfr2 = 0.
+   pltnfr3 = 0.
+   pltpfr1 = 0.
+   pltpfr2 = 0.
+   pltpfr3 = 0.
    pot_seep = 0.
 !----------------------- !Moriasi 4/8/2014
    prf = 0.

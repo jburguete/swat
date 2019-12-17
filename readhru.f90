@@ -1,9 +1,12 @@
-subroutine readhru
+!> @file readhru.f90
+!> file containing the subroutine readhru
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU general input file (.hru).
-!!    This file contains data related to general processes modeled
-!!    at the HRU level.
+!> this subroutine reads data from the HRU general input file (.hru).
+!> This file contains data related to general processes modeled
+!> at the HRU level.
+subroutine readhru
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -115,7 +118,7 @@ subroutine readhru
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
+   integer :: j, eof
    real*8 :: xm, sin_sl, epcohru, escohru, xx
 
 
@@ -123,46 +126,47 @@ subroutine readhru
    eof = 0
    escohru = 0.
    epcohru = 0.
+   j = ihru
 
    do
       read (108,5100) titldum
-      read (108,*) hru_fr(ihru)
-      read (108,*) slsubbsn(ihru)
-      read (108,*) hru_slp(ihru)
-      read (108,*) ov_n(ihru)
-      read (108,*) lat_ttime(ihru)
-      read (108,*) lat_sed(ihru)   !read in in mg/L
-      read (108,*) slsoil(ihru)
-      read (108,*,iostat=eof) canmx(ihru)
+      read (108,*) hru_fr(j)
+      read (108,*) slsubbsn(j)
+      read (108,*) hru_slp(j)
+      read (108,*) ov_n(j)
+      read (108,*) lat_ttime(j)
+      read (108,*) lat_sed(j)   !read in in mg/L
+      read (108,*) slsoil(j)
+      read (108,*,iostat=eof) canmx(j)
       if (eof < 0) exit
       read (108,*,iostat=eof) escohru
       if (eof < 0) exit
       read (108,*,iostat=eof) epcohru
       if (eof < 0) exit
-      read (108,*,iostat=eof) rsdin(ihru)
+      read (108,*,iostat=eof) rsdin(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) erorgn(ihru)
+      read (108,*,iostat=eof) erorgn(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) erorgp(ihru)
+      read (108,*,iostat=eof) erorgp(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_fr(ihru)
+      read (108,*,iostat=eof) pot_fr(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) fld_fr(ihru)
+      read (108,*,iostat=eof) fld_fr(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) rip_fr(ihru)
+      read (108,*,iostat=eof) rip_fr(j)
       if (eof < 0) exit
       read (108,5100,iostat=eof) titldum
       if (eof < 0) exit
-!      if (ipot(ihru) == ihru) then   Srini pothole
-      read (108,*,iostat=eof) pot_tilemm(ihru)    !!NUBZ
+!      if (ipot(j) == j) then   Srini pothole
+      read (108,*,iostat=eof) pot_tilemm(j)    !!NUBZ
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_volxmm(ihru)
+      read (108,*,iostat=eof) pot_volxmm(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_volmm(ihru)
+      read (108,*,iostat=eof) pot_volmm(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_nsed(ihru)
+      read (108,*,iostat=eof) pot_nsed(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_no3l(ihru)
+      read (108,*,iostat=eof) pot_no3l(j)
       if (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
 !        if (eof < 0) exit
@@ -175,7 +179,7 @@ subroutine readhru
 !        read (108,5100,iostat=eof) titldum
 !        if (eof < 0) exit
 !      end if
-      read (108,*,iostat=eof) dep_imp(ihru)
+      read (108,*,iostat=eof) dep_imp(j)
       if (eof < 0) exit
       read (108,5100,iostat=eof) titldum
       if (eof < 0) exit
@@ -183,128 +187,128 @@ subroutine readhru
       if (eof < 0) exit
       read (108,5100,iostat=eof) titldum
       if (eof < 0) exit
-      read (108,*,iostat=eof) evpot(ihru)
+      read (108,*,iostat=eof) evpot(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) dis_stream(ihru)
+      read (108,*,iostat=eof) dis_stream(j)
       if (eof < 0) exit
 !! armen & stefan changes for SWAT-C
-      read (108,*,iostat=eof) cf(ihru)
+      read (108,*,iostat=eof) cf(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) cfh(ihru)
+      read (108,*,iostat=eof) cfh(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) cfdec(ihru)
+      read (108,*,iostat=eof) cfdec(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) sed_con(ihru)
+      read (108,*,iostat=eof) sed_con(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) orgn_con(ihru)
+      read (108,*,iostat=eof) orgn_con(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) orgp_con(ihru)
+      read (108,*,iostat=eof) orgp_con(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) soln_con(ihru)
+      read (108,*,iostat=eof) soln_con(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) solp_con(ihru)
+      read (108,*,iostat=eof) solp_con(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_solpl(ihru)
+      read (108,*,iostat=eof) pot_solpl(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_k(ihru)
+      read (108,*,iostat=eof) pot_k(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) n_reduc(ihru)
+      read (108,*,iostat=eof) n_reduc(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) n_lag(ihru)
+      read (108,*,iostat=eof) n_lag(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) n_ln(ihru)
+      read (108,*,iostat=eof) n_ln(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) n_lnco(ihru)
+      read (108,*,iostat=eof) n_lnco(j)
 !-------------------------------------------------------Moriasi 4/8/2014
       if (eof < 0) exit
-      read (108,*,iostat=eof) surlag(ihru)
+      read (108,*,iostat=eof) surlag(j)
       if (eof < 0) exit
 !-------------------------------------------------------Moriasi 4/8/2014
-      read (108,*,iostat=eof) r2adj(ihru) !Soil retention parameter D. Moriasi 4/8/2014
+      read (108,*,iostat=eof) r2adj(j) !Soil retention parameter D. Moriasi 4/8/2014
       if (eof < 0) exit
-      read (108,*,iostat=eof) cmn(ihru)
+      read (108,*,iostat=eof) cmn(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) cdn(ihru)
+      read (108,*,iostat=eof) cdn(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) nperco(ihru)
+      read (108,*,iostat=eof) nperco(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) phoskd(ihru)
+      read (108,*,iostat=eof) phoskd(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) psp(ihru)
+      read (108,*,iostat=eof) psp(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) sdnco(ihru)
+      read (108,*,iostat=eof) sdnco(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) iwetile(ihru)
+      read (108,*,iostat=eof) iwetile(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) iwetgw(ihru)
+      read (108,*,iostat=eof) iwetgw(j)
       exit
    end do
 
-   if (iwetile(ihru) <= 0) iwetile(ihru) = 0
-   if (iwetgw(ihru) <= 0) iwetgw(ihru) = 0
+   if (iwetile(j) <= 0) iwetile(j) = 0
+   if (iwetgw(j) <= 0) iwetgw(j) = 0
 
-   if (n_reduc(ihru) <= 0.) n_reduc(ihru) = 300.
-   if (n_lag(ihru) <= 0.) n_lag(ihru) = 0.25
-   if (n_ln(ihru) <= 0.) n_ln(ihru) = 2.0
-   if (n_lnco(ihru) <= 0.) n_lnco(ihru) = 2.0
+   if (n_reduc(j) <= 0.) n_reduc(j) = 300.
+   if (n_lag(j) <= 0.) n_lag(j) = 0.25
+   if (n_ln(j) <= 0.) n_ln(j) = 2.0
+   if (n_lnco(j) <= 0.) n_lnco(j) = 2.0
 
 !!    compare .hru input values to .bsn input values
-   if (escohru > 1.e-4) esco(ihru) = escohru
-   if (epcohru > 1.e-4) epco(ihru) = epcohru
+   if (escohru > 1.e-4) esco(j) = escohru
+   if (epcohru > 1.e-4) epco(j) = epcohru
 
 !!    set default values
-   if (dep_imp(ihru) <= 0.) dep_imp(ihru) = depimp_bsn
-   if (surlag(ihru) <= 0.) surlag(ihru) = surlag_bsn
-   if (cdn(ihru) <= 0.) cdn(ihru) = cdn_bsn
-   if (nperco(ihru) <= 0.) nperco(ihru) = nperco_bsn
-   if (cmn(ihru) <= 0.) cmn(ihru) = cmn_bsn
-   if (phoskd(ihru) <= 0.) phoskd(ihru) = phoskd_bsn
-   if (psp(ihru) <= 0.) psp(ihru) = psp_bsn
-   if (sdnco(ihru) <= 0.) sdnco(ihru) = sdnco_bsn
+   if (dep_imp(j) <= 0.) dep_imp(j) = depimp_bsn
+   if (surlag(j) <= 0.) surlag(j) = surlag_bsn
+   if (cdn(j) <= 0.) cdn(j) = cdn_bsn
+   if (nperco(j) <= 0.) nperco(j) = nperco_bsn
+   if (cmn(j) <= 0.) cmn(j) = cmn_bsn
+   if (phoskd(j) <= 0.) phoskd(j) = phoskd_bsn
+   if (psp(j) <= 0.) psp(j) = psp_bsn
+   if (sdnco(j) <= 0.) sdnco(j) = sdnco_bsn
 !New and modified parameters D. Moriasi 4/8/2014
-   if (r2adj(ihru) <= 0.) r2adj(ihru) = r2adj_bsn
-   if (r2adj(ihru) > 0.95) r2adj(ihru) = 0.95
+   if (r2adj(j) <= 0.) r2adj(j) = r2adj_bsn
+   if (r2adj(j) > 0.95) r2adj(j) = 0.95
 !! comment the following line for the hru_fraction data !!
-   if (hru_fr(ihru) <= 0.) hru_fr(ihru) = .0000001
-   if (slsubbsn(ihru) <= 0.) slsubbsn(ihru) = 50.0
-   if (hru_slp(ihru) <= 0.0001) hru_slp(ihru) = .0001
-   if (hru_slp(ihru) >= 1.0) hru_slp(ihru) = 1.0
-   if (slsoil(ihru) <= 0.)  slsoil(ihru) = slsubbsn(ihru)
-   if (esco(ihru) <= 0.) esco(ihru) = .95
-!     if (dep_imp(ihru) <= 0.) dep_imp(ihru) = 6000.
-!     esco(ihru) = 1. - esco(ihru)
-   if (epco(ihru) <= 0. .or. epco(ihru) > 1.) epco(ihru) = 1.0
-   if (evpot(ihru) <= 0.) evpot(ihru) = 0.5
-   if (dis_stream(ihru) <= 0.) dis_stream(ihru) = 35.0
+   if (hru_fr(j) <= 0.) hru_fr(j) = .0000001
+   if (slsubbsn(j) <= 0.) slsubbsn(j) = 50.0
+   if (hru_slp(j) <= 0.0001) hru_slp(j) = .0001
+   if (hru_slp(j) >= 1.0) hru_slp(j) = 1.0
+   if (slsoil(j) <= 0.)  slsoil(j) = slsubbsn(j)
+   if (esco(j) <= 0.) esco(j) = .95
+!     if (dep_imp(j) <= 0.) dep_imp(j) = 6000.
+!     esco(j) = 1. - esco(j)
+   if (epco(j) <= 0. .or. epco(j) > 1.) epco(j) = 1.0
+   if (evpot(j) <= 0.) evpot(j) = 0.5
+   if (dis_stream(j) <= 0.) dis_stream(j) = 35.0
 
 !! armen & stefan changes for SWAT-C
-   if (cf(ihru) <= 0.) cf(ihru)= 1.0
-   if (cfh(ihru) <= 0.) cfh(ihru)= 1.0
-   if (cfdec(ihru) <= 0.) cfdec(ihru)= 0.055
+   if (cf(j) <= 0.) cf(j)= 1.0
+   if (cfh(j) <= 0.) cfh(j)= 1.0
+   if (cfdec(j) <= 0.) cfdec(j)= 0.055
 !! armen & stefan end
 
 
 !!    calculate USLE slope length factor
-   xm = .6 * (1. - Exp(-35.835 * hru_slp(ihru)))
-   sin_sl = Sin(Atan(hru_slp(ihru)))
-   usle_ls(ihru) = (slsubbsn(ihru)/22.128)**xm * (65.41 * sin_sl *&
+   xm = .6 * (1. - Exp(-35.835 * hru_slp(j)))
+   sin_sl = Sin(Atan(hru_slp(j)))
+   usle_ls(j) = (slsubbsn(j)/22.128)**xm * (65.41 * sin_sl *&
    &sin_sl + 4.56 * sin_sl + .065)
 
 !!    other calculations
-   hru_km(ihru) = sub_km(i) * hru_fr(ihru)
-   hru_ha(ihru) = hru_km(ihru) * 100.
-   lat_sed(ihru) = lat_sed(ihru) * 1.e-3     !!mg/L => g/L
-   pot_vol(ihru) = pot_volmm(ihru)
-   pot_volx(ihru) = pot_volxmm(ihru)
-   pot_tile(ihru) = pot_tilemm(ihru)
+   hru_km(j) = sub_km(i) * hru_fr(j)
+   hru_ha(j) = hru_km(j) * 100.
+   lat_sed(j) = lat_sed(j) * 1.e-3     !!mg/L => g/L
+   pot_vol(j) = pot_volmm(j)
+   pot_volx(j) = pot_volxmm(j)
+   pot_tile(j) = pot_tilemm(j)
 
-   xx = 10. * pot_volmm(ihru) * hru_ha(ihru) / 1000000.  !! mg/L * m3 * 1000L/m3 * t/1,000,000,000   Srini pothole
-   pot_sed(ihru) = pot_nsed(ihru) * xx
-   pot_san(ihru) = 0.
-   pot_sil(ihru) = 0.
-   pot_cla(ihru) = pot_nsed(ihru) * xx
-   pot_sag(ihru) = 0.
-   pot_lag(ihru) = 0.
+   xx = 10. * pot_volmm(j) * hru_ha(j) / 1000000.  !! mg/L * m3 * 1000L/m3 * t/1,000,000,000   Srini pothole
+   pot_sed(j) = pot_nsed(j) * xx
+   pot_san(j) = 0.
+   pot_sil(j) = 0.
+   pot_cla(j) = pot_nsed(j) * xx
+   pot_sag(j) = 0.
+   pot_lag(j) = 0.
 
    close (108)
    return

@@ -29,9 +29,9 @@ subroutine nup
 !!    nro(:)      |none           |sequence number of year in rotation
 !!    phuacc(:)   |none           |fraction of plant heat units accumulated
 !!    plantn(:)   |kg N/ha        |amount of nitrogen in plant biomass
-!!    pltnfr(1,:) |kg N/kg biomass|nitrogen uptake parameter #1: normal fraction
+!!    pltnfr1(:) |kg N/kg biomass|nitrogen uptake parameter #1: normal fraction
 !!                                |of N in crop biomass at emergence
-!!    pltnfr(3,:) |kg N/kg biomass|nitrogen uptake parameter #3: normal fraction
+!!    pltnfr3(:) |kg N/kg biomass|nitrogen uptake parameter #3: normal fraction
 !!                                |of N in crop biomass at maturity
 !!    sol_nly(:)  |none           |number of soil layers in profile
 !!    sol_no3(:,:)|kg N/ha        |amount of nitrogen stored in the
@@ -108,14 +108,14 @@ subroutine nup
    !up_reduc = tno3 / (tno3 + Exp(1.56 - 4.5 * tno3)) !not used
 
    icrop = idplt(j)
-   pltfr_n(j) = (pltnfr(1,icrop) - pltnfr(3,icrop)) * (1. - phuacc(j)&
+   pltfr_n(j) = (pltnfr1(icrop) - pltnfr3(icrop)) * (1. - phuacc(j)&
    &/ (phuacc(j) + Exp(bio_n1(icrop) - bio_n2(icrop) *&
-   &phuacc(j)))) + pltnfr(3,icrop)
+   &phuacc(j)))) + pltnfr3(icrop)
 
    un2 = pltfr_n(j) * bio_ms(j)
    if (un2 < plantn(j)) un2 = plantn(j)
    uno3d = un2 - plantn(j)
-   uno3d = Min(4. * pltnfr(3,icrop) * bioday, uno3d)
+   uno3d = Min(4. * pltnfr3(icrop) * bioday, uno3d)
 
    strsn(j) = 1.
    if (uno3d < 1.e-6) return

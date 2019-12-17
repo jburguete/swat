@@ -1,14 +1,11 @@
 !> @file readfcst.f90
+!> file containing the subroutine readfcst
 !> @author
 !> modified by Javier Burguete
-!> @brief
+
 !> this subroutine reads the HRU forecast weather generator parameters
 !> from the .cst file
 subroutine readfcst
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads the HRU forecast weather generator parameters
-!!    from the .cst file
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

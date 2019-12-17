@@ -1,14 +1,11 @@
 !> @file getallo.f90
+!> file containing the subroutine getallo
 !> @author
 !> modified by Javier Burguete
-!> @brief
+
 !> This subroutine calculates the number of HRUs, subbasins, etc. in the
 !> simulation. These values are used to allocate array sizes.
 subroutine getallo
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!   This subroutine calculates the number of HRUs, subbasins, etc. in the
-!!   simulation. These values are used to allocate array sizes.
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units       |definition

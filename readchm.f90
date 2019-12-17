@@ -1,10 +1,13 @@
-subroutine readchm
+!> @file readchm.f90
+!> file containing the subroutine readchm
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine reads data from the HRU/subbasin soil chemical input
-!!    file (.chm). This file contains initial amounts of pesticides/nutrients
-!!    in the first soil layer. (Specifics about the first soil layer are given
-!!    in the .sol file.) All data in the .chm file is optional input.
+!> This subroutine reads data from the HRU/subbasin soil chemical input
+!> file (.chm). This file contains initial amounts of pesticides/nutrients
+!> in the first soil layer. (Specifics about the first soil layer are given
+!> in the .sol file.) All data in the .chm file is optional input.
+subroutine readchm
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -46,6 +49,7 @@ subroutine readchm
 !!    eof         |none          |end of file flag
 !!    j           |none          |counter
 !!    k           |none          |counter
+!!    l           |none          |HRU number
 !!    newpest     |none          |new pesticide flag
 !!    pltpst      |kg/ha         |pesticide on plant foliage
 !!    pstenr      |none          |pesticide enrichment ratio
@@ -61,10 +65,11 @@ subroutine readchm
    implicit none
 
    character (len=80) :: titldum
-   integer :: j, eof, k, newpest, pstnum
    real*8 :: pltpst, solpst, pstenr
+   integer :: j, eof, k, l, newpest, pstnum
 
    eof = 0
+   l = ihru
 
 
    do
@@ -74,15 +79,15 @@ subroutine readchm
       if (eof < 0) exit
       read (106,5000,iostat=eof) titldum
       if (eof < 0) exit
-      read (106,5100,iostat=eof) (sol_no3(j,ihru), j = 1, mlyr)
+      read (106,5100,iostat=eof) (sol_no3(j,l), j = 1, mlyr)
       if (eof < 0) exit
-      read (106,5100,iostat=eof) (sol_orgn(j,ihru), j = 1, mlyr)
+      read (106,5100,iostat=eof) (sol_orgn(j,l), j = 1, mlyr)
       if (eof < 0) exit
-      read (106,5100,iostat=eof) (sol_solp(j,ihru), j = 1, mlyr)
+      read (106,5100,iostat=eof) (sol_solp(j,l), j = 1, mlyr)
       if (eof < 0) exit
-      read (106,5100,iostat=eof) (sol_orgp(j,ihru), j = 1, mlyr)
+      read (106,5100,iostat=eof) (sol_orgp(j,l), j = 1, mlyr)
       if (eof < 0) exit
-      read (106,5100,iostat=eof) (pperco_sub(j,ihru), j = 1, mlyr)
+      read (106,5100,iostat=eof) (pperco_sub(j,l), j = 1, mlyr)
       if (eof < 0) exit
       read (106,5000,iostat=eof) titldum
       if (eof < 0) exit
@@ -99,7 +104,7 @@ subroutine readchm
          pstenr = 0.
          read (106,*,iostat=eof) pstnum, pltpst, solpst, pstenr
          if (pstnum > 0) then
-            hrupest(ihru) = 1
+            hrupest(l) = 1
             newpest = 0
             do k = 1, npmx
                if (pstnum == npno(k)) then
@@ -114,9 +119,9 @@ subroutine readchm
             end if
 
             k = nope(pstnum)
-            plt_pst(k,ihru) = pltpst
-            sol_pst(k,ihru,1) = solpst
-            pst_enr(k,ihru) = pstenr
+            plt_pst(k,l) = pltpst
+            sol_pst(k,l,1) = solpst
+            pst_enr(k,l) = pstenr
          end if
 
          if (eof < 0) exit
@@ -129,7 +134,7 @@ subroutine readchm
    close (106)
 
    do j = 1, mlyr
-      if (pperco_sub(j,ihru) <= 1.e-6) pperco_sub(j,ihru) = pperco_bsn
+      if (pperco_sub(j,l) <= 1.e-6) pperco_sub(j,l) = pperco_bsn
    end do
 
    return

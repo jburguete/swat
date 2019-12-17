@@ -6,7 +6,7 @@
 !> this subroutine reads input parameters from the urban database
 !> (urban.dat). Information from this database is used only if the
 !> urban buildup/washoff routines are selected for the modeling of
-!> urban areas.
+!> urban areas
 subroutine readurban
 
 !!     ~ ~ ~ PURPOSE ~ ~ ~

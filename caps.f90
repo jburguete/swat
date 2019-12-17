@@ -1,15 +1,12 @@
 !> @file caps.f90
+!> file containing the subroutine caps
 !> @author 
 !> modified by Javier Burguete
-!> @brief
+
 !> this subroutine reads the input and output names given in file.cio
 !> and converts all capital letters to lowercase letters.
 !> @param file_name dummy argument, file name character string
 subroutine caps(file_name)
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads the input and output names given in file.cio
-!!    and converts all capital letters to lowercase letters.
 
 !!    ~ ~ ~ LOCAL VARIABLES ~ ~ ~
 !!    name        |units       |definition

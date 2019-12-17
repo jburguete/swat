@@ -9,10 +9,8 @@
 !> julian date for last day of preceding month (where the array location is the
 !> number of the month). The dates are for leap years (numdays=ndays)
 !> (julian date)
-!> @param[in] i
-!> day
-!> @param[in] m
-!> month
+!> @param[in] i day
+!> @param[in] m month
 function jdt(numdays,i,m)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~

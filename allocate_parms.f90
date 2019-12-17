@@ -1,11 +1,10 @@
 !> @file allocate_parms.f90
+!> this subroutine allocates array sizes
 !> @author 
 !> modified by Javier Burguete
-!> @brief
+
 !> this subroutine allocates array sizes
 subroutine allocate_parms
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine allocates array sizes
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -748,8 +747,12 @@ subroutine allocate_parms
    allocate (wavp(mcrdb))
    allocate (wsyf(mcrdb))
 
-   allocate (pltnfr(3,mcrdb))
-   allocate (pltpfr(3,mcrdb))
+   allocate (pltnfr1(mcrdb))
+   allocate (pltnfr2(mcrdb))
+   allocate (pltnfr3(mcrdb))
+   allocate (pltpfr1(mcrdb))
+   allocate (pltpfr2(mcrdb))
+   allocate (pltpfr3(mcrdb))
 
 !!    arrays which contain data related to fertilizers in database
    allocate (bactkddb(mfdb))

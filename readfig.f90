@@ -8,11 +8,6 @@
 !> and reservoirs
 subroutine readfig
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     reads in the routing information from the watershed configuration
-!!     input file (.fig) and calculates the number of subbasins, reaches,
-!!     and reservoirs
-
 !!     ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!     name         |units         |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

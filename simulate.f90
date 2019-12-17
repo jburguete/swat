@@ -1,7 +1,8 @@
 !> @file simulate.f90
+!> file containing the subroutine simulate
 !> @author
 !> modified by Javier Burguete
-!> @brief
+
 !> this subroutine contains the loops governing the modeling of processes
 !> in the watershed
 subroutine simulate

@@ -65,19 +65,19 @@ subroutine readplant
 !!                                 |development equation.
 !!    leaf2(:)   |none             |2nd shape parameter for leaf area
 !!                                 |development equation.
-!!    pltnfr(1,:)|kg N/kg biomass  |nitrogen uptake parameter #1: normal
+!!    pltnfr1(:)|kg N/kg biomass  |nitrogen uptake parameter #1: normal
 !!                                 |fraction of N in crop biomass at emergence
-!!    pltnfr(2,:)|kg N/kg biomass  |nitrogen uptake parameter #2: normal
+!!    pltnfr2(:)|kg N/kg biomass  |nitrogen uptake parameter #2: normal
 !!                                 |fraction of N in crop biomass at 0.5
 !!                                 |maturity
-!!    pltnfr(3,:)|kg N/kg biomass  |nitrogen uptake parameter #3: normal
+!!    pltnfr3(:)|kg N/kg biomass  |nitrogen uptake parameter #3: normal
 !!                                 |fraction of N in crop biomass at maturity
-!!    pltpfr(1,:)|kg P/kg biomass  |phosphorus uptake parameter #1: normal
+!!    pltpfr1(:)|kg P/kg biomass  |phosphorus uptake parameter #1: normal
 !!                                 |fraction of P in crop biomass at emergence
-!!    pltpfr(2,:)|kg P/kg biomass  |phosphorus uptake parameter #2: normal
+!!    pltpfr2(:)|kg P/kg biomass  |phosphorus uptake parameter #2: normal
 !!                                 |fraction of P in crop biomass at 0.5
 !!                                 |maturity
-!!    pltpfr(3,:)|kg P/kg biomass  |phosphorus uptake parameter #3: normal
+!!    pltpfr3(:)|kg P/kg biomass  |phosphorus uptake parameter #3: normal
 !!                                 |fraction of P in crop biomass at maturity
 !!    rdmx(:)    |m                |maximum root depth
 !!    rsdco_pl(:)|none             |plant residue decomposition coefficient. The
@@ -244,12 +244,12 @@ subroutine readplant
       t_base(ic) = tbase
       cnyld(ic) = cnyldc
       cpyld(ic) = cpyldc
-      pltnfr(1,ic) = bn1
-      pltnfr(2,ic) = bn2
-      pltnfr(3,ic) = bn3
-      pltpfr(1,ic) = bp1c
-      pltpfr(2,ic) = bp2c
-      pltpfr(3,ic) = bp3c
+      pltnfr1(ic) = bn1
+      pltnfr2(ic) = bn2
+      pltnfr3(ic) = bn3
+      pltpfr1(ic) = bp1c
+      pltpfr2(ic) = bp2c
+      pltpfr3(ic) = bp3c
       wsyf(ic) = wsyfc
       gsi(ic) = gsic
       wavp(ic) = wavpc
@@ -295,26 +295,26 @@ subroutine readplant
 
 
 !!        nitrogen uptake parameters
-!!        fix bad input for pltnfr(3,ic)
-         if (pltnfr(1,ic) - pltnfr(2,ic) < .0001)&
-         &pltnfr(2,ic) = pltnfr(1,ic) - .0001
-         if (pltnfr(2,ic) - pltnfr(3,ic) < .0001)&
-         &pltnfr(3,ic) = .75 * pltnfr(3,ic)
-         b1 = pltnfr(1,ic) - pltnfr(3,ic)           !!normalize N fractions
-         b2 = 1. - (pltnfr(2,ic) - pltnfr(3,ic)) / b1
+!!        fix bad input for pltnfr3(ic)
+         if (pltnfr1(ic) - pltnfr2(ic) < .0001)&
+         &pltnfr2(ic) = pltnfr1(ic) - .0001
+         if (pltnfr2(ic) - pltnfr3(ic) < .0001)&
+         &pltnfr3(ic) = .75 * pltnfr3(ic)
+         b1 = pltnfr1(ic) - pltnfr3(ic)           !!normalize N fractions
+         b2 = 1. - (pltnfr2(ic) - pltnfr3(ic)) / b1
          b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant nitrogen uptake equation
          call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_n1(ic), bio_n2(ic))
 
 
 !!        phosphorus uptake parameters
-!!        fix bad input for pltpfr(3,ic)
-         if (pltpfr(1,ic) - pltpfr(2,ic) < .0001)&
-         &pltpfr(2,ic) = pltpfr(1,ic) - .0001
-         if (pltpfr(2,ic) - pltpfr(3,ic) < .0001)&
-         &pltpfr(3,ic) = .75 * pltpfr(3,ic)
-         b1 = pltpfr(1,ic) - pltpfr(3,ic)        !!normalize P fractions
-         b2 = 1. - (pltpfr(2,ic) - pltpfr(3,ic)) / b1
+!!        fix bad input for pltpfr3(ic)
+         if (pltpfr1(ic) - pltpfr2(ic) < .0001)&
+         &pltpfr2(ic) = pltpfr1(ic) - .0001
+         if (pltpfr2(ic) - pltpfr3(ic) < .0001)&
+         &pltpfr3(ic) = .75 * pltpfr3(ic)
+         b1 = pltpfr1(ic) - pltpfr3(ic)        !!normalize P fractions
+         b2 = 1. - (pltpfr2(ic) - pltpfr3(ic)) / b1
          b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant phosphorus uptake equation
          call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_p1(ic), bio_p2(ic))

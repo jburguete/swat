@@ -1,16 +1,12 @@
 !> @file readbsn.f90
+!> file containing the suborutine readbsn
 !> @author
 !> modified by Javier Burguete
-!> @brief
+
 !> this subroutine reads data from the basin input file (.bsn). This file
 !> contains information related to processes modeled or defined at the
 !> watershed level
 subroutine readbsn
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the basin input file (.bsn). This file
-!!    contains information related to processes modeled or defined at the
-!!    watershed level
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition

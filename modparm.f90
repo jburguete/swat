@@ -458,7 +458,10 @@ module parm
    integer :: igropt
 !> Qual2E light averaging option. Qual2E defines four light averaging options. 
 !> The only option currently available in SWAT is #2.
-   integer :: lao, npmx, curyr, iihru
+   integer :: lao
+!> number of different pesticides used in the simulation (none)
+   integer :: npmx
+   integer :: curyr, iihru
 !    Drainmod tile equations  01/2006
 !> tile drainage equations flag/code\n
 !> 1 simulate tile flow using subroutine drains(wt_shall)\n
@@ -884,6 +887,7 @@ module parm
 !> snow melt base temperature for subbasin(:) mean air temperature at which snow
 !> melt will occur (range: -5.0/5.0) (deg C)
    real*8, dimension (:,:), allocatable :: sub_smtmp
+!> snow pack temperature lag factor (0-1) (none)
    real*8, dimension (:,:), allocatable :: sub_timp
    real*8, dimension (:), allocatable :: sub_tileno3
    real*8, dimension (:), allocatable :: sub_solp,sub_subp,sub_etday
@@ -975,15 +979,23 @@ module parm
 !> surface to soluble phosphorus in percolate
    real*8, dimension (:,:), allocatable :: pperco_sub
    real*8, dimension (:,:), allocatable :: sol_actp,sol_stap,conv_wt
-   real*8, dimension (:,:), allocatable :: sol_solp,sol_ul,sol_fc,crdep
+!> soluble P concentration in top soil layer (mg P/kg soil)
+   real*8, dimension (:,:), allocatable :: sol_solp
+   real*8, dimension (:,:), allocatable :: sol_ul,sol_fc,crdep
    real*8, dimension (:,:), allocatable :: sol_z,sol_up,sol_bd,sol_st
    real*8, dimension (:,:), allocatable :: flat,sol_nh3,sol_hk,sol_clay
 !  added 1/27/09 when making septic changes
    real*8, dimension (:,:), allocatable :: sol_ec
 !  added 1/27/09 when making septic changes
-   real*8, dimension (:,:), allocatable :: sol_orgn,sol_por,sol_wp
-   real*8, dimension (:,:), allocatable :: sol_orgp,sol_hum,sol_wpmm
-   real*8, dimension (:,:), allocatable :: sol_k,sol_cbn,sol_no3
+!> organic N concentration in top soil layer (mg N/kg soil)
+   real*8, dimension (:,:), allocatable :: sol_orgn
+   real*8, dimension (:,:), allocatable :: sol_por,sol_wp
+!> organic P concentration in top soil layer (mg P/kg soil)
+   real*8, dimension (:,:), allocatable :: sol_orgp
+   real*8, dimension (:,:), allocatable :: sol_hum,sol_wpmm
+!> concentration of nitrate in soil layer (mg N/kg)
+   real*8, dimension (:,:), allocatable :: sol_no3
+   real*8, dimension (:,:), allocatable :: sol_k,sol_cbn
    real*8, dimension (:,:), allocatable :: sol_rsd,sol_fop
    real*8, dimension (:,:), allocatable :: sol_silt, sol_sand, sol_rock
    real*8, dimension (:,:), allocatable :: orig_solno3,orig_solorgn
@@ -996,7 +1008,9 @@ module parm
 !    Drainmod tile equations  01/2006
    real*8, dimension (:,:), allocatable :: conk
 !    Drainmod tile equations  01/2006
-   real*8, dimension (:,:,:), allocatable :: sol_pst,sol_kp
+!> sol_pst(:,:,1) pesticide concentration in soil (mg/kg)
+   real*8, dimension (:,:,:), allocatable :: sol_pst
+   real*8, dimension (:,:,:), allocatable :: sol_kp
    real*8, dimension (:,:,:), allocatable :: orig_solpst
 ! mres = max number of reservoirs
    real*8, dimension (:), allocatable :: velsetlr, velsetlp
@@ -1057,7 +1071,9 @@ module parm
 !> 0: pesticide not used\n
 !> 1: pesticide used
    integer, dimension (:), allocatable :: pstflg
-   integer, dimension (:), allocatable :: nope, nop
+!> sequence number of pesticide in NPNO(:) (none)
+   integer, dimension (:), allocatable :: nope
+   integer, dimension (:), allocatable :: nop
    integer, dimension (:), allocatable :: yr_skip, isweep
    integer, dimension (:), allocatable :: icrmx, nopmx
 ! new management scehduling variables
@@ -1131,20 +1147,24 @@ module parm
 !> root to shoot ratio at the end of the growing season
    real*8, dimension (:), allocatable :: rsr2
 !     real*8, dimension (:), allocatable :: air_str
-!> pltnfr(1,:) nitrogen uptake parameter #1: normal fraction of N in crop
-!> biomass at emergence (kg N/kg biomass)\n
-!> pltnfr(2,:) nitrogen uptake parameter #2: normal fraction of N in crop
-!> biomass at 0.5 maturity (kg N/kg biomass)\n
-!> pltnfr(3,:) nitrogen uptake parameter #3: normal fraction of N in crop
-!> biomass at maturity (kg N/kg biomass)
-   real*8, dimension (:,:), allocatable :: pltnfr
-!> pltpfr(1,:) phosphorus uptake parameter #1: normal fraction of P in crop
-!> biomass at emergence (kg P/kg biomass)\n
-!> pltpfr(2,:) phosphorus uptake parameter #2: normal fraction of P in crop
-!> biomass at 0.5 maturity (kg P/kg biomass)
-!> pltpfr(3,:) phosphorus uptake parameter #3: normal fraction of P in crop
-!> biomass at maturity (kg P/kg biomass)
-   real*8, dimension (:,:), allocatable :: pltpfr
+!> nitrogen uptake parameter #1: normal fraction of N in crop biomass at
+!> emergence (kg N/kg biomass)
+   real*8, dimension (:), allocatable :: pltnfr1
+!> nitrogen uptake parameter #2: normal fraction of N in crop biomass at 0.5
+!> maturity (kg N/kg biomass)
+   real*8, dimension (:), allocatable :: pltnfr2
+!> nitrogen uptake parameter #3: normal fraction of N in crop biomass at
+!> maturity (kg N/kg biomass)
+   real*8, dimension (:), allocatable :: pltnfr3
+!> phosphorus uptake parameter #1: normal fraction of P in crop biomass at
+!> emergence (kg P/kg biomass)\n
+   real*8, dimension (:), allocatable :: pltpfr1
+!> phosphorus uptake parameter #2: normal fraction of P in crop biomass at 0.5
+!> maturity (kg P/kg biomass)
+   real*8, dimension (:), allocatable :: pltpfr2
+!> phosphorus uptake parameter #3: normal fraction of P in crop biomass at
+!> maturity (kg P/kg biomass)
+   real*8, dimension (:), allocatable :: pltpfr3
 !> crop/landcover category:\n
 !> 1 warm season annual legume\n
 !> 2 cold season annual legume\n
@@ -1390,8 +1410,17 @@ module parm
 !    Drainmod tile equations  01/2006
 !> static maximum depressional storage; read from .sdr (mm)
    real*8, dimension (:), allocatable :: sstmaxd
-   real*8, dimension (:), allocatable :: ddrain_hru,re,sdrain
-   real*8, dimension (:), allocatable :: stmaxd,drain_co,pc,latksatf
+   real*8, dimension (:), allocatable :: re !< effective radius of drains (mm)
+!> distance between two drain tubes or tiles (mm)
+   real*8, dimension (:), allocatable :: sdrain
+   real*8, dimension (:), allocatable :: ddrain_hru
+!> drainage coefficient (mm/day)
+   real*8, dimension (:), allocatable :: drain_co
+!> multiplication factor to determine conk(j1,j) from sol_k(j1,j) for HRU (none)
+   real*8, dimension (:), allocatable :: latksatf
+!> pump capacity (default pump capacity = 1.042mm/hr or 25mm/day) (mm/hr)
+   real*8, dimension (:), allocatable :: pc
+   real*8, dimension (:), allocatable :: stmaxd
 !    Drainmod tile equations  01/2006
    real*8, dimension (:), allocatable :: twash,rnd2,rnd3,sol_cnsw,doxq
    real*8, dimension (:), allocatable :: rnd8,rnd9,percn,sol_sumwp
@@ -1441,8 +1470,12 @@ module parm
    real*8, dimension (:,:), allocatable :: gwata, gwats, gwatspcon
    real*8, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
    real*8, dimension (:,:), allocatable :: wgncur,wgnold,wrt,psetlp
-   real*8, dimension (:,:), allocatable :: zdb,pst_surq,pst_enr
-   real*8, dimension (:,:), allocatable :: plt_pst,pst_sed,psetlw
+!> pesticide enrichment ratio (none)
+   real*8, dimension (:,:), allocatable :: pst_enr
+   real*8, dimension (:,:), allocatable :: zdb,pst_surq
+!> pesticide on plant foliage (kg/ha)
+   real*8, dimension (:,:), allocatable :: plt_pst
+   real*8, dimension (:,:), allocatable :: pst_sed,psetlw
    real*8, dimension (:,:), allocatable :: pcpband,wupnd,tavband,phi
    real*8, dimension (:,:), allocatable :: wat_phi
 !> initial snow water content in elevation band (mm H2O)
@@ -1461,8 +1494,12 @@ module parm
    real*8, dimension (:,:), allocatable :: strip_p, fire_cn
    real*8, dimension (:,:), allocatable :: cropno_upd,hi_upd,laimx_upd
    real*8, dimension (:,:,:), allocatable :: pst_lag, phug
-   !!     integer, dimension (:), allocatable :: ipot,nrelease,swtrg,hrupest
-   integer, dimension (:), allocatable :: nrelease,swtrg,hrupest
+   !!     integer, dimension (:), allocatable :: ipot
+!> pesticide use flag (none)\n
+!>  0: no pesticides used in HRU\n
+!>  1: pesticides used in HRU
+   integer, dimension (:), allocatable :: hrupest
+   integer, dimension (:), allocatable :: nrelease,swtrg
    integer, dimension (:), allocatable :: nro,nrot,nfert
    integer, dimension (:), allocatable :: igro,nair,ipnd1,ipnd2
    integer, dimension (:), allocatable :: nirr,iflod1,iflod2,ndtarg
@@ -1513,7 +1550,9 @@ module parm
    integer, dimension (:,:), allocatable :: iopday, iopyr, mgt_ops
    real*8, dimension (:), allocatable :: wshd_pstap, wshd_pstdg
    integer, dimension (12) :: ndmo
-   integer, dimension (:), allocatable :: npno,mcrhru
+!> array of unique pesticides used in watershed (none)
+   integer, dimension (:), allocatable :: npno
+   integer, dimension (:), allocatable :: mcrhru
    character(len=13), dimension (18) :: rfile !< rainfall file names (.pcp)
    character(len=13), dimension (18) :: tfile !< temperature file names (.tmp)
 

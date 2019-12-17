@@ -6,8 +6,9 @@
 include 'modparm.f90'
 
 !> this is the main program that reads input, calls the main simulation
-!> model, and writes output.
+!> model, and writes output
 program main
+
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

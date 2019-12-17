@@ -1,16 +1,12 @@
 !> @file readwwq.f90
+!> file containing the subroutine readwwq
 !> @author
 !> modified by Javier Burguete
-!> @brief
+
 !> this subroutine reads the watershed stream water quality input
 !> data (.wwq file) and initializes the QUAL2E variables which apply to
 !> the entire watershed
 subroutine readwwq
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads the watershed stream water quality input
-!!    data (.wwq file) and initializes the QUAL2E variables which apply to
-!!    the entire watershed
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

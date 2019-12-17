@@ -1,12 +1,9 @@
 !> @file aunif.f90
+!> file containing the function aunif
 !> @author
 !> modified by Javier Burguete
-!> @brief
+
 !> This function generates random numbers ranging from 0.0 to 1.0.
-!> @param x1
-!> random number generator seed (integer) where \f$0 < x1 < 2147483647\f$
-!> @return random number ranging from 0.0 to 1.0
-!>
 !> In the process of calculating the random number, the seed (x1) is
 !> set to a new value.
 !> This function implements the prime-modulus generator
@@ -14,19 +11,10 @@
 !> using code which ensures that no intermediate result uses more than
 !> 31 bits.
 !> The theory behind the code is summarized in \cite Bratley83
+!> @param x1
+!> random number generator seed (integer) where \f$0 < x1 < 2147483647\f$
+!> @return random number ranging from 0.0 to 1.0
 real*8 function aunif (x1) result (unif)
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This function generates random numbers ranging from 0.0 to 1.0.
-!!    In the process of calculating the random number, the seed (x1) is
-!!    set to a new value.
-!!    This function implements the prime-modulus generator
-!!    xi = 16807 xi Mod(2**(31) - 1)
-!!    using code which ensures that no intermediate result uses more than
-!!    31 bits
-!!    the theory behind the code is summarized in
-!!    Bratley, P., B.L. Fox and L.E. Schrage. 1983. A Guide to Simulation.
-!!        Springer-Verlag, New York. (pages 199-202)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units          |definition
