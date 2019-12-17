@@ -111,16 +111,20 @@ subroutine zero0
    cfrt_kg = 0.
    ch_d = 0.
    ch_di = 0.
-   ch_k = 0.
+   ch_k1 = 0.
+   ch_k2 = 0.
    ch_li = 0.
+   ch_n1 = 0.
+   ch_n2 = 0.
    ch_onco = 0.
    ch_opco = 0.
    ch_orgn = 0.
    ch_orgp = 0.
-   ch_n = 0.
-   ch_s = 0.
+   ch_s1 = 0.
+   ch_s2 = 0.
    ch_si = 0.
-   ch_w = 0.
+   ch_w1 = 0.
+   ch_w2 = 0.
    ch_wi = 0.
    ch_wdr = 0.
 
@@ -241,7 +245,9 @@ subroutine zero0
    forgn = 0.
    forgp = 0.
    fpcp_stat = 0.
-   fpr_w = 0.
+   fpr_w1 = 0.
+   fpr_w2 = 0.
+   fpr_w3 = 0.
    frac_harvk = 0.
    frt_kg = 0.
    frt_surface = 0.

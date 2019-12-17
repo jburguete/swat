@@ -10,7 +10,7 @@ subroutine rtout
 !!    bury          |mg pst     |loss of pesticide from active sediment layer
 !!                              |by burial
 !!    ch_l2(:)      |km         |length of main channel
-!!    ch_w(2,:)     |m          |average width of main channel
+!!    ch_w2(:)     |m          |average width of main channel
 !!    chlora(:)     |mg chl-a/L |chlorophyll-a concentration in reach
 !!    difus         |mg pst     |diffusion of pesticide from sediment to reach
 !!    disolvp(:)    |mg P/L     |dissolved phosphorus concentration in reach
@@ -383,7 +383,7 @@ subroutine rtout
    if (sedcon > 200000.) sedcon = 200000.
 
 !! determine amount of pesticide in river bed sediments
-   bedvol = ch_w(2,jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
+   bedvol = ch_w2(jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
    sedpest = sedpst_conc(jrch) * bedvol
 
 !! set daily reach output

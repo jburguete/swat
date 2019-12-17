@@ -8,19 +8,19 @@ subroutine readsub
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i           |none          |subbasin number
 !!    da_km       |km2           |area of the watershed in square kilometers
+!!    i           |none          |subbasin number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_k(1,:)   |mm/hr         |effective hydraulic conductivity of tributary
+!!    ch_k1(:)   |mm/hr         |effective hydraulic conductivity of tributary
 !!                               |channel alluvium
-!!    ch_l(1,:)   |km            |longest tributary channel length in subbasin
-!!    ch_n(1,:)   |none          |Manning's "n" value for the tributary channels
-!!    ch_s(1,:)   |m/m           |average slope of tributary channels
-!!    ch_w(1,:)   |m             |average width of tributary channels
+!!    ch_l1(:)    |km            |longest tributary channel length in subbasin
+!!    ch_n1(:)   |none          |Manning's "n" value for the tributary channels
+!!    ch_s1(:)   |m/m           |average slope of tributary channels
+!!    ch_w1(:)   |m             |average width of tributary channels
 !!    cncoef_sub  |              |soil water depletion coefficient used
 !!                               | in the new (modified curve number method)
 !!                               | same as soil index coeff used in APEX
@@ -65,6 +65,9 @@ subroutine readsub
 !!                               |within the month is adjusted to the specified
 !!                               |percentage of the original value (used in
 !!                               |climate change studies)
+!!    sub_smfmn(:)|mm/deg C/day  |min melt rate for snow during year (Dec 21)
+!!                                 for subbasin(:)
+!!                               | (range: -5.0/5.0)
 !!    sub_smfmx(:)|mm/deg C/day  |max melt rate for snow during year (June 21)
 !!                               | for subbasin(:)
 !!                               | where deg C refers to the air temperature
@@ -72,9 +75,6 @@ subroutine readsub
 !!                               | melt to vary through the year.  These
 !!                               | parameters are accounting for the impact
 !!                               | of soil temperature on snow melt.
-!!                               | (range: -5.0/5.0)
-!!    sub_smfmn(:)|mm/deg C/day  |min melt rate for snow during year (Dec 21)
-!!                                 for subbasin(:)
 !!                               | (range: -5.0/5.0)
 !!                               | where deg C refers to the air temperature
 !!    sub_sftmp(:)|deg C         |Snowfall temperature for subbasin(:)
@@ -125,7 +125,8 @@ subroutine readsub
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: caps, readhru, readmgt, readchm, readsol, readgw
+!!    SWAT: caps, readsno, readsepticbz, readsdr, readhru, readchm, readmgt,
+!!          readsol, readgw, readops, readwgn, readpnd, readwus
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -190,10 +191,10 @@ subroutine readsub
    read (101,*) sno_sub
    read (101,5100) titldum
    read (101,*) ch_ls
-   read (101,*) ch_s(1,i)
-   read (101,*) ch_w(1,i)
-   read (101,*) ch_k(1,i)
-   read (101,*) ch_n(1,i)
+   read (101,*) ch_s1(i)
+   read (101,*) ch_w1(i)
+   read (101,*) ch_k1(i)
+   read (101,*) ch_n1(i)
    read (101,5100) titldum
    read (101,5300) pndfile
    call caps(pndfile)
@@ -402,9 +403,9 @@ subroutine readsub
 
    if (fcst_reg(i) <= 0.) fcst_reg(i) = 1
    if (co2(i) <= 0.) co2(i) = 330.
-   if (ch_s(1,i) <= 0.) ch_s(1,i) = .0001
-   if (ch_n(1,i) <= 0.005) ch_n(1,i) = 0.005
-   if (ch_n(1,i) >= 0.70) ch_n(1,i) = 0.70
+   if (ch_s1(i) <= 0.) ch_s1(i) = .0001
+   if (ch_n1(i) <= 0.005) ch_n1(i) = 0.005
+   if (ch_n1(i) >= 0.70) ch_n1(i) = 0.70
    do ib = 1, 10
       if (sub_smtmp(ib,i) < 1.e-6) sub_smtmp(ib,i) = smtmp
       if (sub_sftmp(ib,i) < 1.e-6) sub_sftmp(ib,i) = sftmp
@@ -423,7 +424,7 @@ subroutine readsub
    end if
 
 !!    This equation given to us by EPA, in the process of getting reference
-   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) + .2267) / 2.
+   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w1(i)) - 2.5889) + .2267) / 2.
 
 !! assign subbasin values to HRUs where needed
    do j = 1, hrutot(i)

@@ -23,8 +23,8 @@ subroutine pgen(j)
 !!                               |precipitation
 !!    pcp_stat(:,3,:)|none       |skew coefficient for the average daily
 !!                               |precipitation
-!!    pr_w(1,:,:) |none          |probability of wet day after dry day in month
-!!    pr_w(2,:,:) |none          |probability of wet day after wet day in month
+!!    pr_w1(:,:) |none          |probability of wet day after dry day in month
+!!    pr_w2(:,:) |none          |probability of wet day after wet day in month
 !!    rcor        |none          |correction coefficient for generated rainfall
 !!                               |to ensure that the annual means for generated
 !!                               |and observed values are comparable. (needed
@@ -65,25 +65,34 @@ subroutine pgen(j)
 
    integer, intent (in) :: j
 
-   real*8 :: vv, pcpgen, v8, r6, xlv
+   integer :: k
+   real*8 :: xx, vv, pcpgen, v8, r6, xlv
 
+   k = hru_sub(j)
+   select case (npcp(j))
+    case (1)
+      xx = pr_w1(i_mo,k)
+    case (2)
+      xx = pr_w2(i_mo,k)
+    case default
+      xx = pr_w3(i_mo,k)
+   end select
    vv = Aunif(rndseed(idg(1),j))
-   if (vv > pr_w(npcp(j),i_mo,hru_sub(j))) then
+   if (vv > xx) then
       pcpgen = 0.
    else
       v8 = Aunif(rndseed(idg(3),j))
       if (idist == 0) then
          !!skewed rainfall distribution
-         r6 = pcp_stat(i_mo,3,hru_sub(j)) / 6.
+         r6 = pcp_stat(i_mo,3,k) / 6.
          xlv = (Dstn1(rnd3(j),v8) - r6) * r6 + 1.
-         xlv = (xlv**3 - 1.) * 2. / pcp_stat(i_mo,3,hru_sub(j))
+         xlv = (xlv**3 - 1.) * 2. / pcp_stat(i_mo,3,k)
          rnd3(j) = v8
-         pcpgen = xlv * pcp_stat(i_mo,2,hru_sub(j)) +&
-         &pcp_stat(i_mo,1,hru_sub(j))
-         pcpgen = pcpgen * pcf(i_mo,hru_sub(j))
+         pcpgen = xlv * pcp_stat(i_mo,2,k) + pcp_stat(i_mo,1,k)
+         pcpgen = pcpgen * pcf(i_mo,k)
       else
          !! mixed exponential rainfall distribution
-         pcpgen = ((-Log(v8))**rexp) * pcp_stat(i_mo,1,hru_sub(j)) * rcor
+         pcpgen = ((-Log(v8))**rexp) * pcp_stat(i_mo,1,k) * rcor
       end if
       if (pcpgen < .1) pcpgen = .1
    end if

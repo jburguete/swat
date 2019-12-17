@@ -57,9 +57,9 @@ subroutine readwgn
 !!                               |precipitation
 !!    phutot(:)   |heat unit     |total potential heat units for year (used
 !!                               |when no crop is growing)
-!!    pr_w(1,:,:) |none          |probability of wet day after dry day in month
-!!    pr_w(2,:,:) |none          |probability of wet day after wet day in month
-!!    pr_w(3,:,:) |none          |proportion of wet days in the month
+!!    pr_w1(:,:) |none          |probability of wet day after dry day in month
+!!    pr_w2(:,:) |none          |probability of wet day after wet day in month
+!!    pr_w3(:,:) |none          |proportion of wet days in the month
 !!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
@@ -154,8 +154,8 @@ subroutine readwgn
    read (114,5201) (pcpmm(mon),mon = 1,12)
    read (114,5200) (pcp_stat(mon,2,i),mon = 1,12)  !pcpstd
    read (114,5200) (pcp_stat(mon,3,i),mon = 1,12)  !pcpskw
-   read (114,5200) (pr_w(1,mon,i),mon = 1,12)
-   read (114,5200) (pr_w(2,mon,i),mon = 1,12)
+   read (114,5200) (pr_w1(mon,i),mon = 1,12)
+   read (114,5200) (pr_w2(mon,i),mon = 1,12)
    read (114,5200) (pcpd(mon),mon = 1,12)
    read (114,5200) (rainhhmx(mon),mon = 1,12)
    read (114,5200) (solarav(mon,i),mon = 1,12)
@@ -233,21 +233,21 @@ subroutine readwgn
       if (tav > 0.) phutot(i) = phutot(i) + tav * mdays
 
       !! calculate values for pr_w if missing or bad
-      if (pr_w(2,mon,i) <= pr_w(1,mon,i).or.pr_w(1,mon,i) <= 0.) then
+      if (pr_w2(mon,i) <= pr_w1(mon,i).or.pr_w1(mon,i) <= 0.) then
          if (pcpd(mon) < .1) pcpd(mon) = 0.1
-         pr_w(1,mon,i) = .75 * pcpd(mon) / mdays
-         pr_w(2,mon,i) = .25 + pr_w(1,mon,i)
+         pr_w1(mon,i) = .75 * pcpd(mon) / mdays
+         pr_w2(mon,i) = .25 + pr_w1(mon,i)
       else
          !! if pr_w values good, use calculated pcpd based on these values
          !! using first order Markov chain
-         pcpd(mon) = mdays * pr_w(1,mon,i) /&
-         &(1. - pr_w(2,mon,i) + pr_w(1,mon,i))
+         pcpd(mon) = mdays * pr_w1(mon,i) /&
+         &(1. - pr_w2(mon,i) + pr_w1(mon,i))
 
       end if
 
       !! calculate precipitation-related values
       if (pcpd(mon) <= 0.) pcpd(mon) = .001
-      pr_w(3,mon,i) = pcpd(mon) / mdays
+      pr_w3(mon,i) = pcpd(mon) / mdays
       pcp_stat(mon,1,i) = pcpmm(mon) / pcpd(mon)
       if (pcp_stat(mon,3,i) < 0.2) pcp_stat(mon,3,i) = 0.2
       summm_p = summm_p + pcpmm(mon)

@@ -18,10 +18,10 @@ subroutine rthsed
 !!    ch_di(:)    |m             |initial depth of main channel
 !!    ch_d50      |mm            |median particle diameter of main channel
 !!    ch_li(:)    |km            |initial length of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
-!!    ch_s(2,:)   |m/m           |average slope of main channel
+!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
+!!    ch_s2(:)   |m/m           |average slope of main channel
 !!    ch_si(:)    |m/m           |initial slope of main channel
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    ch_wdr(:)   |m/m           |channel width to depth ratio
 !!    hdepth(:)   |m             |depth of flow on day
 !!    hhstor(:)   |m^3 H2O       |water stored in reach at end of time step
@@ -50,8 +50,8 @@ subroutine rthsed
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_s(2,:)   |m/m           |average slope of main channel
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_s2(:)   |m/m           |average slope of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    peakr       |m^3/s         |peak runoff rate in channel
 !!    sedst(:)    |metric tons   |amount of sediment stored in reach
 !!    sedrch      |metric tons   |sediment transported out of channel on day
@@ -170,7 +170,7 @@ subroutine rthsed
                shear_stress = 0.22 * ycoeff + 0.06 * 10 ** (-7.7 * ycoeff)
 
                !! critical grain Froude number
-               fr_gc = 4.596 * shear_stress ** 0.5293 * ch_s(2,jrch) ** (-0.1405)&
+               fr_gc = 4.596 * shear_stress ** 0.5293 * ch_s2(jrch) ** (-0.1405)&
                &* sig_g ** (-0.1606)
 
                !! grain Froude number
@@ -180,7 +180,7 @@ subroutine rthsed
                !! sediment concentration at the channel outlet [ppm, or g/m3]
                if(fr_g>fr_gc) then
                   sedcon = 7115 * 1.268 * (fr_g - fr_gc) ** 1.978 *&
-                  &ch_s(2,jrch) ** 0.6601 * (rhy(ii) / channel_d50) ** (-0.3301)
+                  &ch_s2(jrch) ** 0.6601 * (rhy(ii) / channel_d50) ** (-0.3301)
                else
                   sedcon = 0.
                endif
@@ -193,7 +193,7 @@ subroutine rthsed
                &/ (18.* visco_h2o)
 
                !! shear velocity
-               vshear = sqrt(9.81 * rhy(ii) * ch_s(2,jrch))
+               vshear = sqrt(9.81 * rhy(ii) * ch_s2(jrch))
 
                coefa = vfall * channel_d50 / visco_h2o
                coefe = vshear * channel_d50 / visco_h2o
@@ -210,7 +210,7 @@ subroutine rthsed
                endif
 
                coefc = vshear / vfall
-               coefd = vc * ch_s(2,jrch) / vfall - coefb * ch_s(2,jrch)
+               coefd = vc * ch_s2(jrch) / vfall - coefb * ch_s2(jrch)
                if(coefd<=0) coefd = 1.e-6
 
                if(ch_d50<=2.0) then ! in millimeter
@@ -343,14 +343,14 @@ subroutine rthsed
          depdeg = ch_d(jrch) - ch_di(jrch)
          if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
             if (qdin > 1400000.) then
-               dot = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
+               dot = 358.6 * rchdep * ch_s2(jrch) * ch_cov1(jrch)
                dat2 = 1.
 
                dat2 =  dat2 * dot
                ch_d(jrch) = ch_d(jrch) + dat2
-               ch_w(2,jrch) = ch_wdr(jrch) * ch_d(jrch)
-               ch_s(2,jrch) = ch_s(2,jrch) - dat2 / (ch_l2(jrch) * 1000.)
-               ch_s(2,jrch) = Max(.0001, ch_s(2,jrch))
+               ch_w2(jrch) = ch_wdr(jrch) * ch_d(jrch)
+               ch_s2(jrch) = ch_s2(jrch) - dat2 / (ch_l2(jrch) * 1000.)
+               ch_s2(jrch) = Max(.0001, ch_s2(jrch))
                call ttcoef(jrch)
             endif
          endif

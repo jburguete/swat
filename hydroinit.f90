@@ -11,8 +11,8 @@ subroutine hydroinit
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_l1(:)    |km            |longest tributary channel length in subbasin
 !!    ch_l2(:)    |km            |main channel length in subbasin
-!!    ch_n(1,:)   |none          |Manning's "n" value for the tributary channels
-!!    ch_s(1,:)   |m/m           |average slope of tributary channels
+!!    ch_n1(:)   |none          |Manning's "n" value for the tributary channels
+!!    ch_s1(:)   |m/m           |average slope of tributary channels
 !!    da_km       |km2           |area of the watershed in square kilometers
 !!    gdrain(:)   |hrs           |drain tile lag time: the amount of time
 !!                               |between the transfer of water from the soil
@@ -89,9 +89,9 @@ subroutine hydroinit
 !! subbasin !!
 !!    compute time of concentration (sum of overland and channel times)
       t_ov(j) = .0556 * (slsubbsn(j)*ov_n(j)) ** .6 / hru_slp(j) ** .3
-      t_ch = .62 * ch_l1(j) * ch_n(1,hru_sub(j)) ** .75 /&
+      t_ch = .62 * ch_l1(j) * ch_n1(hru_sub(j)) ** .75 /&
       &((da_km * sub_fr(hru_sub(j)))**.125 *&
-      &ch_s(1,hru_sub(j))**.375)
+      &ch_s1(hru_sub(j))**.375)
       sub_tc(hru_sub(j)) = t_ov(j) + t_ch
 !! end subbasin !!
 
@@ -100,8 +100,8 @@ subroutine hydroinit
 !!    compute time of concentration (sum of overland and channel times)
       ch_l1(j) = ch_l1(j) * hru_dafr(j) / sub_fr(hru_sub(j))
       t_ov(j) = .0556 * (slsubbsn(j)*ov_n(j)) ** .6 / hru_slp(j) ** .3
-      t_ch = .62 * ch_l1(j) * ch_n(1,hru_sub(j)) ** .75 /&
-      &((da_km*hru_dafr(j))**.125*ch_s(1,hru_sub(j))**.375)
+      t_ch = .62 * ch_l1(j) * ch_n1(hru_sub(j)) ** .75 /&
+      &((da_km*hru_dafr(j))**.125*ch_s1(hru_sub(j))**.375)
       tconc(j) = t_ov(j) + t_ch
 
 !!    compute delivery ratio
@@ -216,8 +216,8 @@ subroutine hydroinit
             c = phi(13,isb) / dthy
             NHY(isb) = max(4*nstep,ceiling(a),ceiling(b), ceiling(c),NHY(isb))
          end do
-         RCSS(isb) = .5 * (ch_w(2,isb) - phi(6,isb)) / ch_d(isb)
-         RCHX(isb) = SQRT(ch_s(2,isb)) / ch_n(2,isb)
+         RCSS(isb) = .5 * (ch_w2(isb) - phi(6,isb)) / ch_d(isb)
+         RCHX(isb) = SQRT(ch_s2(isb)) / ch_n2(isb)
          CHXA(isb) = phi(7,isb) * (phi(6,isb) + phi(7,isb) * RCSS(isb))
          CHXP(isb) = phi(6,isb) + 2. * phi(7,isb) *&
          &SQRT(RCSS(isb) * RCSS(isb) + 1.)

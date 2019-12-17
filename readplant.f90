@@ -1,3 +1,10 @@
+!> @file readplant.f90
+!> file containing the subroutine readplant
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads input parameters from the landuse/landcover
+!> database (plant.dat)
 subroutine readplant
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -155,11 +162,12 @@ subroutine readplant
 
    integer :: ic, eof, yrsmat, idtype
    real*8 :: xx, usle_c, frgrw2, laimx2, co2hi, bioehi, vpdfr,&
-   &blaic, b1, b2, b3, c1, frgrw1, laimx1, frgmax, bioe, hvstc,&
+   &blaic, b1, b2, b3, frgrw1, laimx1, frgmax, bioe, hvstc,&
    &dlaic, chtmxc, rdmxc, topt, tbase, cnyldc, cpyldc, bn1, bn2,&
    &bn3, bp1c, bp2c, bp3c, wsyfc, gsic, wavpc, rsdcopl, alaimin,&
    &bioleaf, biomxtrees, bmdieoff, extcoef, rsr1c, rsr2c
    character (len=4) :: cname
+   real*8, parameter :: c1 = 330. !! ambient CO2
 
    eof = 0
 
@@ -217,7 +225,6 @@ subroutine readplant
       &bmdieoff, rsr1c, rsr2c
 
 777   format (f8.3,i5,5f8.3)
-      !777    format (f8.3,i5,5f8.3)
 
       if (eof < 0) exit
 
@@ -275,7 +282,6 @@ subroutine readplant
 !!        The other point used to determine shape parameters for radiation
 !!        use efficiency is the ambient CO2 level (330 ul/l) and the
 !!        biomass-energy ratio (bio_e) given for the crop/land cover.
-         c1 = 330.                        !! ambient CO2
          if (co2hi == 330.) co2hi = 660.
          b1 = bio_e(ic) * .01             !! "ambient" bio-e ratio/100
          b2 = bioehi * .01                !! "elevated" bio-e ratio/100

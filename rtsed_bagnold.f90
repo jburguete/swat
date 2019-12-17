@@ -18,10 +18,10 @@ subroutine rtsed_bagnold
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_di(:)    |m             |initial depth of main channel
 !!    ch_li(:)    |km            |initial length of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
-!!    ch_s(2,:)   |m/m           |average slope of main channel
+!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
+!!    ch_s2(:)   |m/m           |average slope of main channel
 !!    ch_si(:)    |m/m           |initial slope of main channel
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    ch_wdr(:)   |m/m           |channel width to depth ratio
 !!    ideg        |none          |channel degredation code
 !!                               |0: do not compute channel degradation
@@ -49,8 +49,8 @@ subroutine rtsed_bagnold
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_s(2,:)   |m/m           |average slope of main channel
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_s2(:)   |m/m           |average slope of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    peakr       |m^3/s         |peak runoff rate in channel
 !!    sedst(:)    |metric tons   |amount of sediment stored in reach
 !!    sedrch      |metric tons   |sediment transported out of channel
@@ -174,10 +174,10 @@ subroutine rtsed_bagnold
             fpratio = 0.
             watdep = rchdep
          else
-            topw = 5 * ch_w(2,jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
+            topw = 5 * ch_w2(jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
             adddep = rchdep - ch_d(jrch)
             !! Area Ratio of water in flood plain to total cross sectional area
-            fpratio = (rcharea - phi(1,jrch) - ch_w(2,jrch) * adddep) / rcharea
+            fpratio = (rcharea - phi(1,jrch) - ch_w2(jrch) * adddep) / rcharea
             fpratio = max(0.,fpratio)
             watdep = ch_d(jrch)
          end if
@@ -186,7 +186,7 @@ subroutine rtsed_bagnold
 !!    Equations from Eaton and Millar (2004)
          SFbank = 10**(-1.4026 * log10((pbed/pbank) + 1.5) + 2.247)
 
-         Tou = 9800. * rchdep * ch_s(2,jrch)
+         Tou = 9800. * rchdep * ch_s2(jrch)
 
          asinea = 1. / sqrt((1.**2) + (c**2))
 
@@ -512,11 +512,11 @@ subroutine rtsed_bagnold
             depdeg = ch_d(jrch) - ch_di(jrch)
             if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
                if (qdin > 1400000.) then
-                  dat2 = 358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
+                  dat2 = 358.6 * rchdep * ch_s2(jrch) * ch_cov1(jrch)
                   ch_d(jrch) = ch_d(jrch) + dat2
-                  ch_w(2,jrch) = ch_wdr(jrch) * ch_d(jrch)
-                  ch_s(2,jrch) = ch_s(2,jrch) - dat2 / (ch_l2(jrch) * 1000.)
-                  ch_s(2,jrch) = Max(.0001, ch_s(2,jrch))
+                  ch_w2(jrch) = ch_wdr(jrch) * ch_d(jrch)
+                  ch_s2(jrch) = ch_s2(jrch) - dat2 / (ch_l2(jrch) * 1000.)
+                  ch_s2(jrch) = Max(.0001, ch_s2(jrch))
                   call ttcoef(jrch)
                endif
             endif

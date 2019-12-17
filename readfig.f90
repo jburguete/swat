@@ -1,3 +1,11 @@
+!> @file readfig.f90
+!> file containing the subroutine readfig
+!> @author
+!> modified by Javier Burguete
+
+!> reads in the routing information from the watershed configuration
+!> input file (.fig) and calculates the number of subbasins, reaches,
+!> and reservoirs
 subroutine readfig
 
 !!     ~ ~ ~ PURPOSE ~ ~ ~
@@ -104,8 +112,8 @@ subroutine readfig
 
 !!     ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!     Intrinsic: Max
-!!     SWAT: caps
-
+!!     SWAT: caps, readsub, readrte, readswq, readres, readlwq, lwqdef, readmon,
+!!           readyr, xmon, readcnst, readru
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 

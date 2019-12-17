@@ -2,7 +2,7 @@ SUBROUTINE HQDAV(A,CBW,QQ,SSS,ZCH,ZX,CHW,FPW,jrch)
 !     adopted from APEX1501 by Jaehak Jeong 2017
 !     THIS SUBPROGRAM COMPUTES FLOW AREA AND DEPTH GIVEN RATE in a reach
 
-   USE PARM, ONLY: ch_w, ch_n, qcap, chxp, rchx, rcss, ch_s, chxa
+   USE PARM, ONLY: ch_w2, ch_n1, qcap, chxp, rchx, rcss, ch_s2, chxa
    implicit none
 
    real*8, intent (in out) :: A, ZX, CHW, FPW
@@ -12,20 +12,20 @@ SUBROUTINE HQDAV(A,CBW,QQ,SSS,ZCH,ZX,CHW,FPW,jrch)
    real*8 :: RFPW, RFPX, ACH, AFP, DFDZ, DFQ, FU, FU1, P, Q, QCH, QFP, R, X1, X6, ZX1, ZZ
    integer :: IT, NBCF, NBCX
    ZX=.5*ZCH
-   RFPW = ch_w(2,jrch) * 4. !width of floodplain
-   RFPX = SQRT(ch_s(2,jrch)) * RFPW / ch_n(1,jrch)
+   RFPW = ch_w2(jrch) * 4. !width of floodplain
+   RFPX = SQRT(ch_s2(jrch)) * RFPW / ch_n1(jrch)
 
    DO IT=1,10
       IF(QQ>QCAP(jrch))THEN
          ZX=MAX(ZX,ZCH)
          ZZ=ZX-ZCH
          !COMPUTE CH FLOW ABOVE QCAP
-         ACH=CHXA(jrch)+ZZ*ch_w(2,jrch)
+         ACH=CHXA(jrch)+ZZ*ch_w2(jrch)
          R=ACH/CHXP(jrch)
          QCH=ACH*R**.66667*RCHX(jrch)
-         CHW=ch_w(2,jrch)
+         CHW=ch_w2(jrch)
          !COMPUTE FP FLOW
-         AFP=ZZ*(RFPW-ch_w(2,jrch))
+         AFP=ZZ*(RFPW-ch_w2(jrch))
          QFP=AFP*ZZ**.66667*RFPX/RFPW
          Q=QCH+QFP
          A=ACH+AFP

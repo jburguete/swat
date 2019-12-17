@@ -1,3 +1,9 @@
+!> @file readtill.f90
+!> file containing the subroutine readtill
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads input data from tillage database (till.dat)
 subroutine readtill
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -39,15 +45,13 @@ subroutine readtill
    use parm
    implicit none
 
-   integer :: it, eof, j
+   integer :: it, eof
 !! drainmod tile equations  - addition random roughness 06/2006
-   real*8 :: emix, dtil,   rrns
+   real*8 :: emix, dtil, rrns
 !! drainmod tile equations  - addition random roughness 06/2006
    character (len=8) :: tlnm
 
    eof = 0
-
-   j= ihru
 
    do
       dtil = 0.

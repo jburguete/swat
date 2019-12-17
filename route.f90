@@ -18,7 +18,7 @@ subroutine route
 !!    ch_revap(:) |none          |revap coeff: this variable controls the amount
 !!                               |of water moving from bank storage to the root
 !!                               |zone as a result of soil moisture depletion
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    da_ha       |ha            |area of watershed in hectares
 !!    hru_sub(:)  |none          |subbasin number for HRU
 !!    ievent      |none          |rainfall/runoff code
@@ -125,7 +125,7 @@ subroutine route
    end if
 
 !! compute revap from bank storage
-   revapday = ch_revap(jrch) * pet_day * ch_l2(jrch) * ch_w(2,jrch)
+   revapday = ch_revap(jrch) * pet_day * ch_l2(jrch) * ch_w2(jrch)
    revapday = Min(revapday,bankst(jrch))
    bankst(jrch) = bankst(jrch) - revapday
 

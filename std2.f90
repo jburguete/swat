@@ -8,8 +8,8 @@ subroutine std2
 !!    name          |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)       |m           |average depth of main channel
-!!    ch_s(2,:)     |m/m         |average slope of main channel
-!!    ch_w(2,:)     |m           |average width of main channel
+!!    ch_s2(:)     |m/m         |average slope of main channel
+!!    ch_w2(:)     |m           |average width of main channel
 !!    hru_fr(:)     |none        |fraction of subbasin area in HRU
 !!    hru_ha(:)     |ha          |area of HRU
 !!    hrupest(:)    |none        |pesticide use flag:
@@ -192,18 +192,18 @@ subroutine std2
       do j = 1, subtot
          xkm = phi(10,j) * msk_co1 + phi(13,j) * msk_co2
          xch_l1 = ch_l1(hru1(j)) / hru_fr(hru1(j))
-         write (24,1014) j,xch_l1,ch_s(1,j),ch_w(1,j),ch_k(1,j)&
-         &,ch_n(1,j),ch_l2(j),ch_s(2,j),ch_w(2,j),ch_d(j),&
-         &ch_k(2,j),ch_n(2,j),xkm
+         write (24,1014) j,xch_l1,ch_s1(j),ch_w1(j),ch_k1(j)&
+         &,ch_n1(j),ch_l2(j),ch_s2(j),ch_w2(j),ch_d(j),&
+         &ch_k2(j),ch_n2(j),xkm
       end do
    else
       write (24,1011)
       do j = 1, subtot
          xch_l1 = 0.
          xch_l1 = ch_l1(hru1(j)) / hru_fr(hru1(j))
-         write (24,1012) j,xch_l1,ch_s(1,j),ch_w(1,j),ch_k(1,j),&
-         &ch_n(1,j),ch_l2(j),ch_s(2,j),ch_w(2,j),ch_d(j),&
-         &ch_k(2,j),ch_n(2,j)
+         write (24,1012) j,xch_l1,ch_s1(j),ch_w1(j),ch_k1(j),&
+         &ch_n1(j),ch_l2(j),ch_s2(j),ch_w2(j),ch_d(j),&
+         &ch_k2(j),ch_n2(j)
       end do
    end if
 
@@ -213,7 +213,7 @@ subroutine std2
 
 !!    chan.deg file
    do j = 1, nrch
-      write (16,3000) j, ch_d(j), ch_w(2,j), ch_s(2,j)
+      write (16,3000) j, ch_d(j), ch_w2(j), ch_s2(j)
    end do
 
    return

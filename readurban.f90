@@ -1,3 +1,12 @@
+!> @file readurban.f90
+!> file containing the subroutine readurban
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads input parameters from the urban database
+!> (urban.dat). Information from this database is used only if the
+!> urban buildup/washoff routines are selected for the modeling of
+!> urban areas.
 subroutine readurban
 
 !!     ~ ~ ~ PURPOSE ~ ~ ~

@@ -1,7 +1,9 @@
+!> @file modparm.f90
+!> file containing the module parm
 !> @author
 !> modified by Javier Burguete Tolosa
-!> @brief
-!> main module contatining the global variables
+
+!> main module containing the global variables
 module parm
 
 !> max number of variables routed through the reach
@@ -149,7 +151,8 @@ module parm
 !> growth factor for less persistent bacteria adsorbed to soil particles
 !> (1/day)
    real*8 :: wglps
-   real*8 :: rttime, rchdep, rtevp, rttlc, da_km, resflwi
+   real*8 :: da_km !< area of the watershed in square kilometers (km^2)
+   real*8 :: rttime, rchdep, rtevp, rttlc, resflwi
 !> die-off factor for persistent bacteria in streams (1/day)
    real*8 :: wdprch
    real*8 :: resflwo, respcp, resev, ressep,ressedi,ressedo,dtot
@@ -394,7 +397,8 @@ module parm
    integer :: ifirstatmo, iyr_atmo, iyr_atmo1, matmo
    integer :: mch !< maximum number of channels
    integer :: mcr !< maximum number of crops grown per year
-   integer :: mcrdb !< max number of lu/lc defined in crop.dat
+!> maximum number of crops/landcover in database file (crop.dat)
+   integer :: mcrdb
    integer :: mfcst !< maximum number of forecast stations
    integer :: mfdb !< max number of fertilizers in fert.dat
    integer :: mhru !< maximum number of HRUs in watershed
@@ -417,12 +421,16 @@ module parm
 !> 0 variable storage method\n
 !> 1 Muskingum method\n
    integer :: irte
-   integer :: nhru, mo, immo, nrch, nres, i_mo
+   integer :: nrch !< number of reaches in watershed (none)
+   integer :: nres !< number of reservoirs in watershed (none)
+   integer :: nhru, mo, immo, i_mo
 !> wind speed input code\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: wndsim
-   integer :: icode, ihout, inum1, inum2, inum3, inum4, ihru
+!> HRU number (none)
+   integer :: ihru
+   integer :: icode, ihout, inum1, inum2, inum3, inum4
 !> icfac = 0 for C-factor calculation using Cmin (as described in manual)\n
 !> = 1 for new C-factor calculation from RUSLE (no minimum needed)
    integer :: icfac
@@ -517,7 +525,7 @@ module parm
 !> 0 do not model stream water quality\n
 !> 1 model stream water quality (QUAL2E & pesticide transformations)
    integer :: iwq
-   integer :: i !< forecast region number (none)
+   integer :: i !< forecast region number or subbasin number (none)
    integer :: iskip, ifirstpet
 !> print code for output.pst file\n
 !> 0 do not print pesticide output\n
@@ -537,7 +545,8 @@ module parm
    integer :: fcstday !< beginning date of forecast period (julian date)
    integer :: fcstyr !< beginning year of forecast period
    integer :: iscen !< scenarios counter
-   integer :: subtot, ogen
+   integer :: subtot !< number of subbasins in watershed (none)
+   integer :: ogen
    integer :: mapp !< maximum number of applications
    integer :: mlyr !< maximum number of soil layers
    integer :: mpst !< max number of pesticides used in wshed
@@ -625,22 +634,48 @@ module parm
 !! septic changes added 1/28/09 gsm
    real*8, dimension (:), allocatable :: bio_amn, bio_bod, biom,rbiom
    real*8, dimension (:), allocatable :: fcoli, bio_ntr, bz_perc
-   real*8, dimension (:), allocatable :: plqm,sep_cap,bz_area
-   real*8, dimension (:), allocatable :: bz_z, bz_thk,  bio_bd
+!> number of permanent residents in the hourse (none)
+   real*8, dimension (:), allocatable :: sep_cap
+   real*8, dimension (:), allocatable :: plqm,bz_area
+   real*8, dimension (:), allocatable :: bz_z !< Depth of biozone layer(mm)
+   real*8, dimension (:), allocatable :: bz_thk !< thickness of biozone (mm)
+   real*8, dimension (:), allocatable :: bio_bd !< density of biomass (kg/m^3)
 !! carbon outputs for .hru file
    real*8, dimension (:), allocatable :: cmup_kgh, cmtot_kgh
 !! carbon outputs for .hru file
-   real*8, dimension (:), allocatable :: coeff_bod_dc, coeff_bod_conv
-   real*8, dimension (:), allocatable :: coeff_fc1, coeff_fc2
-   real*8, dimension (:), allocatable :: coeff_fecal, coeff_plq
-   real*8, dimension (:), allocatable :: coeff_mrt, coeff_rsp
-   real*8, dimension (:), allocatable :: coeff_slg1, coeff_slg2
-   real*8, dimension (:), allocatable :: coeff_nitr, coeff_denitr
+!> denitrification rate coefficient (none)
+   real*8, dimension (:), allocatable :: coeff_denitr
+!> BOD decay rate coefficient (m^3/day)
+   real*8, dimension (:), allocatable :: coeff_bod_dc
+!> BOD to live bacteria biomass conversion factor (none)
+   real*8, dimension (:), allocatable :: coeff_bod_conv
+!> field capacity calibration parameter 1 (none)
+   real*8, dimension (:), allocatable :: coeff_fc1
+!> field capacity calibration parameter 2 (none)
+   real*8, dimension (:), allocatable :: coeff_fc2
+!> fecal coliform bacteria decay rate coefficient (m^3/day)
+   real*8, dimension (:), allocatable :: coeff_fecal
+!> mortality rate coefficient (none)
+   real*8, dimension (:), allocatable :: coeff_mrt
+!> nitrification rate coefficient (none)
+   real*8, dimension (:), allocatable :: coeff_nitr
+!> conversion factor for plaque from TDS (none)
+   real*8, dimension (:), allocatable :: coeff_plq
+!> respiration rate coefficient (none)
+   real*8, dimension (:), allocatable :: coeff_rsp
+!> slough-off calibration parameter (none)
+   real*8, dimension (:), allocatable :: coeff_slg1
+!> slough-off calibration parameter (none)
+   real*8, dimension (:), allocatable :: coeff_slg2
    real*8, dimension (:), allocatable :: coeff_pdistrb,coeff_solpslp
    real*8, dimension (:), allocatable :: coeff_solpintc,coeff_psorpmax
 !! Septic system by Jaehak Jeong
-   integer, dimension (:), allocatable :: i_sep,isep_typ
-   integer, dimension (:), allocatable :: isep_opt,sep_tsincefail
+!> septic system type (none)
+   integer, dimension (:), allocatable :: isep_typ
+   integer, dimension (:), allocatable :: i_sep
+!> septic system operation flag (1=active, 2=failing, 3=not operated) (none)
+   integer, dimension (:), allocatable :: isep_opt
+   integer, dimension (:), allocatable :: sep_tsincefail
    integer, dimension (:), allocatable :: isep_tfail,isep_iyr
    integer, dimension (:), allocatable :: sep_strm_dist,sep_den
 
@@ -692,7 +727,14 @@ module parm
    real*8, dimension (:,:), allocatable :: resoutm,resouty,resouta
    real*8, dimension (12,8) :: wshd_aamon
    real*8, dimension (:,:), allocatable :: wtrmon,wtryr,wtraa
-   real*8, dimension (:,:), allocatable :: sub_smfmx, sub_smfmn
+!> max melt rate for snow during year (June 21) for subbasin(:) where deg C
+!> refers to the air temperature. SUB_SMFMX and SMFMN allow the rate of snow
+!> melt to vary through the year. These parameters are accounting for the impact
+!> of soil temperature on snow melt (range: -5.0/5.0) (mm/deg C/day)
+   real*8, dimension (:,:), allocatable :: sub_smfmx
+!> min melt rate for snow during year (Dec 21) for subbasin(:) (range: -5.0/5.0)
+!> where deg C refers to the air temperature (mm/deg C/day)
+   real*8, dimension (:,:), allocatable :: sub_smfmn
    real*8, dimension (:,:,:), allocatable :: hrupstd,hrupsta,hrupstm
    real*8, dimension (:,:,:), allocatable :: hrupsty
 ! mrg = max number of rainfall/temperature gages
@@ -714,10 +756,12 @@ module parm
 !> fpcp_stat(:,3,:): skew coefficient for the average daily precipitationa
 !> (none)
    real*8, dimension (:,:,:), allocatable :: fpcp_stat
-!> fpr_w(1,:,:): probability of wet day after dry day in month (none)\n
-!> fpr_w(2,:,:): probability of wet day after wet day in month (none)\n
-!> fpr_w(3,:,:): proportion of wet days in the month (none)
-   real*8, dimension (:,:,:), allocatable :: fpr_w
+!> probability of wet day after dry day in month (none)
+   real*8, dimension (:,:), allocatable :: fpr_w1
+!> probability of wet day after wet day in month (none)
+   real*8, dimension (:,:), allocatable :: fpr_w2
+!> proportion of wet days in the month (none)
+   real*8, dimension (:,:), allocatable :: fpr_w3
 ! mch = max number of channels
    real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi,ch_d
 !> channel organic n concentration (ppm)
@@ -805,29 +849,54 @@ module parm
    integer, dimension (:), allocatable :: itb
 ! msub = max number of subbasins
    real*8, dimension (:), allocatable :: ch_revap, dep_chan
-   real*8, dimension (:), allocatable :: harg_petco, subfr_nowtr
-   real*8, dimension (:), allocatable :: cncoef_sub, dr_sub
+!> coefficient related to radiation used in hargreaves eq
+!> (range: 0.0019 - 0.0032)
+   real*8, dimension (:), allocatable :: harg_petco
+   real*8, dimension (:), allocatable :: subfr_nowtr
+!> soil water depletion coefficient used in the new (modified curve number
+!> method) same as soil index coeff used in APEX range: 0.5 - 2.0
+   real*8, dimension (:), allocatable :: cncoef_sub
+   real*8, dimension (:), allocatable :: dr_sub
    real*8, dimension (:), allocatable :: wcklsp,sub_fr,sub_minp,sub_sw
    real*8, dimension (:), allocatable :: sub_sumfc,sub_gwno3,sub_gwsolp
-   real*8, dimension (:), allocatable :: sub_km,sub_tc,wlat,sub_pet,co2
+   real*8, dimension (:), allocatable :: co2 !< CO2 concentration (ppmv)
+!> area of subbasin in square kilometers (km^2)
+   real*8, dimension (:), allocatable :: sub_km
+   real*8, dimension (:), allocatable :: sub_tc,wlat,sub_pet
    real*8, dimension (:), allocatable :: welev,sub_orgn,sub_orgp,sub_bd
    real*8, dimension (:), allocatable :: sub_wtmp,sub_sedpa,sub_sedps
    real*8, dimension (:), allocatable :: sub_minpa,sub_minps,daylmn
    real*8, dimension (:), allocatable :: latcos,latsin,phutot
-   real*8, dimension (:), allocatable :: tlaps,plaps,tmp_an,sub_precip
+!> precipitation lapse rate: precipitation change due to change in elevation
+!> (mm H2O/km)
+   real*8, dimension (:), allocatable :: plaps
+!> temperature lapse rate: temperature change due to change in elevation
+!> (deg C/km)
+   real*8, dimension (:), allocatable :: tlaps
+   real*8, dimension (:), allocatable :: tmp_an,sub_precip
    real*8, dimension (:), allocatable :: pcpdays, rcn_sub, rammo_sub
    real*8, dimension (:), allocatable :: atmo_day
    real*8, dimension (:), allocatable :: sub_snom,sub_qd,sub_sedy
    real*8, dimension (:), allocatable :: sub_tran,sub_no3,sub_latno3
-   real*8, dimension (:,:), allocatable :: sub_smtmp,sub_timp,sub_sftmp
+!> snowfall temperature for subbasin(:). Mean air temperature at which precip
+!> is equally likely to be rain as snow/freezing rain (range: -5.0/5.0) (deg C)
+   real*8, dimension (:,:), allocatable :: sub_sftmp
+!> snow melt base temperature for subbasin(:) mean air temperature at which snow
+!> melt will occur (range: -5.0/5.0) (deg C)
+   real*8, dimension (:,:), allocatable :: sub_smtmp
+   real*8, dimension (:,:), allocatable :: sub_timp
    real*8, dimension (:), allocatable :: sub_tileno3
    real*8, dimension (:), allocatable :: sub_solp,sub_subp,sub_etday
-   real*8, dimension (:), allocatable :: sub_wyld,sub_surfq,sub_elev
+!> average elevation of subbasin (m)
+   real*8, dimension (:), allocatable :: sub_elev
+   real*8, dimension (:), allocatable :: sub_wyld,sub_surfq
    real*8, dimension (:), allocatable :: qird
    real*8, dimension (:), allocatable :: sub_gwq,sub_sep,sub_chl
    real*8, dimension (:), allocatable :: sub_cbod,sub_dox,sub_solpst
    real*8, dimension (:), allocatable :: sub_sorpst,sub_yorgn,sub_yorgp
-   real*8, dimension (:), allocatable :: sub_bactp,sub_bactlp,sub_lat
+!> latitude of subbasin (degrees)
+   real*8, dimension (:), allocatable :: sub_lat
+   real*8, dimension (:), allocatable :: sub_bactp,sub_bactlp
    real*8, dimension (:), allocatable :: sub_latq, sub_gwq_d,sub_tileq
    real*8, dimension (:), allocatable :: sub_vaptile
    real*8, dimension (:), allocatable :: sub_dsan, sub_dsil, sub_dcla
@@ -838,21 +907,68 @@ module parm
    real*8, dimension (:), allocatable :: wnan
    real*8, dimension (:,:), allocatable :: sol_stpwt
    real*8, dimension (:,:), allocatable :: sub_pst,sub_hhqd,sub_hhwtmp
-   real*8, dimension (:,:), allocatable :: rfinc,tmpinc,radinc,huminc
-   real*8, dimension (:,:), allocatable :: wndav,ch_k,elevb,elevb_fr
-   real*8, dimension (:,:), allocatable :: dewpt,ch_w,ch_s,ch_n
+!> monthly humidity adjustment. Daily values for relative humidity within the
+!> month are rasied or lowered by the specified amount (used in climate change
+!> studies) (none)
+   real*8, dimension (:,:), allocatable :: huminc
+!> monthly solar radiation adjustment. Daily radiation within the month is
+!> raised or lowered by the specified amount. (used in climate change studies)
+!> (MJ/m^2)
+   real*8, dimension (:,:), allocatable :: radinc
+!> monthly rainfall adjustment. Daily rainfall within the month is adjusted to
+!> the specified percentage of the original value (used in climate change
+!> studies)(%)
+   real*8, dimension (:,:), allocatable :: rfinc
+!> monthly temperature adjustment. Daily maximum and minimum temperatures within
+!> the month are raised or lowered by the specified amount (used in climate
+!> change studies) (deg C)
+   real*8, dimension (:,:), allocatable :: tmpinc
+!> effective hydraulic conductivity of tributary channel alluvium (mm/hr)
+   real*8, dimension (:), allocatable :: ch_k1
+   real*8, dimension (:), allocatable :: ch_k2
+!> elevation at the center of the band (m)
+   real*8, dimension (:,:), allocatable :: elevb
+!> fraction of subbasin area within elevation band (the same fractions should be
+!> listed for all HRUs within the subbasin) (none)
+   real*8, dimension (:,:), allocatable :: elevb_fr
+   real*8, dimension (:,:), allocatable :: wndav
+!> Manning's "n" value for the tributary channels (none)
+   real*8, dimension (:), allocatable :: ch_n1
+   real*8, dimension (:), allocatable :: ch_n2
+!> average slope of tributary channels (m/m)
+   real*8, dimension (:), allocatable :: ch_s1
+   real*8, dimension (:), allocatable :: ch_s2
+!> average width of tributary channels (m)
+   real*8, dimension (:), allocatable :: ch_w1
+   real*8, dimension (:), allocatable :: ch_w2
+   real*8, dimension (:,:), allocatable :: dewpt
    real*8, dimension (:,:), allocatable :: amp_r,solarav,tmpstdmx
    real*8, dimension (:,:), allocatable :: tmpstdmn,pcf,tmpmn,tmpmx
    real*8, dimension (:,:), allocatable :: otmpstdmn,otmpmn,otmpmx
    real*8, dimension (:,:), allocatable :: otmpstdmx, ch_erodmo
    real*8, dimension (:,:), allocatable :: uh, hqdsave, hsdsave
-   real*8, dimension (:,:,:), allocatable :: pr_w,pcp_stat
-   real*8, dimension (:,:,:), allocatable :: opr_w,opcp_stat
+   real*8, dimension (:,:), allocatable :: pr_w1
+   real*8, dimension (:,:), allocatable :: pr_w2
+   real*8, dimension (:,:), allocatable :: pr_w3
+   real*8, dimension (:,:,:), allocatable :: pcp_stat
+   real*8, dimension (:,:), allocatable :: opr_w1
+   real*8, dimension (:,:), allocatable :: opr_w2
+   real*8, dimension (:,:), allocatable :: opr_w3
+   real*8, dimension (:,:,:), allocatable :: opcp_stat
    integer, dimension (:), allocatable :: hrutot,hru1,ireg
-   integer, dimension (:), allocatable :: isgage,ihgage,iwgage
-   integer, dimension (:), allocatable :: irgage,itgage,subgis
+!> subbasin relative humidity data code (none)
+   integer, dimension (:), allocatable :: ihgage
+!> subbasin radiation gage data code (none)
+   integer, dimension (:), allocatable :: isgage
+!> subbasin wind speed gage data code (none)
+   integer, dimension (:), allocatable :: iwgage
+!> GIS code printed to output files (output.sub) (none
+   integer, dimension (:), allocatable :: subgis
+!> subbasin rain gage data code (none)
+   integer, dimension (:), allocatable :: irgage
+!> subbasin temp gage data code (none)
+   integer, dimension (:), allocatable :: itgage
    integer, dimension (:), allocatable :: fcst_reg, irelh
-! mlyr = max number of soil layers
    real*8, dimension (:,:), allocatable :: sol_aorgn,sol_tmp,sol_fon
    real*8, dimension (:,:), allocatable :: sol_awc,sol_prk,volcr
 !> subbasin phosphorus percolation coefficient. Ratio of soluble phosphorus in
@@ -914,9 +1030,27 @@ module parm
    integer, dimension (:), allocatable :: iresco,mores,iyres
    integer, dimension (:), allocatable :: iflod1r,iflod2r,ndtargr
 ! mpdb = max number of pesticides in the database
-   real*8, dimension (:), allocatable :: skoc,ap_ef,decay_f
-   real*8, dimension (:), allocatable :: hlife_f,hlife_s,decay_s
-   real*8, dimension (:), allocatable :: pst_wsol,pst_wof, irramt
+!> application efficiency (0-1) (none)
+   real*8, dimension (:), allocatable :: ap_ef
+!> exponential of the rate constant for degradation of the pesticide on foliage
+!> (none)
+   real*8, dimension (:), allocatable :: decay_f
+!> soil adsorption coefficient normalized for soil organic carbon content
+!> ((mg/kg)/(mg/L))
+   real*8, dimension (:), allocatable :: skoc
+!> exponential of the rate constant for degradation of the pesticide in soil
+!> (none)
+   real*8, dimension (:), allocatable :: decay_s
+!> half-life of pesticide on foliage (days)
+   real*8, dimension (:), allocatable :: hlife_f
+!> half-life of pesticide in soil (days)
+   real*8, dimension (:), allocatable :: hlife_s
+!> fraction of pesticide on foliage which is washed-off by a rainfall event
+!> (none)
+   real*8, dimension (:), allocatable :: pst_wof
+!> solubility of chemical in water (mg/L (ppm))
+   real*8, dimension (:), allocatable :: pst_wsol
+   real*8, dimension (:), allocatable :: irramt
    real*8, dimension (:), allocatable :: phusw, phusw_nocrop
 !> flag for types of pesticide used in watershed array location is pesticide ID
 !> number\n
@@ -933,25 +1067,142 @@ module parm
    real*8, dimension (:,:), allocatable :: mgt7op, mgt8op, mgt9op
    real*8, dimension (:,:), allocatable :: mgt10iop, phu_op
 ! mcrdb = maximum number of crops in database
-   real*8, dimension (:), allocatable :: wac21,wac22,cnyld,rsdco_pl
-   real*8, dimension (:), allocatable :: wsyf,leaf1,leaf2,alai_min
-   real*8, dimension (:), allocatable :: t_base,t_opt,hvsti,bio_e
-   real*8, dimension (:), allocatable :: vpd2,gsi,chtmx,wavp,cvm
-   real*8, dimension (:), allocatable :: blai,dlai,rdmx,cpyld,bio_leaf
-   real*8, dimension (:), allocatable :: bio_n1,bio_n2,bio_p1,bio_p2
-   real*8, dimension (:), allocatable :: bmx_trees,ext_coef,bm_dieoff
-   real*8, dimension (:), allocatable :: rsr1, rsr2
+!> fraction of nitrogen in yield (kg N/kg yield)
+   real*8, dimension (:), allocatable :: cnyld
+!> plant residue decomposition coefficient. The fraction of residue which will
+!> decompose in a day assuming optimal moisture, temperature, C:N ratio, and C:P
+!> ratio (none)
+   real*8, dimension (:), allocatable :: rsdco_pl
+!> 1st shape parameter for radiation use efficiency equation (none)
+   real*8, dimension (:), allocatable :: wac21
+!> 2nd shape parameter for radiation use efficiency equation (none)
+   real*8, dimension (:), allocatable :: wac22
+!> minimum LAI during winter dormant period \f$(m^2/m^2)\f$
+   real*8, dimension (:), allocatable :: alai_min
+!> 1st shape parameter for leaf area development equation (none)
+   real*8, dimension (:), allocatable :: leaf1
+!> 2nd shape parameter for leaf area development equation (none)
+   real*8, dimension (:), allocatable :: leaf2
+!> Value of harvest index between 0 and HVSTI which represents the lowest value
+!> expected due to water stress ((kg/ha)/(kg/ha))
+   real*8, dimension (:), allocatable :: wsyf
+!> biomass-energy ratio. The potential (unstressed) growth rate per unit of
+!> intercepted photosynthetically active radiation.((kg/ha)/(MJ/m**2))
+   real*8, dimension (:), allocatable :: bio_e
+!> harvest index: crop yield/aboveground biomass ((kg/ha)/(kg/ha))
+   real*8, dimension (:), allocatable :: hvsti
+!> minimum temperature for plant growth (deg C)
+   real*8, dimension (:), allocatable :: t_base
+!> optimal temperature for plant growth (deg C)
+   real*8, dimension (:), allocatable :: t_opt
+   real*8, dimension (:), allocatable :: chtmx !< maximum canopy height (m)
+   real*8, dimension (:), allocatable :: cvm !< natural log of USLE_C (none)
+!> maximum stomatal conductance (m/s)
+   real*8, dimension (:), allocatable :: gsi
+!> rate of decline in stomatal conductance per unit increase in vapor pressure
+!> deficit ((m/s)*(1/kPa))
+   real*8, dimension (:), allocatable :: vpd2
+!> rate of decline in radiation use efficiency as a function of vapor pressure
+!> deficit (none)
+   real*8, dimension (:), allocatable :: wavp
+!> fraction of leaf/needle biomass that drops during dormancy (for trees only)
+!> (none)
+   real*8, dimension (:), allocatable :: bio_leaf
+!> maximum (potential) leaf area index (none)
+   real*8, dimension (:), allocatable :: blai
+!> fraction of phosphorus in yield (kg P/kg yield)
+   real*8, dimension (:), allocatable :: cpyld
+!> fraction of growing season when leaf area declines (none)
+   real*8, dimension (:), allocatable :: dlai
+   real*8, dimension (:), allocatable :: rdmx !< maximum root depth (m)
+!> 1st shape parameter for plant N uptake equation (none)
+   real*8, dimension (:), allocatable :: bio_n1
+!> 2nd shape parameter for plant N uptake equation (none)
+   real*8, dimension (:), allocatable :: bio_n2
+!> 1st shape parameter for plant P uptake equation (none)
+   real*8, dimension (:), allocatable :: bio_p1
+!> 2st shape parameter for plant P uptake equation (none)
+   real*8, dimension (:), allocatable :: bio_p2
+!> fraction above ground biomass that dies off at dormancy (fraction)
+   real*8, dimension (:), allocatable :: bm_dieoff
+   real*8, dimension (:), allocatable :: bmx_trees,ext_coef
+!> initial root to shoot ratio at the beg of growing season
+   real*8, dimension (:), allocatable :: rsr1
+!> root to shoot ratio at the end of the growing season
+   real*8, dimension (:), allocatable :: rsr2
 !     real*8, dimension (:), allocatable :: air_str
-   real*8, dimension (:,:), allocatable :: pltnfr,pltpfr
-   integer, dimension (:), allocatable :: idc, mat_yrs
-! mfdb = maximum number of fertilizer in database
-   real*8, dimension (:), allocatable :: forgn,forgp,fminn,bactpdb
-   real*8, dimension (:), allocatable :: fminp,fnh3n,bactlpdb,bactkddb
-   character(len=8), dimension (200) :: fertnm
-   real*8, dimension (:), allocatable :: fimp,curbden,urbcoef,dirtmx
-   real*8, dimension (:), allocatable :: thalf,tnconc,tpconc,tno3conc
-   real*8, dimension (:), allocatable :: fcimp,urbcn2
-! mapp = max number of applications
+!> pltnfr(1,:) nitrogen uptake parameter #1: normal fraction of N in crop
+!> biomass at emergence (kg N/kg biomass)\n
+!> pltnfr(2,:) nitrogen uptake parameter #2: normal fraction of N in crop
+!> biomass at 0.5 maturity (kg N/kg biomass)\n
+!> pltnfr(3,:) nitrogen uptake parameter #3: normal fraction of N in crop
+!> biomass at maturity (kg N/kg biomass)
+   real*8, dimension (:,:), allocatable :: pltnfr
+!> pltpfr(1,:) phosphorus uptake parameter #1: normal fraction of P in crop
+!> biomass at emergence (kg P/kg biomass)\n
+!> pltpfr(2,:) phosphorus uptake parameter #2: normal fraction of P in crop
+!> biomass at 0.5 maturity (kg P/kg biomass)
+!> pltpfr(3,:) phosphorus uptake parameter #3: normal fraction of P in crop
+!> biomass at maturity (kg P/kg biomass)
+   real*8, dimension (:,:), allocatable :: pltpfr
+!> crop/landcover category:\n
+!> 1 warm season annual legume\n
+!> 2 cold season annual legume\n
+!> 3 perennial legume\n
+!> 4 warm season annual\n
+!> 5 cold season annual\n
+!> 6 perennial\n
+!> 7 trees
+   integer, dimension (:), allocatable :: idc
+   integer, dimension (:), allocatable :: mat_yrs
+!> concentration of persistent bacteria in manure (fertilizer) (cfu/g manure)
+   real*8, dimension (:), allocatable :: bactpdb
+!> fraction of mineral N (NO3 + NH3) (kg minN/kg fert)
+   real*8, dimension (:), allocatable :: fminn
+!> fraction of organic N (kg orgN/kg fert)
+   real*8, dimension (:), allocatable :: forgn
+!> fraction of organic P (kg orgP/kg fert)
+   real*8, dimension (:), allocatable :: forgp
+!> bacteria partition coefficient (none):\n
+!> 1: all bacteria in solution\n
+!> 0: all bacteria sorbed to soil particles
+   real*8, dimension (:), allocatable :: bactkddb
+!> concentration of less persistent bacteria in manure (fertilizer)
+!> (cfu/g manure)
+   real*8, dimension (:), allocatable :: bactlpdb
+!> fraction of mineral P (kg minP/kg fert)
+   real*8, dimension (:), allocatable :: fminp
+!> fraction of NH3-N in mineral N (kg NH3-N/kg minN)
+   real*8, dimension (:), allocatable :: fnh3n
+   character(len=8), dimension (200) :: fertnm !< name of fertilizer
+!> curb length density in HRU (km/ha)
+   real*8, dimension (:), allocatable :: curbden
+!> maximum amount of solids allowed to build up on impervious surfaces
+!> (kg/curb km)
+   real*8, dimension (:), allocatable :: dirtmx
+!> fraction of HRU area that is impervious (both directly and indirectly
+!> connected)(fraction)
+   real*8, dimension (:), allocatable :: fimp
+!> wash-off coefficient for removal of constituents from an impervious surface
+!> (1/mm)
+   real*8, dimension (:), allocatable :: urbcoef
+!> time for the amount of solids on impervious areas to build up to 1/2 the
+!> maximum level (days)
+   real*8, dimension (:), allocatable :: thalf
+!> concentration of total nitrogen in suspended solid load from impervious
+!> areas (mg N/kg sed)
+   real*8, dimension (:), allocatable :: tnconc
+!> concentration of NO3-N in suspended solid load from impervious areas
+!> (mg NO3-N/kg sed)
+   real*8, dimension (:), allocatable :: tno3conc
+!> concentration of total phosphorus in suspended solid load from impervious
+!> areas (mg P/kg sed)
+   real*8, dimension (:), allocatable :: tpconc
+!> fraction of HRU area that is classified as directly connected impervious
+!> (fraction)
+   real*8, dimension (:), allocatable :: fcimp
+!> SCS curve number for moisture condition II in impervious areas (none)
+   real*8, dimension (:), allocatable :: urbcn2
    real*8 :: sweepeff,frt_kg, pst_dep, fr_curb
 !! added pst_dep to statement below 3/31/08 gsm
 !!   burn 3/5/09
@@ -963,14 +1214,77 @@ module parm
    real*8, dimension (:), allocatable :: ranrns_hru
    integer, dimension (:), allocatable :: itill
 !! drainmod tile equations   06/2006
-   real*8, dimension (:), allocatable :: effmix,deptil, ranrns
+!> depth of mixing caused by operation (mm)
+   real*8, dimension (:), allocatable :: deptil
+!> mixing efficiency of operation (none)
+   real*8, dimension (:), allocatable :: effmix
+!> random roughness of a given tillage operation (mm)
+   real*8, dimension (:), allocatable :: ranrns
+!> 8-character name for the tillage operation
    character(len=8), dimension (550) :: tillnm
 ! mhyd = max number of hydrograph nodes
-   real*8, dimension (:), allocatable :: rnum1s,hyd_dakm
+!> For ICODES equal to (none)\n
+!> 0,1,3,5,9: not used\n
+!> 2: Fraction of flow in channel\n
+!> 4: amount of water transferred (as defined by INUM4S)\n
+!> 7,8,10,11: drainage area in square kilometers associated with the record file
+   real*8, dimension (:), allocatable :: rnum1s
+   real*8, dimension (:), allocatable :: hyd_dakm
    real*8, dimension (:,:), allocatable :: varoute,shyd, vartran
    real*8, dimension (:,:,:), allocatable :: hhvaroute
-   integer, dimension (:), allocatable :: icodes,ihouts,inum1s
-   integer, dimension (:), allocatable :: inum2s,inum3s,inum4s
+!> routing command code (none):\n
+!> 0 = finish\n
+!> 1 = subbasin\n
+!> 2 = route\n
+!> 3 = routres\n
+!> 4 = transfer\n
+!> 5 = add\n
+!> 6 = rechour\n
+!> 7 = recmon\n
+!> 8 = recyear\n
+!> 9 = save\n
+!> 10 = recday\n
+!> 11 = reccnst\n
+!> 12 = structure\n
+!> 13 = apex\n
+!> 14 = saveconc\n
+!> 15 =
+   integer, dimension (:), allocatable :: icodes
+!> For ICODES equal to (none)\n
+!> 0: not used\n
+!> 1,2,3,5,7,8,10,11: hydrograph storage location number\n
+!> 4: departure type (1=reach, 2=reservoir)\n
+!> 9: hydrograph storage location of data to be printed to event file\n
+!> 14:hydrograph storage location of data to be printed to saveconc file
+   integer, dimension (:), allocatable :: ihouts
+!> For ICODES equal to (none)\n
+!> 0: not used\n
+!> 1: subbasin number\n
+!> 2: reach number\n
+!> 3: reservoir number\n
+!> 4: reach or res # flow is diverted from\n
+!> 5: hydrograph storage location of 1st dataset to be added\n
+!> 7,8,9,10,11,14: file number
+   integer, dimension (:), allocatable :: inum1s
+!> For ICODES equal to (none)\n
+!> 0,1,7,8,10,11: not used\n
+!> 2,3: inflow hydrograph storage location\n
+!> 4: destination type (1=reach, 2=reservoir)\n
+!> 5: hydrograph storage location of 2nd dataset to be added\n
+!> 9,14:print frequency (0=daily, 1=hourly)
+   integer, dimension (:), allocatable :: inum2s
+!> For ICODES equal to (none)\n
+!> 0,1,2,3,5,7,8,10,11: not used\n
+!> 4: destination number. Reach or reservoir receiving water\n
+!> 9: print format (0=normal, fixed format; 1=txt format for AV interface,
+!> recday)
+   integer, dimension (:), allocatable :: inum3s
+!> For ICODES equal to (none)\n
+!> 0,2,3,5,7,8,9,10,11: not used\n
+!> 1: GIS code printed to output file (optional)\n
+!> 4: rule code governing transfer of water (1=fraction transferred out, 2=min
+!> volume or flow left, 3=exact amount transferred)
+   integer, dimension (:), allocatable :: inum4s
    integer, dimension (:), allocatable :: inum5s,inum6s,inum7s,inum8s
    integer, dimension (:), allocatable :: subed
    character(len=10), dimension (:), allocatable :: recmonps
@@ -1007,10 +1321,14 @@ module parm
    real*8, dimension (:), allocatable :: tile_ttime
    real*8, dimension (:), allocatable :: slsoil,sed_stl,gwminp,sol_cov
    real*8, dimension (:), allocatable :: yldanu,pnd_solp,pnd_no3,ov_n
-   real*8, dimension (:), allocatable :: driftco,pnd_orgp,pnd_orgn,cn3
+!> coefficient for pesticide drift directly onto stream (none)
+   real*8, dimension (:), allocatable :: driftco
+   real*8, dimension (:), allocatable :: pnd_orgp,pnd_orgn,cn3
    real*8, dimension (:), allocatable :: twlpnd, twlwet               !!srini pond/wet infiltration to shallow gw storage
    real*8, dimension (:), allocatable :: sol_sumul,pnd_chla,hru_fr
-   real*8, dimension (:), allocatable :: bio_ms,sol_alb,strsw,hru_km
+!> area of HRU in square kilometers (km^2)
+   real*8, dimension (:), allocatable :: hru_km
+   real*8, dimension (:), allocatable :: bio_ms,sol_alb,strsw
    real*8, dimension (:), allocatable :: pnd_fr,pnd_psa,pnd_pvol,pnd_k
    real*8, dimension (:), allocatable :: pnd_esa,pnd_evol,pnd_vol,yldaa
    real*8, dimension (:), allocatable :: pnd_sed,pnd_nsed,strsa,dep_imp
@@ -1024,7 +1342,9 @@ module parm
    real*8, dimension (:), allocatable :: bactp_plt,bactlp_plt,cnday
    real*8, dimension (:), allocatable :: bactlpq,auto_eff,sol_sw,secciw
    real*8, dimension (:), allocatable :: bactps,bactlps,tmpav,chlaw
-   real*8, dimension (:), allocatable :: subp,sno_hru,hru_ra,wet_orgn
+!> amount of water stored as snow (mm H2O)
+   real*8, dimension (:), allocatable :: sno_hru
+   real*8, dimension (:), allocatable :: subp,hru_ra,wet_orgn
    real*8, dimension (:), allocatable :: tmx,tmn,rsdin,tmp_hi,tmp_lo
    real*8, dimension (:), allocatable :: rwt,olai,usle_k,tconc,hru_rmx
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
@@ -1032,7 +1352,9 @@ module parm
    real*8, dimension (:), allocatable :: sol_avpor,usle_mult,wet_orgp
    real*8, dimension (:), allocatable :: aairr,cht,u10,rhd
    real*8, dimension (:), allocatable :: shallirr,deepirr,lai_aamx
-   real*8, dimension (:), allocatable :: canstor,ovrlnd,ch_l1,wet_no3
+!> longest tributary channel length in subbasin (km)
+   real*8, dimension (:), allocatable :: ch_l1
+   real*8, dimension (:), allocatable :: canstor,ovrlnd,wet_no3
    real*8, dimension (:), allocatable :: irr_mx, auto_wstr
    real*8, dimension (:), allocatable :: cfrt_id, cfrt_kg, cpst_id
    real*8, dimension (:), allocatable :: cpst_kg
@@ -1123,7 +1445,9 @@ module parm
    real*8, dimension (:,:), allocatable :: plt_pst,pst_sed,psetlw
    real*8, dimension (:,:), allocatable :: pcpband,wupnd,tavband,phi
    real*8, dimension (:,:), allocatable :: wat_phi
-   real*8, dimension (:,:), allocatable :: wushal,wudeep,tmnband,snoeb
+!> initial snow water content in elevation band (mm H2O)
+   real*8, dimension (:,:), allocatable :: snoeb
+   real*8, dimension (:,:), allocatable :: wushal,wudeep,tmnband
    real*8, dimension (:,:), allocatable :: nsetlw,snotmpeb,bss,surf_bs
    real*8, dimension (:,:), allocatable :: tmxband,nsetlp
    real*8, dimension (:,:), allocatable :: rainsub,frad
@@ -1149,10 +1473,16 @@ module parm
    integer, dimension (:), allocatable :: nmgt,icr,ncut,nsweep,nafert
    integer, dimension (:), allocatable :: irn,irrno,sol_nly,npcp
    integer, dimension (:), allocatable :: igrz,ndeat,ngr,ncf
-   integer, dimension (:), allocatable :: idorm,urblu,hru_sub,ldrain
+!> subbasin in which HRU is located (none)
+   integer, dimension (:), allocatable :: hru_sub
+   integer, dimension (:), allocatable :: idorm,urblu,ldrain
    integer, dimension (:), allocatable :: hru_seq
    integer, dimension (:), allocatable :: iurban,iday_fert,icfrt
-   integer, dimension (:), allocatable :: ndcfrt,irip,ifld,hrugis
+!> number of HRU (in subbasin) that is a floodplain (none)
+   integer, dimension (:), allocatable :: ifld
+!> number of HRU (in subbasin) that is a riparian zone (none)
+   integer, dimension (:), allocatable :: irip
+   integer, dimension (:), allocatable :: ndcfrt,hrugis
    integer, dimension (:), allocatable :: orig_igro,ntil,irrsc
    integer, dimension (:), allocatable :: iwatable,curyr_mat
    integer, dimension (:), allocatable :: ncpest,icpst,ndcpst
@@ -1187,16 +1517,16 @@ module parm
    character(len=13), dimension (18) :: rfile !< rainfall file names (.pcp)
    character(len=13), dimension (18) :: tfile !< temperature file names (.tmp)
 
-   character(len=4), dimension (1000) :: urbname
+   character(len=4), dimension (1000) :: urbname !< name of urban land use
 
    character(len=1), dimension (:), allocatable :: hydgrp, kirr
    character(len=16), dimension (:), allocatable :: snam
-   character(len=17), dimension (300) :: pname
+   character(len=17), dimension (300) :: pname !< name of pesticide/toxin
 !!    adding qtile to output.hru write 3/2/2010 gsm  increased heds(70) to heds(71)
    character(len=13) :: heds(79),hedb(24),hedr(46),hedrsv(41)
    character(len=13) :: hedwtr(40)
    character(len=4) :: title(60) !< description lines in file.cio (1st 3 lines)
-   character(len=4) :: cpnm(5000)
+   character(len=4) :: cpnm(5000) !< four character code to represent crop name
    character(len=17), dimension(50) :: fname
 ! measured input files
    real*8, dimension (:,:,:), allocatable :: flomon,solpstmon,srbpstmon

@@ -1,3 +1,10 @@
+!> @file readfert.f90
+!> file containing the subroutine readfert
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads input parameters from the fertilizer/manure
+!> (i.e. nutrient) database (fert.dat)
 subroutine readfert
 
 !!     ~ ~ ~ PURPOSE ~ ~ ~

@@ -8,12 +8,12 @@ subroutine rtmusk
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
+!!    ch_k2(:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
 !!    ch_l2(:)    |km            |length of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
-!!    ch_s(2,:)   |m/m           |average slope of main channel
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
+!!    ch_s2(:)   |m/m           |average slope of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
@@ -166,7 +166,7 @@ subroutine rtmusk
       c = chside(jrch)
       p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c)
       rh = phi(1,jrch) / p
-      maxrt = Qman(phi(1,jrch), rh, ch_n(2,jrch), ch_s(2,jrch))
+      maxrt = Qman(phi(1,jrch), rh, ch_n2(jrch), ch_s2(jrch))
 
       sdti = 0.
       rchdep = 0.
@@ -187,10 +187,10 @@ subroutine rtmusk
          !! find the depth until the discharge rate is equal to volrt
          Do While (sdti < volrt)
             adddep = adddep + 0.01
-            addarea = rcharea + ((ch_w(2,jrch) * 5) + 4 * adddep) * adddep
-            addp = p + (ch_w(2,jrch) * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
+            addarea = rcharea + ((ch_w2(jrch) * 5) + 4 * adddep) * adddep
+            addp = p + (ch_w2(jrch) * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
             rh = addarea / addp
-            sdti = Qman(addarea, rh, ch_n(2,jrch), ch_s(2,jrch))
+            sdti = Qman(addarea, rh, ch_n2(jrch), ch_s2(jrch))
          end do
          rcharea = addarea
          rchdep = ch_d(jrch) + adddep
@@ -205,7 +205,7 @@ subroutine rtmusk
             rcharea = (phi(6,jrch) + c * rchdep) * rchdep
             p = phi(6,jrch) + 2. * rchdep * Sqrt(1. + c * c)
             rh = rcharea / p
-            sdti = Qman(rcharea, rh, ch_n(2,jrch), ch_s(2,jrch))
+            sdti = Qman(rcharea, rh, ch_n2(jrch), ch_s2(jrch))
          end do
          sdti = volrt
       end if
@@ -214,7 +214,7 @@ subroutine rtmusk
       if (rchdep <= ch_d(jrch)) then
          topw = phi(6,jrch) + 2. * rchdep * c
       else
-         topw = 5 * ch_w(2,jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
+         topw = 5 * ch_w2(jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
       end if
 
       if (sdti > 0) then
@@ -256,7 +256,7 @@ subroutine rtmusk
 
             !!  Total time in hours to clear the water
 
-            rttlc = det * ch_k(2,jrch) * ch_l2(jrch) * p
+            rttlc = det * ch_k2(jrch) * ch_l2(jrch) * p
             rttlc2 = rttlc * rchstor(jrch) / (rtwtr + rchstor(jrch))
 
             if (rchstor(jrch) <= rttlc2) then

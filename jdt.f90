@@ -1,3 +1,18 @@
+!> @file jdt.f90
+!> file containing the function jdt
+!> @author
+!> modified by Javier Burguete
+
+!> this function computes the julian date given the month and
+!> the day of the month
+!> @param[in] numdays
+!> julian date for last day of preceding month (where the array location is the
+!> number of the month). The dates are for leap years (numdays=ndays)
+!> (julian date)
+!> @param[in] i
+!> day
+!> @param[in] m
+!> month
 function jdt(numdays,i,m)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -11,8 +26,8 @@ function jdt(numdays,i,m)
 !!                               |month (where the array location is the
 !!                               |number of the month). The dates are for
 !!                               |leap years (numdays=ndays)
-!!    m           |none          |month
 !!    i           |none          |day
+!!    m           |none          |month
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~

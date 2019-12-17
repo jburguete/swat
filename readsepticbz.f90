@@ -1,3 +1,12 @@
+!> @file readsepticbz.f90
+!> file containing the subroutine readsepticbz
+!> @author
+!> modified by Javier Burguete
+
+
+!> this subroutine reads data from the septic input file (.sep).  This file
+!> contains information related to septic tanks modeled or defined at the
+!> watershed level
 subroutine readsepticbz
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -16,8 +25,8 @@ subroutine readsepticbz
 !!    bz_z(:)          |mm            |Depth of biozone layer
 !!    bz_thk(:)        |mm            |thickness of biozone
 !!    bio_bd(:)        |kg/m^3        |density of biomass
-!!    coeff_bod_dc(:)  |m^3/day       |BOD decay rate coefficient
 !!    coeff_bod_conv(:)|none          |BOD to live bacteria biomass conversion factor
+!!    coeff_bod_dc(:)  |m^3/day       |BOD decay rate coefficient
 !!    coeff_denitr(:)  |none          |Denitrification rate coefficient
 !!    coeff_fc1(:)     |none          |field capacity calibration parameter 1
 !!    coeff_fc2(:)     |none          |field capacity calibration parameter 2
@@ -28,7 +37,7 @@ subroutine readsepticbz
 !!    coeff_rsp(:)     |none          |respiration rate coefficient
 !!    coeff_slg1(:)    |none          |slough-off calibration parameter
 !!    coeff_slg2(:)    |none          |slough-off calibration parameter
-!!    sep_cap(:)      |none          |Number of permanent residents in the hourse
+!!    sep_cap(:)       |none          |Number of permanent residents in the hourse
 !!    isep_typ(:)      |none          |Septic system type
 !!    isep_opt(:)      |none          |Septic system operation flag (1=active,2=failing,3=not operated)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~

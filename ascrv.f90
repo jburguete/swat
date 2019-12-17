@@ -1,8 +1,7 @@
 !> @file ascrv.f90
+!> file containing the subroutine ascrv
 !> @author
 !> modified by Javier Burguete
-!> @brief
-!> this subroutine computes shape parameters x5 and x6 for the S curve equation
 !>
 !> this subroutine computes shape parameters x5 and x6 for the S curve equation
 !> \f\[x=\frac{y}{y+\exp(x5+x6\,y)}\f\]

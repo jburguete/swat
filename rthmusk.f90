@@ -8,12 +8,12 @@ subroutine rthmusk
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
+!!    ch_k2(:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
 !!    ch_l2(:)    |km            |length of main channel
-!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
-!!    ch_s(2,:)   |m/m           |average slope of main channel
-!!    ch_w(2,:)   |m             |average width of main channel
+!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
+!!    ch_s2(:)   |m/m           |average slope of main channel
+!!    ch_w2(:)   |m             |average width of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
@@ -173,7 +173,7 @@ subroutine rthmusk
          if (hdepth(ii) < 0.) hdepth(ii) = 0.
       else
          hdepth(ii) = Sqrt((hharea(ii) - phi(1,jrch)) / 4. + 25. *&
-         &ch_w(2,jrch) * ch_w(2,jrch) / 64.) - 5. * ch_w(2,jrch) / 8.
+         &ch_w2(jrch) * ch_w2(jrch) / 64.) - 5. * ch_w2(jrch) / 8.
          if (hdepth(ii) < 0.) hdepth(ii) = 0.
          hdepth(ii) = hdepth(ii) + ch_d(jrch)
       end if
@@ -183,7 +183,7 @@ subroutine rthmusk
          p = phi(6,jrch) + 2. * hdepth(ii) * Sqrt(1. + c * c)
       else
          p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c) +&
-         &4. * ch_w(2,jrch) + 2. * (hdepth(ii) - ch_d(jrch)) * Sqrt(17.)
+         &4. * ch_w2(jrch) + 2. * (hdepth(ii) - ch_d(jrch)) * Sqrt(17.)
       end if
 
       !! calculate hydraulic radius
@@ -194,7 +194,7 @@ subroutine rthmusk
       end if
 
       !! calculate flow in reach [m3/s]
-      hsdti(ii) = Qman(hharea(ii), rhy(ii), ch_n(2,jrch),ch_s(2,jrch))
+      hsdti(ii) = Qman(hharea(ii), rhy(ii), ch_n2(jrch),ch_s2(jrch))
 
       !! calculate travel time[hour]
       if (hsdti(ii) > 1.e-4) then
@@ -207,12 +207,12 @@ subroutine rthmusk
       end if
 
       !! calculate transmission losses
-      !! transmission losses are ignored if ch_k(2,jrch) is set to zero
+      !! transmission losses are ignored if ch_k2(jrch) is set to zero
       !! in .rte file
       if (hhtime(ii) < 1.) then
-         hrttlc(ii) = ch_k(2,jrch) * ch_l2(jrch) * p * hhtime(ii)
+         hrttlc(ii) = ch_k2(jrch) * ch_l2(jrch) * p * hhtime(ii)
       else
-         hrttlc(ii) = ch_k(2,jrch) * ch_l2(jrch) * p
+         hrttlc(ii) = ch_k2(jrch) * ch_l2(jrch) * p
       end if
       hrttlc(ii) = Min(hrtwtr(ii),hrttlc(ii))
       hrtwtr(ii) = hrtwtr(ii) - hrttlc(ii)
@@ -225,7 +225,7 @@ subroutine rthmusk
          if (hdepth(ii) <= ch_d(jrch)) then
             topw = phi(6,jrch) + 2. * hdepth(ii) * chside(jrch)
          else
-            topw = 5. * ch_w(2,jrch) + 2. * (hdepth(ii)-ch_d(jrch)) * 4.
+            topw = 5. * ch_w2(jrch) + 2. * (hdepth(ii)-ch_d(jrch)) * 4.
          end if
 
          !! calculate evaporation

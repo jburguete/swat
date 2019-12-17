@@ -122,7 +122,9 @@ subroutine rewind_init
    tmpstdmn = otmpstdmn
    tmpstdmx = otmpstdmx
    pcp_stat = opcp_stat
-   pr_w = opr_w
+   pr_w1 = opr_w1
+   pr_w2 = opr_w2
+   pr_w3 = opr_w3
    igen = ogen
 
 !! HRU variables
@@ -283,8 +285,8 @@ subroutine rewind_init
 !! reach variables
    ch_d = ch_di
    do j = 1, nrch
-      ch_s(2,j) = ch_si(j)
-      ch_w(2,j) = ch_wi(j)
+      ch_s2(j) = ch_si(j)
+      ch_w2(j) = ch_wi(j)
       call ttcoef(j)
    end do
    rchstor = 0.

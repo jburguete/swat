@@ -1,14 +1,10 @@
-!  SWAT
-!
 !> @file main.f90
-!> @brief
-!> this is the main program that reads input, calls the main simulation
+!> file containing the main program that reads input, calls the main simulation
 !> model, and writes output.
-include 'modparm.f90'
-!
 !> @author
 !> modified by Javier Burguete Tolosa
-!> @brief
+include 'modparm.f90'
+
 !> this is the main program that reads input, calls the main simulation
 !> model, and writes output.
 program main
@@ -86,9 +82,9 @@ program main
    !! convert integer to string for output.mgt file
    subnum = ""
    hruno = ""
-   do i = 1, mhru
-      write (subnum(i),fmt=' (i5.5)') hru_sub(i)
-      write (hruno(i),fmt=' (i4.4)') hru_seq(i)
+   do ii = 1, mhru
+      write (subnum(ii),fmt=' (i5.5)') hru_sub(ii)
+      write (hruno(ii),fmt=' (i4.4)') hru_seq(ii)
    end do
 
    if (isproj == 2) then

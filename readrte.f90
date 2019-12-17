@@ -50,16 +50,16 @@ subroutine readrte
 !!    ch_erod(:)    |none        |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
-!!    ch_k(2,:)     |mm/hr       |effective hydraulic conductivity of
+!!    ch_k2(:)     |mm/hr       |effective hydraulic conductivity of
 !!                               |main channel alluvium
 !!    ch_l2(:)      |km          |length of main channel
 !!    ch_li(:)      |km          |initial length of main channel
-!!    ch_n(2,:)     |none        |Manning's "n" value for the main channel
+!!    ch_n2(:)     |none        |Manning's "n" value for the main channel
 !!    ch_onco(:)    |ppm         |channel organic n concentration
 !!    ch_opco(:)    |ppm         |channel organic p concentration
-!!    ch_s(2,:)     |m/m         |average slope of main channel
+!!    ch_s2(:)     |m/m         |average slope of main channel
 !!    ch_si(:)      |m/m         |initial slope of main channel
-!!    ch_w(2,:)     |m           |average width of main channel
+!!    ch_w2(:)     |m           |average width of main channel
 !!    ch_wdr(:)     |m/m         |channel width to depth ratio
 !!    prf(:)      |none          |Reach peak rate adjustment factor for sediment
 !!                               |routing in the channel. Allows impact of
@@ -92,12 +92,12 @@ subroutine readrte
    eof = 0
    do
       read (103,5000) titldum
-      read (103,*) ch_w(2,irch)
+      read (103,*) ch_w2(irch)
       read (103,*) ch_d(irch)
-      read (103,*) ch_s(2,irch)
+      read (103,*) ch_s2(irch)
       read (103,*) ch_l2(irch)
-      read (103,*) ch_n(2,irch)
-      read (103,*) ch_k(2,irch)
+      read (103,*) ch_n2(irch)
+      read (103,*) ch_k2(irch)
       read (103,*) ch_cov1(irch)
       read (103,*,iostat=eof) ch_cov2(irch)
       if (eof < 0) exit
@@ -145,9 +145,9 @@ subroutine readrte
 !!    set default values for parameters
 !!     if (tc_bnk(irch) <= 1.e-6) tc_bnk(irch) = 0.001
 !!     if (tc_bed(irch) <= 1.e-6) tc_bed(irch) = 0.001
-   if (ch_s(2,irch) <= 0.) ch_s(2,irch) = .0001
-   if (ch_n(2,irch) <= 0.01) ch_n(2,irch) = .01
-   if (ch_n(2,irch) >= 0.70) ch_n(2,irch) = 0.70
+   if (ch_s2(irch) <= 0.) ch_s2(irch) = .0001
+   if (ch_n2(irch) <= 0.01) ch_n2(irch) = .01
+   if (ch_n2(irch) >= 0.70) ch_n2(irch) = 0.70
    if (ch_l2(irch) <= 0.) ch_l2(irch) = .0010
    if (ch_wdr(irch) <= 0.) ch_wdr(irch) = 3.5
    if (chside(irch) <= 1.e-6) chside(irch) = 2.0
@@ -314,8 +314,8 @@ subroutine readrte
 !!    initialize variables for channel degradation
    ch_di(irch) = ch_d(irch)
    ch_li(irch) = ch_l2(irch)
-   ch_si(irch) = ch_s(2,irch)
-   ch_wi(irch) = ch_w(2,irch)
+   ch_si(irch) = ch_s2(irch)
+   ch_wi(irch) = ch_w2(irch)
 
    close (103)
    return

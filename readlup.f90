@@ -1,3 +1,11 @@
+!> @file readlup.f90
+!> file containing the subroutine readlup
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads data from the HRU/subbasin management input file
+!> (.mgt). This file contains data related to management practices used in
+!> the HRU/subbasin.
 subroutine readlup
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~

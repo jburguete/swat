@@ -1,3 +1,10 @@
+!> @file readpest.f90
+!> file containing the subroutine readpest
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads parameters from the toxin/pesticide database
+!> (pest.dat)
 subroutine readpest
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~

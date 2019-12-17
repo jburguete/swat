@@ -465,10 +465,14 @@ subroutine allocate_parms
    allocate (sub_hhwtmp(msub,nstep))   ! 24 changed to nstep 4 urban modeling  Oct. 19,2007
    allocate (uh(msub,nstep*3+1))      !! was 49 changed to nstep  OCt22, 2007
 
-   allocate (ch_k(2,mxsubch))
-   allocate (ch_n(2,mxsubch))
-   allocate (ch_s(2,mxsubch))
-   allocate (ch_w(2,mxsubch))
+   allocate (ch_k1(mxsubch))
+   allocate (ch_k2(mxsubch))
+   allocate (ch_n1(mxsubch))
+   allocate (ch_n2(mxsubch))
+   allocate (ch_s1(mxsubch))
+   allocate (ch_s2(mxsubch))
+   allocate (ch_w1(mxsubch))
+   allocate (ch_w2(mxsubch))
    allocate (ch_l2(mxsubch))
    allocate (ch_d(mxsubch))
    allocate (chside(mxsubch))
@@ -487,7 +491,9 @@ subroutine allocate_parms
    allocate (wndav(12,msub))
 
    allocate (pcp_stat(12,3,msub))
-   allocate (pr_w(3,12,msub))
+   allocate (pr_w1(12,msub))
+   allocate (pr_w2(12,msub))
+   allocate (pr_w3(12,msub))
 
 !!    arrays which contain data related to forecast parameters
    allocate (ftmpmn(12,msub))
@@ -495,13 +501,17 @@ subroutine allocate_parms
    allocate (ftmpstdmn(12,msub))
    allocate (ftmpstdmx(12,msub))
    allocate (fpcp_stat(12,3,msub))
-   allocate (fpr_w(3,12,msub))
+   allocate (fpr_w1(12,msub))
+   allocate (fpr_w2(12,msub))
+   allocate (fpr_w3(12,msub))
    allocate (otmpmn(12,msub))
    allocate (otmpmx(12,msub))
    allocate (otmpstdmn(12,msub))
    allocate (otmpstdmx(12,msub))
    allocate (opcp_stat(12,3,msub))
-   allocate (opr_w(3,12,msub))
+   allocate (opr_w1(12,msub))
+   allocate (opr_w2(12,msub))
+   allocate (opr_w3(12,msub))
 
 !!    arrays which contain data related to subbasin output
    allocate (submono(msubo,msub))

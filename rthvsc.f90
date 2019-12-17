@@ -9,12 +9,12 @@ subroutine rthvsc()
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)         |m             |average depth of main channel
-!!    ch_k(2,:)       |mm/hr         |effective hydraulic conductivity of
+!!    ch_k2(:)       |mm/hr         |effective hydraulic conductivity of
 !!                                   |main channel alluvium
 !!    ch_l2(:)        |km            |length of main channel
-!!    ch_n(2,:)       |none          |Manning's "n" value for the main channel
-!!    ch_s(2,:)       |m/m           |average slope of main channel
-!!    ch_w(2,:)       |m             |average width of main channel
+!!    ch_n2(:)       |none          |Manning's "n" value for the main channel
+!!    ch_s2(:)       |m/m           |average slope of main channel
+!!    ch_w2(:)       |m             |average width of main channel
 !!    chside(:)       |none          |change in horizontal distance per unit
 !!                                   |change in vertical distance on channel
 !!                                   |side slopes; always set to 2 (slope=1/2)
@@ -141,8 +141,8 @@ subroutine rthvsc()
       CBW = phi(6,jrch) ! channel bottom width, m
       XL3 = ch_l2(jrch) / 3.6
       XLT = XL3 / dthy
-      XLS = 1000.* ch_l2(jrch) * ch_s(2,jrch)
-      RCHX(jrch) = SQRT(ch_s(2,jrch)) / ch_n(2,jrch)
+      XLS = 1000.* ch_l2(jrch) * ch_s2(jrch)
+      RCHX(jrch) = SQRT(ch_s2(jrch)) / ch_n2(jrch)
       SSS = SQRT(RCSS(jrch) * RCSS(jrch) + 1.)
 
       ADI = 0.
@@ -252,7 +252,7 @@ subroutine rthvsc()
          p = phi(6,jrch) + 2. * hdepth(ii) * Sqrt(1. + c * c)
       else
          p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c) + 4. *    &
-            ch_w(2,jrch) + 2. * (hdepth(ii) - ch_d(jrch)) * Sqrt(17.)
+            ch_w2(jrch) + 2. * (hdepth(ii) - ch_d(jrch)) * Sqrt(17.)
       end if
 
       !! calculate hydraulic radius
@@ -277,9 +277,9 @@ subroutine rthvsc()
 
          !! calculate transmission losses
          if (hhtime(ii) < 1.) then
-            hrttlc(ii) = ch_k(2,jrch) * ch_l2(jrch) * p * hhtime(ii)
+            hrttlc(ii) = ch_k2(jrch) * ch_l2(jrch) * p * hhtime(ii)
          else
-            hrttlc(ii) = ch_k(2,jrch) * ch_l2(jrch) * p
+            hrttlc(ii) = ch_k2(jrch) * ch_l2(jrch) * p
          end if
          hrttlc(ii) = Min(hrtwtr(ii),hrttlc(ii))
          hrtwtr(ii) = hrtwtr(ii) - hrttlc(ii)
@@ -291,7 +291,7 @@ subroutine rthvsc()
             if (hdepth(ii) <= ch_d(jrch)) then
                topw = phi(6,jrch) + 2. * hdepth(ii) * chside(jrch)
             else
-               topw = 5. * ch_w(2,jrch) + 8. * (hdepth(ii) - ch_d(jrch))
+               topw = 5. * ch_w2(jrch) + 8. * (hdepth(ii) - ch_d(jrch))
             end if
 
             if (hhtime(ii) < 1.) then

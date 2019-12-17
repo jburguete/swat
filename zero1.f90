@@ -155,7 +155,9 @@ subroutine zero1
    orig_wetsed = 0.
    orig_wetvol = 0.
    opcp_stat = 0.
-   opr_w = 0.
+   opr_w1 = 0.
+   opr_w2 = 0.
+   opr_w3 = 0.
    otmpmx = 0.
    otmpmn = 0.
    otmpstdmn = 0.
@@ -205,7 +207,9 @@ subroutine zero1
 
    pot_tile = 0.
    pot_vol = 0.
-   pr_w = 0.
+   pr_w1 = 0.
+   pr_w2 = 0.
+   pr_w3 = 0.
    pst_enr = 0.
    pst_kg = 0.
    pst_dep = 0.
