@@ -106,16 +106,17 @@ subroutine readfile
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    bsnfile     |NA          |name of basin input file (.bsn)
+!!    eof         |none        |end of file flag
 !!    fcstfile    |NA          |name of weather forecast data file (.cst
 !!    fertdb      |NA          |name of fertilizer database file (fert.dat)
 !!    figfile     |NA          |name of watershed configuration file (.fig)
-!!    ii          |none        |counter
 !!    j           |none        |counter
 !!    pestdb      |NA          |name of pesticide database input file(pest.dat)
 !!    plantdb     |NA          |name of LU/LC database input file (crop.dat)
 !!    rn          |none        |random number generator seed
 !!    sumv        |none        |variable to hold intermediate calculation
 !!    tilldb      |NA          |name of tillage database input file(till.dat)
+!!    titldum     |NA          |variable to read in data line
 !!    urbandb     |NA          |name of urban database file (urban.dat)
 !!    xx          |none        |random number between 0.0 and 1.0
 !!    septdb      |none        |name of pesticide database input file(septwq.dat) !! CS
@@ -128,12 +129,12 @@ subroutine readfile
    use parm
    implicit none
 
-   character (len=13) :: figfile, bsnfile, plantdb, tilldb, urbandb,&
-   &pestdb, fertdb, fcstfile
-
    character (len=80) :: titldum
+   character (len=13) :: bsnfile, fcstfile, fertdb, figfile, pestdb, plantdb,&
+      &tilldb, urbandb
    real*8 :: sumv, xx
-   integer :: rn, j, ii, eof
+   integer :: eof, j, rn
+
    eof = 0
 
    bsnfile = ""
@@ -306,7 +307,7 @@ subroutine readfile
    !!Output variables printed in REACH (output.rch) file
 
    read (101,5101) titldum
-   read (101,*) (ipdvar(ii),ii=1,20)
+   read (101,*) (ipdvar(j),j=1,20)
 
    !!IPDVAR  - Output variables to output.rch file
    !![   1] Streamflow into reach (cms)
@@ -362,7 +363,7 @@ subroutine readfile
    !!Output variables printed in SUBASIN (output.sub) file
 
    read (101,5101) titldum
-   read (101,*) (ipdvab(ii),ii=1,15)
+   read (101,*) (ipdvab(j),j=1,15)
 
    !!IPDVAB  - Output variables to output.sub file
    !![   1] Total precipitation falling on subbasin (mm)
@@ -384,7 +385,7 @@ subroutine readfile
    !!Output variables printed in HRU (output.hru) file
 
    read (101,5101) titldum
-   read (101,*) (ipdvas(ii),ii=1,20)
+   read (101,*) (ipdvas(j),j=1,20)
 
    !!IPDVAS  - Output variables to output.hru file
    !![   1] Total precipitation falling on HRU (mm)
@@ -468,7 +469,7 @@ subroutine readfile
    !!HRUs printed in HRU (output.hru,output.wtr) files
 
    read (101,5101) titldum
-   read (101,*) (ipdhru(ii),ii=1,20)
+   read (101,*) (ipdhru(j),j=1,20)
 
    !! Atmospheric deposition file (Kannan/Santhi input file)
    do
@@ -551,54 +552,52 @@ subroutine readfile
    !!Set default output variables for REACH, SUBBASIN and HRU files if none
    !!were specified
 
-   do ii = 1, 20
-      if (ipdvar(ii) > 0) itotr = itotr + 1
+   do j = 1, 20
+      if (ipdvar(j) > 0) itotr = itotr + 1
    end do
 
    if (ipdvar(1) <= 0) then
       !! change 42 to 45 for output.rch file gsm 10/30/2011
-      do ii = 1, 46
-         ipdvar(ii) = ii
+      do j = 1, 46
+         ipdvar(j) = j
       end do
       itotr = 46
    end if
 
 
-   do ii = 1, 15
-      if (ipdvab(ii) > 0) itotb = itotb + 1
+   do j = 1, 15
+      if (ipdvab(j) > 0) itotb = itotb + 1
    end do
 
    if (ipdvab(1) <= 0) then
-      do ii = 1, msubo
-         ipdvab(ii) = ii
+      do j = 1, msubo
+         ipdvab(j) = j
       end do
       itotb = msubo
    end if
 
 
-   do ii = 1, 20
-      if (ipdvas(ii) > 0) itots = itots + 1
+   do j = 1, 20
+      if (ipdvas(j) > 0) itots = itots + 1
    end do
 
    if (ipdvas(1) <= 0) then
-      do ii = 1, mhruo
-         ipdvas(ii) = ii
+      do j = 1, mhruo
+         ipdvas(j) = j
       end do
       itots = mhruo
    end if
 
 
-   do ii = 1, 20
-      if (ipdhru(ii) > 0) itoth = itoth + 1
+   do j = 1, 20
+      if (ipdhru(j) > 0) itoth = itoth + 1
    end do
 
    if (ipdhru(1) <= 0) then
-      do ii = 1, mhru
-!       do ii = 1, mhruo
-         ipdhru(ii) = ii
+      do j = 1, mhru
+         ipdhru(j) = j
       end do
       itoth = mhru
-!       itoth = mhruo
    end if
 
    !!Open output files

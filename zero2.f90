@@ -1,7 +1,10 @@
-subroutine zero2
+!> @file zero2.f90
+!> file containing the subroutine zero2
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine zeros all array values
+!> this subroutine zeros all array values
+subroutine zero2
 
    use parm
    implicit none

@@ -1,7 +1,10 @@
-subroutine zero1
+!> @file zero1.f90
+!> file containing the subroutine zero1
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes the values for some of the arrays
+!> this subroutine initializes the values for some of the arrays
+subroutine zero1
 
    use parm
    implicit none

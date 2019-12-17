@@ -1,7 +1,10 @@
-subroutine zeroini
+!> @file zeroini.f90
+!> file containing the subroutine zeroini
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine zeros values for single array variables
+!> this subroutine zeros values for single array variables
+subroutine zeroini
 
    use parm
    implicit none

@@ -1,8 +1,10 @@
+!> @file zero_urbn.f90
+!> file containing the subroutine zero_urbn
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine zeros all array values used in urban modeling
 subroutine zero_urbn
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-
-!!    this subroutine zeros all array values used in urban modeling
 
    use parm
    implicit none
