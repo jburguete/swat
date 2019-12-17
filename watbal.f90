@@ -14,7 +14,7 @@ subroutine watbal
 !!    aird(:)     |mm H2O        |amount of water applied to HRU on current
 !!                               |day
 !!    bsprev      |mm H2O        |surface runoff lagged from prior day
-!!    bss(1,:)    |mm H2O        |amount of lateral flow lagged
+!!    bss1(:)    |mm H2O        |amount of lateral flow lagged
 !!    bssprev     |mm H2O        |lateral flow lagged from prior day of
 !!                               |simulation
 !!    curyr       |none          |current year of simulation
@@ -98,11 +98,11 @@ subroutine watbal
    if (ievent == 0) then
       dstor = sno_hru(j) - snoprev + sol_sw(j) - swprev +&
       &shallst(j) - shallstp + deepst(j) - deepstp +&
-      &surf_bs(1,j) - bsprev + bss(1,j) - bssprev
+      &surf_bs(1,j) - bsprev + bss1(j) - bssprev
    else
       dstor = sno_hru(j) - snoprev + sol_sw(j) - swprev +&
       &shallst(j) - shallstp + deepst(j) - deepstp +&
-      &hhsurf_bs(1,j,nstep) - bsprev + bss(1,j) - bssprev
+      &hhsurf_bs(1,j,nstep) - bsprev + bss1(j) - bssprev
    endif
 
 !!   subtraction of snoev term in h2oloss variable removed

@@ -6,11 +6,11 @@ subroutine substor
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bss(1,:)      |mm H2O       |amount of lateral flow lagged
-!!    bss(2,:)      |kg N/ha      |amount of nitrate in lateral flow lagged
+!!    bss1(:)      |mm H2O       |amount of lateral flow lagged
+!!    bss2(:)      |kg N/ha      |amount of nitrate in lateral flow lagged
 
-!!    bss(3,:)      |mm           |amount of tile flow lagged
-!!    bss(4,:)      |kg N/ha      |amount of nitrate in tile flow lagged
+!!    bss3(:)      |mm           |amount of tile flow lagged
+!!    bss4(:)      |kg N/ha      |amount of nitrate in tile flow lagged
 !!    hrupest(:)    |none         |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
@@ -30,10 +30,10 @@ subroutine substor
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bss(1,:)      |mm H2O        |amount of lateral flow lagged
-!!    bss(2,:)      |kg N/ha       |amount of nitrate in lateral flow lagged
-!!    bss(3,:)      |mm            |amount of tile flow lagged
-!!    bss(4,:)      |kg N/ha       |amount of nitrate in tile flow lagged
+!!    bss1(:)      |mm H2O        |amount of lateral flow lagged
+!!    bss2(:)      |kg N/ha       |amount of nitrate in lateral flow lagged
+!!    bss3(:)      |mm            |amount of tile flow lagged
+!!    bss4(:)      |kg N/ha       |amount of nitrate in tile flow lagged
 !!    bssprev       |mm H2O        |lateral flow lagged from prior day of
 !!                                 |simulation
 !!    lat_pst(:)    |kg pst/ha     |amount of pesticide in lateral flow in HRU
@@ -61,15 +61,15 @@ subroutine substor
 
    j = ihru
 
-   bssprev = bss(1,j)
-   bss(1,j) = bss(1,j) + latq(j)
-   bss(2,j) = bss(2,j) + latno3(j)
-   bss(3,j) = bss(3,j) + qtile
-   bss(4,j) = bss(4,j) + tileno3(j)
-   if (bss(1,j) < 1.e-6) bss(1,j) = 0.0
-   if (bss(2,j) < 1.e-6) bss(2,j) = 0.0
-   if (bss(3,j) < 1.e-6) bss(3,j) = 0.0
-   if (bss(4,j) < 1.e-6) bss(4,j) = 0.0
+   bssprev = bss1(j)
+   bss1(j) = bss1(j) + latq(j)
+   bss2(j) = bss2(j) + latno3(j)
+   bss3(j) = bss3(j) + qtile
+   bss4(j) = bss4(j) + tileno3(j)
+   if (bss1(j) < 1.e-6) bss1(j) = 0.0
+   if (bss2(j) < 1.e-6) bss2(j) = 0.0
+   if (bss3(j) < 1.e-6) bss3(j) = 0.0
+   if (bss4(j) < 1.e-6) bss4(j) = 0.0
 
    if (hrupest(j) == 1) then
       do k = 1, npmx
@@ -80,10 +80,10 @@ subroutine substor
       end do
    end if
 
-   latq(j) = bss(1,j) * lat_ttime(j)
-   latno3(j) = bss(2,j) * lat_ttime(j)
-   qtile = bss(3,j) * tile_ttime(j)
-   tileno3(j) = bss(4,j) * tile_ttime(j)
+   latq(j) = bss1(j) * lat_ttime(j)
+   latno3(j) = bss2(j) * lat_ttime(j)
+   qtile = bss3(j) * tile_ttime(j)
+   tileno3(j) = bss4(j) * tile_ttime(j)
    if (latq(j) < 1.e-6) latq(j) = 0.
    if (latno3(j) < 1.e-6) latno3(j) = 0.
    if (qtile < 1.e-6) qtile = 0.
@@ -94,10 +94,10 @@ subroutine substor
       end do
    end if
 
-   bss(1,j) = bss(1,j) - latq(j)
-   bss(2,j) = bss(2,j) - latno3(j)
-   bss(3,j) = bss(3,j) - qtile
-   bss(4,j) = bss(4,j) - tileno3(j)
+   bss1(j) = bss1(j) - latq(j)
+   bss2(j) = bss2(j) - latno3(j)
+   bss3(j) = bss3(j) - qtile
+   bss4(j) = bss4(j) - tileno3(j)
    if (hrupest(j) == 1) then
       do k = 1, npmx
          pst_lag(k,3,j) = pst_lag(k,3,j) - lat_pst(k)

@@ -200,7 +200,10 @@ subroutine rewind_init
    sol_st = orig_solst
    sol_sw = orig_solsw
    volcr = orig_volcr
-   bss = 0.
+   bss1 = 0.
+   bss2 = 0.
+   bss3 = 0.
+   bss4 = 0.
    newrti = 0.
    pst_lag = 0.
    surf_bs = 0.

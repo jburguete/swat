@@ -1383,7 +1383,10 @@ subroutine allocate_parms
    allocate (rainsub(mhru,nstep))
    allocate (precipdt(nstep+1))
 
-   allocate (bss(4,mhru))
+   allocate (bss1(mhru))
+   allocate (bss2(mhru))
+   allocate (bss3(mhru))
+   allocate (bss4(mhru))
    allocate (nsetlp(2,mhru))
    allocate (nsetlw(2,mhru))
    allocate (psetlp(2,mhru))

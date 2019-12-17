@@ -101,7 +101,10 @@ subroutine zero0
    bio_eat = 0.
    bio_trmp = 0.
    brt = 0.
-   bss = 0.
+   bss1 = 0.
+   bss2 = 0.
+   bss3 = 0.
+   bss4 = 0.
    canmx = 0.
    canstor = 0.
    cbodcnst = 0.

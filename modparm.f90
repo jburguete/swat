@@ -1481,7 +1481,11 @@ module parm
 !> initial snow water content in elevation band (mm H2O)
    real*8, dimension (:,:), allocatable :: snoeb
    real*8, dimension (:,:), allocatable :: wushal,wudeep,tmnband
-   real*8, dimension (:,:), allocatable :: nsetlw,snotmpeb,bss,surf_bs
+   real*8, dimension (:), allocatable :: bss1
+   real*8, dimension (:), allocatable :: bss2
+   real*8, dimension (:), allocatable :: bss3
+   real*8, dimension (:), allocatable :: bss4
+   real*8, dimension (:,:), allocatable :: nsetlw,snotmpeb,surf_bs
    real*8, dimension (:,:), allocatable :: tmxband,nsetlp
    real*8, dimension (:,:), allocatable :: rainsub,frad
    real*8, dimension (:),   allocatable ::  rstpbsb
