@@ -26,10 +26,10 @@ subroutine readpnd
 !!    ipnd2(:)    |none          |ending month of nutrient settling season
 !!    ndtarg(:)   |none          |number of days required to reach target
 !!                               |storage from current pond storage
-!!    nsetlp(1,:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlp(2,:) |m/day         |nitrogen settling rate for 2nd season
-!!    nsetlw(1,:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlw(2,:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlp1(:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlp2(:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlw1(:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlw2(:) |m/day         |nitrogen settling rate for 2nd season
 !!    pnd_esa(:)  |ha            |surface area of ponds when filled to
 !!                               |emergency spillway
 !!    pnd_evol(:) |10**4 m**3 H2O|runoff volume from catchment area needed
@@ -49,10 +49,10 @@ subroutine readpnd
 !!    pnd_sed(:)  |mg/L          |sediment concentration in pond water
 !!    pnd_solp(:) |kg P          |amount of soluble P in pond
 !!    pnd_vol(:)  |10**4 m**3 H2O|volume of water in ponds
-!!    psetlp(1,:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlp(2,:) |m/day         |phosphorus settling rate for 2nd season
-!!    psetlw(1,:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlw(2,:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlp1(:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlp2(:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlw1(:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlw2(:) |m/day         |phosphorus settling rate for 2nd season
 !!    seccip(:)   |none          |water clarity coefficient for pond
 !!    secciw(:)   |none          |water clarity coefficient for wetland
 !!    wet_fr(:)   |none          |fraction of HRU/subbasin area that drains
@@ -727,10 +727,10 @@ subroutine readpnd
       iflod1(ihru) = sifld1
       iflod2(ihru) = sifld2
       ndtarg(ihru) = sndt
-      psetlp(1,ihru) = sp1
-      psetlp(2,ihru) = sp2
-      nsetlp(1,ihru) = sn1
-      nsetlp(2,ihru) = sn2
+      psetlp1(ihru) = sp1
+      psetlp2(ihru) = sp2
+      nsetlp1(ihru) = sn1
+      nsetlp2(ihru) = sn2
       chlap(ihru) = schla
       seccip(ihru) = sseci
       pnd_no3(ihru) = spno3
@@ -749,10 +749,10 @@ subroutine readpnd
       wet_sed(ihru) = swets
       wet_nsed(ihru) = swetns
       wet_k(ihru) = swetk
-      psetlw(1,ihru) = sw1
-      psetlw(2,ihru) = sw2
-      nsetlw(1,ihru) = snw1
-      nsetlw(2,ihru) = snw2
+      psetlw1(ihru) = sw1
+      psetlw2(ihru) = sw2
+      nsetlw1(ihru) = snw1
+      nsetlw2(ihru) = snw2
       chlaw(ihru) = schlaw
       secciw(ihru) = sseciw
       wet_no3(ihru) = swno3

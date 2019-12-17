@@ -22,8 +22,8 @@ subroutine pond(k)
 !!    i_mo        |none          |current month of simulation
 !!    ndtarg(:)   |none          |number of days required to reach target
 !!                               |storage from current pond storage
-!!    nsetlp(1,:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlp(2,:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlp1(:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlp2(:) |m/day         |nitrogen settling rate for 2nd season
 !!    pet_day     |mm H2O        |potential evapotranspiration on day
 !!    pnd_evol(:) |m^3 H2O       |volume of water required to fill pond
 !!                               |to the emergency spillway
@@ -55,8 +55,8 @@ subroutine pond(k)
 !!    pnd_vol(:)  |m^3 H2O       |volume of water in pond
 !!    pndflwi     |m^3 H2O       |volume of water flowing into pond on day
 !!    pndsedin    |metric tons   |sediment entering pond during day
-!!    psetlp(1,:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlp(2,:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlp1(:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlp2(:) |m/day         |phosphorus settling rate for 2nd season
 !!    seccip(:)   |none          |water clarity coefficient for pond
 !!    sed_stl(:)  |kg/kg         |fraction of sediment remaining suspended in
 !!                               |impoundment after settling for one day
@@ -103,7 +103,6 @@ subroutine pond(k)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    chlaco      |ppb (ug/L)    |concentration of chlorophyll-a in pond
-!!    iseas       |none          |nutrient settling rate season
 !!    k           |none          |HRU or reach number
 !!    nitrok      |none          |fraction of nitrogen in pond removed by
 !!                               |settling
@@ -129,7 +128,6 @@ subroutine pond(k)
 
    integer, intent (in) :: k
    real*8 :: vol, sed, pndsa, xx, targ, tpco, phosk, nitrok, chlaco, susp, trappnd, velofl
-   integer :: iseas
    real*8 :: san, sil, cla, sag, lag, inised, finsed, setsed, remsetsed
 
 
@@ -299,13 +297,16 @@ subroutine pond(k)
       !! determine settling rate
       !! part of equation 29.1.3 in SWAT manual
       if (i_mo >= ipnd1(k) .and. i_mo <= ipnd2(k)) then
-         iseas = 1
+         phosk = psetlp1(k)
+         nitrok = nsetlp1(k)
       else
-         iseas = 2
+         phosk = psetlp2(k)
+         nitrok = nsetlp2(k)
       endif
-      phosk = psetlp(iseas,k) * pndsa * 10000. / pnd_vol(k)  !setl/mean depth
+      xx = pndsa * 10000. / pnd_vol(k)
+      phosk = phosk * xx  !setl/mean depth
       phosk = Min(phosk, 1.)
-      nitrok = nsetlp(iseas,k) * pndsa * 10000. / pnd_vol(k) !setl/mean depth
+      nitrok = nitrok * xx !setl/mean depth
       nitrok = Min(nitrok, 1.)
 
       !! remove nutrients by settling

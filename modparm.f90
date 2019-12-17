@@ -1038,7 +1038,11 @@ module parm
    real*8, dimension (:), allocatable :: orig_resno3,orig_resno2
    real*8, dimension (:), allocatable :: orig_resnh3,orig_resorgn
    real*8, dimension (:,:), allocatable :: starg,oflowmx,oflowmn
-   real*8, dimension (:,:), allocatable :: psetlr,nsetlr,wuresn
+   real*8, dimension (:), allocatable :: psetlr1
+   real*8, dimension (:), allocatable :: psetlr2
+   real*8, dimension (:), allocatable :: nsetlr1
+   real*8, dimension (:), allocatable :: nsetlr2
+   real*8, dimension (:,:), allocatable :: wuresn
    real*8, dimension (:,:,:), allocatable :: res_out
    integer, dimension (:), allocatable :: ires1,ires2,res_sub
    integer, dimension (:), allocatable :: iresco,mores,iyres
@@ -1469,13 +1473,17 @@ module parm
    real*8, dimension (:,:), allocatable :: gwatw, gwatd, gwatveg
    real*8, dimension (:,:), allocatable :: gwata, gwats, gwatspcon
    real*8, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
-   real*8, dimension (:,:), allocatable :: wgncur,wgnold,wrt,psetlp
+   real*8, dimension (:), allocatable :: psetlp1
+   real*8, dimension (:), allocatable :: psetlp2
+   real*8, dimension (:,:), allocatable :: wgncur,wgnold,wrt
 !> pesticide enrichment ratio (none)
    real*8, dimension (:,:), allocatable :: pst_enr
    real*8, dimension (:,:), allocatable :: zdb,pst_surq
 !> pesticide on plant foliage (kg/ha)
    real*8, dimension (:,:), allocatable :: plt_pst
-   real*8, dimension (:,:), allocatable :: pst_sed,psetlw
+   real*8, dimension (:), allocatable :: psetlw1
+   real*8, dimension (:), allocatable :: psetlw2
+   real*8, dimension (:,:), allocatable :: pst_sed
    real*8, dimension (:,:), allocatable :: pcpband,wupnd,tavband,phi
    real*8, dimension (:,:), allocatable :: wat_phi
 !> initial snow water content in elevation band (mm H2O)
@@ -1485,8 +1493,12 @@ module parm
    real*8, dimension (:), allocatable :: bss2
    real*8, dimension (:), allocatable :: bss3
    real*8, dimension (:), allocatable :: bss4
-   real*8, dimension (:,:), allocatable :: nsetlw,snotmpeb,surf_bs
-   real*8, dimension (:,:), allocatable :: tmxband,nsetlp
+   real*8, dimension (:), allocatable :: nsetlw1
+   real*8, dimension (:), allocatable :: nsetlw2
+   real*8, dimension (:,:), allocatable :: snotmpeb,surf_bs
+   real*8, dimension (:), allocatable :: nsetlp1
+   real*8, dimension (:), allocatable :: nsetlp2
+   real*8, dimension (:,:), allocatable :: tmxband
    real*8, dimension (:,:), allocatable :: rainsub,frad
    real*8, dimension (:),   allocatable ::  rstpbsb
    real*8, dimension (:,:), allocatable :: orig_snoeb,orig_pltpst

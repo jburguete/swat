@@ -1,9 +1,12 @@
-subroutine hruallo
+!> @file hruallo.f90
+!> file containing the subroutine hruallo
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!   This subroutine calculates the number of management operation types, etc.
-!!   used in the simulation. These values are used to allocate array sizes for
-!!   processes occurring in the HRU.
+!> This subroutine calculates the number of management operation types, etc.
+!> used in the simulation. These values are used to allocate array sizes for
+!> processes occurring in the HRU.
+subroutine hruallo
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units       |definition
@@ -26,11 +29,13 @@ subroutine hruallo
 !!    chmfile     |NA          |HRU soil chemical data file name (.chm)
 !!    depth(:)    |mm          |depth to bottom of soil layer
 !!    eof         |none        |end of file flag (=-1 if eof, else =0)
-!!    hru         |none        |number of HRUs in subbasin
 !!    hrufile     |NA          |name of HRU general data file name (.hru)
+!!    ilnds
+!!    iopera_sub
 !!    j           |none        |counter
 !!    k           |none        |counter
 !!    lyrtot      |none        |total number of layers in profile
+!!    mcri
 !!    mgt_op      |none        |manangement operation code
 !!    mgt1i       |none        |sixth parameter in mgt file operation line
 !!    mgtfile     |NA          |HRU management data file name (.mgt)
@@ -49,13 +54,10 @@ subroutine hruallo
    use parm
    implicit none
 
-   character (len=13) :: hrufile, mgtfile, solfile, chmfile
-   character (len=80) ::  titldum
-   integer :: eof, j, k, lyrtot
-   integer :: mgt1i, pstnum
-   integer :: mgt_op, mcri
-   integer :: iopera_sub, ilnds
    real*8 :: depth(25)
+   character (len=80) ::  titldum
+   character (len=13) :: chmfile, hrufile, mgtfile, solfile
+   integer :: eof, ilnds, iopera_sub, j, k, lyrtot, mcri, mgt1i, mgt_op, pstnum
 
    do j= mhru1, mhru
       mgtfile = ""

@@ -138,9 +138,12 @@ subroutine zero2
    no3cnst = 0.
    no3mon = 0.
    no3yr = 0.
-   nsetlp = 0.
-   nsetlr = 0.
-   nsetlw = 0.
+   nsetlp1 = 0.
+   nsetlp2 = 0.
+   nsetlr1 = 0.
+   nsetlr2 = 0.
+   nsetlw1 = 0.
+   nsetlw2 = 0.
    oflowmn = 0.
    oflowmx = 0.
    oflowmn_fps = 0.
@@ -202,9 +205,12 @@ subroutine zero2
    potsagi = 0.
    potlagi = 0.
 
-   psetlp = 0.
-   psetlr = 0.
-   psetlw = 0.
+   psetlp1 = 0.
+   psetlp2 = 0.
+   psetlr1 = 0.
+   psetlr2 = 0.
+   psetlw1 = 0.
+   psetlw2 = 0.
    rchstor = 0.
    rch_bactp = 0.
    rch_bactlp = 0.

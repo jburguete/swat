@@ -21,11 +21,11 @@ subroutine wetlan
 !!                               |settling
 !!    minpgw(:)   |kg P/ha       |soluble P loading to reach in groundwater
 !!    no3gw(:)    |kg N/ha       |nitrate loading to reach in groundwater
-!!    nsetlw(1,:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlw(2,:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlw1(:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlw2(:) |m/day         |nitrogen settling rate for 2nd season
 !!    pet_day     |mm H2O        |potential evapotranspiration for day in HRU
-!!    psetlw(1,:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlw(2,:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlw1(:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlw2(:) |m/day         |phosphorus settling rate for 2nd season
 !!    qdr(:)      |mm H2O        |net water loading from HRU to main channel
 !!    secciw(:)   |none          |water clarity coefficient for wetland
 !!    sed_stl(:)  |kg/kg         |fraction of sediment remaining suspended in
@@ -118,7 +118,6 @@ subroutine wetlan
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    iseas       |none          |nutrient settling rate season
 !!    j           |none          |HRU number
 !!    nitrok      |none          |fraction of nitrogen in wetland removed by
 !!                               |settling
@@ -138,7 +137,7 @@ subroutine wetlan
    use parm
    implicit none
 
-   integer :: j, iseas
+   integer :: j
    real*8 :: vol, cnv, sed, wetsa, xx, phosk, nitrok, tpco
    real*8 :: wetsani, wetsili, wetclai, wetsagi, wetlagi
    real*8 :: san, sil, cla, sag, lag, inised, finsed,setsed,remsetsed
@@ -194,13 +193,13 @@ subroutine wetlan
 !       qdr(j) = qdr(j) - qdr(j) * wet_fr(j)
 
       !! sediment loading to wetland from HRU
-      wetsedi = sedyld(j) * (wet_fr(j) - (wetsa / hru_ha(j)))
-
-      wetsani = sanyld(j) * (wet_fr(j) - (wetsa / hru_ha(j)))
-      wetsili = silyld(j) * (wet_fr(j) - (wetsa / hru_ha(j)))
-      wetclai = clayld(j) * (wet_fr(j) - (wetsa / hru_ha(j)))
-      wetsagi = sagyld(j) * (wet_fr(j) - (wetsa / hru_ha(j)))
-      wetlagi = lagyld(j) * (wet_fr(j) - (wetsa / hru_ha(j)))
+      xx = wet_fr(j) - (wetsa / hru_ha(j))
+      wetsedi = sedyld(j) * xx
+      wetsani = sanyld(j) * xx
+      wetsili = silyld(j) * xx
+      wetclai = clayld(j) * xx
+      wetsagi = sagyld(j) * xx
+      wetlagi = lagyld(j) * xx
 
       sedyld(j) = sedyld(j) - sedyld(j) * wet_fr(j)
       sanyld(j) = sanyld(j) - sanyld(j) * wet_fr(j)
@@ -358,13 +357,16 @@ subroutine wetlan
          !! determine settling rate for nutrients
          !! part of equation 29.1.3 in SWAT manual
          if (i_mo >= ipnd1(j) .and. i_mo <= ipnd2(j)) then
-            iseas = 1
+            phosk = psetlw1(j)
+            nitrok = nsetlw1(j)
          else
-            iseas = 2
+            phosk = psetlw2(j)
+            nitrok = nsetlw2(j)
          endif
-         phosk = psetlw(iseas,j) * wetsa * 10000. / wet_vol(j)
+         xx = wetsa * 10000. / wet_vol(j)
+         phosk = phosk * xx
          phosk = Min(phosk, 1.)
-         nitrok = nsetlw(iseas,j) * wetsa * 10000. / wet_vol(j)
+         nitrok = nitrok * xx
          nitrok = Min(nitrok, 1.)
 
          !! remove nutrients by settling

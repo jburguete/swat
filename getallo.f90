@@ -94,7 +94,7 @@ subroutine getallo
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
-!!    SWAT: caps
+!!    SWAT: caps, hruallo
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -139,12 +139,7 @@ subroutine getallo
    read (23,6000) titldum
    read (23,5000) figfile
    read (23,*) myr
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
+   read (23,6000) (titldum, j=1,6)
    read (23,*) dthy !Jaehak 2017 flood routing
    !read (23,*) nstep
    read (23,6000) titldum
@@ -162,20 +157,7 @@ subroutine getallo
    read (23,*) nhtot
    read (23,6000) titldum
    read (23,*) nwtot
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
-   read (23,6000) titldum
+   read (23,6000) (titldum, j=1,14)
    read (23,5000) fcstfile
    read (23,6000) titldum
    read (23,5000) bsnfile
