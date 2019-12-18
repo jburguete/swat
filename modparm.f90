@@ -72,7 +72,8 @@ module parm
    real*8, dimension (:,:), allocatable :: ru_ovs, ru_ktc
    real*8, dimension (:), allocatable :: gwq_ru, qdayout
    integer, dimension (:), allocatable :: ils2, ils2flag
-   integer :: iru, mru, irch, isub, idum, mhyd_bsn, ipest, ils_nofig
+   integer :: idum !< counter (none)
+   integer :: iru, mru, irch, isub, mhyd_bsn, ipest, ils_nofig
    integer :: mhru1
    integer, dimension (:), allocatable :: mhyd1 , irtun
 

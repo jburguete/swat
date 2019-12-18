@@ -28,7 +28,7 @@ subroutine readsdr
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    eof         |none          |end of file flag (=-1 if eof, else = 0)
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    titldum     |NA            |title line from input dataset
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 

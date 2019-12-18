@@ -22,6 +22,7 @@ subroutine readfig
 !!                                 |6 = rechour     15 =
 !!                                 |7 = recmon
 !!                                 |8 = recyear
+!!     idum         |none          |counter
 !!     ihouts(:)    |none          |For ICODES equal to
 !!                                 |0: not used
 !!                                 |1,2,3,5,7,8,10,11: hydrograph storage
@@ -87,18 +88,25 @@ subroutine readfig
 !!     a            |NA            |comment flag in .fig file(*=comment)
 !!     annual_in    |NA            |name of file containing average annual
 !!                                 |loadings to reach (fig command 11)
+!!     apex_in
+!!     char6
+!!     char7
+!!     char8
 !!     day_in       |NA            |name of file containing daily loadings
 !!                                 |to reach (fig command 10)
 !!     eof          |none          |end of file flag (=-1 at end of file)
 !!     hour_in      |NA            |name of file containing hourly loadings
 !!                                 |to reach (fig command 6)
-!!     idum         |none          |counter
 !!     ii           |none          |counter
+!!     iijj
+!!     jjii
 !!     lwqfile      |NA            |reservoir water quality file names (.lwq)
 !!     month_in     |NA            |name of file containing monthly loadings
 !!                                 |to reach (fig command 7)
 !!     resfile      |NA            |reservoir file names (.res)
 !!     rtefile      |NA            |reach input file (.rte)
+!!     rufile
+!!     subfile
 !!     swqfile      |NA            |stream water quality file (.swq)
 !!     titldum      |NA            |description line
 !!     year_in      |NA            |name of file containing annual loadings
@@ -116,14 +124,12 @@ subroutine readfig
    implicit none
 
    character (len=80) :: titldum
-   character (len=1) ::  a
-   character (len=13) :: month_in, day_in, annual_in, year_in
-   character (len=13) :: apex_in
-   character (len=13) :: hour_in, resfile, lwqfile, rtefile, swqfile
-   character (len=13) :: subfile, rufile
-   integer :: ii, eof, iijj, jjii
-
+   character (len=13) :: annual_in, apex_in, day_in, hour_in, lwqfile,&
+      &month_in, resfile, rtefile, rufile, subfile, swqfile, year_in
+   integer :: eof, ii, iijj, jjii
    character (len=3), dimension (mhyd) :: char6, char7, char8
+   character (len=1) :: a
+
    char6 = "   "
    char7 = "   "
    char8 = "   "

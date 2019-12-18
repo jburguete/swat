@@ -1,9 +1,12 @@
-subroutine readsub
+!> @file readsub.f90
+!> file containing the subroutine readsub
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU/subbasin general input file
-!!    (.sub). This file contains data related to general processes modeled
-!!    at the HRU/subbasin level.
+!> this subroutine reads data from the HRU/subbasin general input file
+!> (.sub). This file contains data related to general processes modeled
+!> at the HRU/subbasin level.
+subroutine readsub
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -100,22 +103,26 @@ subroutine readsub
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ch_ls
 !!    chmfile     |NA            |HRU soil chemical data
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    gwfile      |NA            |HRU groundwater data
 !!    hrufile     |NA            |name of HRU general data file
-!!    opsfile     |NA            |name of operation schedule file for Phil G.
-!!    gsm 7/24/08 for tile drainage
-!!    sdrfile     |NA            |name of subbasin drainage file
 !!    if          |none          |number of HRU in subbasin that is floodplain
+!!    ils
 !!    ip          |none          |number of HRU in subbasin that is pothole
 !!    ir          |none          |number of HRU in subbasin that is riparian zone
 !!    j           |none          |counter
 !!    jj          |none          |variable to take special HRUs into account
+!!    k
+!!    kk
 !!    mgtfile     |NA            |HRU management data
 !!    mon         |none          |monthly counter
+!!    opsfile     |NA            |name of operation schedule file for Phil G.
 !!    pndfile     |NA            |subbasin impoundment file (.pnd)
+!!    sdrfile     |NA            |name of subbasin drainage file
 !!    septfile    |NA            |septic input data file (.sep)
+!!    snofile
 !!    solfile     |NA            |HRU soil data
 !!    sumebfr     |none          |total area of subbasin modeled in
 !!                               |elevation bands
@@ -134,11 +141,12 @@ subroutine readsub
    use parm
    implicit none
 
-   character (len=80) :: titldum, snofile
-   character (len=13) :: hrufile, chmfile, mgtfile, solfile,&
-   &gwfile, opsfile, wgnfile, pndfile, wusfile, septfile, sdrfile
-   integer :: eof, mon, j, jj, ip, if, ir, ib, ils, k, kk
-   real*8 :: ssnoeb(10), sno_sub, ch_ls, sumebfr, sdrift
+   character (len=80) :: snofile, titldum
+   real*8, dimension(10) :: ssnoeb
+   character (len=13) :: chmfile, gwfile, hrufile, mgtfile, opsfile, pndfile,&
+      &sdrfile, septfile, solfile, wgnfile, wusfile
+   real*8 :: ch_ls, sdrift, sno_sub, sumebfr
+   integer :: eof, ils, j, jj, k, kk, mon
 
    wgnfile = ""
    pndfile = ""
@@ -148,21 +156,21 @@ subroutine readsub
    sno_sub = 0.
    ch_ls = 0.
    jj = 1
-   ip = 0
-   if = 0
-   ir = 0
+   !ip = 0
+   !if = 0
+   !ir = 0
 
    read (101,5100) titldum
    read (101,*) sub_km(i)
    if (isproj == 3) then
       read (101,5101) harg_petco(i), cncoef_sub(i), sub_smfmx(1,i),&
-      &sub_smfmn(1,i), sub_sftmp(1,i), sub_smtmp(1,i), sub_timp(1,i)
-      do ib = 2, 10
-         sub_smfmx(ib,i) = sub_smfmx(1,i)
-         sub_smfmn(ib,i) = sub_smfmn(1,i)
-         sub_sftmp(ib,i) = sub_sftmp(1,i)
-         sub_smtmp(ib,i) = sub_smtmp(1,i)
-         sub_timp(ib,i) = sub_timp(1,i)
+         &sub_smfmn(1,i), sub_sftmp(1,i), sub_smtmp(1,i), sub_timp(1,i)
+      do j = 2, 10
+         sub_smfmx(j,i) = sub_smfmx(1,i)
+         sub_smfmn(j,i) = sub_smfmn(1,i)
+         sub_sftmp(j,i) = sub_sftmp(1,i)
+         sub_smtmp(j,i) = sub_smtmp(1,i)
+         sub_timp(j,i) = sub_timp(1,i)
       end do
    else
       read (101,5100) titldum
@@ -257,7 +265,7 @@ subroutine readsub
       septfile = ""
       sdrfile = ""
       read (101,5300) hrufile, mgtfile, solfile, chmfile, gwfile,&
-      &opsfile, septfile, sdrfile, ils2(ihru)
+         &opsfile, septfile, sdrfile, ils2(ihru)
       call caps(hrufile)
       call caps(mgtfile)
       call caps(solfile)
@@ -332,9 +340,9 @@ subroutine readsub
       ! HRU selection criteria for Irrigation by retention-irrigation basins
       if (num_ri(i)>0) then
          if(sol_z(sol_nly(ihru),ihru)>300& !!    - soil thickness > 12 inches
-         &.AND.sol_k(1,ihru)>0.76&       !    - permeability > 0.03 inches/hr (=0.76mm/hr)
-         &.AND.hru_slp(ihru)<0.1&        !!    - hru slope < 10%
-         &.AND.urblu(ihru)>0) then !urban LU
+            &.AND.sol_k(1,ihru)>0.76&       !    - permeability > 0.03 inches/hr (=0.76mm/hr)
+            &.AND.hru_slp(ihru)<0.1&        !!    - hru slope < 10%
+            &.AND.urblu(ihru)>0) then !urban LU
 
             ri_luflg(ihru) = 1 !irrigate HRU
          end if
@@ -406,12 +414,12 @@ subroutine readsub
    if (ch_s1(i) <= 0.) ch_s1(i) = .0001
    if (ch_n1(i) <= 0.005) ch_n1(i) = 0.005
    if (ch_n1(i) >= 0.70) ch_n1(i) = 0.70
-   do ib = 1, 10
-      if (sub_smtmp(ib,i) < 1.e-6) sub_smtmp(ib,i) = smtmp
-      if (sub_sftmp(ib,i) < 1.e-6) sub_sftmp(ib,i) = sftmp
-      if (sub_smfmx(ib,i) < 1.e-6) sub_smfmx(ib,i) = smfmx
-      if (sub_smfmn(ib,i) < 1.e-6) sub_smfmn(ib,i) = smfmn
-      if (sub_timp(ib,i) < 1.e-6) sub_timp(ib,i) = timp
+   do j = 1, 10
+      if (sub_smtmp(j,i) < 1.e-6) sub_smtmp(j,i) = smtmp
+      if (sub_sftmp(j,i) < 1.e-6) sub_sftmp(j,i) = sftmp
+      if (sub_smfmx(j,i) < 1.e-6) sub_smfmx(j,i) = smfmx
+      if (sub_smfmn(j,i) < 1.e-6) sub_smfmn(j,i) = smfmn
+      if (sub_timp(j,i) < 1.e-6) sub_timp(j,i) = timp
    end do
 
 !!    check elevation band fractions

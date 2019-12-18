@@ -39,6 +39,8 @@ subroutine readsno
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof         |none          |end of file flag
+!!    ib          |none          |counter
+!!    titldum     |NA            |title line of file (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -48,6 +50,7 @@ subroutine readsno
 
    character (len=80) :: titldum
    integer :: eof, ib
+
    eof = 0
 
    do
