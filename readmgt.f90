@@ -1,9 +1,12 @@
-subroutine readmgt
+!> @file readmgt.f90
+!> file containing the subroutine readmgt
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU/subbasin management input file
-!!    (.mgt). This file contains data related to management practices used in
-!!    the HRU/subbasin.
+!> this subroutine reads data from the HRU/subbasin management input file
+!> (.mgt). This file contains data related to management practices used in
+!> the HRU/subbasin.
+subroutine readmgt
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units            |definition
@@ -66,7 +69,7 @@ subroutine readmgt
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name            |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    afrt_surface(:)     |none           |fraction of fertilizer which is applied
+!!    afrt_surface(:) |none           |fraction of fertilizer which is applied
 !!                                    |to top 10 mm of soil (the remaining
 !!                                    |fraction is applied to first soil
 !!                                    |layer)
@@ -79,19 +82,17 @@ subroutine readmgt
 !!                                    |applied in one year
 !!    auto_napp(:)    |kg NO3-N/ha    |maximum NO3-N content allowed in one
 !!                                    |fertilizer application
-!!    auto_nstrs(:)    |none           |nitrogen stress factor which triggers
+!!    auto_nstrs(:)   |none           |nitrogen stress factor which triggers
 !!                                    |auto fertilization
 !!    auto_wstr(:,:,:)|none or mm     |water stress factor which triggers auto
 !!                                    |irrigation
-!!    fr_curb(:,:,:)    |none           |availability factor, the fraction of the
-!!                                    |curb length that is sweepable
 !!    bio_init        |kg/ha          |initial biomass of transplants
 !!    bio_min(:)      |kg/ha          |minimum plant biomass for grazing
 !!    bio_ms(:)       |kg/ha          |cover/crop biomass
-!!    bio_targ(:,:,:)  |kg/ha          |biomass target
-!!    bio_eat(:,:,:)    |(kg/ha)/day    |dry weight of biomass removed by grazing
+!!    bio_targ(:,:,:) |kg/ha          |biomass target
+!!    bio_eat(:,:,:)  |(kg/ha)/day    |dry weight of biomass removed by grazing
 !!                                    |daily
-!!    bio_trmp(:,:,:)   |(kg/ha)/day    |dry weight of biomass removed by
+!!    bio_trmp(:,:,:) |(kg/ha)/day    |dry weight of biomass removed by
 !!                                    |trampling daily
 !!    cfrt_id(:,:,:)  |none           |fertilizer/manure id number from database
 !!    cfrt_kg(:,:,:)  |kg/ha          |amount of fertilzier applied to HRU on a
@@ -100,52 +101,52 @@ subroutine readmgt
 !!                                    |condition II
 !!    cnop            |none           |SCS runoff curve number for moisture
 !!                                    |condition II
-!!    ddrain(:)   |mm            |depth to the sub-surface drain
-!!    divmax(:)   |mm H2O or     |maximum daily irrigation diversion from
-!!                |  10^4 m^3 H2O|the reach (when IRRSC=1): when value is
-!!                               |positive the units are mm H2O; when the
-!!                               |value is negative, the units are (10**4
-!!                               |m^3 H2O
-!!    filterw(:)  |m             |filter strip width for bacteria transport
-!!    flowfr(:)   |none          |fraction of available flow in reach that
-!!                               |is allowed to be applied to the HRU
-!!    flowmin(:)  |m**3/s        |minimum instream flow for irrigation
-!!                               |diversions when IRRSC=1, irrigation water
-!!                               |will be diverted only when streamflow is
-!!                               |at or above FLOWMIN.
+!!    ddrain(:)       |mm             |depth to the sub-surface drain
+!!    divmax(:)       |mm H2O or      |maximum daily irrigation diversion from
+!!                    |10^4 m^3 H2O   |the reach (when IRRSC=1): when value is
+!!                                    |positive the units are mm H2O; when the
+!!                                    |value is negative, the units are (10**4
+!!                                    |m^3 H2O
+!!    filterw(:)      |m              |filter strip width for bacteria transport
+!!    flowfr(:)       |none           |fraction of available flow in reach that
+!!                                    |is allowed to be applied to the HRU
+!!    flowmin(:)      |m**3/s         |minimum instream flow for irrigation
+!!                                    |diversions when IRRSC=1, irrigation water
+!!                                    |will be diverted only when streamflow is
+!!                                    |at or above FLOWMIN.
+!!    fr_curb(:,:,:)  |none           |availability factor, the fraction of the
+!!                                    |curb length that is sweepable
 !!    frt_kg(:,:,:)   |kg/ha          |amount of fertilizer applied to HRU
 !!    frt_surface     |none           |fraction of fertilizer which is applied
 !!                                    |to the top 10 mm of soil (the remaining
 !!                                    |fraction is applied to the first soil
 !!                                    |layer)
-!!    fsred(:)    |none          |reduction in bacteria loading from filter
-!!                               |strip
-!!    gdrain(:)   |hrs           |drain tile lag time: the amount of time
-!!                               |between the transfer of water from the
-!!                               |soil to the drain tile and the release
-!!                               |of the water from the drain tile to the
-!!                               |reach.
+!!    fsred(:)        |none           |reduction in bacteria loading from filter
+!!                                    |strip
+!!    gdrain(:)       |hrs            |drain tile lag time: the amount of time
+!!                                    |between the transfer of water from the
+!!                                    |soil to the drain tile and the release
+!!                                    |of the water from the drain tile to the
+!!                                    |reach.
 !!    harveff         |none           |harvest efficiency: fraction of harvested
 !!                                    |yield that is removed from HRU; the
 !!                                    |remainder becomes residue on the soil
 !!                                    |surface
-!!    hi_ovr           |(kg/ha)/(kg/ha)|harvest index target specified at
+!!    hi_ovr          |(kg/ha)/(kg/ha)|harvest index target specified at
 !!                                    |harvest
-!!    hi_targ(:,:,:)    |(kg/ha)/(kg/ha)|harvest index target of cover defined
+!!    hi_targ(:,:,:)  |(kg/ha)/(kg/ha)|harvest index target of cover defined
 !!                                    |at planting
 !!    hrupest(:)      |none           |pesticide use flag:
 !!                                    | 0: no pesticides used in HRU
 !!                                    | 1: pesticides used in HRU
 !!                                    |initialization
 !!    idplt(:)        |none           |land cover code from crop.dat
-!!    iurban(:)   |none          |urban simulation code:
-!!                               |0  no urban sections in HRU
-!!                               |1  urban sections in HRU, simulate using USGS
-!!                               |   regression equations
-!!                               |2  urban sections in HRU, simulate using build
-!!                               |   up/wash off algorithm
-!!    manure_id(:)|none               |manure (fertilizer) identification
-!!                                    |number from fert.dat
+!!    iurban(:)       |none           |urban simulation code:
+!!                                    |0  no urban sections in HRU
+!!                                    |1  urban sections in HRU, simulate using USGS
+!!                                    |   regression equations
+!!                                    |2  urban sections in HRU, simulate using build
+!!                                    |   up/wash off algorithm
 !!    igro(:)         |none           |land cover status code. This code
 !!                                    |informs the model whether or not a land
 !!                                    |cover is growing at the beginning of
@@ -158,27 +159,27 @@ subroutine readmgt
 !!    imp_trig        |none           |release/impound action code:
 !!                                    |0 begin impounding water
 !!                                    |1 release impounded water
-!!    irr_salt(:)     |mg/kg          |concentration of salt in irrigation
-!!                                    |water
-!!    irrno(:)        |none      |irrigation source location
-!!                               |if IRRSC=1, IRRNO is the number of the
-!!                               |          reach
-!!                               |if IRRSC=2, IRRNO is the number of the
-!!                               |          reservoir
-!!                               |if IRRSC=3, IRRNO is the number of the
-!!                               |          subbasin
-!!                               |if IRRSC=4, IRRNO is the number of the
-!!                               |          subbasin
-!!                               |if IRRSC=5, not used
-!!    irrsc(:)    |none          |irrigation source code:
-!!                               |1 divert water from reach
-!!                               |2 divert water from reservoir
-!!                               |3 divert water from shallow aquifer
-!!                               |4 divert water from deep aquifer
-!!                               |5 divert water from source outside
-!!                               |  watershed
+!!    irrno(:)        |none           |irrigation source location
+!!                                    |if IRRSC=1, IRRNO is the number of the
+!!                                    |          reach
+!!                                    |if IRRSC=2, IRRNO is the number of the
+!!                                    |          reservoir
+!!                                    |if IRRSC=3, IRRNO is the number of the
+!!                                    |          subbasin
+!!                                    |if IRRSC=4, IRRNO is the number of the
+!!                                    |          subbasin
+!!                                    |if IRRSC=5, not used
+!!    irrsc(:)        |none           |irrigation source code:
+!!                                    |1 divert water from reach
+!!                                    |2 divert water from reservoir
+!!                                    |3 divert water from shallow aquifer
+!!                                    |4 divert water from deep aquifer
+!!                                    |5 divert water from source outside
+!!                                    |  watershed
 !!    kirr(:)         |NA             |irrigation in HRU
 !!    laiday(:)       |m**2/m**2      |leaf area index
+!!    manure_id(:)    |none           |manure (fertilizer) identification
+!!                                    |number from fert.dat
 !!    nmgt(:)         |none           |management code (for GIS output only)
 !!    nope(:)         |none           |sequence number of pesticide in NPNO(:)
 !!    npmx            |none           |number of different pesticides used in
@@ -186,7 +187,7 @@ subroutine readmgt
 !!    npno(:)         |none           |array of unique pesticides used in
 !!                                    |watershed
 !!    nrot(:)         |none           |number of years of rotation
-!!    phu_plt(:)  |heat units     |total number of heat units to bring
+!!    phu_plt(:)      |heat units     |total number of heat units to bring
 !!                                    |plant to maturity
 !!    phuacc(:)       |none           |fraction of plant heat units
 !!                                    |accumulated
@@ -201,12 +202,12 @@ subroutine readmgt
 !!    sumix(:)        |none           |sum of all tillage mixing efficiencies
 !!                                    |for HRU
 !!                                    |operation
-!!    tdrain(:)   |hrs           |time to drain soil to field capacity
+!!    tdrain(:)       |hrs            |time to drain soil to field capacity
 !!                                    |yield used in autofertilization
-!!    trapeff(:)  |none          |filter strip trapping efficiency (used for
-!!                               |everything but bacteria)
-!!    urblu(:)    |none          |urban land type identification number from
-!!                               |urban.dat
+!!    trapeff(:)      |none           |filter strip trapping efficiency (used for
+!!                                    |everything but bacteria)
+!!    urblu(:)        |none           |urban land type identification number from
+!!                                    |urban.dat
 !!    usle_p(:)       |none           |USLE equation support practice (P) factor
 !!                                    |daily
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -215,10 +216,14 @@ subroutine readmgt
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    day         |none          |day operation occurs
+!!    disc
+!!    eof
 !!    husc        |none          |heat unit scheduling for operation expressed
 !!                               |as fraction of total heat units of crop
 !!                               |at maturity
+!!    iop
 !!    j           |none          |counter
+!!    k           |none          |counter
 !!    mgt_op      |none          |operation code number
 !!                               |0 end of rotation year
 !!                               |1 plant/beginning of growing season
@@ -235,21 +240,13 @@ subroutine readmgt
 !!                               |12 street sweeping operation
 !!                               |13 release/impound operation
 !!                               |14 continuous fertilization operation
-!!    mgt1i       |none          |first management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt2i       |none          |second management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt3i       |none          |third management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
 !!    mgt4        |none          |fourth management parameter out of .mgt
 !!                               |file (definition changes depending on
 !!                               |mgt_op)
 !!    mgt5        |none          |fifth management parameter out of .mgt
 !!                               |file (definition changes depending on
 !!                               |mgt_op)
+!!    mgt_opprev
 !!    mgt6        |none          |sixth management parameter out of .mgt
 !!                               |file (definition changes depending on
 !!                               |mgt_op)
@@ -262,11 +259,23 @@ subroutine readmgt
 !!    mgt9        |none          |ninth management parameter out of .mgt
 !!                               |file (definition changes depending on
 !!                               |mgt_op)
+!!    mgt1i       |none          |first management parameter out of .mgt
+!!                               |file (definition changes depending on
+!!                               |mgt_op)
+!!    mgt2i       |none          |second management parameter out of .mgt
+!!                               |file (definition changes depending on
+!!                               |mgt_op)
+!!    mgt3i       |none          |third management parameter out of .mgt
+!!                               |file (definition changes depending on
+!!                               |mgt_op)
+!!    mgt10i
 !!    mon         |none          |month operation occurs
 !!    ncrp        |none          |land cover identification number
 !!                               |(from crop.dat). Need only if IGRO=1.
 !!    newpest     |none          |pesticide flag
 !!    titldum     |NA            |title line from input dataset
+!!    uu
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -278,125 +287,121 @@ subroutine readmgt
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
-   integer :: ncrp, mon, day, mgt_op, mgt2i, mgt1i, mgt10i
-   integer :: j, newpest, iop, mgt_opprev
-   integer :: mgt3i
-   real*8 :: husc, mgt6, mgt9, mgt4, mgt5, mgt7, mgt8
-   real*8 :: disc
+   real*8 :: disc, husc, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, xx
+   integer :: day, eof, iop, j, k, mgt_op, mgt_opprev, mgt1i, mgt2i, mgt3i,&
+      &mgt10i, mon, ncrp, newpest, uu
    integer :: Jdt
 
    eof = 0
    iop = 0
    ncrp = 0
+   k = ihru
 
 !!    read general management parameters
    read (109,5000) titldum
-   read (109,*) nmgt(ihru)
+   read (109,*) nmgt(k)
    read (109,5000) titldum
-   read (109,*) igro(ihru)
+   read (109,*) igro(k)
    read (109,*) ncrp
-   idplt(ihru) = ncrp
-   read (109,*) laiday(ihru)
-   read (109,*) bio_ms(ihru)
-   read (109,*) phu_plt(ihru)
+   idplt(k) = ncrp
+   read (109,*) laiday(k)
+   read (109,*) bio_ms(k)
+   read (109,*) phu_plt(k)
    read (109,5000) titldum
-   read (109,*) biomix(ihru)
-   read (109,*) cn2(ihru)
-   read (109,*) usle_p(ihru)
-   read (109,*) bio_min(ihru)
-   read (109,*) filterw(ihru)
+   read (109,*) biomix(k)
+   read (109,*) cn2(k)
+   read (109,*) usle_p(k)
+   read (109,*) bio_min(k)
+   read (109,*) filterw(k)
    read (109,5000) titldum
-   read (109,*) iurban(ihru)
-   read (109,*) urblu(ihru)
+   read (109,*) iurban(k)
+   read (109,*) urblu(k)
    read (109,5000) titldum
-   read (109,*) irrsc(ihru)
-   read (109,*) irrno(ihru)
-   read (109,*) flowmin(ihru)
-   read (109,*) divmax(ihru)
-   read (109,*) flowfr(ihru)
+   read (109,*) irrsc(k)
+   read (109,*) irrno(k)
+   read (109,*) flowmin(k)
+   read (109,*) divmax(k)
+   read (109,*) flowfr(k)
    read (109,5000) titldum
-   read (109,*) ddrain(ihru)
-   read (109,*) tdrain(ihru)
-   read (109,*) gdrain(ihru)
+   read (109,*) ddrain(k)
+   read (109,*) tdrain(k)
+   read (109,*) gdrain(k)
    read (109,5000) titldum
-   !!     read (109,*) nrot(ihru)
+   !!     read (109,*) nrot(k)
    read (109,5000) titldum
    read (109,5000) titldum
-
 
 !!    set pothole trigger
-!    if (ipot(ihru) == ihru) then
-!        do irot = 1, nrot(ihru)
-   imp_trig(ihru) = 0
+!    if (ipot(k) == k) then
+!        do irot = 1, nrot(k)
+   imp_trig(k) = 0
 !        end do
 !     end if
 
 !!    set default values
-   if (cn2(ihru) <= 35.0) cn2(ihru) = 35.0
-   if (cn2(ihru) >= 98.0) cn2(ihru) = 98.0
-   if (usle_p(ihru) <= 0.0) usle_p(ihru) = 0.0
-   if (usle_p(ihru) >= 1.0) usle_p(ihru) = 1.0
-   if (biomix(ihru) <= 0.) biomix(ihru) = .2
-   if (urblu(ihru) == 0 .and. urblu(ihru) >= 0) iurban(ihru) = 0  !urban jaehak
-   if (irrsc(ihru) <= 0) irrsc(ihru) = 5
-   if (irrno(ihru) <= 0) irrno(ihru) = ihru
-   if (flowfr(ihru) <= 0.) flowfr(ihru) = 1.0
-   if (ddrain(ihru) < 1.e-6) ddrain(ihru) = ddrain_bsn
-   if (ddrain(ihru) > .001) then
-      if (tdrain(ihru) <= .001) tdrain(ihru) = 24.
-      if (gdrain(ihru) <= .001) gdrain(ihru) = 96.
+   uu = urblu(k)
+   if (cn2(k) <= 35.0) cn2(k) = 35.0
+   if (cn2(k) >= 98.0) cn2(k) = 98.0
+   if (usle_p(k) <= 0.0) usle_p(k) = 0.0
+   if (usle_p(k) >= 1.0) usle_p(k) = 1.0
+   if (biomix(k) <= 0.) biomix(k) = .2
+!   if (uu == 0 .and. uu >= 0) iurban(k) = 0  !urban jaehak !redundant
+   if (uu == 0) iurban(k) = 0
+   if (irrsc(k) <= 0) irrsc(k) = 5
+   if (irrno(k) <= 0) irrno(k) = k
+   if (flowfr(k) <= 0.) flowfr(k) = 1.0
+   if (ddrain(k) < 1.e-6) ddrain(k) = ddrain_bsn
+   if (ddrain(k) > .001) then
+      if (tdrain(k) <= .001) tdrain(k) = 24.
+      if (gdrain(k) <= .001) gdrain(k) = 96.
    end if
 
 !!    set values for cover/crop already growing
-   idplt(ihru) = ncrp
-   if (igro(ihru) == 1) then
+   idplt(k) = ncrp
+   if (igro(k) == 1) then
       !igrow = 1 !not used
-      idplt(ihru) = ncrp
-      phuacc(ihru) = .1
-      icr(ihru) = 1
-      icrmx(ihru) = icrmx(ihru) + 1
-      idplrot(icrmx(ihru),ihru) = ncrp
-      mcrhru(ihru) = mcrhru(ihru) + 1
-      curyr_mat(ihru) = mat_yrs(ncrp)
+      idplt(k) = ncrp
+      phuacc(k) = .1
+      icr(k) = 1
+      icrmx(k) = icrmx(k) + 1
+      idplrot(icrmx(k),k) = ncrp
+      mcrhru(k) = mcrhru(k) + 1
+      curyr_mat(k) = mat_yrs(ncrp)
       !! calculate tnylda for autofertilization
       if (hvsti(ncrp) < 1.) then
-         tnylda(ihru) = 350. * cnyld(ncrp) * bio_e(ncrp)
+         tnylda(k) = 350. * cnyld(ncrp) * bio_e(ncrp)
       else
-         tnylda(ihru) = 1000. * cnyld(ncrp) * bio_e(ncrp)
+         tnylda(k) = 1000. * cnyld(ncrp) * bio_e(ncrp)
       endif
    end if
 
 !!    Set curve number for urban disconnected impervious areas and pervious
 !!    areas. This assumes CN2 given in mgt file is for pervious area only
-   if (iurban(ihru) > 0) then
-      disc = fimp(urblu(ihru)) - fcimp(urblu(ihru))
-      if (fimp(urblu(ihru)) < 0.30) then
-         cn2(ihru) = cn2(ihru) + fimp(urblu(ihru)) *&
-         &(urbcn2(urblu(ihru)) - cn2(ihru)) *&
-         &(1. - disc/(2.* fimp(urblu(ihru))))
-      else
-         cn2(ihru) = cn2(ihru) + fimp(urblu(ihru)) *&
-         &(urbcn2(urblu(ihru)) - cn2(ihru))
+   if (iurban(k) > 0) then
+      xx = fimp(uu) * (urbcn2(uu) - cn2(k))
+      if (fimp(uu) < 0.30) then
+         disc = fimp(uu) - fcimp(uu)
+         xx = xx * (1. - disc / (2. * fimp(uu)))
       endif
+      cn2(k) = cn2(k) + xx
    endif
 
 !!    Filter strip calculations
-   if (filterw(ihru) > 0.) then
-      fsred(ihru) = 1. - ((12. + 4.5 * filterw(ihru)) / 100.)
-      trapeff(ihru) = 0.367 * filterw(ihru)**0.2967
+   if (filterw(k) > 0.) then
+      fsred(k) = 1. - ((12. + 4.5 * filterw(k)) / 100.)
+      trapeff(k) = 0.367 * filterw(k)**0.2967
    else
-      fsred(ihru) = 1.
-      trapeff(ihru) = 0.
+      fsred(k) = 1.
+      trapeff(k) = 0.
    endif
-   fsred(ihru) = Min(fsred(ihru), 1.)
-   fsred(ihru) = Max(fsred(ihru), 0.)
-   trapeff(ihru) = Min(trapeff(ihru), 1.)
-   trapeff(ihru) = Max(trapeff(ihru), 0.)
+   fsred(k) = Min(fsred(k), 1.)
+   fsred(k) = Max(fsred(k), 0.)
+   trapeff(k) = Min(trapeff(k), 1.)
+   trapeff(k) = Max(trapeff(k), 0.)
 
 !!    If years of rotation are set to zero, assume continuous fallow. For
 !!    continuous fallow, no management practices allowed.
-!!      if (nrot(ihru) > 0) then
+!!      if (nrot(k) > 0) then
    mgt_opprev = 0
 !!      read scheduled management practices
    do                                      !! operation loop
@@ -415,14 +420,14 @@ subroutine readmgt
       mgt8 = 0.
       mgt9 = 0.
       read (109,5200,iostat=eof) mon, day, husc, mgt_op, mgt1i,&
-      &mgt2i, mgt3i, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, mgt10i
+         &mgt2i, mgt3i, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, mgt10i
       if (eof < 0) then
          if (mgt_opprev /= 17 .and. mgt_opprev /= 0) then
             iop = iop + 1
-            mgtop(iop,ihru) = 17
-            idop(iop,ihru) = idop(iop-1,ihru)
-            phu_op(iop,ihru) = phu_op(iop-1,ihru)
-            nopmx(ihru) = nopmx(ihru) + 1
+            mgtop(iop,k) = 17
+            idop(iop,k) = idop(iop-1,k)
+            phu_op(iop,k) = phu_op(iop-1,k)
+            nopmx(k) = nopmx(k) + 1
             exit
          end if
       end if
@@ -440,52 +445,52 @@ subroutine readmgt
       !!   for manual & auto irrigaton
       if (mgt_op == 2) then
          if (mgt2i <= 0) then
-            mgt2i = irrsc(ihru)
+            mgt2i = irrsc(k)
          endif
          if (mgt10i <= 0) then
-            mgt10i = irrno(ihru)
+            mgt10i = irrno(k)
          endif
       endif
 
       if (mgt_op == 10) then
          if (mgt2i <= 0) then
-            mgt2i = irrsc(ihru)
+            mgt2i = irrsc(k)
          endif
          if (mgt10i <= 0) then
-            mgt10i = irrno(ihru)
+            mgt10i = irrno(k)
          endif
       endif
       !! above added
 
       if (mgt_op == 0) then                             !! mgt_op if
          iop = iop + 1
-         mgtop(iop,ihru) = 17
-         idop(iop,ihru) = idop(iop-1,ihru)
-         phu_op(iop,ihru) = phu_op(iop-1,ihru)
+         mgtop(iop,k) = 17
+         idop(iop,k) = idop(iop-1,k)
+         phu_op(iop,k) = phu_op(iop-1,k)
       else
          iop = iop + 1
-         idop(iop,ihru) = Jdt(ndays,day,mon)
-         phu_op(iop,ihru) = husc
-         mgtop(iop,ihru) = mgt_op
-         mgt1iop(iop,ihru) = mgt1i
-         mgt2iop(iop,ihru) = mgt2i
-         mgt3iop(iop,ihru) = mgt3i
-         mgt4op(iop,ihru) = mgt4
-         mgt5op(iop,ihru) = mgt5
-         mgt6op(iop,ihru) = mgt6
-         mgt7op(iop,ihru) = mgt7
-         mgt8op(iop,ihru) = mgt8
-         mgt9op(iop,ihru) = mgt9
-         mgt10iop(iop,ihru) = mgt10i
+         idop(iop,k) = Jdt(ndays,day,mon)
+         phu_op(iop,k) = husc
+         mgtop(iop,k) = mgt_op
+         mgt1iop(iop,k) = mgt1i
+         mgt2iop(iop,k) = mgt2i
+         mgt3iop(iop,k) = mgt3i
+         mgt4op(iop,k) = mgt4
+         mgt5op(iop,k) = mgt5
+         mgt6op(iop,k) = mgt6
+         mgt7op(iop,k) = mgt7
+         mgt8op(iop,k) = mgt8
+         mgt9op(iop,k) = mgt9
+         mgt10iop(iop,k) = mgt10i
          if (mgt_op == 1) then
-            idplt(ihru) = mgt1i
-            icrmx(ihru) = icrmx(ihru) + 1
-            idplrot(icrmx(ihru),ihru) = mgt1i
-            mcrhru(ihru) = mcrhru(ihru) + 1
+            idplt(k) = mgt1i
+            icrmx(k) = icrmx(k) + 1
+            idplrot(icrmx(k),k) = mgt1i
+            mcrhru(k) = mcrhru(k) + 1
          end if
          if (mgt_op == 4 .or. mgt_op == 15) then
             newpest = 0
-            hrupest(ihru) = 1
+            hrupest(k) = 1
             do j = 1, npmx
                if (mgt1i == npno(j)) then
                   newpest = 1
@@ -499,13 +504,13 @@ subroutine readmgt
             endif
          endif
       end if                                            !! mgt_op if
-      nopmx(ihru) = nopmx(ihru) + 1
+      nopmx(k) = nopmx(k) + 1
    end do                                  !! operation loop
 !!    add a skip command to the end of every rotation
 !!        iop = iop + 1
-!!        mgtop(iop,ihru) = 17
-!!        idop(iop,ihru) = idop(iop - 1, ihru)
-!!        phu_op(iop,ihru) = phu_op(iop-1,ihru)
+!!        mgtop(iop,k) = 17
+!!        idop(iop,k) = idop(iop - 1, k)
+!!        phu_op(iop,k) = phu_op(iop-1,k)
 !!     endif
    close (109)
 

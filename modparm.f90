@@ -52,7 +52,9 @@ module parm
 !!   change per JGA 8/31/2011 gsm for output.mgt
 !> basinwide retention parameter adjustment factor (greater than 1)
    real*8 :: r2adj_bsn
-   real*8 :: yield, burn_frlb, pst_kg
+!> amount of pesticide applied to HRU (kg/ha)
+   real*8 :: pst_kg
+   real*8 :: yield, burn_frlb
    real*8 :: yieldgrn, yieldbms, yieldtbr, yieldn, yieldp
    real*8 :: hi_bms, hi_rsd, yieldrsd
 !!    arrays for Landscape Transport Capacity 5/28/2009 nadia
@@ -73,7 +75,9 @@ module parm
    real*8, dimension (:), allocatable :: gwq_ru, qdayout
    integer, dimension (:), allocatable :: ils2, ils2flag
    integer :: idum !< counter (none)
-   integer :: iru, mru, irch, isub, mhyd_bsn, ipest, ils_nofig
+!> pesticide identification number from pest.dat (none)
+   integer :: ipest
+   integer :: iru, mru, irch, isub, mhyd_bsn, ils_nofig
    integer :: mhru1
    integer, dimension (:), allocatable :: mhyd1 , irtun
 
@@ -618,9 +622,10 @@ module parm
    integer :: mapex
    real*8, dimension (:), allocatable :: flodaya, seddaya, orgndaya
    real*8, dimension (:), allocatable :: orgpdaya, no3daya, minpdaya
-!> index target of cover defined at planting
+!> harvest index target of cover defined at planting ((kg/ha)/(kg/ha))
    real*8, dimension (:), allocatable :: hi_targ
-   real*8, dimension (:), allocatable :: bio_targ, tnyld
+   real*8, dimension (:), allocatable :: bio_targ !< biomass target (kg/ha)
+   real*8, dimension (:), allocatable :: tnyld
    integer, dimension (:), allocatable :: idapa, iypa, ifirsta
    integer, dimension (100) :: mo_transb, mo_transe
    integer, dimension (100) :: ih_tran
@@ -714,7 +719,9 @@ module parm
    real*8, dimension (:), allocatable :: spill_hru,tile_out,hru_in
    real*8, dimension (:), allocatable :: spill_precip,pot_seep
    real*8, dimension (:), allocatable :: pot_evap,pot_sedin
-   real*8, dimension (:), allocatable :: pot_solp,pot_solpi
+!> soluble P loss rate in the pothole (.01 - 0.5) (1/d)
+   real*8, dimension (:), allocatable :: pot_solp
+   real*8, dimension (:), allocatable :: pot_solpi
    real*8, dimension (:), allocatable :: pot_orgp,pot_orgpi
    real*8, dimension (:), allocatable :: pot_orgn,pot_orgni
    real*8, dimension (:), allocatable :: pot_mps,pot_mpsi
@@ -815,7 +822,10 @@ module parm
    real*8, dimension (:), allocatable :: depch,depsanch,depsilch
    real*8, dimension (:), allocatable :: depclach,depsagch,deplagch
    real*8, dimension (:), allocatable :: depgrach,depgrafp,grast
-   real*8, dimension (:), allocatable :: depprch,depprfp,prf,r2adj
+!> curve number retention parameter adjustment factor to adjust surface runoff
+!> for flat slopes (0.5 - 3.0) (dimensionless)
+   real*8, dimension (:), allocatable :: r2adj
+   real*8, dimension (:), allocatable :: depprch,depprfp,prf
 !> linear parameter for calculating sediment reentrained in channel sediment
 !> routing
    real*8, dimension (:), allocatable :: spcon
@@ -1248,17 +1258,15 @@ module parm
    real*8, dimension (:), allocatable :: fcimp
 !> SCS curve number for moisture condition II in impervious areas (none)
    real*8, dimension (:), allocatable :: urbcn2
-   real*8 :: sweepeff,frt_kg, pst_dep, fr_curb
-!! added pst_dep to statement below 3/31/08 gsm
-!!   burn 3/5/09
-! mnr = max number years of rotation
-!!   burn 3/5/09
-! mtil = max number tillages in database
-!! drainmod tile equations   06/2006
+!> availability factor, the fraction of the curb length that is sweepable (none)
+   real*8 :: fr_curb
+   real*8 :: frt_kg !< amount of fertilizer applied to HRU (kg/ha)
+!> depth of pesticide in the soil (mm)
+   real*8 :: pst_dep
+   real*8 :: sweepeff
 
    real*8, dimension (:), allocatable :: ranrns_hru
    integer, dimension (:), allocatable :: itill
-!! drainmod tile equations   06/2006
 !> depth of mixing caused by operation (mm)
    real*8, dimension (:), allocatable :: deptil
 !> mixing efficiency of operation (none)
@@ -1343,37 +1351,118 @@ module parm
    real*8, dimension (:), allocatable :: grwat_s, grwat_spcon
    real*8, dimension (:), allocatable :: tc_gwat
    real*8, dimension (:), allocatable ::pot_volmm,pot_tilemm,pot_volxmm  !!NUBZ
-   real*8, dimension (:), allocatable :: pot_fr,pot_tile,pot_vol,potsa
-   real*8, dimension (:), allocatable :: pot_volx,potflwi,potsedi,wfsh
-   real*8, dimension (:), allocatable :: pot_nsed,pot_no3l,newrti,gwno3
-   real*8, dimension (:), allocatable :: pot_sed,pot_no3,fsred,tmpavp
-   real*8, dimension (:), allocatable :: evpot, dis_stream, pot_solpl
+!> fraction of HRU area that drains into pothole (km^2/km^2)
+   real*8, dimension (:), allocatable :: pot_fr
+!> average daily outflow to main channel from tile flow if drainage tiles are
+!> installed in pothole (needed only if current HRU is IPOT) (m^3/s)
+   real*8, dimension (:), allocatable :: pot_tile
+!> initial volume of water stored in the depression/impounded area (read in as
+!> mm and converted to m^3) (needed only if current HRU is IPOT) (mm)
+   real*8, dimension (:), allocatable :: pot_vol
+   real*8, dimension (:), allocatable :: potsa
+!> maximum volume of water stored in the depression/impounded area (read in as
+!> mm and converted to m^3) (needed only if current HRU is IPOT) (mm)
+   real*8, dimension (:), allocatable :: pot_volx
+   real*8, dimension (:), allocatable :: potflwi,potsedi,wfsh
+!> nitrate decay rate in impounded area (1/day)
+   real*8, dimension (:), allocatable :: pot_no3l
+!> normal sediment concentration in impounded water (needed only if current HRU
+!> is IPOT)(mg/L)
+   real*8, dimension (:), allocatable :: pot_nsed
+   real*8, dimension (:), allocatable :: newrti,gwno3
+!> reduction in bacteria loading from filter strip (none)
+   real*8, dimension (:), allocatable :: fsred
+   real*8, dimension (:), allocatable :: pot_sed,pot_no3,tmpavp
+!> average distance to stream (m)
+   real*8, dimension (:), allocatable :: dis_stream
+!> pothole evaporation coefficient (none)
+   real*8, dimension (:), allocatable :: evpot
+   real*8, dimension (:), allocatable :: pot_solpl
    real*8, dimension (:), allocatable :: sed_con, orgn_con, orgp_con
-   real*8, dimension (:), allocatable :: soln_con, solp_con, pot_k
-   real*8, dimension (:), allocatable :: n_reduc, n_lag, n_ln, n_lnco
+!> hydraulic conductivity of soil surface of pothole [defaults to conductivity
+!> of upper soil (0.01--10.) layer] (mm/hr)
+   real*8, dimension (:), allocatable :: pot_k
+   real*8, dimension (:), allocatable :: soln_con, solp_con
+!> nitrogen uptake reduction factor (not currently used; defaulted 300.)
+   real*8, dimension (:), allocatable :: n_reduc
+!> lag coefficient for calculating nitrate concentration in subsurface drains
+!> (0.001 - 1.0) (dimensionless)
+   real*8, dimension (:), allocatable :: n_lag
+!> power function exponent for calculating nitrate concentration in subsurface
+!> drains (1.0 - 3.0) (dimensionless)
+   real*8, dimension (:), allocatable :: n_ln
+!> coefficient for power function for calculating nitrate concentration in
+!> subsurface drains (0.5 - 4.0) (dimensionless)
+   real*8, dimension (:), allocatable :: n_lnco
    integer, dimension (:), allocatable :: ioper
    integer, dimension (:), allocatable :: ngrwat
-   real*8, dimension (:), allocatable :: filterw,sumix,usle_ls,phuacc
-!> plant water uptake compensation factor (0-1)
+!> USLE equation length slope (LS) factor (none)
+   real*8, dimension (:), allocatable :: usle_ls
+!> filter strip width for bacteria transport (m)
+   real*8, dimension (:), allocatable :: filterw
+!> fraction of plant heat units accumulated continuous fertilization is
+!> initialized(none)
+   real*8, dimension (:), allocatable :: phuacc
+!> sum of all tillage mixing efficiencies for HRU operation (none)
+   real*8, dimension (:), allocatable :: sumix
+!> plant water uptake compensation factor (0-1) (none)
    real*8, dimension (:), allocatable :: epco
-!> soil evaporation compensation factor (0-1)
+!> soil evaporation compensation factor (0-1) (none)
    real*8, dimension (:), allocatable :: esco
-   real*8, dimension (:), allocatable :: slsubbsn,hru_slp
-   real*8, dimension (:), allocatable :: erorgn,erorgp,biomix,pnd_seci
-   real*8, dimension (:), allocatable :: flowmin,divmax,canmx,usle_p
-   real*8, dimension (:), allocatable :: lat_sed,rch_dakm,pnd_no3s,cn1
-   real*8, dimension (:), allocatable :: cn2,lat_ttime,flowfr,sol_zmx
+!> average slope steepness (m/m)
+   real*8, dimension (:), allocatable :: hru_slp
+!> average slope length for subbasin (m)
+   real*8, dimension (:), allocatable :: slsubbsn
+!> organic N enrichment ratio, if left blank the model will calculate for every
+!> event (none)
+   real*8, dimension (:), allocatable :: erorgn
+!> organic P enrichment ratio, if left blank the model will calculate for every
+!> event (none)
+   real*8, dimension (:), allocatable :: erorgp
+!> biological mixing efficiency. Mixing of soil due to activity of earthworms
+!> and other soil biota. Mixing is performed at the end of every calendar year
+!> (none)
+   real*8, dimension (:), allocatable :: biomix
+   real*8, dimension (:), allocatable :: pnd_seci
+!> maximum canopy storage (mm H2O)
+   real*8, dimension (:), allocatable :: canmx
+!> maximum daily irrigation diversion from the reach (when IRRSC=1): when value
+!> is positive the units are mm H2O; when the value is negative, the units are
+!> (10^4 m^3 H2O) (mm H2O or 10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: divmax
+!> minimum instream flow for irrigation diversions when IRRSC=1, irrigation
+!> water will be diverted only when streamflow is at or above FLOWMIN (m^3/s)
+   real*8, dimension (:), allocatable :: flowmin
+!> USLE equation support practice (P) factor daily (none)
+   real*8, dimension (:), allocatable :: usle_p
+!> sediment concentration in lateral flow (g/L)
+   real*8, dimension (:), allocatable :: lat_sed
+   real*8, dimension (:), allocatable :: rch_dakm,pnd_no3s,cn1
+!> lateral flow travel time (days)
+   real*8, dimension (:), allocatable :: lat_ttime
+!> SCS runoff curve number for moisture condition II (none)
+   real*8, dimension (:), allocatable :: cn2
+!> fraction of available flow in reach that is allowed to be applied to the HRU
+!> (none)
+   real*8, dimension (:), allocatable :: flowfr
+   real*8, dimension (:), allocatable :: sol_zmx
    real*8, dimension (:), allocatable :: tile_ttime
+!> slope length for lateral subsurface flow (m)
    real*8, dimension (:), allocatable :: slsoil,sed_stl,gwminp,sol_cov
-   real*8, dimension (:), allocatable :: yldanu,pnd_solp,pnd_no3,ov_n
+!> Manning's "n" value for overland flow (none)
+   real*8, dimension (:), allocatable :: ov_n
+   real*8, dimension (:), allocatable :: yldanu,pnd_solp,pnd_no3
 !> coefficient for pesticide drift directly onto stream (none)
    real*8, dimension (:), allocatable :: driftco
    real*8, dimension (:), allocatable :: pnd_orgp,pnd_orgn,cn3
    real*8, dimension (:), allocatable :: twlpnd, twlwet               !!srini pond/wet infiltration to shallow gw storage
-   real*8, dimension (:), allocatable :: sol_sumul,pnd_chla,hru_fr
+!> fraction of subbasin area contained in HRU (km^2/km^2)
+   real*8, dimension (:), allocatable :: hru_fr
+   real*8, dimension (:), allocatable :: sol_sumul,pnd_chla
 !> area of HRU in square kilometers (km^2)
    real*8, dimension (:), allocatable :: hru_km
-   real*8, dimension (:), allocatable :: bio_ms,sol_alb,strsw
+   real*8, dimension (:), allocatable :: bio_ms !< cover/crop biomass (kg/ha)
+   real*8, dimension (:), allocatable :: sol_alb,strsw
    real*8, dimension (:), allocatable :: pnd_fr,pnd_psa,pnd_pvol,pnd_k
    real*8, dimension (:), allocatable :: pnd_esa,pnd_evol,pnd_vol,yldaa
    real*8, dimension (:), allocatable :: pnd_sed,pnd_nsed,strsa,dep_imp
@@ -1385,12 +1474,16 @@ module parm
    real*8, dimension (:), allocatable :: smx,sci,bp1,bp2
    real*8, dimension (:), allocatable :: bw1,bw2,bactpq
    real*8, dimension (:), allocatable :: bactp_plt,bactlp_plt,cnday
-   real*8, dimension (:), allocatable :: bactlpq,auto_eff,sol_sw,secciw
+!> fertilizer application efficiency calculated as the amount of N applied
+!> divided by the amount of N removed at harvest (none)
+   real*8, dimension (:), allocatable :: auto_eff
+   real*8, dimension (:), allocatable :: bactlpq,sol_sw,secciw
    real*8, dimension (:), allocatable :: bactps,bactlps,tmpav,chlaw
 !> amount of water stored as snow (mm H2O)
    real*8, dimension (:), allocatable :: sno_hru
    real*8, dimension (:), allocatable :: subp,hru_ra,wet_orgn
-   real*8, dimension (:), allocatable :: tmx,tmn,rsdin,tmp_hi,tmp_lo
+   real*8, dimension (:), allocatable :: rsdin !< initial residue cover (kg/ha)
+   real*8, dimension (:), allocatable :: tmx,tmn,tmp_hi,tmp_lo
    real*8, dimension (:), allocatable :: rwt,olai,usle_k,tconc,hru_rmx
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
    real*8, dimension (:), allocatable :: anano3,aird,t_ov,sol_sumfc
@@ -1400,16 +1493,35 @@ module parm
 !> longest tributary channel length in subbasin (km)
    real*8, dimension (:), allocatable :: ch_l1
    real*8, dimension (:), allocatable :: canstor,ovrlnd,wet_no3
-   real*8, dimension (:), allocatable :: irr_mx, auto_wstr
-   real*8, dimension (:), allocatable :: cfrt_id, cfrt_kg, cpst_id
+!> maximum irrigation amount per auto application (mm)
+   real*8, dimension (:), allocatable :: irr_mx
+!> water stress factor which triggers auto irrigation (none or mm)
+   real*8, dimension (:), allocatable :: auto_wstr
+!> fertilizer/manure id number from database (none)
+   real*8, dimension (:), allocatable :: cfrt_id
+!> amount of fertilzier applied to HRU on a given day (kg/ha)
+   real*8, dimension (:), allocatable :: cfrt_kg
+   real*8, dimension (:), allocatable :: cpst_id
    real*8, dimension (:), allocatable :: cpst_kg
-   real*8, dimension (:), allocatable :: irr_asq, irr_eff
-   real*8, dimension (:), allocatable :: irrsq, irrefm, irrsalt
-   real*8, dimension (:), allocatable :: bio_eat, bio_trmp             !!NUBZ
+   real*8, dimension (:), allocatable :: irr_asq !< surface runoff ratio
+   real*8, dimension (:), allocatable :: irr_eff
+!> surface runoff ratio (0-1) .1 is 10% surface runoff (frac)
+   real*8, dimension (:), allocatable :: irrsq
+   real*8, dimension (:), allocatable :: irrefm, irrsalt
+!> dry weight of biomass removed by grazing daily ((kg/ha)/day)
+   real*8, dimension (:), allocatable :: bio_eat
+!> dry weight of biomass removed by trampling daily ((kg/ha)/day)
+   real*8, dimension (:), allocatable :: bio_trmp             !!NUBZ
    integer, dimension (:), allocatable :: ifrt_freq,ipst_freq,irr_noa
    integer, dimension (:), allocatable :: irr_sc,irr_no
-   integer, dimension (:), allocatable :: imp_trig, fert_days,irr_sca
-   integer, dimension (:), allocatable :: pest_days, idplt, wstrs_id
+!> release/impound action code (none):\n
+!> 0 begin impounding water\n
+!> 1 release impounded water
+   integer, dimension (:), allocatable :: imp_trig
+   integer, dimension (:), allocatable :: fert_days,irr_sca
+!> land cover code from crop.dat (none)
+   integer, dimension (:), allocatable :: idplt
+   integer, dimension (:), allocatable :: pest_days, wstrs_id
    real*8, dimension (:,:), allocatable :: bio_aahv
 !    Drainmod tile equations  08/2006
    real*8, dimension (:), allocatable :: cumei,cumeira
@@ -1425,13 +1537,24 @@ module parm
 !> fraction of porosity from which anions are excluded
    real*8, dimension (:), allocatable :: anion_excl
    real*8, dimension (:), allocatable :: revapmn,rchrg
-   real*8, dimension (:), allocatable :: ffc,bio_min,surqsolp
+!> minimum plant biomass for grazing (kg/ha)
+   real*8, dimension (:), allocatable :: bio_min
+   real*8, dimension (:), allocatable :: ffc,surqsolp
    real*8, dimension (:), allocatable :: cklsp,deepst,shallst,wet_solpg
    real*8, dimension (:), allocatable :: rchrg_src
-   real*8, dimension (:), allocatable :: wet_no3g,sol_avbd,trapeff
-   real*8, dimension (:), allocatable :: gwqmn,tdrain,pplnt,snotmp
-   real*8, dimension (:), allocatable :: gdrain !< drain tile lag time (hours)
-   real*8, dimension (:), allocatable :: ddrain,sol_crk,dayl,brt
+!> filter strip trapping efficiency (used for everything but bacteria) (none)
+   real*8, dimension (:), allocatable :: trapeff
+   real*8, dimension (:), allocatable :: wet_no3g,sol_avbd
+!> time to drain soil to field capacity yield used in autofertilization (hours)
+   real*8, dimension (:), allocatable :: tdrain
+   real*8, dimension (:), allocatable :: gwqmn,pplnt,snotmp
+!> drain tile lag time: the amount of time between the transfer of water from
+!> the soil to the drain tile and the release of the water from the drain tile
+!> to the reach (hours)
+   real*8, dimension (:), allocatable :: gdrain
+!> depth to the sub-surface drain (mm)
+   real*8, dimension (:), allocatable :: ddrain
+   real*8, dimension (:), allocatable :: sol_crk,dayl,brt
 !    Drainmod tile equations  01/2006
 !> static maximum depressional storage; read from .sdr (mm)
    real*8, dimension (:), allocatable :: sstmaxd
@@ -1456,20 +1579,28 @@ module parm
    real*8, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
    real*8, dimension (:), allocatable :: sedorgp,sedyld,sepbtm,strsn
    real*8, dimension (:), allocatable :: strsp,strstmp,surfq,surqno3
-   real*8, dimension (:), allocatable :: tcfrtn,tcfrtp,hru_ha,hru_dafr
+   real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
+   real*8, dimension (:), allocatable :: tcfrtn,tcfrtp,hru_dafr
    real*8, dimension (:), allocatable :: drydep_no3, drydep_nh4
    real*8, dimension (:), allocatable :: phubase,bio_yrms,hvstiadj
-   real*8, dimension (:), allocatable :: laimxfr,laiday,chlap,pnd_psed
+   real*8, dimension (:), allocatable :: laiday !< leaf area index (m^2/m^2)
+   real*8, dimension (:), allocatable :: laimxfr,chlap,pnd_psed
    real*8, dimension (:), allocatable :: wet_psed,seccip,plantn,plt_et
    real*8, dimension (:), allocatable :: plt_pet,plantp,bio_aams
    real*8, dimension (:), allocatable :: bio_aamx,lai_yrmx,dormhr
    real*8, dimension (:), allocatable :: lat_pst
-   real*8, dimension (:), allocatable :: orig_snohru,orig_potvol,fld_fr
+!> fraction of HRU area that drains into floodplain (km^2/km^2)
+   real*8, dimension (:), allocatable :: fld_fr
+   real*8, dimension (:), allocatable :: orig_snohru,orig_potvol
    real*8, dimension (:), allocatable :: orig_alai,orig_bioms,pltfr_n
    real*8, dimension (:), allocatable :: orig_phuacc,orig_sumix,pltfr_p
-   real*8, dimension (:), allocatable :: orig_phu, phu_plt
+!> total number of heat units to bring plant to maturity (heat units)
+   real*8, dimension (:), allocatable :: phu_plt
+   real*8, dimension (:), allocatable :: orig_phu
    real*8, dimension (:), allocatable :: orig_shallst,orig_deepst
-   real*8, dimension (:), allocatable :: orig_pndvol,orig_pndsed,rip_fr
+!> fraction of HRU area that drains into riparian zone (km^2/km^2)
+   real*8, dimension (:), allocatable :: rip_fr
+   real*8, dimension (:), allocatable :: orig_pndvol,orig_pndsed
    real*8, dimension (:), allocatable :: orig_pndno3,orig_pndsolp
    real*8, dimension (:), allocatable :: orig_pndorgn,orig_pndorgp
    real*8, dimension (:), allocatable :: orig_wetvol,orig_wetsed
@@ -1481,10 +1612,20 @@ module parm
    real*8, dimension (:), allocatable :: shallst_n,gw_nloss,rchrg_n
    real*8, dimension (:), allocatable :: det_san, det_sil, det_cla
    real*8, dimension (:), allocatable :: det_sag, det_lag
-   real*8, dimension (:), allocatable :: tnylda, afrt_surface
+!> fraction of fertilizer which is applied to top 10 mm of soil (the remaining
+!> fraction is applied to first soil layer) (none)
+   real*8, dimension (:), allocatable :: afrt_surface
+   real*8, dimension (:), allocatable :: tnylda
+!> fraction of fertilizer which is applied to the top 10 mm of soil (the
+!> remaining fraction is applied to the first soil layer) (none)
    real*8 :: frt_surface
-   real*8, dimension (:), allocatable :: auto_nyr, auto_napp
-   real*8, dimension (:), allocatable :: manure_kg, auto_nstrs
+!> maximum NO3-N content allowed to be applied in one year (kg NO3-N/ha)
+   real*8, dimension (:), allocatable :: auto_nyr
+!> maximum NO3-N content allowed in one fertilizer application (kg NO3-N/ha)
+   real*8, dimension (:), allocatable :: auto_napp
+!> nitrogen stress factor which triggers auto fertilization (none)
+   real*8, dimension (:), allocatable :: auto_nstrs
+   real*8, dimension (:), allocatable :: manure_kg
    real*8, dimension (:,:), allocatable :: rcn_mo, rammo_mo
    real*8, dimension (:,:), allocatable :: drydep_no3_mo, drydep_nh4_mo
    real*8, dimension (:), allocatable :: rcn_d, rammo_d
@@ -1530,34 +1671,66 @@ module parm
    real*8, dimension (:,:), allocatable :: strip_n, strip_cn, strip_c
    real*8, dimension (:,:), allocatable :: strip_p, fire_cn
    real*8, dimension (:,:), allocatable :: cropno_upd,hi_upd,laimx_upd
-   real*8, dimension (:,:,:), allocatable :: pst_lag, phug
+!> fraction of plant heat units at which grazing begins (none)
+   real*8, dimension (:,:,:), allocatable :: phug
+   real*8, dimension (:,:,:), allocatable :: pst_lag
    !!     integer, dimension (:), allocatable :: ipot
 !> pesticide use flag (none)\n
 !>  0: no pesticides used in HRU\n
 !>  1: pesticides used in HRU
    integer, dimension (:), allocatable :: hrupest
    integer, dimension (:), allocatable :: nrelease,swtrg
-   integer, dimension (:), allocatable :: nro,nrot,nfert
-   integer, dimension (:), allocatable :: igro,nair,ipnd1,ipnd2
+!> number of years of rotation (none)
+   integer, dimension (:), allocatable :: nrot
+   integer, dimension (:), allocatable :: nro,nfert
+!> land cover status code (none). This code informs the model whether or not a
+!> land cover is growing at the beginning of the simulation\n
+!> 0 no land cover growing\n
+!> 1 land cover growing
+   integer, dimension (:), allocatable :: igro
+   integer, dimension (:), allocatable :: nair,ipnd1,ipnd2
    integer, dimension (:), allocatable :: nirr,iflod1,iflod2,ndtarg
    integer, dimension (:), allocatable :: iafrttyp, nstress
    integer, dimension (:), allocatable :: igrotree
    !! burn
    integer, dimension (:), allocatable :: grz_days
-   integer, dimension (:), allocatable :: nmgt,icr,ncut,nsweep,nafert
-   integer, dimension (:), allocatable :: irn,irrno,sol_nly,npcp
+!> management code (for GIS output only) (none)
+   integer, dimension (:), allocatable :: nmgt
+   integer, dimension (:), allocatable :: icr,ncut,nsweep,nafert
+!> irrigation source location (none)\n
+!> if IRRSC=1, IRRNO is the number of the reach\n
+!> if IRRSC=2, IRRNO is the number of the reservoir\n
+!> if IRRSC=3, IRRNO is the number of the subbasin\n
+!> if IRRSC=4, IRRNO is the number of the subbasin\n
+!> if IRRSC=5, not used
+   integer, dimension (:), allocatable :: irrno
+   integer, dimension (:), allocatable :: irn,sol_nly,npcp
    integer, dimension (:), allocatable :: igrz,ndeat,ngr,ncf
 !> subbasin in which HRU is located (none)
    integer, dimension (:), allocatable :: hru_sub
-   integer, dimension (:), allocatable :: idorm,urblu,ldrain
+!> urban land type identification number from urban.dat (none)
+   integer, dimension (:), allocatable :: urblu
+   integer, dimension (:), allocatable :: idorm,ldrain
    integer, dimension (:), allocatable :: hru_seq
-   integer, dimension (:), allocatable :: iurban,iday_fert,icfrt
+!> urban simulation code (none):\n
+!> 0  no urban sections in HRU\n
+!> 1  urban sections in HRU, simulate using USGS regression equations\n
+!> 2  urban sections in HRU, simulate using build up/wash off algorithm
+   integer, dimension (:), allocatable :: iurban
+   integer, dimension (:), allocatable :: iday_fert,icfrt
 !> number of HRU (in subbasin) that is a floodplain (none)
    integer, dimension (:), allocatable :: ifld
 !> number of HRU (in subbasin) that is a riparian zone (none)
    integer, dimension (:), allocatable :: irip
    integer, dimension (:), allocatable :: ndcfrt,hrugis
-   integer, dimension (:), allocatable :: orig_igro,ntil,irrsc
+!> irrigation source code (none):\n
+!> 1 divert water from reach\n
+!> 2 divert water from reservoir\n
+!> 3 divert water from shallow aquifer\n
+!> 4 divert water from deep aquifer\n
+!> 5 divert water from source outside watershed
+   integer, dimension (:), allocatable :: irrsc
+   integer, dimension (:), allocatable :: orig_igro,ntil
    integer, dimension (:), allocatable :: iwatable,curyr_mat
    integer, dimension (:), allocatable :: ncpest,icpst,ndcpst
    integer, dimension (:), allocatable :: iday_pest, irr_flag
@@ -1577,6 +1750,7 @@ module parm
    integer, dimension (:,:), allocatable :: rndseed
    integer, dimension (:,:), allocatable :: iterr, iyterr
    integer, dimension (:,:), allocatable :: itdrain, iydrain, ncrops
+!> manure (fertilizer) identification number from fert.dat (none)
    integer, dimension (:), allocatable :: manure_id
 
 !!     gsm added for sdr (drainage) 7/24/08
@@ -1595,7 +1769,8 @@ module parm
 
    character(len=4), dimension (1000) :: urbname !< name of urban land use
 
-   character(len=1), dimension (:), allocatable :: hydgrp, kirr
+   character(len=1), dimension (:), allocatable :: kirr !< irrigation in HRU
+   character(len=1), dimension (:), allocatable :: hydgrp
    character(len=16), dimension (:), allocatable :: snam
    character(len=17), dimension (300) :: pname !< name of pesticide/toxin
 !!    adding qtile to output.hru write 3/2/2010 gsm  increased heds(70) to heds(71)
@@ -1730,7 +1905,13 @@ module parm
    &dtp_iyr,dtp_numweir,dtp_numstage,dtp_stagdis,&
    &dtp_reltype,dtp_onoff
 !! sj & armen changes for SWAT-C
-   real*8, dimension (:), allocatable :: cf, cfh, cfdec
+!> this parameter controls the response of decomposition to the combined effect
+!> of soil temperature and moisture.
+   real*8, dimension (:), allocatable :: cf
+   real*8, dimension (:), allocatable :: cfh !< maximum humification rate
+!> the undisturbed soil turnover rate under optimum soil water and temperature.
+!> Increasing it will increase carbon and organic N decomp.
+   real*8, dimension (:), allocatable :: cfdec
 !! sj & armen changes for SWAT-C end
 ! additional nutrient variables by jeong for montana bitterroot
    real*8, dimension(:), allocatable :: lat_orgn, lat_orgp
@@ -1803,7 +1984,16 @@ module parm
    &wtp_sdexp,wtp_sdc1,wtp_sdc2,wtp_sdc3,wtp_pdia,wtp_plen,&
    &wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi
 
-   real*8 :: bio_init, lai_init, cnop,hi_ovr,harveff,frac_harvk
+   real*8 :: lai_init !< initial leaf area index of transplants
+   real*8 :: bio_init !< initial biomass of transplants (kg/ha)
+!> SCS runoff curve number for moisture condition II (none)
+   real*8 :: cnop
+!> harvest efficiency: fraction of harvested yield that is removed from HRU; the
+!> remainder becomes residue on the soil surface(none)
+   real*8 :: harveff
+!> harvest index target specified at harvest ((kg/ha)/(kg/ha))
+   real*8 :: hi_ovr
+   real*8 :: frac_harvk
 
    ! van Genuchten equation's coefficients
    real*8 :: lid_vgcl,lid_vgcm,lid_qsurf_total,&

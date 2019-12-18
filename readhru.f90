@@ -50,7 +50,6 @@ subroutine readhru
 !!    hru_slp(:)  |m/m           |average slope steepness
 !!    lat_sed(:)  |g/L           |sediment concentration in lateral flow
 !!    lat_ttime(:)|days          |lateral flow travel time
-!!    ov_n(:)     |none          |Manning's "n" value for overland flow
 !!    n_reduc     |              |nitrogen uptake reduction factor (not currently used; defaulted 300.)
 !!    n_lag       |dimensionless |lag coefficient for calculating nitrate concentration in subsurface
 !!                                 drains (0.001 - 1.0)
@@ -58,9 +57,10 @@ subroutine readhru
 !!                                 subsurface drains (1.0 - 3.0)
 !!    n_lnco      |dimensionless |coefficient for power function for calculating nitrate concentration
 !!                                 in subsurface drains (0.5 - 4.0)
+!!    ov_n(:)     |none          |Manning's "n" value for overland flow
 !!    pot_fr(:)   |km2/km2       |fraction of HRU area that drains into pothole
 !!    pot_k       |(mm/hr)       |hydraulic conductivity of soil surface of pothole
-!!                   [defaults to condcutivity of upper soil (0.01--10.) layer]
+!!                   [defaults to conductivity of upper soil (0.01--10.) layer]
 !!    pot_no3l(:) |1/day         |nitrate decay rate in impounded area
 !!    pot_nsed(:) |mg/L          |normal sediment concentration in impounded
 !!                               |water (needed only if current HRU is IPOT)
@@ -91,7 +91,6 @@ subroutine readhru
 !!                               |longer than 1 day to reach the subbasin outlet
 !!    usle_ls(:)  |none          |USLE equation length slope (LS) factor
 !!Modified parameter variable! D. Moriasi 4/8/2014
-!!    r2adj       |none          |retention parameter adjustment factor (greater than 1)
 
 !----------------------------------------------------------------------------------------------
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -102,10 +101,12 @@ subroutine readhru
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    epcohru     |none          |plant water uptake compensation factor (0-1)
 !!    escohru     |none          |soil evaporation compensation factor (0-1)
+!!    j           |nonde         |counter
 !!    sin_sl      |none          |Sin(slope angle)
 !!    titldum     |NA            |title line of .sub file (not used)
 !!    xm          |none          |exponential in equation to calculate
 !!                               |USLE LS
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -118,8 +119,8 @@ subroutine readhru
    implicit none
 
    character (len=80) :: titldum
-   integer :: j, eof
-   real*8 :: xm, sin_sl, epcohru, escohru, xx
+   real*8 :: epcohru, escohru, sin_sl, xm, xx
+   integer :: eof, j
 
 
 
@@ -292,7 +293,7 @@ subroutine readhru
    xm = .6 * (1. - Exp(-35.835 * hru_slp(j)))
    sin_sl = Sin(Atan(hru_slp(j)))
    usle_ls(j) = (slsubbsn(j)/22.128)**xm * (65.41 * sin_sl *&
-   &sin_sl + 4.56 * sin_sl + .065)
+      &sin_sl + 4.56 * sin_sl + .065)
 
 !!    other calculations
    hru_km(j) = sub_km(i) * hru_fr(j)

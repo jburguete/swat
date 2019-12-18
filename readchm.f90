@@ -65,8 +65,8 @@ subroutine readchm
    implicit none
 
    character (len=80) :: titldum
-   real*8 :: pltpst, solpst, pstenr
-   integer :: j, eof, k, l, newpest, pstnum
+   real*8 :: pltpst, pstenr, solpst
+   integer :: eof, j, k, l, newpest, pstnum
 
    eof = 0
    l = ihru
