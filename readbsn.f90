@@ -359,12 +359,16 @@ subroutine readbsn
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    epcobsn     |none          |plant water uptake compensation factor (0-1)
 !!    escobsn     |none          |soil evaporation compensation factor (0-1)
+!!    ii
+!!    numlu
+!!    pos
 !!    titldum     |NA            |title line for .bsn file, not used
-!!!    wwqfile     |NA            |name of watershed water quality file (.wwq)
+!!    tlu
+!!    wwqfile     |NA            |name of watershed water quality file (.wwq)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: ascrv
+!!    SWAT: caps, ascrv
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -372,11 +376,11 @@ subroutine readbsn
    use parm
    implicit none
 
-   character (len=80) :: titldum
    character (len=130) :: tlu
+   character (len=80) :: titldum
    character (len=13) :: wwqfile
-   integer :: eof, numlu, ii, kk, pos
    real*8 :: escobsn, epcobsn
+   integer :: eof, numlu, ii, pos
 !!      real*8 :: r2adj_bsn  !D. Moriasi 4/8/2014
 
 !!    initialize variables
@@ -548,7 +552,7 @@ subroutine readbsn
 
       if (len_trim(tlu).le.3) numlu = 0
       backspace(103)
-      read (103,*) (lu_nodrain(kk), kk=1,numlu)
+      read (103,*) (lu_nodrain(ii), ii=1,numlu)
 
 
       !!   subdaily erosion modeling by Jaehak Jeong

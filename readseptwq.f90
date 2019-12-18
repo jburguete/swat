@@ -1,8 +1,16 @@
-subroutine readseptwq
+!> @file readseptwq.f90
+!> file containing the subroutine readseptwq
+!> @author
+!> C. Santhi,
+!> modified by Javier Burguete
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     this subroutine reads input parameters from the sept wq database
-!!     (septwq.dat). Information is used when a hru has septic tank.
+!> this subroutine reads input parameters from the sept wq database
+!> (septwq.dat). Information is used when a hru has septic tank.
+!>
+!> This routine was developed by C. Santhi. Inputs for this routine are provided
+!> in septwq.dat of septic documentation. Data were compiled from
+!> \cite Siegrist05 and \cite McCray07.
+subroutine readseptwq
 
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name             |units      |definition
@@ -16,26 +24,25 @@ subroutine readseptwq
 !!                      |           |per capita
 !!     sptbodconcs(:)   |mg/l       |Biological Oxygen Demand of the septic
 !!                      |           |tank effluent
-!!     sptnames(:)      |           |name of septic system
-!!     spttssconcs(:)   |mg/l       |Concentration of total suspended solid in the
+!!     sptfcolis(:)     |cfu/100ml  |concentration of the facel caliform in the
 !!                      |           |septic tank effluent
-!!     spttnconcs(:)    |mg/l       |Concentration of total nitrogen
-!!                      |           |in the septic tank effluent
+!!     sptminps(:)      |mg/l       |Concentration of mineral phosphorus in
+!!                      |           |the septic tank effluent
 !!     sptnh4concs(:)   |mg/l       |Concentration of total phosphorus
 !!                      |           |of the septic tank effluent
-!!     sptno3concs(:)   |mg/l       |Concentration of nitrate
-!!                      |           |in the septic tank effluent
 !!     sptno2concs(:)   |mg/l       |Concentration of nitrite
+!!                      |           |in the septic tank effluent
+!!     sptno3concs(:)   |mg/l       |Concentration of nitrate
 !!                      |           |in the septic tank effluent
 !!     sptorgnconcs(:)  |mg/l       |Concentration of organic nitrogen in
 !!                      |           |the septic tank effluent
-!!     spttpconcs(:)    |mg/l       |Concentration of total phosphorus in
-!!                      |           |the septic tank effluent
-!!     sptminps(:)      |mg/l       |Concentration of mineral phosphorus in
-!!                      |           |the septic tank effluent
 !!     sptorgps(:)      |mg/l       |concentration of organic phosphorus in the
 !!                      |           |septic tank effluent
-!!     sptfcolis(:)     |cfu/100ml  |concentration of the facel caliform in the
+!!     spttnconcs(:)    |mg/l       |Concentration of total nitrogen
+!!                      |           |in the septic tank effluent
+!!     spttpconcs(:)    |mg/l       |Concentration of total phosphorus in
+!!                      |           |the septic tank effluent
+!!     spttssconcs(:)   |mg/l       |Concentration of total suspended solid in the
 !!                      |           |septic tank effluent
 !!
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -49,32 +56,39 @@ subroutine readseptwq
 !!                                  |the array storage number is used by the
 !!                                  |model to access data for a specific
 !!                                  |sept type
-!!     isnum          |none         |number of septic system database  (reference
-!!                                  |only)
-!!     sptfulname (:)   |           | septic tank full name description
+!!     sptbodin
+!!     sptfcoli
+!!     sptfullname (:)  |           |septic tank full name description
+!!     sptminp
+!!     sptnames(:)      |           |name of septic system
+!!     sptnh4conc
+!!     sptno2conc
+!!     sptno3conc
+!!     sptorgnconc
+!!     sptorgp
+!!     sptq
+!!     spttnconc
+!!     spttpconc
+!!     spttssconc
+!!     titlesep
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
 
-!!     This routine was developed by C. Santhi. Inputs for this routine is provided in septwq.dat
-!!     of septic documentation. Data were compiled from Siegrist et al, 2005 and McCray et al,2007.
 
    use parm
    implicit none
 
    character*4 sptnames(50)
-   character*4 sptname
    character*80 titlesep
    character*70 sptfullname
+   real*8 :: sptbodin, sptfcoli, sptminp, sptnh4conc, sptno2conc, sptno3conc,&
+      &sptorgnconc, sptorgp, sptq, spttnconc, spttpconc, spttssconc
+   integer :: ist, eof, idspttype
+   character*4 sptname
 
-   integer :: ist, isnum, eof, idspttype, ii
-
-   real*8 :: sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,&
-   &sptno3conc,sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
-
-   isnum = 0
    eof = 0
 
 !!    septic database filename present in file.cio
@@ -83,7 +97,7 @@ subroutine readseptwq
 
 
 !!    read title lines
-      do ii = 1, 4
+      do ist = 1, 4
          read (171,5999) titlesep
       end do
 
@@ -107,11 +121,10 @@ subroutine readseptwq
 
 
          read (171,6000,iostat=eof)ist,sptname,sptfullname,idspttype,&
-         &sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,sptno3conc,&
-         &sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
+            &sptq,sptbodin,spttssconc,spttnconc,sptnh4conc,sptno3conc,&
+            &sptno2conc,sptorgnconc,spttpconc,sptminp,sptorgp,sptfcoli
 
-         if (eof < 0) exit
-         if (ist == 0) exit
+         if (eof < 0 .or. ist == 0) exit
 
          ! Assign default values for missing data
          if (sptnh4conc==0.and.sptno3conc==0) then

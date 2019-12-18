@@ -13,10 +13,6 @@
 !> @param[in] m month
 function jdt(numdays,i,m)
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes the julian date given the month and
-!!    the day of the month
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

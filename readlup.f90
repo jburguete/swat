@@ -17,14 +17,18 @@ subroutine readlup
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name            |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!                                    |daily
+!!    fname
+!!    ida_lup
+!!    iyr_lup
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
-!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!
+!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
+!!    fnam
+!!    iday
+!!    iyear
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -41,8 +45,7 @@ subroutine readlup
 !!    read lup file
    do
       read (122,100,iostat=eof) no_up, mo, iday, iyear, fnam
-      if (eof < 0) exit
-      if (no_up == 0) exit
+      if (eof < 0 .or. no_up == 0) exit
 
 !!     compute julian days
       ida_lup(no_up) = Jdt(ndays,iday,mo)

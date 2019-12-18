@@ -626,14 +626,34 @@ module parm
 !     apex/command output files
 !  septic inputs
 !! septic change added iseptic 1/28/09 gsm
-   integer :: msdb, iseptic
-   real*8, dimension (:), allocatable :: sptqs,percp
-   real*8, dimension (:), allocatable :: sptbodconcs, spttssconcs
-   real*8, dimension (:), allocatable :: spttnconcs, sptnh4concs
-   real*8, dimension (:), allocatable :: sptno3concs, sptno2concs
-   real*8, dimension (:), allocatable :: sptorgnconcs, spttpconcs
-   real*8, dimension (:), allocatable :: sptminps, sptorgps
-   real*8, dimension (:), allocatable :: sptfcolis ,failyr,qstemm
+   integer :: msdb !< maximum number of sept wq data database (none)
+   integer :: iseptic
+!> flow rate of the septic tank effluent per capita (m3/d)
+   real*8, dimension (:), allocatable :: sptqs
+   real*8, dimension (:), allocatable :: percp
+!> Biological Oxygen Demand of the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptbodconcs
+!> concentration of total suspended solid in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: spttssconcs
+!> concentration of total nitrogen in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: spttnconcs
+!> concentration of total phosphorus of the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptnh4concs
+!> concentration of nitrate in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptno3concs
+!> concentration of nitrite in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptno2concs
+!> concentration of organic nitrogen in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptorgnconcs
+!> concentration of total phosphorus in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: spttpconcs
+!> concentration of mineral phosphorus in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptminps
+!> concentration of organic phosphorus in the septic tank effluent (mg/l)
+   real*8, dimension (:), allocatable :: sptorgps
+!> concentration of the facel caliform in the septic tank effluent (cfu/100ml)
+   real*8, dimension (:), allocatable :: sptfcolis
+   real*8, dimension (:), allocatable :: failyr,qstemm
 !! septic changes added 1/28/09 gsm
    real*8, dimension (:), allocatable :: bio_amn, bio_bod, biom,rbiom
    real*8, dimension (:), allocatable :: fcoli, bio_ntr, bz_perc

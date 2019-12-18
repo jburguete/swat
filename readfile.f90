@@ -7,10 +7,6 @@
 !> information from the file.cio
 subroutine readfile
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!   this subroutine opens the main input and output files and reads watershed
-!!   information from the file.cio
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -87,6 +83,7 @@ subroutine readfile
 !!                             |1 measured data read for each subbasin
 !!                             |2 data simulated for each subbasin
 !!    rndseed(:,:)|none        |random number generator seed
+!!    septdb      |none        |name of pesticide database input file(septwq.dat) !! CS
 !!    slrfile     |NA          |solar radiation file name (.slr)
 !!    slrsim      |none        |solar radiation input code
 !!                             |1 measured data read for each subbasin
@@ -119,7 +116,6 @@ subroutine readfile
 !!    titldum     |NA          |variable to read in data line
 !!    urbandb     |NA          |name of urban database file (urban.dat)
 !!    xx          |none        |random number between 0.0 and 1.0
-!!    septdb      |none        |name of pesticide database input file(septwq.dat) !! CS
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~

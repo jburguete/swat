@@ -9,12 +9,6 @@
 !> urban areas
 subroutine readurban
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     this subroutine reads input parameters from the urban database
-!!     (urban.dat). Information from this database is used only if the
-!!     urban buildup/washoff routines are selected for the modeling of
-!!     urban areas.
-
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name        |units           |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -54,14 +48,23 @@ subroutine readurban
 !!     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!     name        |units           |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!     crbdn
+!!     dtmx
 !!     eof         |none            |end of file flag
+!!     fcimpu
+!!     fimpu
 !!     iu          |none            |counter which represents the array
 !!                                  |storage number of the urban data
 !!                                  |the array storage number is used by the
 !!                                  |model to access data for a specific
 !!                                  |urban land type
-!!     iunum       |none            |number of urban land type (reference
-!!                                  |only)
+!!     thlf
+!!     tncnc
+!!     tno3cnc
+!!     tpcnc
+!!     ucoef
+!!     urbcn
+!!     unam
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -69,12 +72,11 @@ subroutine readurban
    use parm
    implicit none
 
-   integer :: iu, iunum, eof
+   real*8 :: crbdn, dtmx, fcimpu, fimpu, thlf, tncnc, tno3cnc, tpcnc, ucoef,&
+      &urbcn
+   integer :: eof, iu
    character (len=4) :: unam
-   real*8 :: fimpu, fcimpu, crbdn, ucoef, dtmx, thlf, tncnc, tpcnc
-   real*8 :: tno3cnc, urbcn
 
-   iunum = 0
    eof = 0
 
    do
@@ -82,18 +84,18 @@ subroutine readurban
       dtmx = 0.
       fcimpu = 0.
       fimpu = 0.
+      iu = 0
       thlf = 0.
       tncnc = 0.
       tno3cnc = 0.
       tpcnc = 0.
       ucoef = 0.
+      urbcn = 0.
       unam = ""
 
       read (108,5000,iostat=eof) iu, unam, fimpu, fcimpu, crbdn,&
-      &ucoef, dtmx, thlf, tncnc, tpcnc, tno3cnc, urbcn
-      if (eof < 0) exit
-
-      if (iu == 0) exit
+         &ucoef, dtmx, thlf, tncnc, tpcnc, tno3cnc, urbcn
+      if (eof < 0 .or. iu == 0) exit
 
       urbname(iu) = unam
       fimp(iu) = fimpu

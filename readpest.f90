@@ -7,10 +7,6 @@
 !> (pest.dat)
 subroutine readpest
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads parameters from the toxin/pesticide database
-!!    (pest.dat)
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -39,12 +35,19 @@ subroutine readpest
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    apefp
 !!    eof         |none          |end of file flag
+!!    hlff
+!!    hlfs
 !!    ip          |none          |counter which represents the array
 !!                               |storage number of the pesticide data
 !!                               |the array storage number is used by the
 !!                               |model to access data for a specific
 !!                               |pesticide
+!!    pstnm
+!!    pwsol
+!!    skocp
+!!    wofp
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -52,9 +55,10 @@ subroutine readpest
    use parm
    implicit none
 
-   integer :: ip, eof
    character (len=17) :: pstnm
-   real*8 :: skocp, wofp, hlff, hlfs, apefp, pwsol
+   real*8 :: apefp, hlff, hlfs, pwsol, skocp, wofp
+   integer :: eof, ip
+
    eof = 0
 
 
@@ -69,10 +73,8 @@ subroutine readpest
       wofp = 0.0
 
       read (106,5000,iostat=eof) ip, pstnm, skocp, wofp, hlff, hlfs,&
-      &apefp, pwsol
-      if (eof < 0) exit
-
-      if (ip == 0) exit
+         &apefp, pwsol
+      if (eof < 0 .or. ip == 0) exit
 
       pname(ip) = pstnm
       skoc(ip) = skocp

@@ -6,10 +6,6 @@
 !> this subroutine reads input data from tillage database (till.dat)
 subroutine readtill
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads input data from tillage database (till.dat)
-
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -32,12 +28,16 @@ subroutine readtill
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    dtil
+!!    emix
 !!    eof         |none          |end of file flag
 !!    it          |none          |counter which represents the array
 !!                               |storage number of the tillage data
 !!                               |the array storage number is used by the
 !!                               |model to access data for a specific
 !!                               |tillage operation
+!!    rrns
+!!    tlnm
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -45,11 +45,11 @@ subroutine readtill
    use parm
    implicit none
 
-   integer :: it, eof
 !! drainmod tile equations  - addition random roughness 06/2006
-   real*8 :: emix, dtil, rrns
+   real*8 :: dtil, emix, rrns
 !! drainmod tile equations  - addition random roughness 06/2006
    character (len=8) :: tlnm
+   integer :: eof, it
 
    eof = 0
 

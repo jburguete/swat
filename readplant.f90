@@ -7,10 +7,6 @@
 !> database (plant.dat)
 subroutine readplant
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads input parameters from the landuse/landcover
-!!    database (plant.dat)
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name      |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -84,8 +80,6 @@ subroutine readplant
 !!                                 |fraction of residue which will decompose in
 !!                                 |a day assuming optimal moisture,
 !!                                 |temperature, C:N ratio, and C:P ratio
-!!    rsr1c      |                 |initial root to shoot ratio at the beg of growing season
-!!    rsr2c      |                 |root to shoot ratio at the end of the growing season
 !!    t_base(:)  |deg C            |minimum temperature for plant growth
 !!    t_opt(:)   |deg C            |optimal temperature for plant growth
 !!    vpd2(:)    |(m/s)*(1/kPa)    |rate of decline in stomatal conductance per
@@ -109,6 +103,7 @@ subroutine readplant
 !!    b1        |none             |variable to hold calculation results
 !!    b2        |none             |variable to hold calculation results
 !!    b3        |none             |variable to hold calculation results
+!!    bioe
 !!    bioehi    |(kg/ha)/(MJ/m**2)|biomass-energy ratio when plant is in
 !!                                |an environment with CO2 level equal to
 !!                                |the value of CO2HI. This biomass-energy
@@ -116,10 +111,26 @@ subroutine readplant
 !!                                |radiation use efficiency curve
 !!    bioleaf   |none             |fraction of biomass accumulated each year
 !!                                |that is leaf/needle
+!!    biomxtrees
+!!    blaic
+!!    bmdieoff
+!!    bn1
+!!    bn2
+!!    bn3
+!!    bp1c
+!!    bp2c
+!!    bp3c
 !!    c1        |none             |variable to hold calculation results
+!!    chtmxc
+!!    cname
+!!    cnyldc
 !!    co2hi     |uL CO2/L air     |CO2 concetration higher than the ambient
 !!                                |corresponding to the 2nd point on radiation
 !!                                |use efficiency curve
+!!    cpyldc
+!!    dlaic
+!!    eof       |none             |end of file flag (=-1 of eof, else =0)
+!!    extcoef
 !!    frgmax    |none             |fraction of maximum stomatal conductance
 !!                                |that is achieved at the vapor pressure
 !!                                |deficit defined by VPDFR
@@ -129,7 +140,8 @@ subroutine readplant
 !!    frgrw2    |none             |fraction of the growing season corresponding
 !!                                |to the 2nd point on optimal leaf area
 !!                                |development curve
-!!    eof       |none             |end of file flag (=-1 of eof, else =0)
+!!    gsic
+!!    hvstc
 !!    ic        |none             |landuse/landcover array storage number
 !!                                |when a land cover is assigned in the
 !!                                |.mgt file, the variables for the land
@@ -138,36 +150,45 @@ subroutine readplant
 !!                                |crop.dat need to be assigned consecutively
 !!                                |to ensure that the crop number used by the
 !!                                |user is the same as the array storage number
+!!    idtype
 !!    laimx1    |none             |fraction of maximum leaf area index
 !!                                |corresponding to the 1st point on optimal
 !!                                |leaf area development curve
 !!    laimx2    |none             |fraction of maximum leaf area index
 !!                                |corresponding to the 2nd point on optimal
 !!                                |leaf area development curve
+!!    rdmxc
+!!    rsdcopl
+!!    rsr1c     |                 |initial root to shoot ratio at the beg of growing season
+!!    rsr2c     |                 |root to shoot ratio at the end of the growing season
+!!    tbase
+!!    topt
 !!    usle_c    |none             |minimum value of the USLE C factor for water
 !!                                |erosion
 !!    vpdfr     |kPa              |vapor pressure deficit at which FRGMAX is
 !!                                |valid
-!!    xx        |none             |dummy variable to hold IDC expressed as a
-!!                                |real*8 number
+!!    wavpc
+!!    wsyfc
+!!    yrsmat
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    NInt, Int, Log, ascrv
+!!    INTRINSEC: Log
+!!    SWAT: ascrv
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: ic, eof, yrsmat, idtype
-   real*8 :: xx, usle_c, frgrw2, laimx2, co2hi, bioehi, vpdfr,&
-   &blaic, b1, b2, b3, frgrw1, laimx1, frgmax, bioe, hvstc,&
-   &dlaic, chtmxc, rdmxc, topt, tbase, cnyldc, cpyldc, bn1, bn2,&
-   &bn3, bp1c, bp2c, bp3c, wsyfc, gsic, wavpc, rsdcopl, alaimin,&
-   &bioleaf, biomxtrees, bmdieoff, extcoef, rsr1c, rsr2c
-   character (len=4) :: cname
    real*8, parameter :: c1 = 330. !! ambient CO2
+   real*8 :: alaimin, b1, b2, b3, bioe, bioehi, bioleaf, biomxtrees, blaic,&
+      &bmdieoff, bn1, bn2, bn3, bp1c, bp2c, bp3c, chtmxc, cnyldc, co2hi,&
+      &cpyldc, dlaic, extcoef, frgmax, frgrw1, frgrw2, gsic, hvstc, laimx1,&
+      &laimx2, rdmxc, rsdcopl, rsr1c, rsr2c, tbase, topt, usle_c, vpdfr, wavpc,&
+      &wsyfc
+   integer :: eof, ic, idtype, yrsmat
+   character (len=4) :: cname
 
    eof = 0
 
@@ -208,21 +229,21 @@ subroutine readplant
       vpdfr = 0.0
       wavpc = 0.0
       wsyfc = 0.0
-      xx = 0.0
+      yrsmat = 0
 
       read (104,*,iostat=eof) ic, cname, idtype
       if (eof < 0) exit
       read (104,*,iostat=eof) bioe, hvstc, blaic, frgrw1, laimx1,&
-      &frgrw2, laimx2, dlaic, chtmxc, rdmxc
+         &frgrw2, laimx2, dlaic, chtmxc, rdmxc
       if (eof < 0) exit
       read (104,*,iostat=eof) topt, tbase, cnyldc, cpyldc, bn1, bn2,&
-      &bn3, bp1c, bp2c, bp3c
+         &bn3, bp1c, bp2c, bp3c
       if (eof < 0) exit
       read (104,*,iostat=eof) wsyfc, usle_c, gsic, vpdfr, frgmax,&
-      &wavpc, co2hi, bioehi, rsdcopl, alaimin
+         &wavpc, co2hi, bioehi, rsdcopl, alaimin
       if (eof < 0) exit
       read (104,777,iostat=eof) bioleaf, yrsmat, biomxtrees, extcoef,&
-      &bmdieoff, rsr1c, rsr2c
+         &bmdieoff, rsr1c, rsr2c
 
 777   format (f8.3,i5,5f8.3)
 
@@ -297,9 +318,9 @@ subroutine readplant
 !!        nitrogen uptake parameters
 !!        fix bad input for pltnfr3(ic)
          if (pltnfr1(ic) - pltnfr2(ic) < .0001)&
-         &pltnfr2(ic) = pltnfr1(ic) - .0001
+            &pltnfr2(ic) = pltnfr1(ic) - .0001
          if (pltnfr2(ic) - pltnfr3(ic) < .0001)&
-         &pltnfr3(ic) = .75 * pltnfr3(ic)
+            &pltnfr3(ic) = .75 * pltnfr3(ic)
          b1 = pltnfr1(ic) - pltnfr3(ic)           !!normalize N fractions
          b2 = 1. - (pltnfr2(ic) - pltnfr3(ic)) / b1
          b3 = 1. - .00001 / b1
@@ -310,9 +331,9 @@ subroutine readplant
 !!        phosphorus uptake parameters
 !!        fix bad input for pltpfr3(ic)
          if (pltpfr1(ic) - pltpfr2(ic) < .0001)&
-         &pltpfr2(ic) = pltpfr1(ic) - .0001
+            &pltpfr2(ic) = pltpfr1(ic) - .0001
          if (pltpfr2(ic) - pltpfr3(ic) < .0001)&
-         &pltpfr3(ic) = .75 * pltpfr3(ic)
+            &pltpfr3(ic) = .75 * pltpfr3(ic)
          b1 = pltpfr1(ic) - pltpfr3(ic)        !!normalize P fractions
          b2 = 1. - (pltpfr2(ic) - pltpfr3(ic)) / b1
          b3 = 1. - .00001 / b1

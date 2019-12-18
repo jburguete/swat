@@ -1,5 +1,5 @@
 !> @file allocate_parms.f90
-!> this subroutine allocates array sizes
+!> file containing the subroutine allocate_parms
 !> @author 
 !> modified by Javier Burguete
 
@@ -34,6 +34,14 @@ subroutine allocate_parms
 !!    mtil        |none          |max number of tillage types in till.dat
 !!    mudb        |none          |max number of urban land types in urban.dat
 !!    myr         |none          |max number of years of simulation
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ LOCAL VARIABLES ~ ~ ~
+!!    name        |units       |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    imho
+!!    itempa
+!!    mxsubch
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~

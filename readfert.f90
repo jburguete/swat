@@ -7,10 +7,6 @@
 !> (i.e. nutrient) database (fert.dat)
 subroutine readfert
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     this subroutine reads input parameters from the fertilizer/manure
-!!     (i.e. nutrient) database (fert.dat)
-
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name        |units           |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -39,14 +35,21 @@ subroutine readfert
 !!     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!     name        |units           |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!     bctpdb
+!!     bctlpdb
+!!     bctkddb
 !!     eof         |none            |end of file flag
+!!     ffminn
+!!     ffminp
+!!     ffnh3n
+!!     fnm
+!!     fforgn
+!!     fforgp
 !!     it          |none            |counter which represents the array
 !!                                  |storage number of the pesticide data
 !!                                  |the array storage number is used by the
 !!                                  |model to access data for a specific
 !!                                  |fertilizer
-!!     ifnum       |none            |number of fertilizer/manure. reference
-!!                                  |only
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -54,11 +57,10 @@ subroutine readfert
    use parm
    implicit none
 
-   integer :: it, ifnum, eof
-   real*8 :: ffminn, ffminp, fforgn, fforgp, ffnh3n, bctpdb, bctlpdb, bctkddb
+   real*8 :: bctpdb, bctlpdb, bctkddb, ffminn, ffminp, ffnh3n, fforgn, fforgp
    character (len=8) :: fnm
+   integer :: eof, it
 
-   ifnum = 0
    eof = 0
 
    do
@@ -72,13 +74,12 @@ subroutine readfert
       fforgn = 0.
       fforgp = 0.
       fnm = ""
+      it = 0
 
       read (107,5000,iostat=eof) it, fnm, ffminn, ffminp, fforgn,&
-      &fforgp, ffnh3n, bctpdb, bctlpdb, bctkddb
+         &fforgp, ffnh3n, bctpdb, bctlpdb, bctkddb
 
-      if (eof < 0) exit
-
-      if (it == 0) exit
+      if (eof < 0 .or. it == 0) exit
 
       fertnm(it) = fnm
       fminn(it) = ffminn

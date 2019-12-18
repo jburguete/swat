@@ -51,18 +51,14 @@ subroutine readfcst
 !!    titldum     |NA            |title line of .wgn file (not used elsewhere)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Sin, Cos, Tan, abs, Acos, Log, Exp, MaxVal
-!!    SWAT: Aunif, Dstn1
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
    character (len=80) :: titldum
-   real*8, dimension (12) :: pcpmm, pcpd
-   integer :: mon, mdays, j, fcstregtot
+   real*8, dimension (12) :: pcpd, pcpmm
+   integer :: fcstregtot, j, mdays, mon
 
 
    fcstregtot = 0
