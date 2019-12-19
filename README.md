@@ -25,6 +25,8 @@ perl script file (:heavy_check_mark:)
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
+* Remove global counters (as i or idum in module parm). Using local counters or
+  passing values as argument are preferred (:construction:)
 * Generate a detailed list of issues detected in the original code
 (:heavy_check_mark:, see at the end of this README)
 * Remove obsolete commented code (:x:)

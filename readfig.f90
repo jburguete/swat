@@ -22,7 +22,6 @@ subroutine readfig
 !!                                 |6 = rechour     15 =
 !!                                 |7 = recmon
 !!                                 |8 = recyear
-!!     idum         |none          |counter
 !!     ihouts(:)    |none          |For ICODES equal to
 !!                                 |0: not used
 !!                                 |1,2,3,5,7,8,10,11: hydrograph storage
@@ -100,6 +99,7 @@ subroutine readfig
 !!     ii           |none          |counter
 !!     iijj
 !!     jjii
+!!     k            |nonde         |counter
 !!     lwqfile      |NA            |reservoir water quality file names (.lwq)
 !!     month_in     |NA            |name of file containing monthly loadings
 !!                                 |to reach (fig command 7)
@@ -126,7 +126,7 @@ subroutine readfig
    character (len=80) :: titldum
    character (len=13) :: annual_in, apex_in, day_in, hour_in, lwqfile,&
       &month_in, resfile, rtefile, rufile, subfile, swqfile, year_in
-   integer :: eof, ii, iijj, jjii
+   integer :: eof, ii, iijj, jjii, k
    character (len=3), dimension (mhyd) :: char6, char7, char8
    character (len=1) :: a
 
@@ -136,7 +136,7 @@ subroutine readfig
 
 !!    initialize variables
    mhyd_bsn = 0
-   idum = 0
+   k = 0
    eof = 0
 
    do
@@ -145,16 +145,16 @@ subroutine readfig
       if (eof < 0) exit
       if (a /= "*") then
          backspace 102
-         idum = idum + 1
+         k = k + 1
 
 !!    CEAP project
          if (isproj == 2) then
-            read (102,5003) a, icodes(idum), ihouts(idum), inum1s(idum),&
-            &inum2s(idum), inum3s(idum), rnum1s(idum), inum4s(idum)
+            read (102,5003) a, icodes(k), ihouts(k), inum1s(k),&
+               &inum2s(k), inum3s(k), rnum1s(k), inum4s(k)
          else
-            read (102,5000) a, icodes(idum), ihouts(idum), inum1s(idum),&
-            &inum2s(idum), inum3s(idum), rnum1s(idum), inum4s(idum),&
-            &inum5s(idum), char6(idum), char7(idum), char8(idum)
+            read (102,5000) a, icodes(k), ihouts(k), inum1s(k),&
+               &inum2s(k), inum3s(k), rnum1s(k), inum4s(k),&
+               &inum5s(k), char6(k), char7(k), char8(k)
          end if
          mhyd_bsn = mhyd_bsn + 1
 
@@ -163,45 +163,45 @@ subroutine readfig
          jjii = 1     !! inum6s/inum7s
          iijj = 0     !! inum8s
 
-         !     if (char6(idum) == "Sub") inum6s = 0
-         !     if (char7(idum) == "bas") inum7s = 0
-         !     if (char8(idum) == "in:") inum8s = 0
+         !     if (char6(k) == "Sub") inum6s = 0
+         !     if (char7(k) == "bas") inum7s = 0
+         !     if (char8(k) == "in:") inum8s = 0
 
-         if (char6(idum) == "  1")  then
-            write (char6(idum), fmt=' (i3)') jjii
-            inum6s(idum) = jjii
+         if (char6(k) == "  1")  then
+            write (char6(k), fmt=' (i3)') jjii
+            inum6s(k) = jjii
          else
-            inum6s(idum) = 0
+            inum6s(k) = 0
          end if
 
-         if (char7(idum) == "  1")  then
-            write (char7(idum), fmt=' (i3)') jjii
-            inum7s(idum) = jjii
+         if (char7(k) == "  1")  then
+            write (char7(k), fmt=' (i3)') jjii
+            inum7s(k) = jjii
          else
-            inum7s(idum) = 0
+            inum7s(k) = 0
          end if
 
-         if (char8(idum) == "  0")  then
-            write (char8(idum), fmt=' (i3)') iijj
-            inum8s(idum) = iijj
+         if (char8(k) == "  0")  then
+            write (char8(k), fmt=' (i3)') iijj
+            inum8s(k) = iijj
          else
-            inum8s(idum) = 1
+            inum8s(k) = 1
          end if
 !!!!!! end convert code
 
-         select case(icodes(idum))
+         select case(icodes(k))
 
           case (0)  !! icode = 0  FINISH command
             exit
 
           case (1)  !! icode = 1  SUBBASIN command
             subtot = subtot + 1
-            subgis(inum1s(idum)) = inum4s(idum)
+            subgis(inum1s(k)) = inum4s(k)
             subfile = ""
             read (102,5100) subfile
             call caps(subfile)
-            i = inum1s(idum)
-            subed(ihouts(idum)) = inum4s(idum)
+            i = inum1s(k)
+            subed(ihouts(k)) = inum4s(k)
             open (101,file=subfile)
             call readsub
             nhru = nhru + hrutot(i)
@@ -209,15 +209,15 @@ subroutine readfig
           case (2)  !! icode = 2  ROUTE CHANNEL command
             nrch = nrch + 1
 !!            assume subbasin is the same number as the reach (if zero)
-            if (inum3s(idum) == 0) then
-               inum3s(idum) = inum1s(idum)
+            if (inum3s(k) == 0) then
+               inum3s(k) = inum1s(k)
             end if
             rtefile = ""
             swqfile = ""
             read (102,5100) rtefile, swqfile
             call caps(rtefile)
             call caps(swqfile)
-            irch = inum1s(idum)
+            irch = inum1s(k)
             open (103,file=rtefile)
             open (104,file=swqfile)
             call readrte
@@ -230,7 +230,7 @@ subroutine readfig
             read (102,5100) resfile, lwqfile
             call caps(resfile)
             call caps(lwqfile)
-            i = inum1s(idum)
+            i = inum1s(k)
             open (105,file=resfile)
             call readres
             if (lwqfile /= '             ') then
@@ -241,8 +241,8 @@ subroutine readfig
             call lwqdef
 
           case (4)  !! icode = 4  TRANSFER command: read in beg/end month
-            read (102,5004) mo_transb(inum5s(idum)),&
-            &mo_transe(inum5s(idum)), ih_tran(inum5s(idum))
+            read (102,5004) mo_transb(inum5s(k)),&
+               &mo_transe(inum5s(k)), ih_tran(inum5s(k))
 
 
           case (6)  !! icode = 6  RECHOUR command: read in hourly values
@@ -250,18 +250,18 @@ subroutine readfig
             hour_in = ""
             read (102,5100) hour_in
             call caps(hour_in)
-            open (200+inum1s(idum),file=hour_in,recl=350)
+            open (200+inum1s(k),file=hour_in,recl=350)
             do ii = 1, 6
-               read (200+inum1s(idum),5200) titldum
+               read (200+inum1s(k),5200) titldum
             end do
 
           case (7)  !! icode = 7  RECMON command:
             !!  read in monthly values
             month_in = ""
             read (102,5100) month_in
-            recmonps(ihouts(idum)) = month_in(1:index(month_in,'.')-1)
+            recmonps(ihouts(k)) = month_in(1:index(month_in,'.')-1)
             call caps(month_in)
-            i = inum1s(idum)
+            i = inum1s(k)
             open (107,file=month_in,recl=350)
             call readmon
 
@@ -271,7 +271,7 @@ subroutine readfig
             read (102,5100) year_in
 
             call caps(year_in)
-            i = inum1s(idum)
+            i = inum1s(k)
             open (108,file=year_in,recl=350)
             call readyr
 
@@ -283,15 +283,15 @@ subroutine readfig
             day_in = ""
             read (102,5100) day_in
             call caps(day_in)
-            if (inum1s(idum) <= 10 .and. inum1s(idum) > 0) then
-               open (40+inum1s(idum),file=day_in,recl=350)
-               if (inum3s(idum) == 0) then
-                  write (40+inum1s(idum),5400) title
-                  write (40+inum1s(idum),5500)
+            if (inum1s(k) <= 10 .and. inum1s(k) > 0) then
+               open (40+inum1s(k),file=day_in,recl=350)
+               if (inum3s(k) == 0) then
+                  write (40+inum1s(k),5400) title
+                  write (40+inum1s(k),5500)
                else
                   iida = idaf
                   call xmon
-                  write (40+inum1s(idum),5501) iyr, i_mo, (iida - ndays(i_mo))
+                  write (40+inum1s(k),5501) iyr, i_mo, (iida - ndays(i_mo))
                end if
             end if
 
@@ -300,9 +300,9 @@ subroutine readfig
             day_in = ""
             read (102,5100) day_in
             call caps(day_in)
-            open (555+inum1s(idum),file=day_in,recl=350)
+            open (555+inum1s(k),file=day_in,recl=350)
             do ii = 1, 6
-               read (555+inum1s(idum),5200) titldum
+               read (555+inum1s(k),5200) titldum
             end do
 
           case (11) !! icode = 11  RECCNST command: read in average
@@ -310,9 +310,9 @@ subroutine readfig
             !! the nutrients in kg
             annual_in = ""
             read (102,5100) annual_in
-            reccnstps(ihouts(idum)) = annual_in(1:index(annual_in,'.')-1)
+            reccnstps(ihouts(k)) = annual_in(1:index(annual_in,'.')-1)
             call caps(annual_in)
-            i = inum1s(idum)
+            i = inum1s(k)
             open (109,file=annual_in,recl=350)
             call readcnst
 
@@ -322,10 +322,10 @@ subroutine readfig
             read (102,5100) apex_in
             call caps(apex_in)
             !      i = 0
-            !      i = inum1s(idum)
-            open (112+inum1s(idum),file=apex_in,recl=350)
+            !      i = inum1s(k)
+            open (112+inum1s(k),file=apex_in,recl=350)
             do ii = 1, 10
-               read (112+inum1s(idum),5200) titldum
+               read (112+inum1s(k),5200) titldum
             end do
 !! code to read from apex output file
 
@@ -337,53 +337,53 @@ subroutine readfig
             day_in = ""
             read (102,5100) day_in
             call caps(day_in)
-            if (inum1s(idum) <= 50 .and. inum1s(idum) > 0) then
-               open (50+inum1s(idum),file=day_in,recl=350)
-               write (50+inum1s(idum),5400) title
-               write (50+inum1s(idum),5600)
+            if (inum1s(k) <= 50 .and. inum1s(k) > 0) then
+               open (50+inum1s(k),file=day_in,recl=350)
+               write (50+inum1s(k),5400) title
+               write (50+inum1s(k),5600)
             end if
 
           case (17)  !! icode = 17  ROUTING UNIT command
             rufile = ""
             read (102,5100) rufile
             call caps(rufile)
-            iru = inum1s(idum)
-            isub = inum2s(idum)
-            daru_km(isub,iru) = rnum1s(idum)
+            iru = inum1s(k)
+            isub = inum2s(k)
+            daru_km(isub,iru) = rnum1s(k)
             open (113,file=rufile)
             call readru
             close(113)
 
           case (18)  !! icode = 18  LANDSCAPE ROUTING command
-            !!if (rnum1s(idum) < 1.e-9) rnum1s(idum) = 1.
+            !!if (rnum1s(k) < 1.e-9) rnum1s(k) = 1.
 
          end select
 
          !! calculate upstream drainage area (km2) and impervious cover (km2)
          !! in the drainage arae at each subbasin outlet
-         if (icodes(idum)==1) then      !subbasin
-            subdr_km(ihouts(idum)) = sub_km(inum1s(idum))
-         elseif (icodes(idum)==17) then !routing unit
-            subdr_km(ihouts(idum)) = daru_km(inum2s(idum),inum1s(idum))
-         elseif (icodes(idum)==5) then  !add
-            subdr_km(ihouts(idum)) = subdr_km(inum1s(idum))&
-            &+ subdr_km(inum2s(idum))
-            subdr_ickm(ihouts(idum)) = subdr_ickm(inum1s(idum))&
-            &+ subdr_ickm(inum2s(idum))
-         elseif (icodes(idum)==2) then !route
-            if(inum1s(idum)==inum2s(idum)) then
-               subdr_km(ihouts(idum)) = subdr_km(inum1s(idum))
-               subdr_ickm(ihouts(idum)) = subdr_ickm(inum1s(idum))
+         if (icodes(k)==1) then      !subbasin
+            subdr_km(ihouts(k)) = sub_km(inum1s(k))
+         elseif (icodes(k)==17) then !routing unit
+            subdr_km(ihouts(k)) = daru_km(inum2s(k),inum1s(k))
+         elseif (icodes(k)==5) then  !add
+            subdr_km(ihouts(k)) = subdr_km(inum1s(k))&
+               &+ subdr_km(inum2s(k))
+            subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))&
+               &+ subdr_ickm(inum2s(k))
+         elseif (icodes(k)==2) then !route
+            if(inum1s(k)==inum2s(k)) then
+               subdr_km(ihouts(k)) = subdr_km(inum1s(k))
+               subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))
             else
-               subdr_km(ihouts(idum)) = subdr_km(inum1s(idum))&
-               &+ subdr_km(inum2s(idum))
-               subdr_ickm(ihouts(idum)) = subdr_ickm(inum1s(idum))&
-               &+ subdr_ickm(inum2s(idum))
+               subdr_km(ihouts(k)) = subdr_km(inum1s(k))&
+                  &+ subdr_km(inum2s(k))
+               subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))&
+                  &+ subdr_ickm(inum2s(k))
             endif
-         elseif (icodes(idum)==18) then  !routels
-            subdr_km(ihouts(idum)) = subdr_km(inum2s(idum))
-            ru_a(inum3s(idum),inum1s(idum)) = subdr_km(ihouts(idum)) *&
-            &100. / ru_ovsl(inum3s(idum),inum1s(idum))
+         elseif (icodes(k)==18) then  !routels
+            subdr_km(ihouts(k)) = subdr_km(inum2s(k))
+            ru_a(inum3s(k),inum1s(k)) = subdr_km(ihouts(k)) *&
+               &100. / ru_ovsl(inum3s(k),inum1s(k))
          end if
 
       end if

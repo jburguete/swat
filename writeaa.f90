@@ -286,7 +286,6 @@ subroutine writeaa
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ic          |none          |hydrograph storage location number
-!!    idum        |none          |line # in .fig file
 !!    ii          |none          |counter
 !!    j           |none          |counter
 !!    k           |none          |counter

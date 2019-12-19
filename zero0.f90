@@ -473,7 +473,6 @@ subroutine zero0
    drydep_nh4_d = 0.
    drydep_no3_d = 0.
 !! routing 5/3/2010 gsm per jga
-   idum = 0
    mhyd1 = 0
    irtun = 0
 

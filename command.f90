@@ -91,7 +91,7 @@ subroutine command
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    idum        |none          |counter
+!!    j        |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -103,23 +103,23 @@ subroutine command
    use parm
    implicit none
 
-   integer :: ii, iru_sub
+   integer :: ii, iru_sub, j
 
-   idum = 0
+   j = 0
 
    do ii = 1, mhyd_bsn
-      idum = idum + 1
-      icode = icodes(idum)
-      ihout = ihouts(idum)
-      inum1 = inum1s(idum)
-      inum2 = inum2s(idum)
-      inum3 = inum3s(idum)
-      rnum1 = rnum1s(idum)
-      inum4 = inum4s(idum)
-      inum5 = inum5s(idum)
-      inum6 = inum6s(idum)
-      inum7 = inum7s(idum)
-      inum8 = inum8s(idum)
+      j = j + 1
+      icode = icodes(j)
+      ihout = ihouts(j)
+      inum1 = inum1s(j)
+      inum2 = inum2s(j)
+      inum3 = inum3s(j)
+      rnum1 = rnum1s(j)
+      inum4 = inum4s(j)
+      inum5 = inum5s(j)
+      inum6 = inum6s(j)
+      inum7 = inum7s(j)
+      inum8 = inum8s(j)
 
       select case (icode)
        case (0)

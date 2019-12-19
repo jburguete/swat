@@ -1,7 +1,11 @@
-subroutine soil_chem
+!> @file soil_chem.f90
+!> file containing the subroutine soil_chem
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes soil chemical properties
+!> this subroutine initializes soil chemical properties
+!> @param[in] ii HRU number
+subroutine soil_chem(ii)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -9,7 +13,6 @@ subroutine soil_chem
 !!    hrupest(:)    |none          |pesticide use flag:
 !!                                 | 0: no pesticides used in HRU
 !!                                 | 1: pesticides used in HRU
-!!    i             |none          |HRU number
 !!    nactfr        |none          |nitrogen active pool fraction. The fraction
 !!                                 |of organic nitrogen in the active pool.
 !!    npmx          |none          |number of different pesticides used in
@@ -81,14 +84,22 @@ subroutine soil_chem
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    actp
 !!    dg          |mm            |depth of layer
 !!    j           |none          |counter
 !!    jj          |none          |dummy variable to hold value
 !!    n           |none          |counter
 !!    nly         |none          |number of soil layers
+!!    RTO
+!!    sol_cmass
+!!    sol_mass
+!!    sol_min_n
+!!    sol_thick
 !!    soldepth    |mm            |depth from bottom of 1st soil layer to
 !!                               |the bottom of the layer of interest
+!!    solp
 !!    solpst      |mg/kg         |concentration of pesticide in soil
+!!    SSP
 !!    summinp     |kg P/ha       |amount of phosphorus stored in the mineral P
 !!                               |pool in the profile
 !!    sumno3      |kg N/ha       |amount of nitrogen stored in the nitrate pool
@@ -98,6 +109,7 @@ subroutine soil_chem
 !!    sumorgp     |kg P/ha       |amount of phosphorus stored in the organic P
 !!                               |pools in the profile
 !!    wt1         |none          |converts mg/kg (ppm) to kg/ha
+!!    X1
 !!    xx          |none          |variable to hold value
 !!    zdst        |none          |variable to hold value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -108,40 +120,33 @@ subroutine soil_chem
    use parm
    implicit none
 
-   integer :: nly, j, jj, n
-   real*8 :: xx, dg, wt1, zdst, soldepth, sumno3, sumorgn, summinp
-   real*8 :: sumorgp, solpst, solp
-   real*8 :: actp, sol_cmass, sol_thick, SSP
+   !Frction of Mirobial Biomass, Humus Passive C pools
+         !FBM = 0.0
+         !IF(FBM<1.E-10)FBM=.04
+         !FHP = 0.0
+         !IF(FHP<1.E-10)FHP=.7-.4*EXP(-.0277*100)
+         !From DSSAT
+         !FBM = 0.02
+         !FHP = 0.44
+   integer, intent(in) :: ii
+   real*8, parameter :: FBM =.04, FHP = .7 - .4 * EXP(-.0277 * 100)
+   real*8 :: actp, dg, RTO, sol_cmass, sol_mass, sol_min_n,&
+      &sol_thick, soldepth, solp, solpst, SSP, summinp, sumno3, sumorgn,&
+      &sumorgp, wt1, xx, X1, zdst
+   integer :: j, jj, n, nly
 
-   !!by zhang
-   !!=============
-   real*8 :: sol_mass
-   real*8 :: FBM, FHP, FHS, X1, RTO, sol_min_n
-   sol_mass = 0.
-   DG = 0.
-   FBM = 0.
-   FHP = 0.
-   !RTNO = 0. !not used
-   FHS = 0.
-   X1 = 0.
-   RTO = 0.
-   !!by zhang
-   !!=============
-
-
-   solpst = 0.
    sumno3 = 0.
    sumorgn = 0.
    summinp = 0.
    sumorgp = 0.
-   nly = sol_nly(i)
+   nly = sol_nly(ii)
 
 !!    calculate sol_cbn for lower layers if only have upper layer
-   if (nly >= 3 .and. sol_cbn(3,i) <= 0) then
+   if (nly >= 3 .and. sol_cbn(3,ii) <= 0) then
       do j = 3, nly
-         if (sol_cbn(j,i) == 0.) then
-            soldepth = sol_z(j,i) - sol_z(2,i)
-            sol_cbn(j,i) = sol_cbn(j-1,i) * Exp(-.001 * soldepth)
+         if (sol_cbn(j,ii) == 0.) then
+            soldepth = sol_z(j,ii) - sol_z(2,ii)
+            sol_cbn(j,ii) = sol_cbn(j-1,ii) * Exp(-.001 * soldepth)
          end if
       end do
    end if
@@ -149,39 +154,34 @@ subroutine soil_chem
    cmup_kgh = 0.
    cmtot_kgh = 0.
    do j = 1, nly
-      if (j == 1) then
-         sol_thick = sol_z(j,i)
-      else
-         sol_thick = sol_z(j,i) - sol_z(j-1,i)
-      end if
+      sol_thick = sol_z(j,ii)
+      if (j /= 1) sol_thick = sol_thick - sol_z(j-1,ii)
 
 !! soil carbon and nitrogen
-      sol_mass = (sol_thick / 1000.) * 10000. * sol_bd(j,i)&
-      &* 1000. * (1 - sol_rock(j,i) / 100.)
-      sol_cmass = sol_mass * (sol_cbn(j,i) / 100.)
+      !sol_mass = (sol_thick / 1000.) * 10000. * sol_bd(j,ii)&
+      !   &* 1000. * (1 - sol_rock(j,ii) / 100.) ! removed redundant operations
+      sol_mass = sol_thick * 10000. * sol_bd(j,ii) * (1 - sol_rock(j,ii) / 100.)
+      sol_cmass = sol_mass * (sol_cbn(j,ii) / 100.)
 
-      if (j == 1) cmup_kgh(i) = sol_cmass
-      cmtot_kgh(i) = cmtot_kgh(i) + sol_cmass
+      if (j == 1) cmup_kgh(ii) = sol_cmass
+      cmtot_kgh(ii) = cmtot_kgh(ii) + sol_cmass
    end do
 
 
 !!    calculate sol_kp as function of koc and sol_cbn
 !!    and set initial pesticide in all layers equal to value given for
 !!    upper layer
-   if (hrupest(i) == 1) then
+   if (hrupest(ii) == 1) then
       do j = 1, npmx
          jj = npno(j)
          if (jj > 0) then
-            solpst = sol_pst(j,i,1)  !!concentration of pesticide in soil
-            xx = 0.
+            solpst = sol_pst(j,ii,1)  !!concentration of pesticide in soil
             do n = 1, nly
-               dg = 0.
-               wt1 = 0.
-               dg = (sol_z(n,i) - xx)
-               xx = sol_z(n,i)
-               wt1 = sol_bd(n,i) * dg / 100.              !! mg/kg => kg/ha
-               sol_kp(j,i,n) = skoc(jj) * sol_cbn(n,i) / 100.
-               sol_pst(j,i,n) = solpst * wt1
+               dg = (sol_z(n,ii) - xx)
+               xx = sol_z(n,ii)
+               wt1 = sol_bd(n,ii) * dg / 100.              !! mg/kg => kg/ha
+               sol_kp(j,ii,n) = skoc(jj) * sol_cbn(n,ii) / 100.
+               sol_pst(j,ii,n) = solpst * wt1
             end do
          end if
       end do
@@ -192,43 +192,43 @@ subroutine soil_chem
 !!    average in soil for the entire watershed
 !!    convert mg/kg (ppm) to kg/ha
    xx = 0.
-   sol_fop(1,i) = sol_rsd(1,i) * .0010 !! was 0.0003 Armen January 2009
-   sol_fon(1,i) = sol_rsd(1,i) * .0055 !! was 0.0015 Armen January 2009
-   sol_cov(i) = sol_rsd(1,i)
+   sol_fop(1,ii) = sol_rsd(1,ii) * .0010 !! was 0.0003 Armen January 2009
+   sol_fon(1,ii) = sol_rsd(1,ii) * .0055 !! was 0.0015 Armen January 2009
+   sol_cov(ii) = sol_rsd(1,ii)
    do j = 1, nly
-      dg = (sol_z(j,i) - xx)
-      wt1 = sol_bd(j,i) * dg / 100.              !! mg/kg => kg/ha
-      conv_wt(j,i) = 1.e6 * wt1                  !! kg/kg => kg/ha
+      dg = (sol_z(j,ii) - xx)
+      wt1 = sol_bd(j,ii) * dg / 100.              !! mg/kg => kg/ha
+      conv_wt(j,ii) = 1.e6 * wt1                  !! kg/kg => kg/ha
 
-      if (sol_no3(j,i) <= 0.) then
-         zdst = Exp(-sol_z(j,i) / 1000.)
-         sol_no3(j,i) = 10. * zdst * .7
+      if (sol_no3(j,ii) <= 0.) then
+         zdst = Exp(-sol_z(j,ii) / 1000.)
+         sol_no3(j,ii) = 10. * zdst * .7
       end if
-      sol_no3(j,i) = sol_no3(j,i) * wt1          !! mg/kg => kg/ha
-      sumno3 = sumno3 + sol_no3(j,i)
+      sol_no3(j,ii) = sol_no3(j,ii) * wt1          !! mg/kg => kg/ha
+      sumno3 = sumno3 + sol_no3(j,ii)
 
-      if (sol_orgn(j,i) > 0.0001) then
-         sol_orgn(j,i) = sol_orgn(j,i) * wt1      !! mg/kg => kg/ha
+      if (sol_orgn(j,ii) > 0.0001) then
+         sol_orgn(j,ii) = sol_orgn(j,ii) * wt1      !! mg/kg => kg/ha
       else
          !! assume C:N ratio of 10:1
-         sol_orgn(j,i) = 10000. * (sol_cbn(j,i) / 14.) * wt1  !! CN ratio changed back to 14 cibin 03022012
+         sol_orgn(j,ii) = 10000. * (sol_cbn(j,ii) / 14.) * wt1  !! CN ratio changed back to 14 cibin 03022012
       end if
-      sol_aorgn(j,i) = sol_orgn(j,i) * nactfr
-      sol_orgn(j,i) = sol_orgn(j,i) * (1. - nactfr)
-      sumorgn = sumorgn + sol_aorgn(j,i) + sol_orgn(j,i) + sol_fon(j,i)
+      sol_aorgn(j,ii) = sol_orgn(j,ii) * nactfr
+      sol_orgn(j,ii) = sol_orgn(j,ii) * (1. - nactfr)
+      sumorgn = sumorgn + sol_aorgn(j,ii) + sol_orgn(j,ii) + sol_fon(j,ii)
 
-      if (sol_orgp(j,i) > 0.0001) then
-         sol_orgp(j,i) = sol_orgp(j,i) * wt1      !! mg/kg => kg/ha
+      if (sol_orgp(j,ii) > 0.0001) then
+         sol_orgp(j,ii) = sol_orgp(j,ii) * wt1      !! mg/kg => kg/ha
       else
          !! assume N:P ratio of 8:1
-         sol_orgp(j,i) = .125 * sol_orgn(j,i)
+         sol_orgp(j,ii) = .125 * sol_orgn(j,ii)
       end if
 
-      if (sol_solp(j,i) > 0.0001) then
-         sol_solp(j,i) = sol_solp(j,i) * wt1      !! mg/kg => kg/ha
+      if (sol_solp(j,ii) > 0.0001) then
+         sol_solp(j,ii) = sol_solp(j,ii) * wt1      !! mg/kg => kg/ha
       else
          !! assume initial concentration of 5 mg/kg
-         sol_solp(j,i) = 5. * wt1
+         sol_solp(j,ii) = 5. * wt1
       end if
 
       !! Set active pool based on dynamic PSP MJW
@@ -236,84 +236,81 @@ subroutine soil_chem
       if (sol_P_model == 0) then
          !! Allow Dynamic PSP Ratio
          !! convert to concentration
-         solp = sol_solp(j,i) / conv_wt(j,i) * 1000000.
+         solp = sol_solp(j,ii) / conv_wt(j,ii) * 1000000.
          !! PSP = -0.045*log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
-         if (sol_clay(j,i) > 0.) then
-            psp(i) = -0.045 * log(sol_clay(j,i))+ (0.001 * solp)
-            psp(i) = psp(i) - (0.035  * sol_cbn(j,i)) + 0.43
+         if (sol_clay(j,ii) > 0.) then
+            psp(ii) = -0.045 * log(sol_clay(j,ii))+ (0.001 * solp)
+            psp(ii) = psp(ii) - (0.035  * sol_cbn(j,ii)) + 0.43
          else
-            psp(i) = 0.4
+            psp(ii) = 0.4
          endif
          !! Limit PSP range
-         if (psp(i) <.05) then
-            psp(i) = 0.05
-         else if (psp(i) > 0.9) then
-            psp(i) = 0.9
+         if (psp(ii) <.05) then
+            psp(ii) = 0.05
+         else if (psp(ii) > 0.9) then
+            psp(ii) = 0.9
          end if
       end if
 
-      sol_actp(j,i) = sol_solp(j,i) * (1. - psp(i)) / psp(i)
+      sol_actp(j,ii) = sol_solp(j,ii) * (1. - psp(ii)) / psp(ii)
 
       !! Set Stable pool based on dynamic coefficant
       if (sol_P_model == 0) then  !! From White et al 2009
          !! convert to concentration for ssp calculation
-         actp = sol_actp(j,i) / conv_wt(j,i) * 1000000.
-         solp = sol_solp(j,i) / conv_wt(j,i) * 1000000.
+         actp = sol_actp(j,ii) / conv_wt(j,ii) * 1000000.
+         solp = sol_solp(j,ii) / conv_wt(j,ii) * 1000000.
          !! estimate Total Mineral P in this soil based on data from sharpley 2004
          SSP = 25.044 * (actp + solp)** (-0.3833)
          !!limit SSP Range
          if (SSP > 7.) SSP = 7.
          if (SSP < 1.) SSP = 1.
-         sol_stap(j,i) = SSP * (sol_actp(j,i) + sol_solp(j,i))!define stableP
+         sol_stap(j,ii) = SSP * (sol_actp(j,ii) + sol_solp(j,ii))!define stableP
       else
          !! The original code
-         sol_stap(j,i) = 4. * sol_actp(j,i)
+         sol_stap(j,ii) = 4. * sol_actp(j,ii)
       end if
 
-      sol_hum(j,i) = sol_cbn(j,i) * wt1 * 17200.
-      xx = sol_z(j,i)
-      summinp = summinp + sol_solp(j,i) + sol_actp(j,i) + sol_stap(j,i)
-      sumorgp = sumorgp + sol_orgp(j,i) + sol_fop(j,i)
+      sol_hum(j,ii) = sol_cbn(j,ii) * wt1 * 17200.
+      xx = sol_z(j,ii)
+      summinp = summinp + sol_solp(j,ii) + sol_actp(j,ii) + sol_stap(j,ii)
+      sumorgp = sumorgp + sol_orgp(j,ii) + sol_fop(j,ii)
    end do
 
-   basno3i = basno3i + sumno3 * hru_km(i) / da_km
-   basorgni = basorgni + sumorgn * hru_km(i) / da_km
-   basminpi = basminpi + summinp * hru_km(i) / da_km
-   basorgpi = basorgpi + sumorgp * hru_km(i) / da_km
+   xx = hru_km(ii) / da_km
+   basno3i = basno3i + sumno3 * xx
+   basorgni = basorgni + sumorgn * xx
+   basminpi = basminpi + summinp * xx
+   basorgpi = basorgpi + sumorgp * xx
 
    !! By Zhang for C/N cycling
    !!===============================
    if (cswat == 2) then
-      if (rsdin(i) > 0.) sol_rsd(1,i) = rsdin(i)
+      if (rsdin(ii) > 0.) sol_rsd(1,ii) = rsdin(ii)
       do j = 1, nly
          !!kg/ha sol mass in each layer
+         xx = 10000. * sol_bd(j,ii) * (1. - sol_rock(j,ii) / 100.)
          if (j == 1) then
-            sol_mass = (sol_z(j,i)) / 1000.
-            !&      10000. * sol_bd(j,ihru)* 1000. *
-            !&       (1- sol_rock(j,ihru) / 100.)
-            sol_mass = sol_mass * 10000. * sol_bd(j,i)* 1000.
-            sol_mass = sol_mass * (1- sol_rock(j,i) / 100.)
-
+            !sol_mass = (sol_z(j,ii)) / 1000.
+            !sol_mass = sol_mass * 10000. * sol_bd(j,ii)* 1000.
+            !sol_mass = sol_mass * (1- sol_rock(j,ii) / 100.)
+            !removed redundant operations
+            sol_mass = sol_z(j,ii) * xx
          else
-            sol_mass = (sol_z(j,i) - sol_z(j-1,i)) / 1000.
-            !&      10000. * sol_bd(j,ihru)* 1000. *
-            !&       (1- sol_rock(j,ihru) / 100.)
-            sol_mass = sol_mass * 10000. * sol_bd(j,i)* 1000.
-            sol_mass = sol_mass * (1- sol_rock(j,i) / 100.)
+            !sol_mass = (sol_z(j,ii) - sol_z(j-1,ii)) / 1000.
+            !sol_mass = sol_mass * 10000. * sol_bd(j,ii)* 1000.
+            !sol_mass = sol_mass * (1- sol_rock(j,ii) / 100.)
+            !removed redundant operations
+            sol_mass = (sol_z(j,ii) - sol_z(j-1,ii)) * xx
          end if
          !!kg/ha mineral nitrogen
-         sol_min_n = sol_no3(j,i)+sol_nh3(j,i)
+         sol_min_n = sol_no3(j,ii)+sol_nh3(j,ii)
 
          !XCB = 0.2
          !mm
-         if (j == 1) then
-            !DG = 10
-            DG = sol_z(j,i)
-         else
-            DG = (sol_z(j,i) - sol_z(j-1,i))
-         end if
+         dg = sol_z(j,ii)
+         if (j > 1) dg = dg - sol_z(j-1,ii)
 
-         !if(sol_WOC(j,ihru)<1.E-5) sol_WOC(j,ihru)=XCB*exp(-.001*DG)
+         !if(sol_WOC(j,ihru)<1.E-5) sol_WOC(j,ihru)=XCB*exp(-.001*dg)
 
          !XCB=sol_WOC(j,ihru)
          !XZ=sol_WOC(j,ihru) *.0172
@@ -330,88 +327,77 @@ subroutine soil_chem
 
          !WT1 = WT/1000.
          !X1 = 10. * sol_cbn(j,ihru) * WT
-         !WT(J)=BD(J)*DG*10.
-         !DG1=DG
+         !WT(J)=BD(J)*dg*10.
+         !DG1=dg
          !WT1=WT(J)/1000.
          !X1=10.*WOC(J)*WT(J)
          !WOC(J)=X1
          !kg/ha
          !sol_WOC(j,ihru)=X1
-         sol_WOC(j,i) = sol_mass * sol_cbn(j,i)/100
+         sol_WOC(j,ii) = sol_mass * sol_cbn(j,ii)/100
          !if(sol_WON(j,ihru)>0.)then
          !      sol_WON(j,ihru)=WT1*sol_WON(j,ihru)
          !      KK=0
          !else
-         sol_WON(j,i) = sol_aorgn(j,i)+  sol_orgn(j,i)!0.1 * sol_WOC(j,i)
+         sol_WON(j,ii) = sol_aorgn(j,ii)+  sol_orgn(j,ii)!0.1 * sol_WOC(j,ii)
          !      KK=1
          !end if
 
-         !Frction of Mirobial Biomass, Humus Passive C pools
-         FBM = 0.0
-         FHP = 0.0
-         IF(FBM<1.E-10)FBM=.04
-         !RTN0 = 100. !not used
-         IF(FHP<1.E-10)FHP=.7-.4*EXP(-.0277*100)
-         FHS = 1 - FBM - FHP
-         !From DSSAT
-         !FBM = 0.02
-         !FHS = 0.54
-         !FHP = 0.44
 
          !NCC = 0
          !IF(NCC==0)THEN
          !sol_WBM(j,ihru)=FBM*X1
-         sol_BM(j,i)=FBM*sol_WOC(j,i)
-         sol_BMC(j,i)=sol_BM(j,i)
+         sol_BM(j,ii)=FBM*sol_WOC(j,ii)
+         sol_BMC(j,ii)=sol_BM(j,ii)
          !IF(KK==0)THEN
-         RTO=sol_WON(j,i)/sol_WOC(j,i)
+         RTO=sol_WON(j,ii)/sol_WOC(j,ii)
          !ELSE
          !      RTO=.1
          !END IF
-         sol_BMN(j,i)=RTO*sol_BMC(j,i)
+         sol_BMN(j,ii)=RTO*sol_BMC(j,ii)
          !sol_HP(j,ihru)=FHP*(X1-sol_BM(j,ihru))
-         sol_HP(j,i)=FHP*(sol_WOC(j,i)-sol_BM(j,i))
-         sol_HS(j,i)=sol_WOC(j,i)-sol_BM(j,i)-sol_HP(j,i)
-         !sol_HP(j,i)=sol_WOC(j,i)-sol_BM(j,i)-sol_HP(j,i)
-         sol_HSC(j,i)=sol_HS(j,i)
-         sol_HSN(j,i)= RTO*sol_HSC(j,i)  !sol_aorgn(j,i)
-         sol_HPC(j,i)=sol_HP(j,i)
-         sol_HPN(j,i)= RTO*sol_HPC(j,i)  !sol_orgn(j,i)
+         sol_HP(j,ii)=FHP*(sol_WOC(j,ii)-sol_BM(j,ii))
+         sol_HS(j,ii)=sol_WOC(j,ii)-sol_BM(j,ii)-sol_HP(j,ii)
+         !sol_HP(j,ii)=sol_WOC(j,ii)-sol_BM(j,ii)-sol_HP(j,ii)
+         sol_HSC(j,ii)=sol_HS(j,ii)
+         sol_HSN(j,ii)= RTO*sol_HSC(j,ii)  !sol_aorgn(j,ii)
+         sol_HPC(j,ii)=sol_HP(j,ii)
+         sol_HPN(j,ii)= RTO*sol_HPC(j,ii)  !sol_orgn(j,ii)
 
 
-         X1=sol_rsd(j,i) /1000.
+         X1=sol_rsd(j,ii) /1000.
          !!skip std in SWAT
          !IF(j==1)X1=X1+STD(j)/1000.
 
-         sol_LM(j,i)=500.*X1
-         sol_LS(j,i)=sol_LM(j,i)
-         sol_LSL(j,i)=.8*sol_LS(j,i)
-         sol_LMC(j,i)=.42*sol_LM(j,i)
+         sol_LM(j,ii)=500.*X1
+         sol_LS(j,ii)=sol_LM(j,ii)
+         sol_LSL(j,ii)=.8*sol_LS(j,ii)
+         sol_LMC(j,ii)=.42*sol_LM(j,ii)
 
-         sol_LMN(j,i)=.1*sol_LMC(j,i)
-         sol_LSC(j,i)=.42*sol_LS(j,i)
-         sol_LSLC(j,i)=.8*sol_LSC(j,i)
-         sol_LSLNC(j,i)=.2*sol_LSC(j,i)
-         sol_LSN(j,i)=sol_LSC(j,i)/150.
+         sol_LMN(j,ii)=.1*sol_LMC(j,ii)
+         sol_LSC(j,ii)=.42*sol_LS(j,ii)
+         sol_LSLC(j,ii)=.8*sol_LSC(j,ii)
+         sol_LSLNC(j,ii)=.2*sol_LSC(j,ii)
+         sol_LSN(j,ii)=sol_LSC(j,ii)/150.
          !sol_WOC(j,ihru)=sol_WOC(j,ihru)+sol_LSC(j,ihru)+sol_WLMC(j,ihru)
-         sol_WOC(j,i)=sol_WOC(j,i)+sol_LSC(j,i)+sol_LMC(j,i)
+         sol_WOC(j,ii)=sol_WOC(j,ii)+sol_LSC(j,ii)+sol_LMC(j,ii)
          !sol_WON(j,ihru)=sol_WON(j,ihru)+sol_LSN(j,ihru)+sol_WLMN(j,ihru)
-         sol_WON(j,i)=sol_WON(j,i)+sol_LSN(j,i)+sol_LMN(j,i)
+         sol_WON(j,ii)=sol_WON(j,ii)+sol_LSN(j,ii)+sol_LMN(j,ii)
          !END IF
 
-         !if (sol_orgn(j,i) > 0.0001) then
-         !  sol_orgn(j,i) = sol_orgn(j,i) * wt1      !! mg/kg => kg/ha
+         !if (sol_orgn(j,ii) > 0.0001) then
+         !  sol_orgn(j,ii) = sol_orgn(j,ii) * wt1      !! mg/kg => kg/ha
          !else
          !! assume C:N ratio of 10:1
-         !  sol_orgn(j,i) = 10000. * (sol_cbn(j,i) / 11.) * wt1  !! CN ratio was 14 before 01-22-09 Armen
+         !  sol_orgn(j,ii) = 10000. * (sol_cbn(j,ii) / 11.) * wt1  !! CN ratio was 14 before 01-22-09 Armen
          !end if
-         sol_orgn(j,i) = sol_HPN(j,i)
-         sol_aorgn(j,i) = sol_HSN(j,i)
-         sol_fon(1,i) = sol_LMN(j,i) + sol_LSN(j,i)
-         !sol_aorgn(j,i) = sol_orgn(j,i) * nactfr
-         !sol_orgn(j,i) = sol_orgn(j,i) * (1. - nactfr)
-         sumorgn = sumorgn + sol_aorgn(j,i) + sol_orgn(j,i) +&
-         &sol_fon(j,i) + sol_BMN(j,i)
+         sol_orgn(j,ii) = sol_HPN(j,ii)
+         sol_aorgn(j,ii) = sol_HSN(j,ii)
+         sol_fon(1,ii) = sol_LMN(j,ii) + sol_LSN(j,ii)
+         !sol_aorgn(j,ii) = sol_orgn(j,ii) * nactfr
+         !sol_orgn(j,ii) = sol_orgn(j,ii) * (1. - nactfr)
+         sumorgn = sumorgn + sol_aorgn(j,ii) + sol_orgn(j,ii) +&
+            &sol_fon(j,ii) + sol_BMN(j,ii)
 
 
       end do
@@ -422,10 +408,10 @@ subroutine soil_chem
    !!May need to think about moving the following lines which appear before in this module to the end of this module,
    !!because orgn has been re-calculated.
    !!============================
-   !basno3i = basno3i + sumno3 * hru_km(i) / da_km
-   !basorgni = basorgni + sumorgn * hru_km(i) / da_km
-   !basminpi = basminpi + summinp * hru_km(i) / da_km
-   !basorgpi = basorgpi + sumorgp * hru_km(i) / da_km
+   !basno3i = basno3i + sumno3 * hru_km(ii) / da_km
+   !basorgni = basorgni + sumorgn * hru_km(ii) / da_km
+   !basminpi = basminpi + summinp * hru_km(ii) / da_km
+   !basorgpi = basorgpi + sumorgp * hru_km(ii) / da_km
 
    return
 end

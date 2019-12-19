@@ -45,7 +45,7 @@ module parm
 !> surface layer to soluble phosphorus in runoff
    real*8, dimension (:), allocatable :: phoskd
 !> Phosphorus availibility index. The fraction of fertilizer P remaining in
-!> labile pool after initial rapid phase of P sorption.
+!> labile pool after initial rapid phase of P sorption (none)
    real*8, dimension (:), allocatable :: psp
 !> denitrification threshold: fraction of field capacity triggering
 !> denitrification
@@ -76,7 +76,6 @@ module parm
    real*8, dimension (:,:), allocatable :: ru_ovs, ru_ktc
    real*8, dimension (:), allocatable :: gwq_ru, qdayout
    integer, dimension (:), allocatable :: ils2, ils2flag
-   integer :: idum !< counter (none)
 !> pesticide identification number from pest.dat (none)
    integer :: ipest
    integer :: iru, mru, irch, isub, mhyd_bsn, ils_nofig
@@ -94,7 +93,12 @@ module parm
    real*8 :: res_stlr_co !< reservoir sediment settling coefficient
    real*8 :: rsd_covco !< residue cover factor for computing frac of cover
    real*8 :: vcrit !< critical velocity
-   real*8 :: wshd_sw, wshd_snob, wshd_pndfr, wshd_pndv, wshd_pndsed
+!> average amount of water stored in snow at the beginning of the simulation for
+!> the entire watershed (mm H20)
+   real*8 :: wshd_snob
+!> average amount of water stored in soil for the entire watershed (mm H2O)
+   real*8 :: wshd_sw
+   real*8 :: wshd_pndfr, wshd_pndv, wshd_pndsed
 !> pesticide percolation coefficient (0-1)\n
 !> 0: concentration of pesticide in surface runoff is zero\n
 !> 1: percolate has same concentration of pesticide as surface runoff
@@ -136,12 +140,23 @@ module parm
    real*8 :: wshd_ressed
 !> total volume of water in all reservoirs in the watershed (m^3)
    real*8 :: wshd_resv
-   real*8 :: basno3i, basorgni, basminpi
+!> average amount of phosphorus initially in the mineral P pool in watershed
+!> soil (kg P/ha)
+   real*8 :: basminpi
+!> average amount of nitrogen initially in the nitrate pool in watershed soil
+!> (kg N/ha)
+   real*8 :: basno3i
+!> average amount of nitrogen initially in the organic N pool in watershed soil
+!> (kg N/ha)
+   real*8 :: basorgni
 !> die-off factor for persistent bacteria adsorbed to soil particles (1/day)
    real*8 :: wdps
 !> growth factor for less persistent bacteria in soil solution (1/day)
    real*8 :: wglpq
-   real*8 :: basorgpi, peakr, pndsedin, sw_excess, albday
+!> average amount of phosphorus initially in the organic P pool in watershed
+!> soil (kg P/ha)
+   real*8 :: basorgpi
+   real*8 :: peakr, pndsedin, sw_excess, albday
 !> Snow pack temperature lag factor (0-1)\n
 !> 1 = no lag (snow pack temp=current day air temp) as the lag factor goes to
 !> zero, the snow pack's temperature will be less influenced by the current
@@ -232,7 +247,7 @@ module parm
 !> increases
    real*8 :: n_updis
 !> nitrogen active pool fraction. The fraction of organic nitrogen in the active
-!> pool.
+!> pool (none)
    real*8 :: nactfr
 !> phosphorus uptake distribution parameter This parameter controls the amount
 !> of phosphorus removed from the different soil layers by the plant. In
@@ -1166,37 +1181,73 @@ module parm
 !>        inputs < 1.0 (relative hum)
    integer, dimension (:), allocatable :: irelh
    integer, dimension (:), allocatable :: fcst_reg
-   real*8, dimension (:,:), allocatable :: sol_aorgn,sol_tmp,sol_fon
+!> amount of nitrogen stored in the active organic (humic) nitrogen pool
+!> (kg N/ha)
+   real*8, dimension (:,:), allocatable :: sol_aorgn
+!> amount of nitrogen stored in the fresh organic (residue) pool (kg N/ha)
+   real*8, dimension (:,:), allocatable :: sol_fon
+   real*8, dimension (:,:), allocatable :: sol_tmp
 !> available water capacity of soil layer (mm H20/mm soil)
    real*8, dimension (:,:), allocatable :: sol_awc
-   real*8, dimension (:,:), allocatable :: sol_prk,volcr
+!> crack volume for soil layer (mm)
+   real*8, dimension (:,:), allocatable :: volcr
+   real*8, dimension (:,:), allocatable :: sol_prk
 !> subbasin phosphorus percolation coefficient. Ratio of soluble phosphorus in
 !> surface to soluble phosphorus in percolate
    real*8, dimension (:,:), allocatable :: pperco_sub
 !> amount of phosphorus in the soil layer stored in the stable mineral
 !> phosphorus pool(kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_stap
-   real*8, dimension (:,:), allocatable :: sol_actp,conv_wt
-!> soluble P concentration in top soil layer (mg P/kg soil)
+!> factor which converts kg/kg soil to kg/ha (none)
+   real*8, dimension (:,:), allocatable :: conv_wt
+!> amount of phosphorus stored in the active mineral phosphorus pool (kg P/ha)
+   real*8, dimension (:,:), allocatable :: sol_actp
+!> soluble P concentration in top soil layer (mg P/kg soil) or\n
+!> amount of phosohorus stored in solution. NOTE UNIT CHANGE! (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_solp
-   real*8, dimension (:,:), allocatable :: sol_ul,sol_fc,crdep
+!> maximum or potential crack volume (mm)
+   real*8, dimension (:,:), allocatable :: crdep
+!> amount of water available to plants in soil layer at field capacity (fc - wp)
+!> (mm H2O)
+   real*8, dimension (:,:), allocatable :: sol_fc
+!> amount of water held in the soil layer at saturation (sat - wp water)
+!> (mm H2O)
+   real*8, dimension (:,:), allocatable :: sol_ul
 !> bulk density of the soil (Mg/m^3)
    real*8, dimension (:,:), allocatable :: sol_bd
 !> depth to bottom of soil layer (mm)
    real*8, dimension (:,:), allocatable :: sol_z
-   real*8, dimension (:,:), allocatable :: sol_up,sol_st
+!> amount of water stored in the soil layer on any given day (less wp water)
+!> (mm H2O)
+   real*8, dimension (:,:), allocatable :: sol_st
+!> water content of soil at -0.033 MPa (field capacity) (mm H2O/mm soil)
+   real*8, dimension (:,:), allocatable :: sol_up
 !> percent clay content in soil material (%)
    real*8, dimension (:,:), allocatable :: sol_clay
-   real*8, dimension (:,:), allocatable :: flat,sol_nh3,sol_hk
+!> beta coefficent to calculate hydraulic conductivity (none)
+   real*8, dimension (:,:), allocatable :: sol_hk
+   real*8, dimension (:,:), allocatable :: flat,sol_nh3
 !> electrical conductivity of soil layer (dS/m)
    real*8, dimension (:,:), allocatable :: sol_ec
-!> organic N concentration in top soil layer (mg N/kg soil)
+!> amount of nitrogen stored in the stable organic N pool. NOTE UNIT CHANGE!
+!> (mg N/kg soil or kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_orgn
-   real*8, dimension (:,:), allocatable :: sol_por,sol_wp
-!> organic P concentration in top soil layer (mg P/kg soil)
+!> total porosity of soil layer expressed as a fraction of the total volume
+!> (none)
+   real*8, dimension (:,:), allocatable :: sol_por
+!> water content of soil at -1.5 MPa (wilting point) (mm H20/mm soil)
+   real*8, dimension (:,:), allocatable :: sol_wp
+!> amount of phosphorus stored in the organic P pool. NOTE UNIT CHANGE!
+!> (mg P/kg soil or kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_orgp
-   real*8, dimension (:,:), allocatable :: sol_hum,sol_wpmm
-!> concentration of nitrate in soil layer (mg N/kg)
+!> amount of organic matter in the soil layer classified as humic substances
+!> (kg humus/ha)
+   real*8, dimension (:,:), allocatable :: sol_hum
+!> water content of soil at -1.5 MPa (wilting point) (mm H20)
+   real*8, dimension (:,:), allocatable :: sol_wpmm
+!> amount of nitrogen stored in the nitrate pool. This variable is read in as a
+!> concentration and converted to kg/ha (this value is read from the .sol file
+!> in units of mg/kg) (kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_no3
 !> percent organic carbon in soil layer (%)
    real*8, dimension (:,:), allocatable :: sol_cbn
@@ -1204,6 +1255,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_k
 !> amount of organic matter in the soil layer classified as residue (kg/ha)
    real*8, dimension (:,:), allocatable :: sol_rsd
+!> amount of phosphorus stored in the fresh organic (residue) pool (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_fop
 !> percent of rock fragments in soil layer (%)
    real*8, dimension (:,:), allocatable :: sol_rock
@@ -1219,8 +1271,13 @@ module parm
    real*8, dimension (:,:), allocatable :: orig_solactp,orig_solstap
    real*8, dimension (:,:), allocatable :: orig_volcr
    real*8, dimension (:,:), allocatable :: conk
-!> sol_pst(:,:,1) pesticide concentration in soil (mg/kg)
+!> sol_pst(:,:,1) initial amount of pesticide in first layer read in from .chm
+!> file (mg/kg)\n
+!> sol_pst(:,:,:) amount of pesticide in layer. NOTE UNIT CHANGE!
+!> (kg/ha)
    real*8, dimension (:,:,:), allocatable :: sol_pst
+!> pesticide sorption coefficient, Kp; the ratio of the concentration in the
+!> solid phase to the concentration in solution ((mg/kg)/(mg/L))
    real*8, dimension (:,:,:), allocatable :: sol_kp
    real*8, dimension (:,:,:), allocatable :: orig_solpst
    real*8, dimension (:), allocatable :: velsetlr, velsetlp
@@ -1663,7 +1720,9 @@ module parm
 !> maximum volume of water stored in the depression/impounded area (read in as
 !> mm and converted to m^3) (needed only if current HRU is IPOT) (mm)
    real*8, dimension (:), allocatable :: pot_volx
-   real*8, dimension (:), allocatable :: potflwi,potsedi,wfsh
+!> wetting front matric potential (mm)
+   real*8, dimension (:), allocatable :: wfsh
+   real*8, dimension (:), allocatable :: potflwi,potsedi
 !> nitrate decay rate in impounded area (1/day)
    real*8, dimension (:), allocatable :: pot_no3l
 !> normal sediment concentration in impounded water (needed only if current HRU
@@ -1735,7 +1794,7 @@ module parm
 !> minimum instream flow for irrigation diversions when IRRSC=1, irrigation
 !> water will be diverted only when streamflow is at or above FLOWMIN (m^3/s)
    real*8, dimension (:), allocatable :: flowmin
-!> USLE equation support practice (P) factor daily (none)
+!> USLE equation support practice (P) factor (none)
    real*8, dimension (:), allocatable :: usle_p
 !> sediment concentration in lateral flow (g/L)
    real*8, dimension (:), allocatable :: lat_sed
@@ -1753,7 +1812,9 @@ module parm
    real*8, dimension (:), allocatable :: slsoil
 !> soluble P concentration in groundwater loading to reach (mg P/L)
    real*8, dimension (:), allocatable :: gwminp
-   real*8, dimension (:), allocatable :: sed_stl,sol_cov
+!> amount of residue on soil surface (kg/ha)
+   real*8, dimension (:), allocatable :: sol_cov
+   real*8, dimension (:), allocatable :: sed_stl
 !> Manning's "n" value for overland flow (none)
    real*8, dimension (:), allocatable :: ov_n
 !> amount of nitrate in pond (kg N)
@@ -1771,7 +1832,9 @@ module parm
    real*8, dimension (:), allocatable :: twlpnd, twlwet               !!srini pond/wet infiltration to shallow gw storage
 !> fraction of subbasin area contained in HRU (km^2/km^2)
    real*8, dimension (:), allocatable :: hru_fr
-   real*8, dimension (:), allocatable :: sol_sumul,pnd_chla
+!> amount of water held in soil profile at saturation (mm H2O)
+   real*8, dimension (:), allocatable :: sol_sumul
+   real*8, dimension (:), allocatable :: pnd_chla
 !> area of HRU in square kilometers (km^2)
    real*8, dimension (:), allocatable :: hru_km
    real*8, dimension (:), allocatable :: bio_ms !< cover/crop biomass (kg/ha)
@@ -1830,7 +1893,9 @@ module parm
    real*8, dimension (:), allocatable :: auto_eff
 !> water clarity coefficient for wetland (none)
    real*8, dimension (:), allocatable :: secciw
-   real*8, dimension (:), allocatable :: bactlpq,sol_sw
+!> amount of water stored in soil profile on any given day (mm H2O)
+   real*8, dimension (:), allocatable :: sol_sw
+   real*8, dimension (:), allocatable :: bactlpq
 !> chlorophyll-a production coefficient for wetland (none)
    real*8, dimension (:), allocatable :: chlaw
    real*8, dimension (:), allocatable :: bactps,bactlps,tmpav
@@ -1845,10 +1910,15 @@ module parm
    real*8, dimension (:), allocatable :: usle_k
    real*8, dimension (:), allocatable :: rwt,olai,tconc,hru_rmx
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
-   real*8, dimension (:), allocatable :: anano3,aird,t_ov,sol_sumfc
+!> amount of water held in soil profile at field capacity (mm H2O)
+   real*8, dimension (:), allocatable :: sol_sumfc
+   real*8, dimension (:), allocatable :: anano3,aird,t_ov
 !> amount of organic P in wetland (kg P)
    real*8, dimension (:), allocatable :: wet_orgp
-   real*8, dimension (:), allocatable :: sol_avpor,usle_mult
+!> average porosity for entire soil profile (none)
+   real*8, dimension (:), allocatable :: sol_avpor
+!> product of USLE K,P,LS,exp(rock) (none)
+   real*8, dimension (:), allocatable :: usle_mult
    real*8, dimension (:), allocatable :: aairr,cht,u10,rhd
    real*8, dimension (:), allocatable :: shallirr,deepirr,lai_aamx
 !> longest tributary channel length in subbasin (km)
@@ -1937,7 +2007,9 @@ module parm
    real*8, dimension (:), allocatable :: rchrg_src
 !> filter strip trapping efficiency (used for everything but bacteria) (none)
    real*8, dimension (:), allocatable :: trapeff
-   real*8, dimension (:), allocatable :: wet_no3g,sol_avbd
+!> average bulk density for soil profile (Mg/m^3)
+   real*8, dimension (:), allocatable :: sol_avbd
+   real*8, dimension (:), allocatable :: wet_no3g
 !> time to drain soil to field capacity yield used in autofertilization (hours)
    real*8, dimension (:), allocatable :: tdrain
 !> threshold depth of water in shallow aquifer required before groundwater flow
@@ -1978,7 +2050,9 @@ module parm
    real*8, dimension (:), allocatable :: sedorgp,sedyld,sepbtm,strsn
    real*8, dimension (:), allocatable :: strsp,strstmp,surfq,surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
-   real*8, dimension (:), allocatable :: tcfrtn,tcfrtp,hru_dafr
+!> fraction of total watershed area contained in HRU (km2/km2)
+   real*8, dimension (:), allocatable :: hru_dafr
+   real*8, dimension (:), allocatable :: tcfrtn,tcfrtp
 !> atmospheric dry deposition of nitrates (kg/ha/yr)
    real*8, dimension (:), allocatable :: drydep_no3
 !> atmospheric dry deposition of ammonia (kg/ha/yr)
@@ -2150,7 +2224,9 @@ module parm
    integer, dimension (:), allocatable :: hru_sub
 !> urban land type identification number from urban.dat (none)
    integer, dimension (:), allocatable :: urblu
-   integer, dimension (:), allocatable :: idorm,ldrain
+!> soil layer where drainage tile is located (none)
+   integer, dimension (:), allocatable :: ldrain
+   integer, dimension (:), allocatable :: idorm
    integer, dimension (:), allocatable :: hru_seq
 !> urban simulation code (none):\n
 !> 0  no urban sections in HRU\n

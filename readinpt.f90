@@ -44,22 +44,19 @@ subroutine readinpt
    use parm
    implicit none
 
-!! By Zhang for C/N cycling
-!!==============================
-   !initilizaing several soil parameters
+   integer :: ii
+
    sol_WOC = 0.
    sol_WON = 0.
-!! By Zhang for C/N cycling
-!!=============================
 
    if (irtpest > 0) irtpest = nope(irtpest)
    npmx = Sum(pstflg)         !! set equal to # pesticides modeled in
    !! watershed
 
-   do i = 1, nhru
+   do ii = 1, nhru
       !call soil_par
-      call soil_chem           !! initialize soil chemical parameters
-      call soil_phys           !! initialize soil physical parameters
+      call soil_chem(ii)       !! initialize soil chemical parameters
+      call soil_phys(ii)       !! initialize soil physical parameters
    end do
 
    call rteinit               !! initialize routing parameters

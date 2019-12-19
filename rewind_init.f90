@@ -347,14 +347,14 @@ subroutine rewind_init
    ifirstr = 1
 
 !! files listed in .fig
-   do idum = 1, mhyd
-      icode = icodes(idum)
-      ihout = ihouts(idum)
-      inum1 = inum1s(idum)
-      inum2 = inum2s(idum)
-      inum3 = inum3s(idum)
-      rnum1 = rnum1s(idum)
-      inum4 = inum4s(idum)
+   do j = 1, mhyd
+      icode = icodes(j)
+      ihout = ihouts(j)
+      inum1 = inum1s(j)
+      inum2 = inum2s(j)
+      inum3 = inum3s(j)
+      rnum1 = rnum1s(j)
+      inum4 = inum4s(j)
 
       select case (icode)
        case (6)   !!rechour
@@ -374,20 +374,20 @@ subroutine rewind_init
 
 !! weather files
    !!precipitation
-   do idum = 1, nrgage
-      if (rfile(idum) /= '             ') then
-         rewind (unit=100+idum)
+   do j = 1, nrgage
+      if (rfile(j) /= '             ') then
+         rewind (unit=100+j)
          do ii = 1, 4
-            read (100+idum,5000) titldum
+            read (100+j,5000) titldum
          end do
       end if
    end do
    !! temperature
-   do idum = 1, ntgage
-      if (tfile(idum) /= '             ') then
-         rewind (unit=118+idum)
+   do j = 1, ntgage
+      if (tfile(j) /= '             ') then
+         rewind (unit=118+j)
          do ii = 1, 4
-            read (118+idum,5000) titldum
+            read (118+j,5000) titldum
          end do
       end if
    end do
@@ -413,10 +413,10 @@ subroutine rewind_init
    end if
 
    !!daily reservoir outflow file
-   do idum = 1, nres
-      if (iresco(idum) == 3) then
-         rewind (unit=350+idum)
-         read (350+idum,5000) titldum
+   do j = 1, nres
+      if (iresco(j) == 3) then
+         rewind (unit=350+j)
+         read (350+j,5000) titldum
       end if
    end do
 
