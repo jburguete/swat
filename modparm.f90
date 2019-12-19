@@ -429,7 +429,8 @@ module parm
    integer :: irte
    integer :: nrch !< number of reaches in watershed (none)
    integer :: nres !< number of reservoirs in watershed (none)
-   integer :: nhru, mo, immo, i_mo
+   integer :: nhru !< number of last HRU in previous subbasin (none)
+   integer :: mo, immo, i_mo
 !> wind speed input code\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
@@ -600,7 +601,7 @@ module parm
 !> name of septic tank database file (septwq1.dat)
    character(len=13) :: septdb
    character(len=13) :: dpd_file, wpd_file, rib_file, sfb_file,&
-   &lid_file
+      &lid_file
 !> array location of random number seed used for a given process
    integer, dimension (9) :: idg
    integer, dimension (:), allocatable :: ifirstr, ifirsthr
@@ -1025,7 +1026,9 @@ module parm
 !> 2 precipitation > 508 and <= 1016 mm/yr\n
 !> 3 precipitation > 1016 mm/yr
    integer, dimension (:), allocatable :: ireg
-   integer, dimension (:), allocatable :: hrutot,hru1
+!> number of HRUs in subbasin (none)
+   integer, dimension (:), allocatable :: hrutot
+   integer, dimension (:), allocatable :: hru1
 !> subbasin relative humidity data code (none)
    integer, dimension (:), allocatable :: ihgage
 !> subbasin radiation gage data code (none)
@@ -1422,7 +1425,7 @@ module parm
 !> linear parameter for calculating sediment in grassed waterways (none)
    real*8, dimension (:), allocatable :: grwat_spcon
    real*8, dimension (:), allocatable :: tc_gwat
-   real*8, dimension (:), allocatable ::pot_volmm,pot_tilemm,pot_volxmm  !!NUBZ
+   real*8, dimension (:), allocatable :: pot_volmm,pot_tilemm,pot_volxmm  !!NUBZ
 !> fraction of HRU area that drains into pothole (km^2/km^2)
    real*8, dimension (:), allocatable :: pot_fr
 !> average daily outflow to main channel from tile flow if drainage tiles are
@@ -1528,10 +1531,18 @@ module parm
    real*8, dimension (:), allocatable :: sed_stl,sol_cov
 !> Manning's "n" value for overland flow (none)
    real*8, dimension (:), allocatable :: ov_n
-   real*8, dimension (:), allocatable :: yldanu,pnd_solp,pnd_no3
+!> amount of nitrate in pond (kg N)
+   real*8, dimension (:), allocatable :: pnd_no3
+!> amount of soluble P in pond (kg P)
+   real*8, dimension (:), allocatable :: pnd_solp
+   real*8, dimension (:), allocatable :: yldanu
 !> coefficient for pesticide drift directly onto stream (none)
    real*8, dimension (:), allocatable :: driftco
-   real*8, dimension (:), allocatable :: pnd_orgp,pnd_orgn,cn3
+!> amount of organic N in pond (kg N)
+   real*8, dimension (:), allocatable :: pnd_orgn
+!> amount of organic P in pond (kg P)
+   real*8, dimension (:), allocatable :: pnd_orgp
+   real*8, dimension (:), allocatable :: cn3
    real*8, dimension (:), allocatable :: twlpnd, twlwet               !!srini pond/wet infiltration to shallow gw storage
 !> fraction of subbasin area contained in HRU (km^2/km^2)
    real*8, dimension (:), allocatable :: hru_fr
@@ -1542,25 +1553,67 @@ module parm
 !> albedo when soil is moist (none)
    real*8, dimension (:), allocatable :: sol_alb
    real*8, dimension (:), allocatable :: strsw
-   real*8, dimension (:), allocatable :: pnd_fr,pnd_psa,pnd_pvol,pnd_k
-   real*8, dimension (:), allocatable :: pnd_esa,pnd_evol,pnd_vol,yldaa
-   real*8, dimension (:), allocatable :: pnd_sed,pnd_nsed,strsa,dep_imp
+!> fraction of HRU/subbasin area that drains into ponds (none)
+   real*8, dimension (:), allocatable :: pnd_fr
+!> hydraulic conductivity through bottom of ponds (mm/hr)
+   real*8, dimension (:), allocatable :: pnd_k
+!> surface area of ponds when filled to principal spillway (ha)
+   real*8, dimension (:), allocatable :: pnd_psa
+!> runoff volume from catchment area needed to fill the ponds to the principal
+!> spillway (10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: pnd_pvol
+!> surface area of ponds when filled to emergency spillway (ha)
+   real*8, dimension (:), allocatable :: pnd_esa
+!> runoff volume from catchment area needed to fill the ponds to the emergency
+!> spillway (10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: pnd_evol
+!> volume of water in ponds (10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: pnd_vol
+   real*8, dimension (:), allocatable :: yldaa
+!> normal sediment concentration in pond water (mg/L)
+   real*8, dimension (:), allocatable :: pnd_nsed
+!> sediment concentration in pond water (mg/L)
+   real*8, dimension (:), allocatable :: pnd_sed
+   real*8, dimension (:), allocatable :: strsa,dep_imp
    real*8, dimension (:), allocatable :: evpnd, evwet
-   real*8, dimension (:), allocatable :: wet_fr,wet_nsa,wet_nvol,wet_k
+!> fraction of HRU/subbasin area that drains into wetlands (none)
+   real*8, dimension (:), allocatable :: wet_fr
+!> hydraulic conductivity of bottom of wetlands (mm/hr)
+   real*8, dimension (:), allocatable :: wet_k
+!> surface area of wetlands in subbasin at normal water level (ha)
+   real*8, dimension (:), allocatable :: wet_nsa
+!> runoff volume from catchment area needed to fill wetlands to normal water
+!> level (10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: wet_nvol
    integer, dimension (:), allocatable :: iwetgw, iwetile
-   real*8, dimension (:), allocatable :: wet_mxsa,wet_mxvol,wet_vol
-   real*8, dimension (:), allocatable :: wet_sed,wet_nsed
+!> surface area of wetlands at maximum water level (ha)
+   real*8, dimension (:), allocatable :: wet_mxsa
+!> runoff volume from catchment area needed to fill wetlands to maximum water
+!> level (10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: wet_mxvol
+!> volume of water in wetlands (10^4 m^3 H2O)
+   real*8, dimension (:), allocatable :: wet_vol
+!> normal sediment concentration in wetland water (mg/L)
+   real*8, dimension (:), allocatable :: wet_nsed
+!> sediment concentration in wetland water (mg/L)
+   real*8, dimension (:), allocatable :: wet_sed
    real*8, dimension (:), allocatable :: smx,sci,bp1,bp2
    real*8, dimension (:), allocatable :: bw1,bw2,bactpq
    real*8, dimension (:), allocatable :: bactp_plt,bactlp_plt,cnday
 !> fertilizer application efficiency calculated as the amount of N applied
 !> divided by the amount of N removed at harvest (none)
    real*8, dimension (:), allocatable :: auto_eff
-   real*8, dimension (:), allocatable :: bactlpq,sol_sw,secciw
-   real*8, dimension (:), allocatable :: bactps,bactlps,tmpav,chlaw
+!> water clarity coefficient for wetland (none)
+   real*8, dimension (:), allocatable :: secciw
+   real*8, dimension (:), allocatable :: bactlpq,sol_sw
+!> chlorophyll-a production coefficient for wetland (none)
+   real*8, dimension (:), allocatable :: chlaw
+   real*8, dimension (:), allocatable :: bactps,bactlps,tmpav
 !> amount of water stored as snow (mm H2O)
    real*8, dimension (:), allocatable :: sno_hru
-   real*8, dimension (:), allocatable :: subp,hru_ra,wet_orgn
+!> amount of organic N in wetland (kg N)
+   real*8, dimension (:), allocatable :: wet_orgn
+   real*8, dimension (:), allocatable :: subp,hru_ra
    real*8, dimension (:), allocatable :: rsdin !< initial residue cover (kg/ha)
    real*8, dimension (:), allocatable :: tmx,tmn,tmp_hi,tmp_lo
 !> USLE equation soil erodibility (K) factor (none)
@@ -1568,12 +1621,16 @@ module parm
    real*8, dimension (:), allocatable :: rwt,olai,tconc,hru_rmx
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
    real*8, dimension (:), allocatable :: anano3,aird,t_ov,sol_sumfc
-   real*8, dimension (:), allocatable :: sol_avpor,usle_mult,wet_orgp
+!> amount of organic P in wetland (kg P)
+   real*8, dimension (:), allocatable :: wet_orgp
+   real*8, dimension (:), allocatable :: sol_avpor,usle_mult
    real*8, dimension (:), allocatable :: aairr,cht,u10,rhd
    real*8, dimension (:), allocatable :: shallirr,deepirr,lai_aamx
 !> longest tributary channel length in subbasin (km)
    real*8, dimension (:), allocatable :: ch_l1
-   real*8, dimension (:), allocatable :: canstor,ovrlnd,wet_no3
+!> amount of nitrate in wetland (kg N)
+   real*8, dimension (:), allocatable :: wet_no3
+   real*8, dimension (:), allocatable :: canstor,ovrlnd
 !> maximum irrigation amount per auto application (mm)
    real*8, dimension (:), allocatable :: irr_mx
 !> water stress factor which triggers auto irrigation (none or mm)
@@ -1605,11 +1662,11 @@ module parm
    integer, dimension (:), allocatable :: idplt
    integer, dimension (:), allocatable :: pest_days, wstrs_id
    real*8, dimension (:,:), allocatable :: bio_aahv
-!    Drainmod tile equations  08/2006
    real*8, dimension (:), allocatable :: cumei,cumeira
    real*8, dimension (:), allocatable :: cumrt, cumrai
-!    Drainmod tile equations  08/2006
-   real*8, dimension (:), allocatable :: wet_solp,wet_no3s,wet_chla
+!> amount of soluble P in wetland (kg P)
+   real*8, dimension (:), allocatable :: wet_solp
+   real*8, dimension (:), allocatable :: wet_no3s,wet_chla
    real*8, dimension (:), allocatable :: wet_seci,pnd_no3g,pstsol
 !> groundwater delay: time required for water leaving the bottom of the root
 !> zone to reach the shallow aquifer (days)
@@ -1700,8 +1757,12 @@ module parm
    real*8, dimension (:), allocatable :: drydep_no3, drydep_nh4
    real*8, dimension (:), allocatable :: phubase,bio_yrms,hvstiadj
    real*8, dimension (:), allocatable :: laiday !< leaf area index (m^2/m^2)
-   real*8, dimension (:), allocatable :: laimxfr,chlap,pnd_psed
-   real*8, dimension (:), allocatable :: wet_psed,seccip,plantn,plt_et
+!> chlorophyll-a production coefficient for pond (none)
+   real*8, dimension (:), allocatable :: chlap
+   real*8, dimension (:), allocatable :: laimxfr,pnd_psed
+!> water clarity coefficient for pond (none)
+   real*8, dimension (:), allocatable :: seccip
+   real*8, dimension (:), allocatable :: wet_psed,plantn,plt_et
    real*8, dimension (:), allocatable :: plt_pet,plantp,bio_aams
 !> time threshold used to define dormant period for plant (when daylength is
 !> within the time specified by dl from the minimum daylength for the area, the
@@ -1757,7 +1818,9 @@ module parm
    real*8, dimension (:,:), allocatable :: gwatw, gwatd, gwatveg
    real*8, dimension (:,:), allocatable :: gwata, gwats, gwatspcon
    real*8, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
+!> phosphorus settling rate for 1st season (m/day)
    real*8, dimension (:), allocatable :: psetlp1
+!> phosphorus settling rate for 2nd seaso (m/day)n
    real*8, dimension (:), allocatable :: psetlp2
    real*8, dimension (:,:), allocatable :: wgncur,wgnold,wrt
 !> pesticide enrichment ratio (none)
@@ -1765,7 +1828,9 @@ module parm
    real*8, dimension (:,:), allocatable :: zdb,pst_surq
 !> pesticide on plant foliage (kg/ha)
    real*8, dimension (:,:), allocatable :: plt_pst
+!> phosphorus settling rate for 1st season (m/day)
    real*8, dimension (:), allocatable :: psetlw1
+!> phosphorus settling rate for 2nd season (m/day)
    real*8, dimension (:), allocatable :: psetlw2
    real*8, dimension (:,:), allocatable :: pst_sed
    real*8, dimension (:,:), allocatable :: pcpband,wupnd,tavband,phi
@@ -1777,10 +1842,14 @@ module parm
    real*8, dimension (:), allocatable :: bss2
    real*8, dimension (:), allocatable :: bss3
    real*8, dimension (:), allocatable :: bss4
+!> nitrogen settling rate for 1st season (m/day)
    real*8, dimension (:), allocatable :: nsetlw1
+!> nitrogen settling rate for 2nd season (m/day)
    real*8, dimension (:), allocatable :: nsetlw2
    real*8, dimension (:,:), allocatable :: snotmpeb,surf_bs
+!> nitrogen settling rate for 1st season (m/day)
    real*8, dimension (:), allocatable :: nsetlp1
+!> nitrogen settling rate for 2nd season (m/day)
    real*8, dimension (:), allocatable :: nsetlp2
    real*8, dimension (:,:), allocatable :: tmxband
    real*8, dimension (:,:), allocatable :: rainsub,frad
@@ -1810,8 +1879,19 @@ module parm
 !> 0 no land cover growing\n
 !> 1 land cover growing
    integer, dimension (:), allocatable :: igro
-   integer, dimension (:), allocatable :: nair,ipnd1,ipnd2
-   integer, dimension (:), allocatable :: nirr,iflod1,iflod2,ndtarg
+!> beginning month of nutrient settling season (none)
+   integer, dimension (:), allocatable :: ipnd1
+!> ending month of nutrient settling season (none)
+   integer, dimension (:), allocatable :: ipnd2
+   integer, dimension (:), allocatable :: nair
+!> beginning month of non-flood season (none)
+   integer, dimension (:), allocatable :: iflod1
+!> ending month of non-flood season (none)
+   integer, dimension (:), allocatable :: iflod2
+!> number of days required to reach target storage from current pond storage
+!> (none)
+   integer, dimension (:), allocatable :: ndtarg
+   integer, dimension (:), allocatable :: nirr
    integer, dimension (:), allocatable :: iafrttyp, nstress
    integer, dimension (:), allocatable :: igrotree
    !! burn
@@ -1977,7 +2057,7 @@ module parm
    real*8 :: bf_flg, iabstr
    real*8, dimension (:), allocatable :: ubnrunoff,ubntss
    real*8, dimension (:,:), allocatable :: sub_ubnrunoff,sub_ubntss,&
-   &ovrlnd_dt
+      &ovrlnd_dt
    real*8, dimension (:,:,:), allocatable :: hhsurf_bs
 
 !! subdaily erosion modeling by Jaehak Jeong
@@ -2000,38 +2080,56 @@ module parm
 !> (*.bsn)
    real*8 :: uhalpha
    real*8 :: abstinit,abstmax
-   real*8, dimension(:,:), allocatable:: hhsedy, sub_subp_dt
-   real*8, dimension(:,:), allocatable:: sub_hhsedy,sub_atmp
-   real*8, dimension(:), allocatable:: rhy,init_abstrc
-   real*8, dimension(:), allocatable:: dratio, hrtevp, hrttlc
-   real*8, dimension(:,:,:), allocatable:: rchhr
+   real*8, dimension(:,:), allocatable :: hhsedy, sub_subp_dt
+   real*8, dimension(:,:), allocatable :: sub_hhsedy,sub_atmp
+   real*8, dimension(:), allocatable :: rhy,init_abstrc
+   real*8, dimension(:), allocatable :: dratio, hrtevp, hrttlc
+   real*8, dimension(:,:,:), allocatable :: rchhr
 !! subdaily reservoir modeling by Jaehak Jeong
-   real*8, dimension(:), allocatable:: hhresflwi, hhresflwo,&
-   &hhressedi, hhressedo
+   real*8, dimension(:), allocatable :: hhresflwi, hhresflwo,&
+      &hhressedi, hhressedo
 
 !! bmp modeling by jaehak jeong
-   character(len=4), dimension(:), allocatable:: lu_nodrain
-   integer, dimension(:), allocatable:: bmpdrain
+   character(len=4), dimension(:), allocatable :: lu_nodrain
+   integer, dimension(:), allocatable :: bmpdrain
    real*8, dimension(:), allocatable :: sub_cn2, sub_ha_urb,&
-   &bmp_recharge
+      &bmp_recharge
    !sed-fil
-   real*8, dimension(:), allocatable:: sub_ha_imp,subdr_km,subdr_ickm
-   real*8, dimension(:,:), allocatable:: sf_im,sf_iy,sp_sa,&
-   &sp_pvol,sp_pd,sp_sedi,sp_sede,ft_sa,ft_fsa,&
-   &ft_dep,ft_h,ft_pd,ft_k,ft_dp,ft_dc,ft_por,&
-   &tss_den,ft_alp,sf_fr,sp_qi,sp_k,ft_qpnd,sp_dp,&
-   &ft_qsw,ft_qin,ft_qout,ft_sedpnd,sp_bpw,ft_bpw,&
-   &ft_sed_cumul,sp_sed_cumul
-   integer, dimension(:), allocatable:: num_sf
-   integer, dimension(:,:), allocatable:: sf_typ,sf_dim,ft_qfg,&
-   &sp_qfg,sf_ptp,ft_fc
+   real*8, dimension(:), allocatable :: sub_ha_imp,subdr_km,subdr_ickm
+   real*8, dimension(:,:), allocatable :: sf_im,sf_iy,sp_sa,&
+      &sp_pvol,sp_pd,sp_sedi,sp_sede,ft_sa,ft_fsa,&
+      &ft_dep,ft_h,ft_pd,ft_k,ft_dp,ft_dc,ft_por,&
+      &tss_den,ft_alp,sf_fr,sp_qi,sp_k,ft_qpnd,sp_dp,&
+      &ft_qsw,ft_qin,ft_qout,ft_sedpnd,sp_bpw,ft_bpw,&
+      &ft_sed_cumul,sp_sed_cumul
+   integer, dimension(:), allocatable :: num_sf
+   integer, dimension(:,:), allocatable :: sf_typ,sf_dim,ft_qfg,&
+      &sp_qfg,sf_ptp,ft_fc
    real*8 :: sfsedmean,sfsedstdev  !Jaehak effluent probability method for urban bmp 2017
 
    !detention pond
-   integer, dimension(:), allocatable :: dtp_subnum,dtp_imo,&
-   &dtp_iyr,dtp_numweir,dtp_numstage,dtp_stagdis,&
-   &dtp_reltype,dtp_onoff
-!! sj & armen changes for SWAT-C
+!> month the reservoir becomes operational (none)
+   integer, dimension(:), allocatable :: dtp_imo
+!> year of the simulation that the reservoir becomes operational (none)
+   integer, dimension(:), allocatable :: dtp_iyr
+!> total number of stages in the weir (none)
+   integer, dimension(:), allocatable :: dtp_numstage
+!> total number of weirs in the BMP (none)
+   integer, dimension(:), allocatable :: dtp_numweir
+!> sub-basin detention pond is associated with (none)
+   integer, dimension(:), allocatable :: dtp_onoff
+!> equations for stage-discharge relationship (none):\n
+!> 1=exponential function,\n
+!> 2=linear,\n
+!> 3=logarithmic,\n
+!> 4=cubic,\n
+!> 5=power
+   integer, dimension(:), allocatable :: dtp_reltype
+!> (none):\n
+!> 0=use weir/orifice discharge equation to calculate outflow,\n
+!> 1=use stage-dicharge relationship
+   integer, dimension(:), allocatable :: dtp_stagdis
+   integer, dimension(:), allocatable :: dtp_subnum
 !> this parameter controls the response of decomposition to the combined effect
 !> of soil temperature and moisture.
    real*8, dimension (:), allocatable :: cf
@@ -2039,19 +2137,39 @@ module parm
 !> the undisturbed soil turnover rate under optimum soil water and temperature.
 !> Increasing it will increase carbon and organic N decomp.
    real*8, dimension (:), allocatable :: cfdec
-!! sj & armen changes for SWAT-C end
 ! additional nutrient variables by jeong for montana bitterroot
    real*8, dimension(:), allocatable :: lat_orgn, lat_orgp
 
-   integer, dimension(:,:), allocatable :: dtp_weirtype,dtp_weirdim
+!> weir dimensions (none),\n
+!> 1=read user input,\n
+!> 0=use model calculation
+   integer, dimension(:,:), allocatable :: dtp_weirdim
+!> type of weir (none):\n
+!> 1=rectangular and\n
+!> 2=circular
+   integer, dimension(:,:), allocatable :: dtp_weirtype
 
-   real*8, dimension(:), allocatable ::dtp_evrsv,&
-   &dtp_inflvol,dtp_totwrwid,dtp_lwratio,dtp_wdep,dtp_totdep,&
-   &dtp_watdepact,dtp_outflow,dtp_totrel,dtp_backoff,dtp_seep_sa,&
-   &dtp_evap_sa,dtp_pet_day,dtp_pcpvol,dtp_seepvol,dtp_evapvol,&
-   &dtp_flowin,dtp_backup_length,dtp_intcept,dtp_expont,dtp_coef1,&
-   &dtp_coef2,dtp_coef3,dtp_dummy1,dtp_dummy2,&
-   &dtp_dummy3,dtp_ivol,dtp_ised
+!> coefficient of 3rd degree in the polynomial equation (none)
+   real*8, dimension(:), allocatable :: dtp_coef1
+!> coefficient of 2nd degree in the polynomial equation (none)
+   real*8, dimension(:), allocatable :: dtp_coef2
+!> coefficient of 1st degree in the polynomial equation (none)
+   real*8, dimension(:), allocatable :: dtp_coef3
+!> detention pond evaporation coefficient (none)
+   real*8, dimension(:), allocatable :: dtp_evrsv
+!> exponent used in the exponential equation (none)
+   real*8, dimension(:), allocatable :: dtp_expont
+!> intercept used in regression equations (none)
+   real*8, dimension(:), allocatable :: dtp_intcept
+!> ratio of length to width of water back up (none)
+   real*8, dimension(:), allocatable :: dtp_lwratio
+!> total constructed width of the detention wall across the creek (m)
+   real*8, dimension(:), allocatable :: dtp_totwrwid
+   real*8, dimension(:), allocatable :: &
+      &dtp_inflvol,dtp_wdep,dtp_totdep,&
+      &dtp_watdepact,dtp_outflow,dtp_totrel,dtp_backoff,dtp_seep_sa,&
+      &dtp_evap_sa,dtp_pet_day,dtp_pcpvol,dtp_seepvol,dtp_evapvol,&
+      &dtp_flowin,dtp_backup_length,dtp_ivol,dtp_ised
 
    integer, dimension (:,:),allocatable :: so_res_flag, ro_bmp_flag
    real*8, dimension (:,:),allocatable :: sol_watp, sol_solp_pre
@@ -2087,29 +2205,41 @@ module parm
    real*8, dimension (:),allocatable :: bmp_ppt, bmp_spt
    real*8, dimension (:),allocatable :: bmp_pnt, bmp_snt
 
-   real*8, dimension(:,:), allocatable:: dtp_wdratio,dtp_depweir,&
-   &dtp_diaweir,dtp_retperd,dtp_pcpret,dtp_cdis,dtp_flowrate,&
-   &dtp_wrwid,dtp_addon
-!!    added for manure Armen Jan 2009
-   !!     real*8, dimension (:,:), allocatable :: sol_mc, sol_mn, sol_mp
+!> the distance between spillway levels (m)
+   real*8, dimension(:,:), allocatable :: dtp_addon
+!> discharge coeffieicne for weir/orifice flow (none)
+   real*8, dimension(:,:), allocatable :: dtp_cdis
+!> depth of rectangular wier at different stages (m)
+   real*8, dimension(:,:), allocatable :: dtp_depweir
+!> diameter of orifice hole at different stages (m)
+   real*8, dimension(:,:), allocatable :: dtp_diaweir
+!> maximum discharge from each stage of the weir/hole (m^3/s)
+   real*8, dimension(:,:), allocatable :: dtp_flowrate
+!> precipitation for different return periods (not used) (mm)
+   real*8, dimension(:,:), allocatable :: dtp_pcpret
+!> return period at different stages (years)
+   real*8, dimension(:,:), allocatable :: dtp_retperd
+!> width depth ratio of rectangular weirs (none)
+   real*8, dimension(:,:), allocatable :: dtp_wdratio
+   real*8, dimension(:,:), allocatable :: dtp_wrwid
 
    !retention irrigation
-   real*8, dimension(:), allocatable:: ri_subkm,ri_totpvol,&
-   &irmmdt
-   real*8, dimension(:,:), allocatable:: ri_sed,ri_fr,ri_dim,&
-   &ri_im,ri_iy,ri_sa,ri_vol,ri_qi,ri_k,ri_dd,ri_evrsv,&
-   &ri_dep,ri_ndt,ri_pmpvol,ri_sed_cumul,hrnopcp,ri_qloss,&
-   &ri_pumpv,ri_sedi
-   character(len=4), dimension(:,:), allocatable:: ri_nirr
-   integer, dimension(:), allocatable:: num_ri,ri_luflg,num_noirr
+   real*8, dimension(:), allocatable :: ri_subkm,ri_totpvol,&
+      &irmmdt
+   real*8, dimension(:,:), allocatable :: ri_sed,ri_fr,ri_dim,&
+      &ri_im,ri_iy,ri_sa,ri_vol,ri_qi,ri_k,ri_dd,ri_evrsv,&
+      &ri_dep,ri_ndt,ri_pmpvol,ri_sed_cumul,hrnopcp,ri_qloss,&
+      &ri_pumpv,ri_sedi
+   character(len=4), dimension(:,:), allocatable :: ri_nirr
+   integer, dimension(:), allocatable :: num_ri,ri_luflg,num_noirr
 
    !wet pond
-   integer, dimension(:), allocatable:: wtp_subnum,wtp_onoff,wtp_imo,&
-   &wtp_iyr,wtp_dim,wtp_stagdis,wtp_sdtype
-   real*8, dimension(:), allocatable:: wtp_pvol,wtp_pdepth,wtp_sdslope,&
-   &wtp_lenwdth,wtp_extdepth,wtp_hydeff,wtp_evrsv,wtp_sdintc,&
-   &wtp_sdexp,wtp_sdc1,wtp_sdc2,wtp_sdc3,wtp_pdia,wtp_plen,&
-   &wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi
+   integer, dimension(:), allocatable :: wtp_subnum,wtp_onoff,wtp_imo,&
+      &wtp_iyr,wtp_dim,wtp_stagdis,wtp_sdtype
+   real*8, dimension(:), allocatable :: wtp_pvol,wtp_pdepth,wtp_sdslope,&
+      &wtp_lenwdth,wtp_extdepth,wtp_hydeff,wtp_evrsv,wtp_sdintc,&
+      &wtp_sdexp,wtp_sdc1,wtp_sdc2,wtp_sdc3,wtp_pdia,wtp_plen,&
+      &wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi
 
    real*8 :: lai_init !< initial leaf area index of transplants
    real*8 :: bio_init !< initial biomass of transplants (kg/ha)
@@ -2124,51 +2254,48 @@ module parm
 
    ! van Genuchten equation's coefficients
    real*8 :: lid_vgcl,lid_vgcm,lid_qsurf_total,&
-   &lid_farea_sum
+      &lid_farea_sum
 
    ! soil water content and amount of accumulated infiltration
    real*8, dimension(:,:), allocatable :: lid_cuminf_last,&
-   &lid_sw_last, interval_last,lid_f_last,lid_cumr_last,lid_str_last,&
-   &lid_farea,lid_qsurf,lid_sw_add,lid_cumqperc_last,lid_cumirr_last,&
-   &lid_excum_last                                                      !! nbs
+      &lid_sw_last, interval_last,lid_f_last,lid_cumr_last,lid_str_last,&
+      &lid_farea,lid_qsurf,lid_sw_add,lid_cumqperc_last,lid_cumirr_last,&
+      &lid_excum_last                                                      !! nbs
 
    ! Green Roof
-   integer, dimension(:,:), allocatable:: gr_onoff,gr_imo,gr_iyr
-   real*8, dimension(:,:), allocatable:: gr_farea,gr_solop,gr_etcoef,&
-   &gr_fc,gr_wp,gr_ksat,gr_por,gr_hydeff,gr_soldpt,gr_dummy1,&
-   &gr_dummy2,gr_dummy3,gr_dummy4,gr_dummy5
+   integer, dimension(:,:), allocatable :: gr_onoff,gr_imo,gr_iyr
+   real*8, dimension(:,:), allocatable :: gr_farea,gr_solop,gr_etcoef,&
+      &gr_fc,gr_wp,gr_ksat,gr_por,gr_hydeff,gr_soldpt
 
    ! Rain Gerden
-   integer, dimension(:,:), allocatable:: rg_onoff,rg_imo,rg_iyr
-   real*8, dimension(:,:), allocatable:: rg_farea,rg_solop,rg_etcoef,&
-   &rg_fc,rg_wp,rg_ksat,rg_por,rg_hydeff,rg_soldpt,rg_dimop,rg_sarea,&
-   &rg_vol,rg_sth,rg_sdia,rg_bdia,rg_sts,rg_orifice,rg_oheight,&
-   &rg_odia,rg_dummy1,rg_dummy2,rg_dummy3,rg_dummy4,rg_dummy5
+   integer, dimension(:,:), allocatable :: rg_onoff,rg_imo,rg_iyr
+   real*8, dimension(:,:), allocatable :: rg_farea,rg_solop,rg_etcoef,&
+      &rg_fc,rg_wp,rg_ksat,rg_por,rg_hydeff,rg_soldpt,rg_dimop,rg_sarea,&
+      &rg_vol,rg_sth,rg_sdia,rg_bdia,rg_sts,rg_orifice,rg_oheight,&
+      &rg_odia
 
    ! CiStern
-   integer, dimension(:,:), allocatable:: cs_onoff,cs_imo,cs_iyr,&
-   &cs_grcon
-   real*8, dimension(:,:), allocatable:: cs_farea,cs_vol,cs_rdepth,&
-   &cs_dummy1,cs_dummy2,cs_dummy3,cs_dummy4,cs_dummy5
+   integer, dimension(:,:), allocatable :: cs_onoff,cs_imo,cs_iyr,&
+      &cs_grcon
+   real*8, dimension(:,:), allocatable :: cs_farea,cs_vol,cs_rdepth
 
    ! Porous paVement
-   integer, dimension(:,:), allocatable:: pv_onoff,pv_imo,pv_iyr,&
-   &pv_solop
-   real*8, dimension(:,:), allocatable:: pv_grvdep,pv_grvpor,pv_farea,&
-   &pv_drcoef,pv_fc,pv_wp,pv_ksat,pv_por,pv_hydeff,pv_soldpt,&
-   &pv_dummy1,pv_dummy2,pv_dummy3,pv_dummy4,pv_dummy5
+   integer, dimension(:,:), allocatable :: pv_onoff,pv_imo,pv_iyr,&
+      &pv_solop
+   real*8, dimension(:,:), allocatable :: pv_grvdep,pv_grvpor,pv_farea,&
+      &pv_drcoef,pv_fc,pv_wp,pv_ksat,pv_por,pv_hydeff,pv_soldpt
 
    ! LID general
-   integer, dimension(:,:), allocatable:: lid_onoff
+   integer, dimension(:,:), allocatable :: lid_onoff
 
 
 !! By Zhang for C/N cycling
    !!SOM-residue C/N state variables -- currently included
    real*8, dimension(:,:), allocatable :: sol_BMC, sol_BMN, sol_HSC,&
-   &sol_HSN, sol_HPC, sol_HPN, sol_LM,&
-   &sol_LMC, sol_LMN, sol_LS, sol_LSL, sol_LSC, sol_LSN , sol_RNMN,&
-   &sol_LSLC, sol_LSLNC, sol_RSPC, sol_WOC, sol_WON, sol_HP, sol_HS,&
-   &sol_BM
+      &sol_HSN, sol_HPC, sol_HPN, sol_LM,&
+      &sol_LMC, sol_LMN, sol_LS, sol_LSL, sol_LSC, sol_LSN , sol_RNMN,&
+      &sol_LSLC, sol_LSLNC, sol_RSPC, sol_WOC, sol_WON, sol_HP, sol_HS,&
+      &sol_BM
    ! HSC mass of C present in slow humus (kg ha-1)
    ! HSN mass of N present in slow humus (kg ha-1)
    ! HPC mass of C present in passive humus (kg ha-1)
@@ -2190,27 +2317,27 @@ module parm
 
    !!Daily carbon change by different means (entire soil profile for each HRU)
    real*8, dimension(:), allocatable :: sedc_d, surfqc_d, latc_d,&
-   &percc_d, foc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d, soc_d,&
-   &rspc_d, emitc_d
+      &percc_d, foc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d, soc_d,&
+      &rspc_d, emitc_d
    !!emitc_d include biomass_c eaten by grazing, burnt
 
 
    !!Daily carbon change by different means (entire soil profile for each Subbasin)
    !!Only defined the variables, but not used them in the code
    real*8, dimension(:), allocatable :: sub_sedc_d, sub_surfqc_d,&
-   &sub_latc_d, sub_percc_d, sub_foc_d, sub_NPPC_d, sub_rsdc_d,&
-   &sub_grainc_d, sub_stoverc_d, sub_emitc_d, sub_soc_d, sub_rspc_d
+      &sub_latc_d, sub_percc_d, sub_foc_d, sub_NPPC_d, sub_rsdc_d,&
+      &sub_grainc_d, sub_stoverc_d, sub_emitc_d, sub_soc_d, sub_rspc_d
 
 
    !!Monthly carbon change by different means (entire soil profile for each HRU)
    real*8, dimension(:), allocatable :: sedc_m, surfqc_m, latc_m, percc_m,&
-   &foc_m, NPPC_m, rsdc_m, grainc_m, stoverc_m, emitc_m, soc_m,&
-   &rspc_m
+      &foc_m, NPPC_m, rsdc_m, grainc_m, stoverc_m, emitc_m, soc_m,&
+      &rspc_m
 
    !!Yearly carbon change by different means (entire soil profile for each HRU)
    real*8, dimension(:), allocatable :: sedc_a, surfqc_a, latc_a,&
-   &percc_a, foc_a, NPPC_a, rsdc_a, grainc_a, stoverc_a, emitc_a,&
-   &soc_a, rspc_a
+      &percc_a, foc_a, NPPC_a, rsdc_a, grainc_a, stoverc_a, emitc_a,&
+      &soc_a, rspc_a
 
 
    !! The following variables are defined and calculated locally

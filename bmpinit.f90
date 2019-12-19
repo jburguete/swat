@@ -25,9 +25,6 @@ subroutine bmpinit
 !!    dtp_coef1(:)   |none          |Coefficient of 3rd degree in the polynomial equation
 !!    dtp_coef2(:)   |none          |Coefficient of 2nd degree in the polynomial equation
 !!    dtp_coef3(:)   |none          |Coefficient of 1st degree in the polynomial equation
-!!    dtp_dummy1(:)   |none         |Dummy variable, backs up space (Rename for use)
-!!    dtp_dummy2(:)   |none         |Dummy variable, backs up space (Rename for use)
-!!    dtp_dummy3(:)   |none         |Dummy variable, backs up space (Rename for use)
 !!    dtp_weirtype(:,:)|none        |Type of weir: 1=rectangular and 2=circular
 !!    dtp_weirdim(:,:)|none         |Weir dimensions, 1=read user input, 0=use model calculation
 !!    dtp_wdratio(:,:)|none         |Width depth ratio of rectangular weirs

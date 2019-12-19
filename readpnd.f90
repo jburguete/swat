@@ -1,9 +1,12 @@
-subroutine readpnd
+!> @file readpnd.f90
+!> file containing the subroutine readpnd
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine reads data from the HRU/subbasin pond input file (.pnd).
-!!    This file contains data related to ponds and wetlands in the
-!!    HRUs/subbasins.
+!> This subroutine reads data from the HRU/subbasin pond input file (.pnd).
+!> This file contains data related to ponds and wetlands in the
+!> HRUs/subbasins.
+subroutine readpnd
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -20,16 +23,45 @@ subroutine readpnd
 !!    chlap(:)    |none          |chlorophyll-a production coefficient for pond
 !!    chlaw(:)    |none          |chlorophyll-a production coefficient for
 !!                               |wetland
+!!    dtp_addon(:,:)|m           |The distance between spillway levels
+!!    dtp_cdis(:,:)|none         |Discharge coeffieicne for weir/orifice flow
+!!    dtp_coef1(:)|none          |Coefficient of 3rd degree in the polynomial equation
+!!    dtp_coef2(:)|none          |Coefficient of 2nd degree in the polynomial equation
+!!    dtp_coef3(:)|none          |Coefficient of 1st degree in the polynomial equation
+!!    dtp_depweir(:,:)|m         |Depth of rectangular wier at different stages
+!!    dtp_diaweir(:,:)|m         |Diameter of orifice hole at different stages
+!!    dtp_evrsv   |none          |detention pond evaporation coefficient
+!!    dtp_expont(:)|none         |Exponent used in the exponential equation
+!!    dtp_flowrate(:,:)|m3/sec   |Maximum discharge from each stage of the weir/hole
+!!    dtp_imo(:)  |none          |month the reservoir becomes operational
+!!    dtp_intcept(:)|none        |Intercept used in regression equations
+!!    dtp_iy(:)   |none          |year of the simulation that the reservoir
+!!                               |becomes operational
+!!    dtp_lwratio(:)|none        |Ratio of length to width of water back up
+!!    dtp_numstage(:)|none       |Total number of stages in the weir
+!!    dtp_numweir(:)|none        |Total number of weirs in the BMP
+!!    dtp_onoff(:)|none          |sub-basin detention pond is associated with
+!!    dtp_pcpret(:,:)|mm         |precipitation for different return periods (not used)
+!!    dtp_reltype(:)|none        |Equations for Stage-Discharge relationship,1=exponential
+!!                               |function, 2=linear, 3=logarithmic, 4=cubic, 5=power
+!!    dtp_retperd(:,:)|years     |Return period at different stages
+!!    dtp_stagdis(:)|none        |0=use weir/orifice discharge equation to calculate
+!!                               |outflow, 1=use stage-dicharge relationship
+!!    dtp_totwrwid(:)|m          |Total constructed width of the detention wall across
+!!                               |the creek
+!!    dtp_wdratio(:,:)|none      |Width depth ratio of rectangular weirs
+!!    dtp_weirdim(:,:)|none      |Weir dimensions, 1=read user input, 0=use model calculation
+!!    dtp_weirtype(:,:)|none     |Type of weir: 1=rectangular and 2=circular
 !!    iflod1(:)   |none          |beginning month of non-flood season
 !!    iflod2(:)   |none          |ending month of non-flood season
 !!    ipnd1(:)    |none          |beginning month of nutrient settling season
 !!    ipnd2(:)    |none          |ending month of nutrient settling season
 !!    ndtarg(:)   |none          |number of days required to reach target
 !!                               |storage from current pond storage
-!!    nsetlp1(:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlp2(:) |m/day         |nitrogen settling rate for 2nd season
-!!    nsetlw1(:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlw2(:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlp1(:)  |m/day         |nitrogen settling rate for 1st season
+!!    nsetlp2(:)  |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlw1(:)  |m/day         |nitrogen settling rate for 1st season
+!!    nsetlw2(:)  |m/day         |nitrogen settling rate for 2nd season
 !!    pnd_esa(:)  |ha            |surface area of ponds when filled to
 !!                               |emergency spillway
 !!    pnd_evol(:) |10**4 m**3 H2O|runoff volume from catchment area needed
@@ -49,10 +81,10 @@ subroutine readpnd
 !!    pnd_sed(:)  |mg/L          |sediment concentration in pond water
 !!    pnd_solp(:) |kg P          |amount of soluble P in pond
 !!    pnd_vol(:)  |10**4 m**3 H2O|volume of water in ponds
-!!    psetlp1(:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlp2(:) |m/day         |phosphorus settling rate for 2nd season
-!!    psetlw1(:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlw2(:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlp1(:)  |m/day         |phosphorus settling rate for 1st season
+!!    psetlp2(:)  |m/day         |phosphorus settling rate for 2nd season
+!!    psetlw1(:)  |m/day         |phosphorus settling rate for 1st season
+!!    psetlw2(:)  |m/day         |phosphorus settling rate for 2nd season
 !!    seccip(:)   |none          |water clarity coefficient for pond
 !!    secciw(:)   |none          |water clarity coefficient for wetland
 !!    wet_fr(:)   |none          |fraction of HRU/subbasin area that drains
@@ -74,46 +106,21 @@ subroutine readpnd
 !!    wet_sed(:)  |mg/L          |sediment concentration in wetland water
 !!    wet_solp(:) |kg P          |amount of soluble P in wetland
 !!    wet_vol(:)  |10**4 m**3 H2O|volume of water in wetlands
-!!    dtp_onoff(:)   |none          |sub-basin detention pond is associated with
-!!    dtp_iy(:)      |none          |year of the simulation that the reservoir
-!!                                  |becomes operational
-!!    dtp_imo(:)     |none          |month the reservoir becomes operational
-!!    dtp_evrsv      |none          |detention pond evaporation coefficient
-!!    dtp_numweir(:) |none          |Total number of weirs in the BMP
-!!    dtp_numstage(:)|none          |Total number of stages in the weir
-!!    dtp_lwratio(:)   |none          |Ratio of length to width of water back up
-!!    dtp_totwrwid(:)|m             |Total constructed width of the detention wall across
-!!                                  |the creek
-!!    dtp_stagdis(:) |none          |0=use weir/orifice discharge equation to calculate
-!!                                  |outflow, 1=use stage-dicharge relationship
-!!    dtp_reltype(:) |none          |Equations for Stage-Discharge relationship,1=exponential
-!!                                  |function, 2=linear, 3=logarithmic, 4=cubic, 5=power
-!!    dtp_intcept(:) |none          |Intercept used in regression equations
-!!    dtp_expont(:)  |none          |Exponent used in the exponential equation
-!!    dtp_coef1(:)   |none          |Coefficient of 3rd degree in the polynomial equation
-!!    dtp_coef2(:)   |none          |Coefficient of 2nd degree in the polynomial equation
-!!    dtp_coef3(:)   |none          |Coefficient of 1st degree in the polynomial equation
-!!    dtp_dummy1(:)   |none         |Dummy variable, backs up space
-!!    dtp_dummy2(:)   |none         |Dummy variable, backs up space
-!!    dtp_dummy3(:)   |none         |Dummy variable, backs up space
-!!    dtp_weirtype(:,:)|none        |Type of weir: 1=rectangular and 2=circular
-!!    dtp_weirdim(:,:)|none         |Weir dimensions, 1=read user input, 0=use model calculation
-!!    dtp_wdratio(:,:)|none         |Width depth ratio of rectangular weirs
-!!    dtp_depweir(:,:)|m            |Depth of rectangular wier at different stages
-!!    dtp_diaweir(:,:)|m            |Diameter of orifice hole at different stages
-!!    dtp_addon(:,:)  |m            |The distance between spillway levels
-!!    dtp_flowrate(:,:)|m3/sec      |Maximum discharge from each stage of the weir/hole
-!!    dtp_cdis(:,:)  |none          |Discharge coeffieicne for weir/orifice flow
-!!    dtp_retperd(:,:)|years        |Return period at different stages
-!!    dtp_pcpret(:,:)|mm            |precipitation for different return periods (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    dummy       |none          |dummy array to read unused data
 !!    eof         |none          |end of file flag
 !!    evpnd       |none          |pond evaporation coefficient
+!!    ii
 !!    j           |none          |counter
+!!    k
+!!    lus
+!!    pnd_d50
+!!    pnd_d50mm
+!!    pndevcoeff
 !!    schla       |none          |value for CHLA used in subbasin
 !!    schlaw      |none          |value for CHLAW used in subbasin
 !!    sifld1      |none          |value for IFLOD1 used in subbasin
@@ -142,6 +149,7 @@ subroutine readpnd
 !!    spsolp      |mg P/L        |concentration of soluble P in pond
 !!    sseci       |none          |value for SECCI used in subbasin
 !!    sseciw      |none          |value for SECCIW used in subbasin
+!!    sub_ha
 !!    sw1         |m/year        |value for PSETLW1 used in subbasin
 !!    sw2         |m/year        |value for PSETLW2 used in subbasin
 !!    swetfr      |none          |value for WET_FR used in subbasin
@@ -158,6 +166,8 @@ subroutine readpnd
 !!    sworgp      |mg P/L        |concentration of organic P in water
 !!    swsolp      |mg P/L        |concentration of soluble P in water
 !!    titldum     |NA            |title line of .pnd file
+!!    velsetlpnd
+!!    wetevcoeff
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -166,15 +176,16 @@ subroutine readpnd
    use parm
    implicit none
 
-   character (len=80) :: titldum
+   real*8 :: dummy(mudb)
    character (len=200) :: lus
-   integer :: eof, j, sifld1, sifld2, sndt, spnd1, spnd2, ii, k
-   real*8 :: spndfr, spndpsa, spndpv, spndesa, spndev, spndv,&
-   &spnds, spndns, spndk, swetfr, swetnsa, swetnv, swetmsa, sp1,&
-   &swetmv, swetv, swets, swetns, swetk, sp2, sw1, sw2,&
-   &sn1, sn2, snw1, snw2, schla, schlaw, sseci, sseciw,&
-   &spno3, spsolp, sporgn, sporgp, swno3, swsolp, sworgn,&
-   &sworgp, sub_ha, velsetlpnd, pnd_d50, pndevcoeff, wetevcoeff, pnd_d50mm
+   character (len=80) :: titldum
+   real*8 :: pnd_d50, pnd_d50mm, pndevcoeff, schla, schlaw, sn1, sn2,&
+      &snw1, snw2, sp1, sp2, spndesa, spndev, spndfr, spndk, spndns, spndpsa,&
+      &spndpv, spnds, spndv, spno3, sporgn, sporgp, spsolp, sseci, sseciw,&
+      &sub_ha, sw1, sw2, swetfr, swetk, swetmsa, swetmv, swetns, swetnsa,&
+      &swetnv, swets, swetv, swno3, sworgn, sworgp, swsolp, velsetlpnd,&
+      &wetevcoeff
+   integer :: eof, ii, j, k, sifld1, sifld2, sndt, spnd1, spnd2
 
    eof = 0
    spndfr = 0.
@@ -392,25 +403,26 @@ subroutine readpnd
          read (104,*,iostat=eof) dtp_coef3(i)
          if (eof < 0) exit
 
-         read (104,*,iostat=eof) (dtp_weirtype(i,k),k=1,dtp_numstage(i))
+         j = dtp_numstage(i)
+         read (104,*,iostat=eof) (dtp_weirtype(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_weirdim(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_weirdim(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_wdratio(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_wdratio(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_depweir(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_depweir(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_diaweir(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_diaweir(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_addon(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_addon(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_flowrate(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_flowrate(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_cdis(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_cdis(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_retperd(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_retperd(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_pcpret(i,k),k=1,dtp_numstage(i))
+         read (104,*,iostat=eof) (dtp_pcpret(i,k),k=1,j)
          if (eof < 0) exit
          exit
       end do
@@ -513,25 +525,26 @@ subroutine readpnd
          end if
 
          read (104,5100,iostat=eof) titldum
-         read (104,*,iostat=eof) (ri_fr(i,k),k=1,num_ri(i))
+         j = num_ri(i)
+         read (104,*,iostat=eof) (ri_fr(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_dim(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_dim(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_im(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_im(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_iy(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_iy(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_sa(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_sa(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_vol(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_vol(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_qi(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_qi(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_k(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_k(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_dd(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_dd(i,k),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (ri_evrsv(i,k),k=1,num_ri(i))
+         read (104,*,iostat=eof) (ri_evrsv(i,k),k=1,j)
          if (eof < 0) exit
          close (104)
          exit
@@ -549,35 +562,36 @@ subroutine readpnd
          if (eof < 0) exit
          read (104,5100,iostat=eof) titldum
 
-         read (104,*,iostat=eof) (sf_fr(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sf_typ(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sf_dim(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sf_ptp(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sf_im(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sf_iy(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_sa(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_pvol(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_qfg(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_pd(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_qi(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_bpw(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_k(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_dp(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_sedi(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (sp_sede(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_sa(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_fsa(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_qfg(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_pd(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_dep(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_bpw(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_k(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_dp(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_dc(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_h(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_por(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (tss_den(i,k),k=1,num_sf(i))
-         read (104,*,iostat=eof) (ft_alp(i,k),k=1,num_sf(i))
+         j = num_sf(i)
+         read (104,*,iostat=eof) (sf_fr(i,k),k=1,j)
+         read (104,*,iostat=eof) (sf_typ(i,k),k=1,j)
+         read (104,*,iostat=eof) (sf_dim(i,k),k=1,j)
+         read (104,*,iostat=eof) (sf_ptp(i,k),k=1,j)
+         read (104,*,iostat=eof) (sf_im(i,k),k=1,j)
+         read (104,*,iostat=eof) (sf_iy(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_sa(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_pvol(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_qfg(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_pd(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_qi(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_bpw(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_k(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_dp(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_sedi(i,k),k=1,j)
+         read (104,*,iostat=eof) (sp_sede(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_sa(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_fsa(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_qfg(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_pd(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_dep(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_bpw(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_k(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_dp(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_dc(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_h(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_por(i,k),k=1,j)
+         read (104,*,iostat=eof) (tss_den(i,k),k=1,j)
+         read (104,*,iostat=eof) (ft_alp(i,k),k=1,j)
          close (104)
          exit
       end do
@@ -607,11 +621,11 @@ subroutine readpnd
          read (104,*,iostat=eof) (gr_por(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_hydeff(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_soldpt(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_dummy1(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_dummy2(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_dummy3(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_dummy4(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_dummy5(i,k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
          if (eof < 0) exit
          !! Rain Garden (rg)
          read (104,*,iostat=eof) (rg_onoff(i,k),k=1,mudb)
@@ -636,11 +650,11 @@ subroutine readpnd
          read (104,*,iostat=eof) (rg_orifice(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_oheight(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_odia(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_dummy1(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_dummy2(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_dummy3(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_dummy4(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_dummy5(i,k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
          !! CiStern (CS)
          read (104,*,iostat=eof) (cs_onoff(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_imo(i,k),k=1,mudb)
@@ -649,11 +663,11 @@ subroutine readpnd
          read (104,*,iostat=eof) (cs_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_vol(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_rdepth(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_dummy1(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_dummy2(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_dummy3(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_dummy4(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_dummy5(i,k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
          !! Porous paVement (PV)
          read (104,*,iostat=eof) (pv_onoff(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_imo(i,k),k=1,mudb)
@@ -668,11 +682,11 @@ subroutine readpnd
          read (104,*,iostat=eof) (pv_ksat(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_por(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_hydeff(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_dummy1(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_dummy2(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_dummy3(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_dummy4(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_dummy5(i,k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
          close (104)
          exit
       end do

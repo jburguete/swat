@@ -110,9 +110,6 @@ subroutine zero_urbn
    dtp_coef1 = 0.
    dtp_coef2 = 0.
    dtp_coef3 = 0.
-   dtp_dummy1 = 0.
-   dtp_dummy2 = 0.
-   dtp_dummy3 = 0.
    dtp_wdratio = 0.
    dtp_depweir = 0.
    dtp_diaweir = 0.

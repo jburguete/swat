@@ -1630,24 +1630,24 @@ subroutine allocate_parms
    allocate (sub_atmp(msub,nstep),bmp_recharge(msub))
    allocate (rchhr(mrcho,mch,nstep),hrtevp(nstep),hrttlc(nstep))
    allocate (hhresflwi(nstep), hhresflwo(nstep),hhressedi(nstep),&
-   &hhressedo(nstep))
+      &hhressedo(nstep))
 !! Arrays for bmp simulation by jaehak jeong
    allocate (lu_nodrain(30),bmpdrain(mhru))
    allocate (subdr_km(mhyd),subdr_ickm(mhyd),sub_cn2(msub))
    ! sedimentation-filtration
    allocate (num_sf(msub),sf_fr(msub,10),sf_dim(msub,10),&
-   &sf_typ(msub,10),sf_im(msub,10),sf_iy(msub,10),sp_sa(msub,10),&
-   &sp_pvol(msub,10),sp_pd(msub,10),sp_sedi(msub,10),&
-   &sp_sede(msub,10),ft_sa(msub,10),ft_fsa(msub,10),&
-   &ft_dep(msub,10),ft_h(msub,10),ft_pd(msub,10),&
-   &ft_k(msub,10),ft_dp(msub,10),ft_dc(msub,10),&
-   &ft_por(msub,10),tss_den(msub,10),ft_alp(msub,10),&
-   &sp_qi(msub,10),sp_k(msub,10),sp_bpw(msub,10),&
-   &ft_bpw(msub,10),sp_dp(msub,10),ft_sed_cumul(msub,10),&
-   &sp_sed_cumul(msub,10),ft_qfg(msub,10),sp_qfg(msub,10))
+      &sf_typ(msub,10),sf_im(msub,10),sf_iy(msub,10),sp_sa(msub,10),&
+      &sp_pvol(msub,10),sp_pd(msub,10),sp_sedi(msub,10),&
+      &sp_sede(msub,10),ft_sa(msub,10),ft_fsa(msub,10),&
+      &ft_dep(msub,10),ft_h(msub,10),ft_pd(msub,10),&
+      &ft_k(msub,10),ft_dp(msub,10),ft_dc(msub,10),&
+      &ft_por(msub,10),tss_den(msub,10),ft_alp(msub,10),&
+      &sp_qi(msub,10),sp_k(msub,10),sp_bpw(msub,10),&
+      &ft_bpw(msub,10),sp_dp(msub,10),ft_sed_cumul(msub,10),&
+      &sp_sed_cumul(msub,10),ft_qfg(msub,10),sp_qfg(msub,10))
    allocate (sub_ha_imp(msub),ft_qpnd(msub,10),ft_qsw(msub,10),&
-   &ft_qin(msub,10),ft_qout(msub,10),ft_sedpnd(msub,10),&
-   &sf_ptp(msub,10),ft_fc(msub,10),sub_ha_urb(msub))
+      &ft_qin(msub,10),ft_qout(msub,10),ft_sedpnd(msub,10),&
+      &sf_ptp(msub,10),ft_fc(msub,10),sub_ha_urb(msub))
 !! additional var by Ann
 !! Filter Strip variable allocation MJW
    allocate (vfscon(mhru))
@@ -1661,25 +1661,24 @@ subroutine allocate_parms
 
    ! detention pond
    allocate(dtp_subnum(mhyd),dtp_imo(mhyd),dtp_iyr(mhyd),&
-   &dtp_numweir(mhyd),dtp_numstage(mhyd),&
-   &dtp_stagdis(mhyd),dtp_reltype(mhyd),dtp_onoff(mhyd))
+      &dtp_numweir(mhyd),dtp_numstage(mhyd),&
+      &dtp_stagdis(mhyd),dtp_reltype(mhyd),dtp_onoff(mhyd))
 
    allocate(dtp_evrsv(msub),&
-   &dtp_inflvol(msub),dtp_totwrwid(msub),dtp_lwratio(msub),&
-   &dtp_wdep(msub),dtp_totdep(msub),dtp_watdepact(msub),&
-   &dtp_outflow(msub),dtp_totrel(msub),dtp_backoff(msub),&
-   &dtp_seep_sa(msub),dtp_evap_sa(msub),dtp_pet_day(msub),&
-   &dtp_pcpvol(msub),dtp_seepvol(msub),dtp_evapvol(msub),&
-   &dtp_flowin(msub),dtp_backup_length(msub),dtp_intcept(msub),&
-   &dtp_expont(msub),dtp_coef1(msub),dtp_coef2(msub),&
-   &dtp_coef3(msub),dtp_dummy1(msub),dtp_dummy2(msub),&
-   &dtp_dummy3(msub),dtp_ivol(msub),dtp_ised(msub))
+      &dtp_inflvol(msub),dtp_totwrwid(msub),dtp_lwratio(msub),&
+      &dtp_wdep(msub),dtp_totdep(msub),dtp_watdepact(msub),&
+      &dtp_outflow(msub),dtp_totrel(msub),dtp_backoff(msub),&
+      &dtp_seep_sa(msub),dtp_evap_sa(msub),dtp_pet_day(msub),&
+      &dtp_pcpvol(msub),dtp_seepvol(msub),dtp_evapvol(msub),&
+      &dtp_flowin(msub),dtp_backup_length(msub),dtp_intcept(msub),&
+      &dtp_expont(msub),dtp_coef1(msub),dtp_coef2(msub),&
+      &dtp_coef3(msub),dtp_ivol(msub),dtp_ised(msub))
 
    allocate(dtp_wdratio(msub,10),dtp_depweir(msub,10),&
-   &dtp_diaweir(msub,10),dtp_retperd(msub,10),dtp_pcpret(msub,10),&
-   &dtp_cdis(msub,10),dtp_flowrate(msub,10),&
-   &dtp_wrwid(msub,10),dtp_weirtype(msub,10),dtp_weirdim(msub,10),&
-   &dtp_addon(msub,10))
+      &dtp_diaweir(msub,10),dtp_retperd(msub,10),dtp_pcpret(msub,10),&
+      &dtp_cdis(msub,10),dtp_flowrate(msub,10),&
+      &dtp_wrwid(msub,10),dtp_weirtype(msub,10),dtp_weirdim(msub,10),&
+      &dtp_addon(msub,10))
    !! additional var by jeong for nutrient speciation
    allocate (lat_orgn(mhru))
    allocate (lat_orgp(mhru))
@@ -1750,24 +1749,24 @@ subroutine allocate_parms
 
    !retention irrigation
    allocate(ri_sed(msub,10),ri_fr(msub,10),ri_dim(msub,10),&
-   &ri_im(msub,10),ri_iy(msub,10),ri_sa(msub,10),ri_vol(msub,10),&
-   &ri_qi(msub,10),ri_k(msub,10),ri_dd(msub,10),ri_evrsv(msub,10),&
-   &ri_dep(msub,10),ri_ndt(msub,10),ri_nirr(msub,30),&
-   &num_noirr(msub),ri_totpvol(nstep),ri_luflg(mhru),&
-   &ri_subkm(msub),ri_sed_cumul(msub,10),irmmdt(nstep),&
-   &ri_pumpv(msub,10),ri_sedi(msub,10))
+      &ri_im(msub,10),ri_iy(msub,10),ri_sa(msub,10),ri_vol(msub,10),&
+      &ri_qi(msub,10),ri_k(msub,10),ri_dd(msub,10),ri_evrsv(msub,10),&
+      &ri_dep(msub,10),ri_ndt(msub,10),ri_nirr(msub,30),&
+      &num_noirr(msub),ri_totpvol(nstep),ri_luflg(mhru),&
+      &ri_subkm(msub),ri_sed_cumul(msub,10),irmmdt(nstep),&
+      &ri_pumpv(msub,10),ri_sedi(msub,10))
    allocate(num_ri(msub), ri_pmpvol(10,nstep),hrnopcp(msub,0:nstep),&
-   &ri_qloss(10,nstep))
+      &ri_qloss(10,nstep))
 
    !wet pond
    allocate(wtp_subnum(mhyd),wtp_onoff(mhyd),wtp_imo(mhyd),&
-   &wtp_iyr(mhyd),wtp_dim(mhyd),wtp_stagdis(mhyd),wtp_sdtype(mhyd),&
-   &wtp_pvol(mhyd),wtp_pdepth(mhyd),wtp_sdslope(mhyd),&
-   &wtp_lenwdth(mhyd),wtp_extdepth(mhyd),wtp_hydeff(mhyd),&
-   &wtp_evrsv(mhyd),wtp_sdintc(mhyd),wtp_sdexp(mhyd),wtp_sdc1(mhyd),&
-   &wtp_sdc2(mhyd),wtp_sdc3(mhyd),wtp_pdia(mhyd),wtp_plen(mhyd),&
-   &wtp_pmann(mhyd),wtp_ploss(mhyd),wtp_k(mhyd),&
-   &wtp_dp(mhyd),wtp_sedi(mhyd),wtp_sede(mhyd),wtp_qi(mhyd))
+      &wtp_iyr(mhyd),wtp_dim(mhyd),wtp_stagdis(mhyd),wtp_sdtype(mhyd),&
+      &wtp_pvol(mhyd),wtp_pdepth(mhyd),wtp_sdslope(mhyd),&
+      &wtp_lenwdth(mhyd),wtp_extdepth(mhyd),wtp_hydeff(mhyd),&
+      &wtp_evrsv(mhyd),wtp_sdintc(mhyd),wtp_sdexp(mhyd),wtp_sdc1(mhyd),&
+      &wtp_sdc2(mhyd),wtp_sdc3(mhyd),wtp_pdia(mhyd),wtp_plen(mhyd),&
+      &wtp_pmann(mhyd),wtp_ploss(mhyd),wtp_k(mhyd),&
+      &wtp_dp(mhyd),wtp_sedi(mhyd),wtp_sede(mhyd),wtp_qi(mhyd))
 
 !!    LID simulations
 !!    Common variable
@@ -1775,44 +1774,38 @@ subroutine allocate_parms
 !      allocate(lid_vgcl,lid_vgcm,lid_qsurf_total,
 !     & lid_farea_sum)
    allocate(lid_cuminf_last(mhru,4),lid_sw_last(mhru,4),&
-   &interval_last(mhru,4),lid_f_last(mhru,4),lid_cumr_last(mhru,4),&
-   &lid_str_last(mhru,4),lid_farea(mhru,4),lid_qsurf(mhru,4),&
-   &lid_sw_add(mhru,4),lid_cumqperc_last(mhru,4),&
-   &lid_cumirr_last(mhru,4),lid_excum_last(mhru,4))    !!  nbs
+      &interval_last(mhru,4),lid_f_last(mhru,4),lid_cumr_last(mhru,4),&
+      &lid_str_last(mhru,4),lid_farea(mhru,4),lid_qsurf(mhru,4),&
+      &lid_sw_add(mhru,4),lid_cumqperc_last(mhru,4),&
+      &lid_cumirr_last(mhru,4),lid_excum_last(mhru,4))    !!  nbs
 
 !!    Green Roof
    allocate(gr_onoff(msub,mudb),gr_imo(msub,mudb),gr_iyr(msub,mudb),&
-   &gr_farea(msub,mudb),gr_solop(msub,mudb),gr_etcoef(msub,mudb),&
-   &gr_fc(msub,mudb),gr_wp(msub,mudb),gr_ksat(msub,mudb),&
-   &gr_por(msub,mudb),gr_hydeff(msub,mudb),gr_soldpt(msub,mudb),&
-   &gr_dummy1(msub,mudb),gr_dummy2(msub,mudb),gr_dummy3(msub,mudb),&
-   &gr_dummy4(msub,mudb),gr_dummy5(msub,mudb))
+      &gr_farea(msub,mudb),gr_solop(msub,mudb),gr_etcoef(msub,mudb),&
+      &gr_fc(msub,mudb),gr_wp(msub,mudb),gr_ksat(msub,mudb),&
+      &gr_por(msub,mudb),gr_hydeff(msub,mudb),gr_soldpt(msub,mudb))
 
 !!    Rain Garden
    allocate(rg_onoff(msub,mudb),rg_imo(msub,mudb),rg_iyr(msub,mudb),&
-   &rg_farea(msub,mudb),rg_solop(msub,mudb),rg_etcoef(msub,mudb),&
-   &rg_fc(msub,mudb),rg_wp(msub,mudb),rg_ksat(msub,mudb),&
-   &rg_por(msub,mudb),rg_hydeff(msub,mudb),rg_soldpt(msub,mudb),&
-   &rg_dimop(msub,mudb),rg_sarea(msub,mudb),rg_vol(msub,mudb),&
-   &rg_sth(msub,mudb),rg_sdia(msub,mudb),rg_bdia(msub,mudb),&
-   &rg_sts(msub,mudb),rg_orifice(msub,mudb),rg_oheight(msub,mudb),&
-   &rg_odia(msub,mudb),rg_dummy1(msub,mudb),rg_dummy2(msub,mudb),&
-   &rg_dummy3(msub,mudb),rg_dummy4(msub,mudb),rg_dummy5(msub,mudb))
+      &rg_farea(msub,mudb),rg_solop(msub,mudb),rg_etcoef(msub,mudb),&
+      &rg_fc(msub,mudb),rg_wp(msub,mudb),rg_ksat(msub,mudb),&
+      &rg_por(msub,mudb),rg_hydeff(msub,mudb),rg_soldpt(msub,mudb),&
+      &rg_dimop(msub,mudb),rg_sarea(msub,mudb),rg_vol(msub,mudb),&
+      &rg_sth(msub,mudb),rg_sdia(msub,mudb),rg_bdia(msub,mudb),&
+      &rg_sts(msub,mudb),rg_orifice(msub,mudb),rg_oheight(msub,mudb),&
+      &rg_odia(msub,mudb))
 
 !!    CiStern
    allocate(cs_onoff(msub,mudb),cs_imo(msub,mudb),cs_iyr(msub,mudb),&
-   &cs_grcon(msub,mudb),cs_farea(msub,mudb),cs_vol(msub,mudb),&
-   &cs_rdepth(msub,mudb),cs_dummy1(msub,mudb),cs_dummy2(msub,mudb),&
-   &cs_dummy3(msub,mudb),cs_dummy4(msub,mudb),cs_dummy5(msub,mudb))
+      &cs_grcon(msub,mudb),cs_farea(msub,mudb),cs_vol(msub,mudb),&
+      &cs_rdepth(msub,mudb))
 
 !!    Poropus paVement
    allocate(pv_onoff(msub,mudb),pv_imo(msub,mudb),pv_iyr(msub,mudb),&
-   &pv_grvdep(msub,mudb),pv_grvpor(msub,mudb),pv_farea(msub,mudb),&
-   &pv_solop(msub,mudb),pv_drcoef(msub,mudb),pv_fc(msub,mudb),&
-   &pv_wp(msub,mudb),pv_ksat(msub,mudb),pv_por(msub,mudb),&
-   &pv_hydeff(msub,mudb),pv_soldpt(msub,mudb),pv_dummy1(msub,mudb),&
-   &pv_dummy2(msub,mudb),pv_dummy3(msub,mudb),pv_dummy4(msub,mudb),&
-   &pv_dummy5(msub,mudb))
+      &pv_grvdep(msub,mudb),pv_grvpor(msub,mudb),pv_farea(msub,mudb),&
+      &pv_solop(msub,mudb),pv_drcoef(msub,mudb),pv_fc(msub,mudb),&
+      &pv_wp(msub,mudb),pv_ksat(msub,mudb),pv_por(msub,mudb),&
+      &pv_hydeff(msub,mudb),pv_soldpt(msub,mudb))
 
 !!    LID general
    allocate(lid_onoff(msub,mudb))
