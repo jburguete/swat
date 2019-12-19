@@ -20,7 +20,6 @@ foreach $source (@sources)
 	}
 }
 print DATA "\nmods = parm.mod\n".
-	"\nall: swat\$(EXE) latex/refman.pdf\n".
 	"\nswat\$(EXE): \$(mods) \$(objs)\n".
 	"\t\$(cc) \$(LDFLAGS) \$(objs) -o swat\$(EXE)\n".
 	"\nstrip:\n\tmake\n\t\$(strip) swat\$(EXE)\n".

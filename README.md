@@ -117,11 +117,7 @@ Instructions to generate a reference programming manual from source code
 
 Type on the UNIX type terminal (you need [Doxygen](http://www.doxygen.nl) and
 [TeX Live](https://www.tug.org/texlive) or [MiKTeX](https://miktex.org/)):
-> $ doxygen
->
-> $ cd latex
->
-> $ make
+> $ make latex/refman.pdf
 
 The reference programming manual file latex/refman.pdf is generated from source
 code in PDF format
