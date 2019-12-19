@@ -1,8 +1,11 @@
-subroutine xmon
+!> @file xmon.f90
+!> file containing the subroutine xmon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine determines the month, given the julian date and leap
-!!    year flag
+!> this subroutine determines the month, given the julian date and leap
+!> year flag
+subroutine xmon
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

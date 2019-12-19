@@ -1,8 +1,11 @@
-subroutine readinpt
+!> @file readinpt.f90
+!> file containing the subroutine readinpt
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calls subroutines which read input data for the
-!!    databases and the HRUs
+!> this subroutine calls subroutines which read input data for the
+!> databases and the HRUs
+subroutine readinpt
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

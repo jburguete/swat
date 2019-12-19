@@ -1,8 +1,11 @@
-subroutine readru
+!> @file readru.f90
+!> file containing the subroutine readru
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the sub input file (.sub).
-!!    This file contains data related to routing .
+!> this subroutine reads data from the sub input file (.sub).
+!> This file contains data related to routing
+subroutine readru
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definitionov
@@ -11,21 +14,27 @@ subroutine readru
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
-!!    da_ru       |ha            |area of routing unit
-!!    ovsl        |(m)           |average slope length
-!!    ovs_ru      |(m)           |average slope steepness
-!!    ovn_ru      |              |Manning's N value overland flow
-!!    chl_ru      |(km)          |channel length
-!!    chs_ru      |(m/m)         |ave slope
-!!    chw_ru      |(mm/km)       |ave width
-!!    chk_ru      |(mm/hr)       |eff hydr cond
-!!    chn_ru      |              |Manning's N tributary channels
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    chk_ru      |(mm/hr)       |eff hydr cond
+!!    chl_ru      |(km)          |channel length
+!!    chn_ru      |              |Manning's N tributary channels
+!!    chs_ru      |(m/m)         |ave slope
+!!    chw_ru      |(mm/km)       |ave width
+!!    da_ru       |ha            |area of routing unit
+!!    eof
+!!    ix
+!!    j
+!!    ovn_ru      |              |Manning's N value overland flow
+!!    ovs         |(m)           |average slope steepness
+!!    ovsl        |(m)           |average slope length
+!!    sumk
+!!    tck
+!!    titldum
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -34,9 +43,9 @@ subroutine readru
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof, j
    real*8 :: chk_ru, chl_ru, chn_ru, chs_ru, chw_ru, da_ru, ix,&
-   &ovn_ru, ovs, ovsl, sumk, tck
+      &ovn_ru, ovs, ovsl, sumk, tck
+   integer :: eof, j
 
    eof = 0
    tck = 0.

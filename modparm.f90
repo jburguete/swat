@@ -436,7 +436,8 @@ module parm
    integer :: nrch !< number of reaches in watershed (none)
    integer :: nres !< number of reservoirs in watershed (none)
    integer :: nhru !< number of last HRU in previous subbasin (none)
-   integer :: mo, immo, i_mo
+   integer :: i_mo !< current month being simulated (none)
+   integer :: mo, immo
 !> wind speed input code\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
@@ -462,7 +463,9 @@ module parm
 !> crack flow code\n
 !> 1: compute flow in cracks
    integer :: icrk
-!> number of pesticide to be routed through the watershed
+!> number of pesticide to be routed through the watershed. Redefined to the
+!> sequence number of pestcide in NPNO(:) which is to be routed through the
+!> watershed (none)
    integer :: irtpest
 !> Qual2E option for calculating the local specific growth rate of algae\n
 !> 1: multiplicative \f\[u=mumax\,fll\,fnn\,fpp\f\]
@@ -529,7 +532,11 @@ module parm
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: rhsim
-   integer :: id1, leapyr, mo_chk
+!> leap year flag (none)\n
+!> 0  leap year\n
+!> 1  regular year
+   integer :: leapyr
+   integer :: id1, mo_chk
    integer :: nhtot !< number of relative humidity records in file
    integer :: nstot !< number of solar radiation records in file
    integer :: nwtot !< number of wind speed records in file
@@ -572,7 +579,7 @@ module parm
 !> 1: generate new numbers in every simulation
    integer :: igen
    integer :: iprint !< print code: 0=monthly, 1=daily, 2=annual
-   integer :: iida
+   integer :: iida !< day being simulated (current julian day) (julian date)
 !> CN method flag (for testing alternative method):\n
 !> 0 use traditional SWAT method which bases CN on soil moisture\n
 !> 1 use alternative method which bases CN on plant ET
@@ -625,7 +632,6 @@ module parm
 !> number of the month). The dates are for leap years (julian date)
    integer, dimension (13) :: ndays
    integer, dimension (13) :: ndays_noleap, ndays_leap
-!     apex/command output files
    integer :: mapex
    real*8, dimension (:), allocatable :: flodaya, seddaya, orgndaya
    real*8, dimension (:), allocatable :: orgpdaya, no3daya, minpdaya
@@ -1028,7 +1034,11 @@ module parm
 !> average annual air temperature (deg C)
    real*8, dimension (:), allocatable :: tmp_an
    real*8, dimension (:), allocatable :: sub_precip
-   real*8, dimension (:), allocatable :: pcpdays, rcn_sub, rammo_sub
+!> atmospheric deposition of ammonium values for entire watershed (mg/l)
+   real*8, dimension (:), allocatable :: rammo_sub
+!> atmospheric deposition of nitrate for entire watershed (mg/l)
+   real*8, dimension (:), allocatable :: rcn_sub
+   real*8, dimension (:), allocatable :: pcpdays
    real*8, dimension (:), allocatable :: atmo_day
    real*8, dimension (:), allocatable :: sub_snom,sub_qd,sub_sedy
    real*8, dimension (:), allocatable :: sub_tran,sub_no3,sub_latno3
@@ -1379,7 +1389,7 @@ module parm
    real*8, dimension (:), allocatable :: pst_wsol
    real*8, dimension (:), allocatable :: irramt
    real*8, dimension (:), allocatable :: phusw, phusw_nocrop
-!> flag for types of pesticide used in watershed array location is pesticide ID
+!> flag for types of pesticide used in watershed. Array location is pesticide ID
 !> number\n
 !> 0: pesticide not used\n
 !> 1: pesticide used
@@ -1969,7 +1979,10 @@ module parm
    real*8, dimension (:), allocatable :: strsp,strstmp,surfq,surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
    real*8, dimension (:), allocatable :: tcfrtn,tcfrtp,hru_dafr
-   real*8, dimension (:), allocatable :: drydep_no3, drydep_nh4
+!> atmospheric dry deposition of nitrates (kg/ha/yr)
+   real*8, dimension (:), allocatable :: drydep_no3
+!> atmospheric dry deposition of ammonia (kg/ha/yr)
+   real*8, dimension (:), allocatable :: drydep_nh4
    real*8, dimension (:), allocatable :: phubase,bio_yrms,hvstiadj
    real*8, dimension (:), allocatable :: laiday !< leaf area index (m^2/m^2)
 !> chlorophyll-a production coefficient for pond (none)
@@ -2248,24 +2261,83 @@ module parm
    real*8, dimension (:,:,:), allocatable :: chlamon
 !> average daily loading of dissolved O2 in month (kg/day)
    real*8, dimension (:,:,:), allocatable :: disoxmon
-   real*8, dimension (:,:), allocatable :: floyr,sedyr,orgnyr,orgpyr
-   real*8, dimension (:,:), allocatable :: no3yr,minpyr,nh3yr,no2yr
-   real*8, dimension (:,:), allocatable :: bactpyr,bactlpyr,cmtl1yr
-   real*8, dimension (:,:), allocatable :: cmtl2yr,cmtl3yr,chlayr
-   real*8, dimension (:,:), allocatable :: disoxyr,cbodyr,solpstyr
+!> average daily water loading for year (m^3/day)
+   real*8, dimension (:,:), allocatable :: floyr
+!> average daily organic N loading for year (kg N/day)
+   real*8, dimension (:,:), allocatable :: orgnyr
+!> average daily organic P loading for year (kg P/day)
+   real*8, dimension (:,:), allocatable :: orgpyr
+!> average daily sediment loading for year (metric tons/day)
+   real*8, dimension (:,:), allocatable :: sedyr
+!> average daily mineral P loading for year (kg P/day)
+   real*8, dimension (:,:), allocatable :: minpyr
+!> average daily NH3-N loading for year (kg N/day)
+   real*8, dimension (:,:), allocatable :: nh3yr
+!> average daily NO2-N loading for year (kg N/day)
+   real*8, dimension (:,:), allocatable :: no2yr
+!> average daily NO3-N loading for year (kg N/day)
+   real*8, dimension (:,:), allocatable :: no3yr
+!> average daily loading of less persistent bacteria for year (# bact/day)
+   real*8, dimension (:,:), allocatable :: bactlpyr
+!> average daily loading of persistent bacteria for year (# bact/day)
+   real*8, dimension (:,:), allocatable :: bactpyr
+!> average daily loading of conservative metal #1 for year (kg/day)
+   real*8, dimension (:,:), allocatable :: cmtl1yr
+!> average daily loading of chlorophyll-a in year (kg/day)
+   real*8, dimension (:,:), allocatable :: chlayr
+!> average daily loading of conservative metal #2 for year (kg/day)
+   real*8, dimension (:,:), allocatable :: cmtl2yr
+!> average daily loading of conservative metal #3 for year (kg/day)
+   real*8, dimension (:,:), allocatable :: cmtl3yr
+!> average daily loading of CBOD in year (kg/day)
+   real*8, dimension (:,:), allocatable :: cbodyr
+!> average daily loading of dissolved O2 in year (kg/day)
+   real*8, dimension (:,:), allocatable :: disoxyr
+!> average daily soluble pesticide loading for year (mg pst/day)
+   real*8, dimension (:,:), allocatable :: solpstyr
+!> average daily sorbed pesticide loading for year (mg pst/day)
    real*8, dimension (:,:), allocatable :: srbpstyr
    real*8, dimension (:,:), allocatable :: sol_mc,sol_mn,sol_mp
-   real*8, dimension (:), allocatable :: flocnst,sedcnst,orgncnst
-   real*8, dimension (:), allocatable :: orgpcnst,no3cnst,minpcnst
-   real*8, dimension (:), allocatable :: nh3cnst,no2cnst,bactpcnst
-   real*8, dimension (:), allocatable :: cmtl1cnst,cmtl2cnst,bactlpcnst
-   real*8, dimension (:), allocatable :: cmtl3cnst,chlacnst,disoxcnst
-   real*8, dimension (:), allocatable :: cbodcnst,solpstcnst,srbpstcnst
+!average daily water loading to reach (m^3 H2O/day)
+   real*8, dimension (:), allocatable :: flocnst
+!> average daily organic N loading to reach (kg N/day)
+   real*8, dimension (:), allocatable :: orgncnst
+!> average daily sediment loading for reach (metric tons/day)
+   real*8, dimension (:), allocatable :: sedcnst
+!> average daily soluble P loading to reach (kg P/day)
+   real*8, dimension (:), allocatable :: minpcnst
+!> average daily nitrate loading to reach (kg N/day)
+   real*8, dimension (:), allocatable :: no3cnst
+!> average daily organic P loading to reach (kg P/day)
+   real*8, dimension (:), allocatable :: orgpcnst
+!> average daily persistent bacteria loading to reach (# bact/day)
+   real*8, dimension (:), allocatable :: bactpcnst
+!> average daily ammonia loading to reach (kg N/day)
+   real*8, dimension (:), allocatable :: nh3cnst
+!> average daily nitrite loading to reach (kg N/day)
+   real*8, dimension (:), allocatable :: no2cnst
+!> average daily less persistent bacteria loading to reach (# bact/day)
+   real*8, dimension (:), allocatable :: bactlpcnst
+!> average daily conservative metal #1 loading (kg/day)
+   real*8, dimension (:), allocatable :: cmtl1cnst
+!> average daily conservative metal #2 loading (kg/day)
+   real*8, dimension (:), allocatable :: cmtl2cnst
+!> average daily loading of chlorophyll-a (kg/day)
+   real*8, dimension (:), allocatable :: chlacnst
+!> average daily conservative metal #3 loading (kg/day)
+   real*8, dimension (:), allocatable :: cmtl3cnst
+!> average daily loading of dissolved O2 (kg/day)
+   real*8, dimension (:), allocatable :: disoxcnst
+!> average daily loading of CBOD to reach (kg/day)
+   real*8, dimension (:), allocatable :: cbodcnst
+!> average daily soluble pesticide loading (mg/day)
+   real*8, dimension (:), allocatable :: solpstcnst
+!> average daily sorbed pesticide loading (mg/day)
+   real*8, dimension (:), allocatable :: srbpstcnst
 
-! hourly time step (by AVG)
-!!    nstep       |none        |number of lines of rainfall data for each
-!!                             |day
-   integer :: nstep !< max number of time steps per day
+!> max number of time steps per day or number of lines of rainfall data for each
+!> day
+   integer :: nstep
 !> length of time step used to report precipitation data for sub-daily modeling
 !> (minutes)
    integer :: idt

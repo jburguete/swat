@@ -1,7 +1,11 @@
+!> @file readatmodep.f90
+!> file containing the subroutine readatmodep
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reads the atmospheric deposition values
 subroutine readatmodep
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads the atmospheric deposition values
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -20,8 +24,13 @@ subroutine readatmodep
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
-!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
+!!    idap
+!!    iii
+!!    imo
+!!    iyp
+!!    mo_max
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 

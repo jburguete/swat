@@ -1,7 +1,10 @@
-subroutine readcnst
+!> @file readcnst.f90
+!> file containing the subroutine readcnst.f90
+!> @author
+!> modified by Javier Burguete
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     reads in the loading information for the reccnst command
+!> reads in the loading information for the reccnst command
+subroutine readcnst
 
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name         |units         |definition
@@ -56,11 +59,11 @@ subroutine readcnst
       read (109,5000) titldum
    end do
    read (109,*) flocnst(i), sedcnst(i), orgncnst(i), orgpcnst(i),&
-   &no3cnst(i), nh3cnst(i), no2cnst(i), minpcnst(i),&
-   &cbodcnst(i), disoxcnst(i), chlacnst(i),&
-   &solpstcnst(i), srbpstcnst(i), bactpcnst(i),&
-   &bactlpcnst(i), cmtl1cnst(i), cmtl2cnst(i),&
-   &cmtl3cnst(i)
+      &no3cnst(i), nh3cnst(i), no2cnst(i), minpcnst(i),&
+      &cbodcnst(i), disoxcnst(i), chlacnst(i),&
+      &solpstcnst(i), srbpstcnst(i), bactpcnst(i),&
+      &bactlpcnst(i), cmtl1cnst(i), cmtl2cnst(i),&
+      &cmtl3cnst(i)
 
    close (109)
 
