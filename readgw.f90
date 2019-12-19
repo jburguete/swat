@@ -1,8 +1,11 @@
-subroutine readgw
+!> @file readgw.f90
+!> file containing the suroutine readgw
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads the parameters from the HRU/subbasin groundwater
-!!    input file (.gw)
+!> this subroutine reads the parameters from the HRU/subbasin groundwater
+!> input file (.gw)
+subroutine readgw
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -51,6 +54,7 @@ subroutine readgw
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof         |none          |end of file flag
+!!    hlife_ngw
 !!    titldum     |NA            |title line for .gw file
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -63,38 +67,39 @@ subroutine readgw
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
    real*8 :: hlife_ngw
+   integer :: eof, j
 
    eof = 0
    hlife_ngw = 0.0
+   j = ihru
 
    do
       read (110,5000) titldum
-      read (110,*) shallst(ihru)
-      read (110,*) deepst(ihru)
-      read (110,*) delay(ihru)
-      read (110,*) alpha_bf(ihru)
-      read (110,*) gwqmn(ihru)
-      read (110,*) gw_revap(ihru)
-      read (110,*) revapmn(ihru)
-      read (110,*) rchrg_dp(ihru)
-      read (110,*,iostat=eof) gwht(ihru)
+      read (110,*) shallst(j)
+      read (110,*) deepst(j)
+      read (110,*) delay(j)
+      read (110,*) alpha_bf(j)
+      read (110,*) gwqmn(j)
+      read (110,*) gw_revap(j)
+      read (110,*) revapmn(j)
+      read (110,*) rchrg_dp(j)
+      read (110,*,iostat=eof) gwht(j)
       if (eof < 0) exit
-      read (110,*,iostat=eof) gw_spyld(ihru)
+      read (110,*,iostat=eof) gw_spyld(j)
       if (eof < 0) exit
-      read (110,*,iostat=eof) shallst_n(ihru)
+      read (110,*,iostat=eof) shallst_n(j)
       if (eof < 0) exit
-      read (110,*,iostat=eof) gwminp(ihru)
+      read (110,*,iostat=eof) gwminp(j)
       if (eof < 0) exit
       read (110,*,iostat=eof) hlife_ngw
       if (eof < 0) exit
 !! organic n and p in the lateral flow     - by J.Jeong BREC 2011
-      read (110,*,iostat=eof) lat_orgn(ihru)
+      read (110,*,iostat=eof) lat_orgn(j)
       if (eof < 0) exit
-      read (110,*,iostat=eof) lat_orgp(ihru)
+      read (110,*,iostat=eof) lat_orgp(j)
       if (eof < 0) exit
-      read (110,*,iostat=eof) alpha_bf_d(ihru)
+      read (110,*,iostat=eof) alpha_bf_d(j)
       exit
    end do
 
@@ -103,27 +108,27 @@ subroutine readgw
 !!    set default values for mike van liew
 
 !!    set default values
-   if (deepst(ihru) <= 0.) deepst(ihru) = 1000.
+   if (deepst(j) <= 0.) deepst(j) = 1000.
    if (hlife_ngw <= 0.) hlife_ngw = 365.
-   if (lat_orgn(ihru) <= 1.e-6) lat_orgn(ihru) = 0.
-   if (lat_orgp(ihru) <= 1.e-6) lat_orgp(ihru) = 0.
+   if (lat_orgn(j) <= 1.e-6) lat_orgn(j) = 0.
+   if (lat_orgp(j) <= 1.e-6) lat_orgp(j) = 0.
 
 !!    perform additional calculations
-   alpha_bfe(ihru) = Exp(-alpha_bf(ihru))
-   if(delay(ihru) < .1) delay(ihru) = .1
-   gw_delaye(ihru) = Exp(-1./(delay(ihru) + 1.e-6))
-   shallst_n(ihru) = shallst_n(ihru) * shallst(ihru) / 100.
-   gw_nloss(ihru) = Exp(-.693 / hlife_ngw)
+   alpha_bfe(j) = Exp(-alpha_bf(j))
+   if(delay(j) < .1) delay(j) = .1
+   gw_delaye(j) = Exp(-1./(delay(j) + 1.e-6))
+   shallst_n(j) = shallst_n(j) * shallst(j) / 100.
+   gw_nloss(j) = Exp(-.693 / hlife_ngw)
 
 !!    alpha baseflow factor for deep aquifer according to Yi Luo
-   alpha_bfe_d(ihru) = Exp(-alpha_bf_d(ihru))
+   alpha_bfe_d(j) = Exp(-alpha_bf_d(j))
 
 
 !! assign values to channels
-   ch_revap(i) = gw_revap(ihru)
+   ch_revap(i) = gw_revap(j)
 
 !! assign values to channels
-   ch_revap(i) = gw_revap(ihru)
+   ch_revap(i) = gw_revap(j)
 
    close (110)
    return

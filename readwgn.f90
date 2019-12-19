@@ -1,8 +1,11 @@
-subroutine readwgn
+!> @file readwgn.f90
+!> file containing the subroutine readwgn
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads the HRU weather generator parameters from the
-!!    .wgn file
+!> this subroutine reads the HRU weather generator parameters from the
+!> .wgn file
+subroutine readwgn
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -22,7 +25,6 @@ subroutine readwgn
 !!                               |number of the month) The dates are for
 !!                               |leap years
 !!    rndseed(:,:)|none          |random number generator seeds
-!!    rnmd1       |none          |random number between 0.0 and 1.0
 !!    sub_lat(:)  |degrees       |latitude of HRU/subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -41,6 +43,10 @@ subroutine readwgn
 !!                               |dormant)
 !!    ffc(:)      |none          |initial HRU soil water content
 !!                               |expressed as fraction of field capacity
+!!    irelh       |none          |irelh = 0 (dewpoint)
+!!                               |      = 1 (relative humidity)
+!!                               |note:  inputs > 1.0 (dewpoint)
+!!                               |       inputs < 1.0 (relative hum)
 !!    ireg(:)     |none          |precipitation category:
 !!                               |  1 precipitation <= 508 mm/yr
 !!                               |  2 precipitation > 508 and <= 1016 mm/yr
@@ -57,9 +63,9 @@ subroutine readwgn
 !!                               |precipitation
 !!    phutot(:)   |heat unit     |total potential heat units for year (used
 !!                               |when no crop is growing)
-!!    pr_w1(:,:) |none          |probability of wet day after dry day in month
-!!    pr_w2(:,:) |none          |probability of wet day after wet day in month
-!!    pr_w3(:,:) |none          |proportion of wet days in the month
+!!    pr_w1(:,:)  |none          |probability of wet day after dry day in month
+!!    pr_w2(:,:)  |none          |probability of wet day after wet day in month
+!!    pr_w3(:,:)  |none          |proportion of wet days in the month
 !!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
@@ -84,28 +90,26 @@ subroutine readwgn
 !!                               |daylength for the area, the plant will go
 !!                               |dormant)
 !!    j           |none          |counter
-!!    irelh       |none          |irelh = 0 (dewpoint)
-!!                               |      = 1 (relative humidity)
-!!                               |note:  inputs > 1.0 (dewpoint)
-!!                               |       inputs < 1.0 (relative hum)
+!!    k           |none          |counter
 !!    lattan      |none          |Tan(Latitude)
 !!    m1          |none          |array location (see definition of ndays)
 !!    mdays       |none          |number of days in the month
 !!    mon         |none          |monthly counter
 !!    nda         |julian date   |julian date of last day in the month
 !!    pcp         |mm H2O        |generated precipitation
-!!    pcpmm(:)    |mm            |amount of precipitation in month
 !!    pcpd(:)     |days          |average number of days of precipitation
 !!                               |in the month
+!!    pcpmm(:)    |mm            |amount of precipitation in month
 !!    r6          |none          |variable to hold calculation result
-!!    rainhhmx(:) |mm            |maximum 0.5 hour rainfall in month
-!!                               |for entire period of record
 !!    rain_hhsm(:)|mm            |smoothed values for maximum 0.5 hour rainfall
 !!    rain_yrs    |none          |number of years of recorded maximum 0.5h
 !!                               |rainfall used to calculate values for
 !!                               |rainhhmx(:)
+!!    rainhhmx(:) |mm            |maximum 0.5 hour rainfall in month
+!!                               |for entire period of record
 !!    rndm1       |none          |random number between 0.0 and 1.0
 !!    rnm2        |none          |random number between 0.0 and 1.0
+!!    sffc
 !!    sum         |none          |variable to hold summation results
 !!    summm_p     |mm            |sum of precipitation over year
 !!    summn_t     |deg C         |sum of mimimum temp values over year
@@ -119,6 +123,7 @@ subroutine readwgn
 !!    x2          |none          |variable to hold calculation results
 !!    x3          |none          |variable to hold calculation results
 !!    xlv         |none          |variable to hold calculation results
+!!    xrnd
 !!    xx          |varies        |variable to hold calculation results
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -131,12 +136,11 @@ subroutine readwgn
    use parm
    implicit none
 
+   real*8, dimension (12) :: pcpd, pcpmm, rain_hhsm, rainhhmx
    character (len=80) :: titldum
-   real*8 :: xx, lattan, x1, x2, x3, tav, tmin, tmax, rain_yrs
-   real*8 :: summx_t, summn_t, summm_p, sum, rnm2, r6, xlv, pcp
-   real*8, dimension (12) :: rainhhmx, rain_hhsm, pcpmm, pcpd
-   real*8 :: tmpsoil, sffc, rndm1, dl
-   integer :: mon, mdays, j, m1, nda, xrnd, k
+   real*8 :: dl, lattan, pcp, r6, rain_yrs, rndm1, rnm2, sffc, sum, summm_p,&
+      &summn_t, summx_t, tav, tmpsoil, x1, x2, x3, xlv, xx
+   integer :: j, k, m1, mdays, mon, nda, xrnd
 
 
    pcpd = 0.
@@ -218,14 +222,14 @@ subroutine readwgn
    summx_t = 0.
    summn_t = 0.
    summm_p = 0.
-   tmin = 100.
-   tmax = 0.
+   !tmin = 100. ! not used
+   !tmax = 0. ! not used
    pcpdays(i) = 0.
    do mon = 1, 12
       mdays = ndays(mon+1) - ndays(mon)
       tav = (tmpmx(mon,i) + tmpmn(mon,i)) / 2.
-      if (tav > tmax) tmax = tav
-      if (tav < tmin) tmin = tav
+      !if (tav > tmax) tmax = tav ! not used
+      !if (tav < tmin) tmin = tav ! not used
       summx_t = summx_t + tmpmx(mon,i)
       summn_t = summn_t + tmpmn(mon,i)
 

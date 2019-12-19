@@ -1,74 +1,42 @@
-subroutine readops
+!> @file readops.f90
+!> file containing the subroutine readops
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU/subbasin management input file
-!!    (.mgt). This file contains data related to management practices used in
-!!    the HRU/subbasin.
+!> this subroutine reads data from the HRU/subbasin management input file
+!> (.mgt). This file contains data related to management practices used in
+!> the HRU/subbasin.
+subroutine readops
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!                                 |urban.dat
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name            |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!                                    |daily
+!!    vfsch(:)    |none          |Fraction of flow entering the most concentrated 10% of the VFS.
+!!                               |which is fully channelized
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
-!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    day         |none          |day operation occurs
+!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
+!!    iyear
+!!    j
+!!    k
+!!    l
 !!    mgt_op      |none          |operation code number
 !!                               |0 end of rotation year
 !!                               |1 plant/beginning of growing season
-!!    mgt1i       |none          |first management parameter out of .mgt
+!!    mgt         |none          |array of management parameters out of .mgt
 !!                               |file (definition changes depending on
 !!                               |mgt_op)
-!!    mgt2i       |none          |second management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt3i       |none          |third management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt4        |none          |fourth management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt5        |none          |fifth management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt6        |none          |sixth management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt7        |none          |seventh management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt8        |none          |eighth management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
-!!    mgt9        |none          |ninth management parameter out of .mgt
-!!                               |file (definition changes depending on
-!!                               |mgt_op)
+!!    mon
 !!    titldum     |NA            |title line from input dataset
-!!    vfscon(:)   |none          |Fraction of the total runoff from the entire field
-!!                               |entering the most concentrated 10% of the VFS.
-!!    vfsratio(:) |none          |Field area/VFS area ratio
-!!    vfsch(:)    |none          |Fraction of flow entering the most concentrated 10% of the VFS.
-!!                               |which is fully channelized
-!!    grwat_n(:)  |none          |Mannings's n for grassed waterway
-!!    grwat_i(:)  |none          |Flag for the simulation of grass waterways
-!!                               | gwat_i = 0 inactive
-!!                               |        = 1 active
-!!    grwat_l(:)  |km            |Length of grass Waterway
-!!    grwat_w(:)  |m             |Average width of grassed waterway
-!!    grwat_d(:)  |m             |Depth of grassed waterway from top of bank
-!!                               |  to bottom
-!!    grwat_s(:)   |m            |Average slope of grassed waterway channel
-!!    grwat_spcon(:) |none       |Linear parameter for calculating sediment
-!!                               |  in grassed waterways
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -79,149 +47,136 @@ subroutine readops
    use parm
    implicit none
 
+   real*8, dimension(23) :: mgt
    character (len=80) :: titldum
-   integer :: eof
-   integer :: mon, day, mgt_op, mgt2i, mgt1i, iyear
-   real*8 :: mgt3,mgt4,mgt5,mgt6,mgt7,mgt8,mgt9,mgt10,mgt11,mgt12,&
-   &mgt13,mgt14,mgt15,mgt16,mgt17,mgt18,mgt19,mgt20,mgt21,mgt22,mgt23
+   integer :: day, eof, iyear, j, k, l, mgt_op, mon
    integer :: Jdt
-
-
 
    read (111,5000,end=999) titldum
 
 !!      read scheduled operations
 
-   iops = 0
+   j = 0
+   k = ihru
 
    do
       mon = 0
       day = 0
       iyear = 0
       mgt_op = 0
-      mgt1i = 0
-      mgt2i = 0
-      mgt3 = 0.
-      mgt4 = 0.
-      mgt5 = 0.
-      mgt6 = 0
-      mgt7 = 0.
-      mgt8 = 0.
-      mgt9 = 0.
+      mgt = 0.
 
-
-      read (111,5200,iostat=eof) mon, day, iyear, mgt_op, mgt1i,&
-      &mgt2i, mgt3, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, mgt10, mgt11,&
-      &mgt12, mgt13, mgt14, mgt15, mgt16, mgt17, mgt18, mgt19, mgt20,&
-      &mgt21, mgt22, mgt23
+      read (111,5200,iostat=eof) mon, day, iyear, mgt_op, (mgt(l), l = 1, 23)
       if (eof < 0) exit
-      iops = iops + 1
-      iopday(iops,ihru) = Jdt (ndays,day,mon)
-      iopyr(iops,ihru) = iyear
-      mgt_ops(iops,ihru) = mgt_op
+      j = j + 1
+      iopday(j,k) = Jdt (ndays,day,mon)
+      iopyr(j,k) = iyear
+      mgt_ops(j,k) = mgt_op
 
       select case (mgt_op)
 
        case (0)  !! end of operations file
 
        case (1)  !! terracing
-         terr_p(iops,ihru) = mgt4
-         terr_cn(iops,ihru) = mgt5
-         terr_sl(iops,ihru) = mgt6
+         terr_p(j,k) = mgt(4)
+         terr_cn(j,k) = mgt(5)
+         terr_sl(j,k) = mgt(6)
 
        case (2)  !! tile drainage
-         drain_d(iops,ihru) = mgt4
-         drain_t(iops,ihru) = mgt5
-         drain_g(iops,ihru) = mgt6
-         if (mgt7 < 1.e-6) mgt7 = 6000.0
-         drain_idep(iops,ihru) = mgt7
+         drain_d(j,k) = mgt(4)
+         drain_t(j,k) = mgt(5)
+         drain_g(j,k) = mgt(6)
+         if (mgt(7) < 1.e-6) mgt(7) = 6000.0
+         drain_idep(j,k) = mgt(7)
 
        case (3)  !! contouring
-         cont_cn(iops,ihru) = mgt4
-         cont_p(iops,ihru) =  mgt5
+         cont_cn(j,k) = mgt(4)
+         cont_p(j,k) =  mgt(5)
 
        case (4)  !! filter
-         filter_i(iops,ihru) = mgt1i  !! on off flag
-         filter_ratio(iops,ihru) = mgt3
-         filter_con(iops,ihru) = mgt4
-         filter_ch(iops,ihru) = mgt5
+         filter_i(j,k) = mgt(1)  !! on off flag
+         filter_ratio(j,k) = mgt(3)
+         filter_con(j,k) = mgt(4)
+         filter_ch(j,k) = mgt(5)
 
        case (5)  !! strip cropping
-         strip_n(iops,ihru) = mgt4
-         strip_cn(iops,ihru) = mgt5
-         strip_c(iops,ihru) = mgt6
-         strip_p(iops,ihru) = mgt7
+         strip_n(j,k) = mgt(4)
+         strip_cn(j,k) = mgt(5)
+         strip_c(j,k) = mgt(6)
+         strip_p(j,k) = mgt(7)
 
        case (6)  !! fire
-         fire_cn(iops,ihru) = mgt4
+         fire_cn(j,k) = mgt(4)
 
        case (7)  !! grass waterways
-         gwati(iops,ihru) = mgt1i
-         gwatn(iops,ihru) = mgt3
-         gwatspcon(iops,ihru) = mgt4
-         gwatd(iops,ihru) = mgt5
-         gwatw(iops,ihru) = mgt6
-         gwatl(iops,ihru) = mgt7
-         gwats(iops,ihru) = mgt8
+         gwati(j,k) = mgt(1)
+         gwatn(j,k) = mgt(3)
+         gwatspcon(j,k) = mgt(4)
+         gwatd(j,k) = mgt(5)
+         gwatw(j,k) = mgt(6)
+         gwatl(j,k) = mgt(7)
+         gwats(j,k) = mgt(8)
 !! Set defaults
 !! Mannings via Fiener, 2006
-         if (gwatn(iops,ihru) <=0.) gwatn(iops,ihru) = 0.35
+         if (gwatn(j,k) <=0.) gwatn(j,k) = 0.35
 !! length based on one side of a square HRU
-         if (gwatl(iops,ihru) <=0.) gwatl(iops,ihru) = hru_km(ihru)**.5
+         if (gwatl(j,k) <=0.) gwatl(j,k) = Sqrt(hru_km(k))
 !! default to a workable depth based on with and 8:1 sideslopes
-         if (gwatd(iops,ihru) <= 0.) then
-            gwatd(iops,ihru) = 3. / 64. * gwatw(iops,ihru)
+         if (gwatd(j,k) <= 0.) then
+            gwatd(j,k) = 3. / 64. * gwatw(j,k)
          end if
 !! Default to 3/4 HRU slope
-         if (gwats(iops,ihru) <=0.) gwats(iops,ihru) = hru_slp(ihru)*.75
+         if (gwats(j,k) <=0.) gwats(j,k) = hru_slp(k)*.75
 !! default sed coeff to 0.005
-         if (gwatspcon(iops,ihru)<= 0.) gwatspcon(iops,ihru) = 0.005
+         if (gwatspcon(j,k) <= 0.) gwatspcon(j,k) = 0.005
 
 
        case (8) !! plant parameter update
-         cropno_upd(iops,ihru) = mgt1i
-         hi_upd(iops,ihru) = mgt4
-         laimx_upd(iops,ihru) = mgt5
+         cropno_upd(j,k) = mgt(1)
+         hi_upd(j,k) = mgt(4)
+         laimx_upd(j,k) = mgt(5)
 
 
          !! case (9) !! Residue Managment  mjw
          !! Force residue to a minimum value regardless of tillage.  mjw
-         !! so_res_flag(iops,ihru) = mgt1i !!mjw
-         !! so_res(iops,ihru) = mgt4 !!mjw
+         !! so_res_flag(j,k) = mgt(1) !!mjw
+         !! so_res(j,k) = mgt(4) !!mjw
 
        case (10) !! Generic Conservation Practice  mjw
          !! Get user defined removal eff and use these  mjw
-         ro_bmp_flag(iops,ihru) = mgt1i  !! Flag to turn on or off user BMP
+         ro_bmp_flag(j,k) = mgt(1)  !! Flag to turn on or off user BMP
 
          !! surface runoff removal efficiency
-         ro_bmp_flo(iops,ihru) = mgt3    !! Flow
-         ro_bmp_sed(iops,ihru) = mgt4    !! Sediment
-         ro_bmp_pp(iops,ihru) = mgt5     !! Particulate P
-         ro_bmp_sp(iops,ihru) = mgt6     !! Soluble P
-         ro_bmp_pn(iops,ihru) = mgt7     !! Particulate N
-         ro_bmp_sn(iops,ihru) = mgt8     !! Soluble N
-         ro_bmp_bac(iops,ihru) = mgt9    !! Bacteria
+         ro_bmp_flo(j,k) = mgt(3)    !! Flow
+         ro_bmp_sed(j,k) = mgt(4)    !! Sediment
+         ro_bmp_pp(j,k) = mgt(5)     !! Particulate P
+         ro_bmp_sp(j,k) = mgt(6)     !! Soluble P
+         ro_bmp_pn(j,k) = mgt(7)     !! Particulate N
+         ro_bmp_sn(j,k) = mgt(8)     !! Soluble N
+         ro_bmp_bac(j,k) = mgt(9)    !! Bacteria
          !! subsurface - lateral soil and groundwater
-         ro_bmp_flos(iops,ihru) = mgt10  !! Flow
-         ro_bmp_seds(iops,ihru) = mgt11  !! Sediment
-         ro_bmp_pps(iops,ihru) = mgt12   !! Particulate P
-         ro_bmp_sps(iops,ihru) = mgt13   !! Soluble P
-         ro_bmp_pns(iops,ihru) = mgt14   !! Particulate N
-         ro_bmp_sns(iops,ihru) = mgt15   !! Soluble N
-         ro_bmp_bacs(iops,ihru) = mgt16  !! Bacteria
+         ro_bmp_flos(j,k) = mgt(10)  !! Flow
+         ro_bmp_seds(j,k) = mgt(11)  !! Sediment
+         ro_bmp_pps(j,k) = mgt(12)   !! Particulate P
+         ro_bmp_sps(j,k) = mgt(13)   !! Soluble P
+         ro_bmp_pns(j,k) = mgt(14)   !! Particulate N
+         ro_bmp_sns(j,k) = mgt(15)   !! Soluble N
+         ro_bmp_bacs(j,k) = mgt(16)  !! Bacteria
          !! tile flow removal efficiency
-         ro_bmp_flot(iops,ihru) = mgt17  !! Flow
-         ro_bmp_sedt(iops,ihru) = mgt18  !! Sediment
-         ro_bmp_ppt(iops,ihru) = mgt19   !! Particulate P
-         ro_bmp_spt(iops,ihru) = mgt20   !! Soluble P
-         ro_bmp_pnt(iops,ihru) = mgt21   !! Particulate N
-         ro_bmp_snt(iops,ihru) = mgt22   !! Soluble N
-         ro_bmp_bact(iops,ihru) = mgt23  !! Bacteria
+         ro_bmp_flot(j,k) = mgt(17)  !! Flow
+         ro_bmp_sedt(j,k) = mgt(18)  !! Sediment
+         ro_bmp_ppt(j,k) = mgt(19)   !! Particulate P
+         ro_bmp_spt(j,k) = mgt(20)   !! Soluble P
+         ro_bmp_pnt(j,k) = mgt(21)   !! Particulate N
+         ro_bmp_snt(j,k) = mgt(22)   !! Soluble N
+         ro_bmp_bact(j,k) = mgt(23)  !! Bacteria
 
       end select
    end do
 
    close (111)
+
+   iops = j
 
 999 return
 5000 format (a)

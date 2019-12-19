@@ -1,9 +1,12 @@
-subroutine readsol
+!> @file readsol.f90
+!> file containing the subroutine readsol
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU/subbasin soil properties file
-!!    (.sol). This file contains data related to soil physical properties and
-!!    general chemical properties.
+!> this subroutine reads data from the HRU/subbasin soil properties file
+!> (.sol). This file contains data related to soil physical properties and
+!> general chemical properties.
+subroutine readsol
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -27,7 +30,7 @@ subroutine readsol
 !!    anion_excl(:) |none          |fraction of porosity from which anions
 !!                                 |are excluded
 !!    sol_clay(:,:) |%             |percent clay content in soil material
-!!    sol_rock(:,:) |%            |percent of rock fragments in soil layer
+!!    sol_rock(:,:) |%             |percent of rock fragments in soil layer
 !!    sol_silt(:,:) |%             |percent silt content in soil material
 !!    snam(:)       |NA            |soil series name
 !!    sol_alb(:)    |none          |albedo when soil is moist
@@ -35,6 +38,7 @@ subroutine readsol
 !!    sol_bd(:,:)   |Mg/m**3       |bulk density of the soil
 !!    sol_cbn(:,:)  |%             |percent organic carbon in soil layer
 !!    sol_crk(:)    |none          |crack volume potential of soil
+!!    sol_ec(:)     |dS/m          |electrical conductivity of soil layer
 !!    sol_k(:,:)    |mm/hr         |saturated hydraulic conductivity of soil
 !!                                 |layer
 !!    sol_nly(:)    |none          |number of soil layers
@@ -43,6 +47,7 @@ subroutine readsol
 !!    sol_orgp(1,:) |mg P/kg soil  |organic P concentration in top soil layer
 !!    sol_rsd(:,:)  |kg/ha         |amount of organic matter in the soil layer
 !!                                 |classified as residue
+!!    sol_sand(:,:) |%             |percent sand content of soil material
 !!    sol_solp(1,:) |mg P/kg soil  |soluble P concentration in top soil layer
 !!    sol_stap(:,:) |kg P/ha       |amount of phosphorus in the soil layer
 !!                                 |stored in the stable mineral phosphorus
@@ -55,85 +60,85 @@ subroutine readsol
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    flag        |none          |flag to exit do loop
+!!    a
+!!    b
+!!    c
+!!    d
+!!    dep_new
+!!    eof
 !!    j           |none          |counter
-!!    jj          |none          |dummy variable to hold value
-!!    n           |none          |counter
+!!    k           |none          |counter
 !!    nly         |none          |number of soil layers
+!!    nota
 !!    plt_zmx     |mm            |rooting depth of plant
-!!    sol_sand(:,:) |%             |percent sand content of soil material
-!!    sol_ec(:)   |dS/m          |electrical conductivity of soil layer
 !!    titldum     |NA            |title line/skipped line in .sol file
-!!    xx          |none          |variable to hold value
-!!    yy          |none          |variable to hold value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Exp, abs
+!!    INTRINSIC: Exp, Abs
+!!    SWAT: estimate_ksat, layersplit
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   character (len=80) :: titldum
-!      integer :: j, nly, n, jj, flag, eof
-   integer :: j, nly, eof            !claire: jj, n, and flag are not used 12/02/09
-!      real*8 :: xx, plt_zmx, yy
-   real*8 :: plt_zmx                   !Claire, xx and yy are not used 12/2/09
-   real*8 :: dep_new
    real*8, parameter :: a = 50.0, b = 20.0, c = 5.0, d = 2.0
    integer, parameter :: nota = 10
+   character (len=80) :: titldum
+   real*8 :: dep_new, plt_zmx
+   integer :: eof, j, k, nly
 
 !!    initialize local variables
    nly = 0
    plt_zmx = 0.
+   k = ihru
 
    read (107,5500) titldum
-   read (107,5100) snam(ihru)
-   read (107,5200) hydgrp(ihru)
-   read (107,5300) sol_zmx(ihru)
-   read (107,5400) anion_excl(ihru)
-   read (107,5600) sol_crk(ihru)
+   read (107,5100) snam(k)
+   read (107,5200) hydgrp(k)
+   read (107,5300) sol_zmx(k)
+   read (107,5400) anion_excl(k)
+   read (107,5600) sol_crk(k)
    read (107,5500) titldum
-   read (107,5000) (sol_z(j,ihru), j = 1, mlyr)
+   read (107,5000) (sol_z(j,k), j = 1, mlyr)
 
 
    !! calculate number of soil layers in HRU soil series
    do j = 1, mlyr
 !!    khan soils
-!      sol_z(j,ihru) = sol_z(j,ihru) / 5.0
-      if (sol_z(j,ihru) <= 0.001) sol_nly(ihru) = j - 1
-      if (sol_z(j,ihru) <= 0.001) exit
+!      sol_z(j,k) = sol_z(j,k) / 5.0
+      if (sol_z(j,k) <= 0.001) sol_nly(k) = j - 1
+      if (sol_z(j,k) <= 0.001) exit
    enddo
-   if (sol_nly(ihru) == 0) sol_nly(ihru) = 10
-   nly = sol_nly(ihru)
+   if (sol_nly(k) == 0) sol_nly(k) = 10
+   nly = sol_nly(k)
 
    eof = 0
    do
-      read (107,5000) (sol_bd(j,ihru), j = 1, nly)
-      read (107,5000) (sol_awc(j,ihru), j = 1, nly)
-      read (107,5000) (sol_k(j,ihru), j = 1, nly)
-      read (107,5000) (sol_cbn(j,ihru), j = 1, nly)
-      read (107,5000) (sol_clay(j,ihru), j = 1, nly)
-      read (107,5000) (sol_silt(j,ihru), j = 1, nly)
-      read (107,5000) (sol_sand(j,ihru), j = 1, nly)
+      read (107,5000) (sol_bd(j,k), j = 1, nly)
+      read (107,5000) (sol_awc(j,k), j = 1, nly)
+      read (107,5000) (sol_k(j,k), j = 1, nly)
+      read (107,5000) (sol_cbn(j,k), j = 1, nly)
+      read (107,5000) (sol_clay(j,k), j = 1, nly)
+      read (107,5000) (sol_silt(j,k), j = 1, nly)
+      read (107,5000) (sol_sand(j,k), j = 1, nly)
 
-      read (107,5000) (sol_rock(j,ihru), j = 1, nly)
-      read (107,5000) sol_alb(ihru)
-      read (107,5000) usle_k(ihru)
+      read (107,5000) (sol_rock(j,k), j = 1, nly)
+      read (107,5000) sol_alb(k)
+      read (107,5000) usle_k(k)
 !    change double subscripted sol_ec statement 1/27/09 when making septic changes
-      read (107,5000,iostat=eof) (sol_ec(j,ihru), j = 1, nly)
+      read (107,5000,iostat=eof) (sol_ec(j,k), j = 1, nly)
       if (eof < 0) exit
 !    change double subscripted sol_ec statement 1/27/09 when making septic changes
 
       !! MJW added rev 490
       !! PH-H20
-      read (107,5000,iostat=eof) (sol_ph(j,ihru), j = 1, nly)
+      read (107,5000,iostat=eof) (sol_ph(j,k), j = 1, nly)
       if (eof < 0) exit
 
       !!CaCo3 content (%)
-      read (107,5000,iostat=eof) (sol_cal(j,ihru), j = 1, nly)
+      read (107,5000,iostat=eof) (sol_cal(j,k), j = 1, nly)
       if (eof < 0) exit
 
       exit
@@ -141,125 +146,125 @@ subroutine readsol
 
    !!Armen January 2009
    do j=1, nly
-      if (sol_rock(j,ihru) > 98.0) sol_rock(j,ihru) = 98.0
-      if (sol_awc(j,ihru) <= .01) sol_awc(j,ihru) = .01
-      if (sol_awc(j,ihru) >= .80) sol_awc(j,ihru) = .80
-      if (sol_cbn(j,ihru) < 1.e-6) sol_cbn(j,ihru) = .10
-      sol_n(j,ihru) = sol_cbn(j,ihru) / 11.0
+      if (sol_rock(j,k) > 98.0) sol_rock(j,k) = 98.0
+      if (sol_awc(j,k) <= .01) sol_awc(j,k) = .01
+      if (sol_awc(j,k) >= .80) sol_awc(j,k) = .80
+      if (sol_cbn(j,k) < 1.e-6) sol_cbn(j,k) = .10
+      sol_n(j,k) = sol_cbn(j,k) / 11.0
    end do
    !!Armen January 2009 end
 
 !!    add 10mm layer at surface of soil
-   if (sol_z(1,ihru) > 10.1) then
-      sol_nly(ihru) = sol_nly(ihru) + 1
+   if (sol_z(1,k) > 10.1) then
+      sol_nly(k) = sol_nly(k) + 1
       nly = nly + 1
       do j = nly, 2, -1
-         sol_z(j,ihru) = sol_z(j-1,ihru)
-         sol_bd(j,ihru) = sol_bd(j-1,ihru)
-         sol_awc(j,ihru) = sol_awc(j-1,ihru)
-         sol_k(j,ihru) = sol_k(j-1,ihru)
-         sol_cbn(j,ihru) = sol_cbn(j-1,ihru)
+         sol_z(j,k) = sol_z(j-1,k)
+         sol_bd(j,k) = sol_bd(j-1,k)
+         sol_awc(j,k) = sol_awc(j-1,k)
+         sol_k(j,k) = sol_k(j-1,k)
+         sol_cbn(j,k) = sol_cbn(j-1,k)
          !!Armen January 2009
-         sol_n(j,ihru) = sol_n(j-1,ihru)
-!                 sol_mc(j,ihru) = sol_mc(j-1,ihru)
-!                 sol_mn(j,ihru) = sol_mn(j-1,ihru)
-!                 sol_mp(j,ihru) = sol_mp(j-1,ihru)
-         sol_rock(j,ihru) = sol_rock(j-1,ihru) !!! Armen 13 Jan 2008
-         sol_clay(j,ihru) = sol_clay(j-1,ihru)
-         sol_sand(j,ihru) = sol_sand(j-1,ihru) !!! Claire 2 Dec 2009
-         sol_silt(j,ihru) = sol_silt(j-1,ihru) !!! Claire 2 Dec 2009
-         sol_ph(j,ihru) = sol_ph(j-1,ihru) !! mjw rev 490
-         sol_cal(j,ihru) = sol_cal(j-1,ihru) !! mjw rev 490
+         sol_n(j,k) = sol_n(j-1,k)
+!                 sol_mc(j,k) = sol_mc(j-1,k)
+!                 sol_mn(j,k) = sol_mn(j-1,k)
+!                 sol_mp(j,k) = sol_mp(j-1,k)
+         sol_rock(j,k) = sol_rock(j-1,k) !!! Armen 13 Jan 2008
+         sol_clay(j,k) = sol_clay(j-1,k)
+         sol_sand(j,k) = sol_sand(j-1,k) !!! Claire 2 Dec 2009
+         sol_silt(j,k) = sol_silt(j-1,k) !!! Claire 2 Dec 2009
+         sol_ph(j,k) = sol_ph(j-1,k) !! mjw rev 490
+         sol_cal(j,k) = sol_cal(j-1,k) !! mjw rev 490
          !!Armen January 2009 end
 !    change below double subscripted sol_ec statement 1/27/09 when making septic changes
-         sol_ec(j,ihru) = sol_ec(j-1,ihru)
+         sol_ec(j,k) = sol_ec(j-1,k)
 !    change below double subscripted sol_ec statement 1/27/09 when making septic changes
-         sol_no3(j,ihru) = sol_no3(j-1,ihru)
-         sol_orgn(j,ihru) = sol_orgn(j-1,ihru)
-         sol_orgp(j,ihru) = sol_orgp(j-1,ihru)
-         sol_solp(j,ihru) = sol_solp(j-1,ihru)
+         sol_no3(j,k) = sol_no3(j-1,k)
+         sol_orgn(j,k) = sol_orgn(j-1,k)
+         sol_orgp(j,k) = sol_orgp(j-1,k)
+         sol_solp(j,k) = sol_solp(j-1,k)
       end do
-      sol_z(1,ihru) = 10.
+      sol_z(1,k) = 10.
    endif
 
    if (isproj == 2) then
-      call estimate_ksat(sol_clay(j,ihru),sol_k(j,ihru))  !!  NK June 28, 2006
+      call estimate_ksat(sol_clay(j,k),sol_k(j,k))  !!  NK June 28, 2006
    endif
 
 
 !!    compare maximum rooting depth in soil to maximum rooting depth of
 !!    plant
-   if (sol_zmx(ihru) <= 0.001) sol_zmx(ihru) = sol_z(nly,ihru)
+   if (sol_zmx(k) <= 0.001) sol_zmx(k) = sol_z(nly,k)
    plt_zmx = 0.
-   if (idplt(ihru) > 0) then
-      if (idc(idplt(ihru)) > 0) then
-         plt_zmx = 1000. * rdmx(idplt(ihru))
+   if (idplt(k) > 0) then
+      if (idc(idplt(k)) > 0) then
+         plt_zmx = 1000. * rdmx(idplt(k))
       end if
    end if
-   if (sol_zmx(ihru) > 1. .and. plt_zmx > 1.) then
-      sol_zmx(ihru) = Min(sol_zmx(ihru),plt_zmx)
+   if (sol_zmx(k) > 1. .and. plt_zmx > 1.) then
+      sol_zmx(k) = Min(sol_zmx(k),plt_zmx)
    else
       !! if one value is missing it will set to the one available
-      sol_zmx(ihru) = Max(sol_zmx(ihru),plt_zmx)
+      sol_zmx(k) = Max(sol_zmx(k),plt_zmx)
    end if
 
 !! create a layer boundary at maximum rooting depth (sol_zmx)
-   !if (sol_zmx(i) > 0.001.and.sol_zmx(ihru)/=sol_z(nly,ihru)) then
-   !   call layersplit (sol_zmx(ihru))
+   !if (sol_zmx(i) > 0.001.and.sol_zmx(k)/=sol_z(nly,k)) then
+   !   call layersplit (sol_zmx(k))
    !end if
 
 !! create a bizone layer in septic HRUs
-   if (isep_opt(ihru) /= 0) then
-      if (bz_z(ihru)+bz_thk(ihru) > sol_z(nly,ihru)) then
-         if (sol_z(nly,ihru)>bz_thk(ihru)+10.) then !min. soil thickness for biozone layer (10mm top+biozone layer thickness)
-            bz_z(ihru) = sol_z(nly,ihru) - bz_thk(ihru)
+   if (isep_opt(k) /= 0) then
+      if (bz_z(k)+bz_thk(k) > sol_z(nly,k)) then
+         if (sol_z(nly,k)>bz_thk(k)+10.) then !min. soil thickness for biozone layer (10mm top+biozone layer thickness)
+            bz_z(k) = sol_z(nly,k) - bz_thk(k)
          else
-            bz_z(ihru) = sol_z(nly,ihru)
-            sol_z(nly,ihru) = sol_z(nly,ihru) + bz_thk(ihru)
+            bz_z(k) = sol_z(nly,k)
+            sol_z(nly,k) = sol_z(nly,k) + bz_thk(k)
          endif
       endif
-      if (bz_z(ihru) > 0.) then
-         call layersplit (bz_z(ihru))
-         dep_new = bz_z(ihru) + bz_thk(ihru)
+      if (bz_z(k) > 0.) then
+         call layersplit (bz_z(k))
+         dep_new = bz_z(k) + bz_thk(k)
          call layersplit (dep_new)
-         i_sep(ihru) = iseptic
+         i_sep(k) = iseptic
       endif
    endif
 
-   nly = sol_nly(ihru)
+   nly = sol_nly(k)
 
 !!    set default values/initialize variables
-   if (sol_alb(ihru) < 0.1) sol_alb(ihru) = 0.1
-   if (anion_excl(ihru) <= 1.e-6) anion_excl(ihru) = anion_excl_bsn
-   if (anion_excl(ihru) >= 1.) anion_excl(ihru) = 0.99
-   if (rsdin(ihru) > 0.) sol_rsd(1,ihru) = rsdin(ihru)
+   if (sol_alb(k) < 0.1) sol_alb(k) = 0.1
+   if (anion_excl(k) <= 1.e-6) anion_excl(k) = anion_excl_bsn
+   if (anion_excl(k) >= 1.) anion_excl(k) = 0.99
+   if (rsdin(k) > 0.) sol_rsd(1,k) = rsdin(k)
    do j = 1, nly
-      if (sol_k(j,ihru) <= 0.0) then
-         if (hydgrp(ihru) == "A") then
-            sol_k(j,ihru) = a
+      if (sol_k(j,k) <= 0.0) then
+         if (hydgrp(k) == "A") then
+            sol_k(j,k) = a
          else
-            if (hydgrp(ihru) == "B") then
-               sol_k(j,ihru) = b
+            if (hydgrp(k) == "B") then
+               sol_k(j,k) = b
             else
-               if (hydgrp(ihru) == "C") then
-                  sol_k(j,ihru) = c
+               if (hydgrp(k) == "C") then
+                  sol_k(j,k) = c
                else
-                  if (hydgrp(ihru) == "D") then
-!            sol_k(j,ihru) = c
-                     sol_k(j,ihru) = d          !Claire 12/2/09
+                  if (hydgrp(k) == "D") then
+!            sol_k(j,k) = c
+                     sol_k(j,k) = d          !Claire 12/2/09
                   else
-                     sol_k(j,ihru) = nota
+                     sol_k(j,k) = nota
                   endif
                endif
             endif
          endif
       endif
-      if (sol_bd(j,ihru) <= 1.e-6) sol_bd(j,ihru) = 1.3
-      if (sol_bd(j,ihru) > 2.) sol_bd(j,ihru) = 2.0
-      if (sol_awc(j,ihru) <= 0.) sol_awc(j,ihru) = .005
+      if (sol_bd(j,k) <= 1.e-6) sol_bd(j,k) = 1.3
+      if (sol_bd(j,k) > 2.) sol_bd(j,k) = 2.0
+      if (sol_awc(j,k) <= 0.) sol_awc(j,k) = .005
       !! Defaults for ph and calcium mjw average of 20,000 SSURGO soils mjw rev 490
-      if (sol_cal(j,ihru)<= 1.e-6) sol_cal(j,ihru) = 2.8
-      if (sol_ph(j,ihru)<= 1.e-6) sol_ph(j,ihru) = 6.5
+      if (sol_cal(j,k)<= 1.e-6) sol_cal(j,k) = 2.8
+      if (sol_ph(j,k)<= 1.e-6) sol_ph(j,k) = 6.5
    end do
 
 
