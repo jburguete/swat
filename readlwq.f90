@@ -1,11 +1,14 @@
-subroutine readlwq
+!> @file readlwq.f90
+!> file containing the subroutine readlwq
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the lake water quality input file (.lwq).
-!!    This file contains data related to initial pesticide and nutrient levels
-!!    in the lake/reservoir and transformation processes occuring within the
-!!    lake/reservoir. Data in the lake water quality input file is assumed to
-!!    apply to all reservoirs in the watershed.
+!> this subroutine reads data from the lake water quality input file (.lwq).
+!> This file contains data related to initial pesticide and nutrient levels
+!> in the lake/reservoir and transformation processes occuring within the
+!> lake/reservoir. Data in the lake water quality input file is assumed to
+!> apply to all reservoirs in the watershed.
+subroutine readlwq
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -66,6 +69,7 @@ subroutine readlwq
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof         |none          |end of file flag
+!!    lkarea
 !!    nh3i        |mg N/L        |initial concentration of ammonia in reservoir
 !!    no2i        |mg N/L        |initial concentration of nitrite in reservoir
 !!    no3i        |mg N/L        |initial concentration of nitrate in reservoir
@@ -83,10 +87,9 @@ subroutine readlwq
    use parm
    implicit none
 
-   integer :: eof
    character (len=80) :: titldum
-   real*8 :: orgpi, solpi, orgni, no3i, nh3i, no2i
-   real*8 :: lkarea
+   real*8 :: lkarea, nh3i, no2i, no3i, orgni, orgpi, solpi
+   integer :: eof
 
    eof = 0
    titldum = ""

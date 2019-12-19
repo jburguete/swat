@@ -1,9 +1,12 @@
-subroutine readswq
+!> @file readswq.f90
+!> file containing the subroutine readswq
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads parameters from the subbasin instream water
-!!    quality file (.swq) and initializes the QUAL2E variables which apply to
-!!    the individual subbasins
+!> this subroutine reads parameters from the subbasin instream water
+!> quality file (.swq) and initializes the QUAL2E variables which apply to
+!> the individual subbasins
+subroutine readswq
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

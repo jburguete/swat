@@ -1,8 +1,11 @@
-subroutine readres
+!> @file readres.f90
+!> file containing the subroutine readres
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    the purpose of this subroutine is to read in data from the reservoir
-!!    input file (.res)
+!> the purpose of this subroutine is to read in data from the reservoir
+!> input file (.res)
+subroutine readres
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -39,9 +42,9 @@ subroutine readres
 !!    oflowmn(:,:) |m^3/day       |minimum daily ouflow for the month (read in as
 !!                                |m^3/s and converted to m^3/day)
 !!    oflowmx(:,:) |m^3/day       |maximum daily ouflow for the month (read in as
+!!                                |m^3/s and converted to m^3/day)
 !!    oflowmn_fps  |fraction      |minimum reservoir outflow as a fraction of
 !!                                | the principal spillway volume (0-1)
-!!                                |m^3/s and converted to m^3/day)
 !!    res_esa(:)   |ha            |reservoir surface area when reservoir is
 !!                                |filled to emergency spillway
 !!    res_evol(:)  |m**3          |volume of water needed to fill the reservoir
@@ -50,6 +53,9 @@ subroutine readres
 !!    res_k(:)     |mm/hr         |hydraulic conductivity of the reservoir bottom
 !!    res_nsed(:)  |kg/L          |normal amount of sediment in reservoir (read
 !!                                |in as mg/L and convert to kg/L)
+!!    res_out(:,:,:)|m**3/day      |measured average daily outflow from the
+!!                                |reservoir for the month (needed if IRESCO=1)
+!!                                |(read in as m**3/s and converted to m**3/day)
 !!    res_psa(:)   |ha            |reservoir surface area when reservoir is
 !!                                |filled to principal spillway
 !!    res_pvol(:)  |m**3          |volume of water needed to fill the reservoir
@@ -64,9 +70,6 @@ subroutine readres
 !!                                |for the subbasin is used for the reservoir)
 !!    res_vol(:)   |m**3          |reservoir volume (read in as 10^4 m^3 and
 !!                                |converted to m^3)
-!!    res_out(:,:,:)|m**3/day      |measured average daily outflow from the
-!!                                |reservoir for the month (needed if IRESCO=1)
-!!                                |(read in as m**3/s and converted to m**3/day)
 !!    sedstlr(:)   |none          |sediment settling rate
 !!    starg(:,:)   |m**3          |monthly target reservoir storage (needed if
 !!                                |IRESCO=2) (read in as 10^4 m^3 and converted
@@ -95,6 +98,7 @@ subroutine readres
 !!    mon         |none          |counter
 !!    titldum     |NA            |title line in .res file (not used in program)
 !!    res_d50     |micrometers   |median particle diameter of sediment
+!!    res_d50mm   |milimeters    |median particle diameter of sediment
 !!    resdayo     |NA            |name of daily reservoir outflow file
 !!                               |(needed if IRESCO = 3)
 !!    resdif      |m^3 H2O       |difference in volume held in reservoir at
@@ -103,6 +107,7 @@ subroutine readres
 !!    resmono     |NA            |name of monthly reservoir outflow file
 !!                               |(needed if IRESCO = 1)
 !!    targ        |10^4 m^3 H2O  |target reservoir volume
+!!    titldum     |NA            |title line in file (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -116,8 +121,8 @@ subroutine readres
 
    character (len=80) :: titldum
    character (len=13) :: resdayo, resmono
-   integer :: eof, mon, j
-   real*8 :: resdif, targ, lnvol, res_d50, res_d50mm
+   real*8 :: lnvol, res_d50, res_d50mm, resdif, targ
+   integer :: eof, j, mon
 
 !!    initialize local variables
    resdayo = ""

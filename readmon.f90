@@ -1,7 +1,10 @@
-subroutine readmon
+!> @file readmon.f90
+!> file containing the subroutine readmon
+!> @author
+!> modified by Javier Burguete
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     reads in the input data for the recmon command
+!> reads in the input data for the recmon command
+subroutine readmon
 
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name         |units         |definition
@@ -52,6 +55,7 @@ subroutine readmon
 !!     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!     name         |units         |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!     begmon
 !!     eof          |none          |end of file flag (=-1 at end of file)
 !!     ia1          |none          |dummy variable
 !!     ia2          |none          |dummy variable
@@ -68,7 +72,7 @@ subroutine readmon
    implicit none
 
    character (len=80) :: titldum
-   integer :: ii, iya, mon, eof, ia1, ia2, begmon
+   integer :: begmon, eof, ia1, ia2, ii, iya, mon
 
 
 !!    initialize variables
@@ -83,40 +87,6 @@ subroutine readmon
    mon = 1
    do
       read (107,*,iostat=eof) ia1, ia2,&
-      &flomon(i,iya,mon),&
-      &sedmon(i,iya,mon),&
-      &orgnmon(i,iya,mon),&
-      &orgpmon(i,iya,mon),&
-      &no3mon(i,iya,mon),&
-      &nh3mon(i,iya,mon),&
-      &no2mon(i,iya,mon),&
-      &minpmon(i,iya,mon),&
-      &cbodmon(i,iya,mon),&
-      &disoxmon(i,iya,mon),&
-      &chlamon(i,iya,mon),&
-      &solpstmon(i,iya,mon),&
-      &srbpstmon(i,iya,mon),&
-      &bactpmon(i,iya,mon),&
-      &bactlpmon(i,iya,mon),&
-      &cmtl1mon(i,iya,mon),&
-      &cmtl2mon(i,iya,mon),&
-      &cmtl3mon(i,iya,mon)
-
-
-      if (ia2 == iyr) exit
-      if (eof < 0) exit
-   end do
-
-
-
-   do iya = 1, nbyr+2  !2 extra for scenarios
-      if (iya == 1) then
-         begmon = 2
-      else
-         begmon = 1
-      end if
-      do mon = begmon, 12
-         read (107,*,iostat=eof) ia1, ia2,&
          &flomon(i,iya,mon),&
          &sedmon(i,iya,mon),&
          &orgnmon(i,iya,mon),&
@@ -135,6 +105,40 @@ subroutine readmon
          &cmtl1mon(i,iya,mon),&
          &cmtl2mon(i,iya,mon),&
          &cmtl3mon(i,iya,mon)
+
+
+      if (ia2 == iyr) exit
+      if (eof < 0) exit
+   end do
+
+
+
+   do iya = 1, nbyr+2  !2 extra for scenarios
+      if (iya == 1) then
+         begmon = 2
+      else
+         begmon = 1
+      end if
+      do mon = begmon, 12
+         read (107,*,iostat=eof) ia1, ia2,&
+            &flomon(i,iya,mon),&
+            &sedmon(i,iya,mon),&
+            &orgnmon(i,iya,mon),&
+            &orgpmon(i,iya,mon),&
+            &no3mon(i,iya,mon),&
+            &nh3mon(i,iya,mon),&
+            &no2mon(i,iya,mon),&
+            &minpmon(i,iya,mon),&
+            &cbodmon(i,iya,mon),&
+            &disoxmon(i,iya,mon),&
+            &chlamon(i,iya,mon),&
+            &solpstmon(i,iya,mon),&
+            &srbpstmon(i,iya,mon),&
+            &bactpmon(i,iya,mon),&
+            &bactlpmon(i,iya,mon),&
+            &cmtl1mon(i,iya,mon),&
+            &cmtl2mon(i,iya,mon),&
+            &cmtl3mon(i,iya,mon)
          if (eof < 0) exit
       end do
       if (eof < 0) exit

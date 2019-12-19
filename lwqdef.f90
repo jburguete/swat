@@ -1,8 +1,11 @@
-subroutine lwqdef
+!> @file lwqdef.f90
+!> file containing the subroutine lwqdef
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine assigns default values for the lake water quality
-!!    (.lwq) when the lake water quality file does not exists
+!> this subroutine assigns default values for the lake water quality
+!> (.lwq) when the lake water quality file does not exists
+subroutine lwqdef
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition

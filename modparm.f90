@@ -15,7 +15,8 @@ module parm
    integer, parameter :: mstdo = 113
    integer, parameter :: motot = 600 !! (50 years limit)
 
-   integer :: i !< forecast region, subbasin or HRU number (none)
+!> forecast region, subbasin, HRU, reach, reservoir or file number (none)
+   integer :: i
    integer icalen
 !> Basinwide peak rate adjustment factor for sediment routing in the channel.
 !> Allows impact of peak flow rate on sediment routing and channel reshaping to
@@ -130,7 +131,12 @@ module parm
    real*8 :: basminpf, basorgpf
 !> die-off factor for less persistent bacteria in soil solution (1/day)
    real*8 :: wdlpq
-   real*8 :: wshd_resv, wshd_ressed, basno3i, basorgni, basminpi
+!> total amount of suspended sediment in reservoirs in the watershed
+!> (metric tons)
+   real*8 :: wshd_ressed
+!> total volume of water in all reservoirs in the watershed (m^3)
+   real*8 :: wshd_resv
+   real*8 :: basno3i, basorgni, basminpi
 !> die-off factor for persistent bacteria adsorbed to soil particles (1/day)
    real*8 :: wdps
 !> growth factor for less persistent bacteria in soil solution (1/day)
@@ -902,32 +908,80 @@ module parm
 !>  3 = Molinas WU\n
 !>  4 = Yang
    integer, dimension (:), allocatable :: ch_eqn
-   real*8, dimension (:), allocatable :: chpst_conc,chpst_rea,chpst_vol
-   real*8, dimension (:), allocatable :: chpst_koc,chpst_stl,chpst_rsp
+!> pesticide reaction coefficient in reach (1/day)
+   real*8, dimension (:), allocatable :: chpst_rea
+!> pesticide volatilization coefficient in reach (m/day)
+   real*8, dimension (:), allocatable :: chpst_vol
+   real*8, dimension (:), allocatable :: chpst_conc
+!> pesticide partition coefficient between water and sediment in reach (m^3/g)
+   real*8, dimension (:), allocatable :: chpst_koc
+!> resuspension velocity in reach for pesticide sorbed to sediment (m/day)
+   real*8, dimension (:), allocatable :: chpst_rsp
+!> settling velocity in reach for pesticide sorbed to sediment (m/day)
+   real*8, dimension (:), allocatable :: chpst_stl
 !> channel width to depth ratio (m/m)
    real*8, dimension (:), allocatable :: ch_wdr
-   real*8, dimension (:), allocatable :: chpst_mix,sedpst_conc
-   real*8, dimension (:), allocatable :: sedpst_rea,sedpst_bry
-   real*8, dimension (:), allocatable :: sedpst_act,rch_cbod,rch_bactlp
+!> mixing velocity (diffusion/dispersion) for pesticide in reach (m/day)
+   real*8, dimension (:), allocatable :: chpst_mix
+!> inital pesticide concentration in river bed sediment (mg/m^3)
+   real*8, dimension (:), allocatable :: sedpst_conc
+!> pesticide burial velocity in river bed sediment (m/day)
+   real*8, dimension (:), allocatable :: sedpst_bry
+!> pesticide reaction coefficient in river bed sediment (1/day)
+   real*8, dimension (:), allocatable :: sedpst_rea
+!> depth of active sediment layer in reach for pesticide (m)
+   real*8, dimension (:), allocatable :: sedpst_act
+   real*8, dimension (:), allocatable :: rch_cbod,rch_bactlp
 !> change in horizontal distance per unit vertical distance (0.0 - 5)\n
 !> 0 = for vertical channel bank\n
 !> 5 = for channel bank with gentl side slope
    real*8, dimension (:), allocatable :: chside
-   real*8, dimension (:), allocatable :: rs1,rs2,rs3,rs4,rs5
-   real*8, dimension (:), allocatable :: rs6,rs7,rk1,rk2,rk3,rk4,rk5
+!> local algal settling rate in reach at 20 deg C (m/day or m/hour)
+   real*8, dimension (:), allocatable :: rs1
+!> benthos source rate for dissolved phosphorus in reach at 20 deg C
+!> ((mg disP-P)/(m^2*day) or (mg disP-P)/(m^2*hour))
+   real*8, dimension (:), allocatable :: rs2
+!> benthos source rate for ammonia nitrogen in reach at 20 deg C
+!> ((mg NH4-N)/(m^2*day) or (mg NH4-N)/(m^2*hour))
+   real*8, dimension (:), allocatable :: rs3
+!> rate coefficient for organic nitrogen settling in reach at 20 deg C
+!> (1/day or 1/hour)
+   real*8, dimension (:), allocatable :: rs4
+!> organic phosphorus settling rate in reach at 20 deg C (1/day or 1/hour)
+   real*8, dimension (:), allocatable :: rs5
+!> CBOD deoxygenation rate coefficient in reach at 20 deg C (1/day or 1/hour)
+   real*8, dimension (:), allocatable :: rk1
+!> reaeration rate in accordance with Fickian diffusion in reach at 20 deg C
+!> (1/day or 1/hour)
+   real*8, dimension (:), allocatable :: rk2
+!> rate of loss of CBOD due to settling in reach at 20 deg C (1/day or 1/hour)
+   real*8, dimension (:), allocatable :: rk3
+!> sediment oxygen demand rate in reach at 20 deg C
+!> (mg O2/(m^2*day) or mg O2/(m^2*hour))
+   real*8, dimension (:), allocatable :: rk4
+!> coliform die-off rate in reach (1/day)
+   real*8, dimension (:), allocatable :: rk5
+!> rate coefficient for settling of arbitrary non-conservative constituent in
+!> reach (1/day)
+   real*8, dimension (:), allocatable :: rs6
+!> benthal source rate for arbitrary non-conservative constituent in reach
+!> ((mg ANC)/(m^2*day))
+   real*8, dimension (:), allocatable :: rs7
 !> rate constant for biological oxidation of NH3 to NO2 in reach at 20 deg C
-!> (1/hr)          
+!> (1/day or 1/hour)
    real*8, dimension (:), allocatable :: bc1
 !> rate constant for biological oxidation of NO2 to NO3 in reach at 20 deg C
-!> (1/hr)
+!> (1/day or 1/hour)
    real*8, dimension (:), allocatable :: bc2
 !> rate constant for hydrolysis of organic N to ammonia in reach at 20 deg C
-!> (1/hr)          
+!> (1/day or 1/hour)
    real*8, dimension (:), allocatable :: bc3
 !> rate constant for the decay of organic P to dissolved P in reach at 20 deg C
-!> (1/hr)          
+!> (1/day or 1/hour)
    real*8, dimension (:), allocatable :: bc4
-   real*8, dimension (:), allocatable :: rk6,ammonian
+!> decay rate for arbitrary non-conservative constituent in reach (1/day)
+   real*8, dimension (:), allocatable :: rk6
+   real*8, dimension (:), allocatable :: ammonian
    real*8, dimension (:), allocatable :: orig_sedpstconc
 !> average daily water removal from the reach for the month (10^4 m^3/day)
    real*8, dimension (:,:), allocatable :: wurch
@@ -1154,31 +1208,95 @@ module parm
    real*8, dimension (:,:), allocatable :: orig_solaorgn,orig_solst
    real*8, dimension (:,:), allocatable :: orig_solactp,orig_solstap
    real*8, dimension (:,:), allocatable :: orig_volcr
-!    Drainmod tile equations  01/2006
    real*8, dimension (:,:), allocatable :: conk
-!    Drainmod tile equations  01/2006
 !> sol_pst(:,:,1) pesticide concentration in soil (mg/kg)
    real*8, dimension (:,:,:), allocatable :: sol_pst
    real*8, dimension (:,:,:), allocatable :: sol_kp
    real*8, dimension (:,:,:), allocatable :: orig_solpst
-! mres = max number of reservoirs
    real*8, dimension (:), allocatable :: velsetlr, velsetlp
-   real*8, dimension (:), allocatable :: br1,res_k,lkpst_conc, evrsv
-   real*8, dimension (:), allocatable :: res_evol,res_pvol,res_vol
-   real*8, dimension (:), allocatable :: res_psa,lkpst_rea,lkpst_vol
-   real*8, dimension (:), allocatable :: br2,res_rr,res_sed,lkpst_koc
-   real*8, dimension (:), allocatable :: lkpst_stl,lkpst_rsp,lkpst_mix
-   real*8, dimension (:), allocatable :: lkspst_conc,lkspst_rea
+!> 1st shape parameter for reservoir surface area equation (none)
+   real*8, dimension (:), allocatable :: br1
+!> lake evaporation coefficient (none)
+   real*8, dimension (:), allocatable :: evrsv
+!> hydraulic conductivity of the reservoir bottom (mm/hr)
+   real*8, dimension (:), allocatable :: res_k
+!> pesticide concentration in lake water (mg/m^3)
+   real*8, dimension (:), allocatable :: lkpst_conc
+!> volume of water needed to fill the reservoir to the emergency spillway (read
+!> in as 10^4 m^3 and converted to m^3) (m^3)
+   real*8, dimension (:), allocatable :: res_evol
+!> volume of water needed to fill the reservoir to the principal spillway (read
+!> in as 10^4 m^3 and converted to m^3) (m^3)
+   real*8, dimension (:), allocatable :: res_pvol
+!> reservoir volume (read in as 10^4 m^3 and converted to m^3) (m^3)
+   real*8, dimension (:), allocatable :: res_vol
+!> reservoir surface area when reservoir is filled to principal spillway (ha)
+   real*8, dimension (:), allocatable :: res_psa
+!> pesticide reaction coefficient in lake water (1/day)
+   real*8, dimension (:), allocatable :: lkpst_rea
+!> pesticide volatilization coefficient in lake water (m/day)
+   real*8, dimension (:), allocatable :: lkpst_vol
+!> 2nd shape parameter for reservoir surface area equation (none)
+   real*8, dimension (:), allocatable :: br2
+!> average daily principal spillway release volume (read in as a release rate in
+!> m^3/s and converted to m^3/day) (m^3/day)
+   real*8, dimension (:), allocatable :: res_rr
+!> amount of sediment in reservoir (read in as mg/L and converted to kg/L)
+!> (kg/L)
+   real*8, dimension (:), allocatable :: res_sed
+!> pesticide partition coefficient between water and sediment in lake water
+!> (m^3/g)
+   real*8, dimension (:), allocatable :: lkpst_koc
+!> mixing velocity (diffusion/dispersion) in lake water for pesticide (m/day)
+   real*8, dimension (:), allocatable :: lkpst_mix
+!> resuspension velocity in lake water for pesticide sorbed to sediment (m/day)
+   real*8, dimension (:), allocatable :: lkpst_rsp
+!> settling velocity in lake water for pesticide sorbed to sediment (m/day)
+   real*8, dimension (:), allocatable :: lkpst_stl
+!> pesticide concentration in lake bed sediment (mg/m^3)
+   real*8, dimension (:), allocatable :: lkspst_conc
+!> pesticide reaction coefficient in lake bed sediment (1/day)
+   real*8, dimension (:), allocatable :: lkspst_rea
    real*8, dimension (:), allocatable :: theta_n, theta_p, con_nirr
    real*8, dimension (:), allocatable :: con_pirr
-   real*8, dimension (:), allocatable :: lkspst_bry,lkspst_act,sed_stlr
+!> depth of active sediment layer in lake for for pesticide (m)
+   real*8, dimension (:), allocatable :: lkspst_act
+!> pesticide burial velocity in lake bed sediment (m/day)
+   real*8, dimension (:), allocatable :: lkspst_bry
+   real*8, dimension (:), allocatable :: sed_stlr
    real*8, dimension (7) :: resdata
-   real*8, dimension (:), allocatable :: wurtnf,res_nsed,chlar
-   real*8, dimension (:), allocatable :: res_orgn,res_orgp,res_no3
-   real*8, dimension (:), allocatable :: res_solp,res_chla,res_seci
-   real*8, dimension (:), allocatable :: res_esa,seccir,res_no2,res_nh3
+!> normal amount of sediment in reservoir (read in as mg/L and convert to kg/L)
+!> (kg/L)
+   real*8, dimension (:), allocatable :: res_nsed
+!> fraction of water removed from the reservoir via WURESN which is returned and
+!> becomes flow from the reservoir outlet (none)
+   real*8, dimension (:), allocatable :: wurtnf
+!> chlorophyll-a production coefficient for reservoir (none)
+   real*8, dimension (:), allocatable :: chlar
+!> amount of nitrate in reservoir (kg N)
+   real*8, dimension (:), allocatable :: res_no3
+!> amount of organic N in reservoir (kg N)
+   real*8, dimension (:), allocatable :: res_orgn
+!> amount of organic P in reservoir (kg P)
+   real*8, dimension (:), allocatable :: res_orgp
+!> amount of soluble P in reservoir (kg P)
+   real*8, dimension (:), allocatable :: res_solp
+   real*8, dimension (:), allocatable :: res_chla,res_seci
+!> reservoir surface area when reservoir is filled to emergency spillway (ha)
+   real*8, dimension (:), allocatable :: res_esa
+!> amount of ammonia in reservoir (kg N)
+   real*8, dimension (:), allocatable :: res_nh3
+!> amount of nitrite in reservoir (kg N)
+   real*8, dimension (:), allocatable :: res_no2
+!> water clarity coefficient for reservoir (none)
+   real*8, dimension (:), allocatable :: seccir
    real*8, dimension (:), allocatable :: res_bactp, res_bactlp
-   real*8, dimension (:), allocatable :: oflowmn_fps, starg_fps
+!> minimum reservoir outflow as a fraction of the principal spillway volume
+!> (0-1) (fraction)
+   real*8, dimension (:), allocatable :: oflowmn_fps
+!> target volume as a fraction of the principal spillway volume (.1-5)
+!> (fraction)
+   real*8, dimension (:), allocatable :: starg_fps
    real*8, dimension (:), allocatable :: weirc, weirk, weirw
    real*8, dimension (:), allocatable :: acoef, bcoef, ccoef
    real*8, dimension (:), allocatable :: orig_resvol,orig_ressed
@@ -1186,17 +1304,59 @@ module parm
    real*8, dimension (:), allocatable :: orig_ressolp,orig_resorgp
    real*8, dimension (:), allocatable :: orig_resno3,orig_resno2
    real*8, dimension (:), allocatable :: orig_resnh3,orig_resorgn
-   real*8, dimension (:,:), allocatable :: starg,oflowmx,oflowmn
+!> minimum daily ouflow for the month (read in as m^3/s and converted to
+!> m^3/day) (m^3/day)
+   real*8, dimension (:,:), allocatable :: oflowmn
+!> maximum daily ouflow for the month (read in as m^3/s and converted to
+!> m^3/day) (m^3/day)
+   real*8, dimension (:,:), allocatable :: oflowmx
+!> monthly target reservoir storage (needed if IRESCO=2) (read in as 10^4 m^3
+!> and converted to m^3) (m^3)
+   real*8, dimension (:,:), allocatable :: starg
+!> phosphorus settling rate for mid-year period (read in as m/year and converted
+!> to m/day) (m/day)
    real*8, dimension (:), allocatable :: psetlr1
+!> phosphorus settling rate for remainder of year (read in as m/year and
+!> converted to m/day) (m/day)
    real*8, dimension (:), allocatable :: psetlr2
+!> nitrogen settling rate for mid-year period (read in as m/year and converted
+!> to m/day) (m/day)
    real*8, dimension (:), allocatable :: nsetlr1
+!> nitrogen settling rate for remainder of year (read in as m/year and converted
+!> to m/day) (m/day)
    real*8, dimension (:), allocatable :: nsetlr2
+!> average amount of water withdrawn from reservoir each month for consumptive 
+!> water use (read in as 10^4 m^3 and converted to m^3) (m^3)
    real*8, dimension (:,:), allocatable :: wuresn
+!> measured average daily outflow from the reservoir for the month (needed if
+!> IRESCO=1) (read in as m^3/s and converted to m^3/day) (m^3/day)
    real*8, dimension (:,:,:), allocatable :: res_out
-   integer, dimension (:), allocatable :: ires1,ires2,res_sub
-   integer, dimension (:), allocatable :: iresco,mores,iyres
-   integer, dimension (:), allocatable :: iflod1r,iflod2r,ndtargr
-! mpdb = max number of pesticides in the database
+!> number of subbasin reservoir is in (weather for the subbasin is used for the
+!> reservoir) (none)
+   integer, dimension (:), allocatable :: res_sub
+!> beginning of mid-year nutrient settling "season" (none)
+   integer, dimension (:), allocatable :: ires1
+!> end of mid-year nutrient settling "season" (none)
+   integer, dimension (:), allocatable :: ires2
+!> outflow simulation code (none):\n
+!> 0 compute outflow for uncontrolled reservoir with average annual release
+!> rate\n
+!> 1 measured monthly outflow\n
+!> 2 simulated controlled outflow-target release\n
+!> 3 measured daily outflow\n
+!> 4 stage/volume/outflow relationship
+   integer, dimension (:), allocatable :: iresco
+!> year of the simulation that the reservoir becomes operational (none)
+   integer, dimension (:), allocatable :: iyres
+!> month the reservoir becomes operational (none)
+   integer, dimension (:), allocatable :: mores
+!> beginning month of non-flood season (needed if IRESCO=2) (none)
+   integer, dimension (:), allocatable :: iflod1r
+!> ending month of non-flood season (needed if IRESCO=2) (none)
+   integer, dimension (:), allocatable :: iflod2r
+!> number of days to reach target storage from current reservoir storage (needed
+!> if IRESCO=2) (days)
+   integer, dimension (:), allocatable :: ndtargr
 !> application efficiency (0-1) (none)
    real*8, dimension (:), allocatable :: ap_ef
 !> exponential of the rate constant for degradation of the pesticide on foliage
@@ -2040,19 +2200,54 @@ module parm
    character(len=1), dimension (:), allocatable :: hydgrp
    character(len=16), dimension (:), allocatable :: snam !< soil series name
    character(len=17), dimension (300) :: pname !< name of pesticide/toxin
-!!    adding qtile to output.hru write 3/2/2010 gsm  increased heds(70) to heds(71)
    character(len=13) :: heds(79),hedb(24),hedr(46),hedrsv(41)
    character(len=13) :: hedwtr(40)
    character(len=4) :: title(60) !< description lines in file.cio (1st 3 lines)
    character(len=4) :: cpnm(5000) !< four character code to represent crop name
    character(len=17), dimension(50) :: fname
-! measured input files
-   real*8, dimension (:,:,:), allocatable :: flomon,solpstmon,srbpstmon
-   real*8, dimension (:,:,:), allocatable :: sedmon,orgnmon,orgpmon
-   real*8, dimension (:,:,:), allocatable :: no3mon,minpmon,nh3mon
-   real*8, dimension (:,:,:), allocatable :: no2mon,bactpmon,bactlpmon
-   real*8, dimension (:,:,:), allocatable :: cmtl1mon,cmtl2mon,cmtl3mon
-   real*8, dimension (:,:,:), allocatable :: chlamon,disoxmon,cbodmon
+!> average daily water loading for month (m^3/day)
+   real*8, dimension (:,:,:), allocatable :: flomon
+!> average daily soluble pesticide loading for month (mg pst/day)
+   real*8, dimension (:,:,:), allocatable :: solpstmon
+!> average daily sorbed pesticide loading for month (mg pst/day)
+   real*8, dimension (:,:,:), allocatable :: srbpstmon
+!> average daily organic N loading for month (kg N/day)
+   real*8, dimension (:,:,:), allocatable :: orgnmon
+!> average daily organic P loading for month (kg P/day)
+   real*8, dimension (:,:,:), allocatable :: orgpmon
+!> average daily sediment loading for month (metric tons/day)
+   real*8, dimension (:,:,:), allocatable :: sedmon
+!> average daily mineral P loading for month (kg P/day)
+   real*8, dimension (:,:,:), allocatable :: minpmon
+!> average amount of NH3-N loaded to stream on a given day in the month
+!> (kg N/day)
+   real*8, dimension (:,:,:), allocatable :: nh3mon
+!> average daily NO3-N loading for month (kg N/day)
+   real*8, dimension (:,:,:), allocatable :: no3mon
+!> average amount of less persistent bacteria loaded to stream on a given day in
+!> the month (# bact/day)
+   real*8, dimension (:,:,:), allocatable :: bactlpmon
+!> average amount of persistent bacteria loaded to stream on a given day in the
+!> month (# bact/day)
+   real*8, dimension (:,:,:), allocatable :: bactpmon
+!> average amount of NO2-N loaded to stream on a given day in the month
+!> (kg N/day)
+   real*8, dimension (:,:,:), allocatable :: no2mon
+!> average amount of conservative metal #1 loaded to stream on a given day in
+!> the month (# bact/day)
+   real*8, dimension (:,:,:), allocatable :: cmtl1mon
+!> average amount of conservative metal #2 loaded to stream on a given day in
+!> the month (# bact/day)
+   real*8, dimension (:,:,:), allocatable :: cmtl2mon
+!> average amount of conservative metal #3 loaded to stream on a given day in
+!> the month (# bact/day)
+   real*8, dimension (:,:,:), allocatable :: cmtl3mon
+!> average daily loading of CBOD in month (kg/day)
+   real*8, dimension (:,:,:), allocatable :: cbodmon
+!> average daily loading of chlorophyll-a in month (kg/day)
+   real*8, dimension (:,:,:), allocatable :: chlamon
+!> average daily loading of dissolved O2 in month (kg/day)
+   real*8, dimension (:,:,:), allocatable :: disoxmon
    real*8, dimension (:,:), allocatable :: floyr,sedyr,orgnyr,orgpyr
    real*8, dimension (:,:), allocatable :: no3yr,minpyr,nh3yr,no2yr
    real*8, dimension (:,:), allocatable :: bactpyr,bactlpyr,cmtl1yr
