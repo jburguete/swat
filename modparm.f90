@@ -794,23 +794,26 @@ module parm
    real*8, dimension (:,:), allocatable :: fpr_w2
 !> proportion of wet days in the month (none)
    real*8, dimension (:,:), allocatable :: fpr_w3
-! mch = max number of channels
-   real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi,ch_d
+!> average depth of main channel (m)
+   real*8, dimension (:), allocatable :: ch_d
+   real*8, dimension (:), allocatable :: flwin,flwout,bankst,ch_wi
 !> channel organic n concentration (ppm)
    real*8, dimension (:), allocatable :: ch_onco
 !> channel organic p concentration (ppm)
    real*8, dimension (:), allocatable :: ch_opco
    real*8, dimension (:), allocatable :: ch_orgn, ch_orgp
    real*8, dimension (:), allocatable :: drift,rch_dox,rch_bactp
-   real*8, dimension (:), allocatable :: alpha_bnk,alpha_bnke
+!> alpha factor for bank storage recession curve (days)
+   real*8, dimension (:), allocatable :: alpha_bnk
+!> \f$\exp(-alpha_bnk)\f$ (none)
+   real*8, dimension (:), allocatable :: alpha_bnke
    real*8, dimension (:), allocatable :: disolvp,algae,sedst,rchstor
    real*8, dimension (:), allocatable :: organicn,organicp,chlora
-   real*8, dimension (:), allocatable :: nitraten,nitriten,ch_li,ch_si
-
-!      real*8, dimension (:), allocatable :: ch_cov,ch_di,ch_erod,ch_l2
-!      real*8, dimension (:), allocatable :: ch_san, ch_sil, ch_cla, ch_veg
-!      real*8, dimension (:), allocatable :: ch_rcur, ch_ss, ch_fpr, ch_eqn
-!      real*8, dimension (:), allocatable :: ch_crht
+!> initial length of main channel (km)
+   real*8, dimension (:), allocatable :: ch_li
+!> initial slope of main channel (m/m)
+   real*8, dimension (:), allocatable :: ch_si
+   real*8, dimension (:), allocatable :: nitraten,nitriten
 
 !     Sediment parameters added by Balaji for the new routines
 
@@ -826,7 +829,11 @@ module parm
 !> curve number retention parameter adjustment factor to adjust surface runoff
 !> for flat slopes (0.5 - 3.0) (dimensionless)
    real*8, dimension (:), allocatable :: r2adj
-   real*8, dimension (:), allocatable :: depprch,depprfp,prf
+!> Reach peak rate adjustment factor for sediment routing in the channel. Allows
+!> impact of peak flow rate on sediment routing and channel reshaping to be
+!> taken into account (none)
+   real*8, dimension (:), allocatable :: prf
+   real*8, dimension (:), allocatable :: depprch,depprfp
 !> linear parameter for calculating sediment reentrained in channel sediment
 !> routing
    real*8, dimension (:), allocatable :: spcon
@@ -852,18 +859,61 @@ module parm
    real*8 :: pndsanin,pndsilin,pndclain,pndsagin,pndlagin
    real*8 :: pndsano,pndsilo,pndclao,pndsago,pndlago
 
-   real*8, dimension (:), allocatable :: ch_di,ch_erod,ch_l2, ch_cov
-   real*8, dimension (:), allocatable :: ch_cov1, ch_cov2, ch_bnk_bd
-   real*8, dimension (:), allocatable :: ch_bed_bd,ch_bnk_kd,ch_bed_kd
-   real*8, dimension (:), allocatable :: ch_bnk_d50, ch_bed_d50
-   real*8, dimension (:), allocatable :: tc_bed,tc_bnk
+!> initial depth of main channel (m)
+   real*8, dimension (:), allocatable :: ch_di
+!> channel erodibility factor (0.0-1.0) (none)\n
+!> 0 non-erosive channel\n
+!> 1 no resistance to erosion
+   real*8, dimension (:), allocatable :: ch_erod
+!> length of main channel (km)
+   real*8, dimension (:), allocatable :: ch_l2
+   real*8, dimension (:), allocatable :: ch_cov
+!> bulk density of channel bank sediment (1.1-1.9) (g/cc)
+   real*8, dimension (:), allocatable :: ch_bnk_bd
+!> bulk density of channel bed sediment (1.1-1.9) (g/cc)
+   real*8, dimension (:), allocatable :: ch_bed_bd
+!> erodibility of channel bank sediment by jet test (Peter Allen needs to give
+!> more info on this)
+   real*8, dimension (:), allocatable :: ch_bnk_kd
+!> erodibility of channel bed sediment by jet test (Peter Allen needs to give
+!> more info on this)
+   real*8, dimension (:), allocatable :: ch_bed_kd
+!> D50(median) particle size diameter of channel bank sediment (0.001 - 20)
+   real*8, dimension (:), allocatable :: ch_bnk_d50
+!> D50(median) particle size diameter of channel bed sediment (micrometers)
+!> (0.001 - 20)
+   real*8, dimension (:), allocatable :: ch_bed_d50
+!> channel erodibility factor (0.0-1.0) (none)\n
+!> 0 non-erosive channel\n
+!> 1 no resistance to erosion
+   real*8, dimension (:), allocatable :: ch_cov1
+!> channel cover factor (0.0-1.0) (none)\n
+!> 0 channel is completely protected from erosion by cover\n
+!> 1 no vegetative cover on channel
+   real*8, dimension (:), allocatable :: ch_cov2
+!> critical shear stress of channel bed (N/m2)
+   real*8, dimension (:), allocatable :: tc_bed
+!> critical shear stress of channel bank (N/m2)
+   real*8, dimension (:), allocatable :: tc_bnk
+!> sediment routine methods (DAILY):\n
+!>  0 = original SWAT method\n
+!>  1 = Bagnold's\n
+!>  2 = Kodatie\n
+!>  3 = Molinas WU\n
+!>  4 = Yang
    integer, dimension (:), allocatable :: ch_eqn
    real*8, dimension (:), allocatable :: chpst_conc,chpst_rea,chpst_vol
    real*8, dimension (:), allocatable :: chpst_koc,chpst_stl,chpst_rsp
-   real*8, dimension (:), allocatable :: chpst_mix,sedpst_conc,ch_wdr
+!> channel width to depth ratio (m/m)
+   real*8, dimension (:), allocatable :: ch_wdr
+   real*8, dimension (:), allocatable :: chpst_mix,sedpst_conc
    real*8, dimension (:), allocatable :: sedpst_rea,sedpst_bry
    real*8, dimension (:), allocatable :: sedpst_act,rch_cbod,rch_bactlp
-   real*8, dimension (:), allocatable :: chside,rs1,rs2,rs3,rs4,rs5
+!> change in horizontal distance per unit vertical distance (0.0 - 5)\n
+!> 0 = for vertical channel bank\n
+!> 5 = for channel bank with gentl side slope
+   real*8, dimension (:), allocatable :: chside
+   real*8, dimension (:), allocatable :: rs1,rs2,rs3,rs4,rs5
    real*8, dimension (:), allocatable :: rs6,rs7,rk1,rk2,rk3,rk4,rk5
 !> rate constant for biological oxidation of NH3 to NO2 in reach at 20 deg C
 !> (1/hr)          
@@ -879,6 +929,7 @@ module parm
    real*8, dimension (:), allocatable :: bc4
    real*8, dimension (:), allocatable :: rk6,ammonian
    real*8, dimension (:), allocatable :: orig_sedpstconc
+!> average daily water removal from the reach for the month (10^4 m^3/day)
    real*8, dimension (:,:), allocatable :: wurch
    integer, dimension (:), allocatable :: icanal
    integer, dimension (:), allocatable :: itb
@@ -975,6 +1026,7 @@ module parm
    real*8, dimension (:,:), allocatable :: tmpinc
 !> effective hydraulic conductivity of tributary channel alluvium (mm/hr)
    real*8, dimension (:), allocatable :: ch_k1
+!> effective hydraulic conductivity of main channel alluvium (mm/hr)
    real*8, dimension (:), allocatable :: ch_k2
 !> elevation at the center of the band (m)
    real*8, dimension (:,:), allocatable :: elevb
@@ -985,12 +1037,15 @@ module parm
    real*8, dimension (:,:), allocatable :: wndav
 !> Manning's "n" value for the tributary channels (none)
    real*8, dimension (:), allocatable :: ch_n1
+!> Manning's "n" value for the main channel (none)
    real*8, dimension (:), allocatable :: ch_n2
 !> average slope of tributary channels (m/m)
    real*8, dimension (:), allocatable :: ch_s1
+!> average slope of main channel (m/m)
    real*8, dimension (:), allocatable :: ch_s2
 !> average width of tributary channels (m)
    real*8, dimension (:), allocatable :: ch_w1
+!> average width of main channel (m)
    real*8, dimension (:), allocatable :: ch_w2
 !> average dew point temperature for the month (deg C)
    real*8, dimension (:,:), allocatable :: dewpt
@@ -1833,11 +1888,19 @@ module parm
 !> phosphorus settling rate for 2nd season (m/day)
    real*8, dimension (:), allocatable :: psetlw2
    real*8, dimension (:,:), allocatable :: pst_sed
-   real*8, dimension (:,:), allocatable :: pcpband,wupnd,tavband,phi
+!> average daily water removal from the pond for the month (10^4 m^3/day)
+   real*8, dimension (:,:), allocatable :: wupnd
+   real*8, dimension (:,:), allocatable :: pcpband,tavband,phi
    real*8, dimension (:,:), allocatable :: wat_phi
 !> initial snow water content in elevation band (mm H2O)
    real*8, dimension (:,:), allocatable :: snoeb
-   real*8, dimension (:,:), allocatable :: wushal,wudeep,tmnband
+!> average daily water removal from the deep aquifer for the month
+!> (10^4 m^3/day)
+   real*8, dimension (:,:), allocatable :: wudeep
+!> average daily water removal from the shallow aquifer for the month
+!> (10^4 m^3/day)
+   real*8, dimension (:,:), allocatable :: wushal
+   real*8, dimension (:,:), allocatable :: tmnband
    real*8, dimension (:), allocatable :: bss1
    real*8, dimension (:), allocatable :: bss2
    real*8, dimension (:), allocatable :: bss3

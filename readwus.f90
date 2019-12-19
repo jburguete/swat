@@ -1,10 +1,13 @@
-subroutine readwus
+!> @file readwus.f90
+!> file containing the subroutine readwus
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine reads data from the HRU/subbasin water use input file
-!!    (.wus). The water use file extracts water from the subbasin and it is
-!!    considered to be lost from the watershed. These variables should be used
-!!    to remove water transported outside the watershed.
+!> This subroutine reads data from the HRU/subbasin water use input file
+!> (.wus). The water use file extracts water from the subbasin and it is
+!> considered to be lost from the watershed. These variables should be used
+!> to remove water transported outside the watershed.
+subroutine readwus
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -29,7 +32,11 @@ subroutine readwus
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof         |none          |end of file flag
+!!    j           |none          |counter
 !!    mon         |none          |counter
+!!    swudp
+!!    swupnd
+!!    swush
 !!    titldum     |NA            |title line of .wus file
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -39,8 +46,8 @@ subroutine readwus
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof, mon, j
-   real*8 :: swupnd(12), swush(12), swudp(12)
+   integer :: eof, j, mon
+   real*8 :: swudp(12), swupnd(12), swush(12)
 
    eof = 0
    swupnd = 0.

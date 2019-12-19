@@ -176,7 +176,7 @@ subroutine readpnd
    use parm
    implicit none
 
-   real*8 :: dummy(mudb)
+   real*8, dimension(mudb) :: dummy
    character (len=200) :: lus
    character (len=80) :: titldum
    real*8 :: pnd_d50, pnd_d50mm, pndevcoeff, schla, schlaw, sn1, sn2,&
