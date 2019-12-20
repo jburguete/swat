@@ -34,7 +34,7 @@ subroutine sim_initday
 !!    strsw(:)    |none          |fraction of potential plant growth achieved on
 !!                               |the day where the reduction is caused by
 !!                               |water stress
-!!    sub_bactlp(:)|# bact/ha     |less persistent bacteria loading on day
+!!    sub_bactlp(:)|# bact/ha    |less persistent bacteria loading on day
 !!                               |from subbasin
 !!    sub_bactp(:)|# bact/ha     |persistent bacteria loading on day from
 !!                               |subbasin
@@ -45,7 +45,7 @@ subroutine sim_initday
 !!    sub_dox(:)  |kg O2         |dissolved oxygen loading on day from subbasin
 !!    sub_etday(:)|mm H2O        |actual evapotranspiration on day in subbasin
 !!    sub_gwq(:)  |mm H2O        |groundwater loading on day in subbasin
-!!    sub_latno3(:)|kg N/ha       |NO3 in lateral flow on day in subbasin
+!!    sub_latno3(:)|kg N/ha      |NO3 in lateral flow on day in subbasin
 !!    sub_no3(:)  |kg N/ha       |NO3 in surface runoff on day in subbasin
 !!    sub_orgn(:) |kg N/ha       |organic nitrogen in soil of subbasin
 !!    sub_orgp(:) |kg P/ha       |organic phosphorus in soil of subbasin
@@ -58,8 +58,8 @@ subroutine sim_initday
 !!                               |subbasin
 !!    sub_snom(:) |mm H2O        |snow melt for day in subbasin
 !!    sub_solp(:) |kg P/ha       |soluble P in surface runoff on day in subbasin
-!!    sub_solpst(:)|mg pst        |soluble pesticide loading on day in subbasin
-!!    sub_sorpst(:)|mg pst        |sorbed pesticide loading on day in subbasin
+!!    sub_solpst(:)|mg pst       |soluble pesticide loading on day in subbasin
+!!    sub_sorpst(:)|mg pst       |sorbed pesticide loading on day in subbasin
 !!    sub_subp(:) |mm H2O        |precipitation for day in subbasin
 !!    sub_sumfc(:)|mm H2O        |amount of water in soil at field capacity in
 !!                               |subbasin
@@ -76,7 +76,7 @@ subroutine sim_initday
 !!    tmx(:)      |deg C         |maximum temperature for the day in HRU
 !!    u10(:)      |m/s           |wind speed for the day in HRU
 !!    wcklsp(:)   |
-!!    wpstdayo(:,:)|varies        |watershed daily pesticide output array
+!!    wpstdayo(:,:)|varies       |watershed daily pesticide output array
 !!    wshddayo(:) |varies        |watershed daily output array
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -207,8 +207,6 @@ subroutine sim_initday
    wshddayo = 0.
 
    mo_chk = i_mo
-!----------------------------------------------------
-! added by J.Jeong for urban modeling 4/29/2008
    ubnrunoff = 0.
    ubntss = 0.
    sub_ubnrunoff = 0.
@@ -218,10 +216,7 @@ subroutine sim_initday
    sub_hhsedy = 0.
    sub_atmp = 0.
    rchhr = 0.
-!-----------------------------------------------------
 
-   !!add by zhang
-   !!==========================
    sedc_d = 0.
    surfqc_d =0.
    latc_d = 0.
@@ -244,8 +239,6 @@ subroutine sim_initday
    sub_grainc_d=0.
    sub_soc_d =0.
    sub_rspc_d =0.
-   !!add by zhang
-   !!==========================
 
    return
 end
