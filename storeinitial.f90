@@ -1,9 +1,11 @@
-subroutine storeinitial
+!> @file storeinitial.f90
+!> file containing the subroutine storeinitial
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine saves initial values for variables that must be reset to
-!!    rerun the simulation for different real time weather scenarios
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!> this subroutine saves initial values for variables that must be reset to
+!> rerun the simulation for different real time weather scenarios
+subroutine storeinitial
 
    use parm
    implicit none

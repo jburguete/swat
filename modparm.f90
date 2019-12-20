@@ -628,7 +628,8 @@ module parm
    integer :: lao
 !> number of different pesticides used in the simulation (none)
    integer :: npmx
-   integer :: curyr, iihru
+   integer :: curyr !< current year in simulation (sequence) (none)
+   integer :: iihru
 !    Drainmod tile equations  01/2006
 !> tile drainage equations flag/code\n
 !> 1 simulate tile flow using subroutine drains(wt_shall)\n
@@ -699,7 +700,9 @@ module parm
 !> 0 do not model stream water quality\n
 !> 1 model stream water quality (QUAL2E & pesticide transformations)
    integer :: iwq
-   integer :: iskip, ifirstpet
+!> flag for calculations performed only for the first year of simulation (none)
+   integer :: iskip
+   integer :: ifirstpet
 !> print code for output.pst file\n
 !> 0 do not print pesticide output\n
 !> 1 print pesticide output
@@ -909,12 +912,22 @@ module parm
    real*8, dimension (mstdo) :: wshdaao
    real*8, dimension (:,:), allocatable :: wpstdayo,wpstmono,wpstyro
    real*8, dimension (:,:), allocatable :: yldkg, bio_hv
-   real*8, dimension (:,:), allocatable :: wpstaao,rchmono,rchyro
-   real*8, dimension (:,:), allocatable :: rchaao,rchdy,hrumono,hruyro
-   real*8, dimension (:,:), allocatable :: hruaao,submono,subyro,subaao
-   real*8, dimension (:,:), allocatable :: resoutm,resouty,resouta
+!> reach monthly output array (varies)
+   real*8, dimension (:,:), allocatable :: rchmono
+   real*8, dimension (:,:), allocatable :: wpstaao,rchyro
+!> HRU monthly output data array (varies)
+   real*8, dimension (:,:), allocatable :: hrumono
+   real*8, dimension (:,:), allocatable :: rchaao,rchdy,hruyro
+!> subbasin monthly output array (varies)
+   real*8, dimension (:,:), allocatable :: submono
+   real*8, dimension (:,:), allocatable :: hruaao,subyro,subaao
+!> reservoir monthly output array (varies)
+   real*8, dimension (:,:), allocatable :: resoutm
+   real*8, dimension (:,:), allocatable :: resouty,resouta
    real*8, dimension (12,8) :: wshd_aamon
-   real*8, dimension (:,:), allocatable :: wtrmon,wtryr,wtraa
+!> HRU monthly output data array for impoundments (varies)
+   real*8, dimension (:,:), allocatable :: wtrmon
+   real*8, dimension (:,:), allocatable :: wtryr,wtraa
 !> max melt rate for snow during year (June 21) for subbasin(:) where deg C
 !> refers to the air temperature. SUB_SMFMX and SMFMN allow the rate of snow
 !> melt to vary through the year. These parameters are accounting for the impact
@@ -1962,6 +1975,7 @@ module parm
    real*8, dimension (:), allocatable :: pnd_no3
 !> amount of soluble P in pond (kg P)
    real*8, dimension (:), allocatable :: pnd_solp
+!> annual yield (dry weight) in the HRU (metric tons/ha)
    real*8, dimension (:), allocatable :: yldanu
 !> coefficient for pesticide drift directly onto stream (none)
    real*8, dimension (:), allocatable :: driftco
@@ -1998,6 +2012,7 @@ module parm
    real*8, dimension (:), allocatable :: pnd_evol
 !> volume of water in ponds (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: pnd_vol
+!> average annual yield in the HRU (metric tons)
    real*8, dimension (:), allocatable :: yldaa
 !> normal sediment concentration in pond water (UNIT CHANGE!) (mg/kg or kg/kg)
    real*8, dimension (:), allocatable :: pnd_nsed
@@ -2066,7 +2081,9 @@ module parm
    real*8, dimension (:), allocatable :: sol_sumfc
 !> time for flow from farthest point in subbasin to enter a channel (hour)
    real*8, dimension (:), allocatable :: t_ov
-   real*8, dimension (:), allocatable :: anano3,aird
+!> total amount of NO3 applied during the year in auto-fertilization (kg N/ha)
+   real*8, dimension (:), allocatable :: anano3
+   real*8, dimension (:), allocatable :: aird
 !> amount of organic P in wetland (kg P)
    real*8, dimension (:), allocatable :: wet_orgp
 !> average porosity for entire soil profile (none)
@@ -2074,7 +2091,9 @@ module parm
 !> product of USLE K,P,LS,exp(rock) (none)
    real*8, dimension (:), allocatable :: usle_mult
    real*8, dimension (:), allocatable :: aairr,cht,u10,rhd
-   real*8, dimension (:), allocatable :: shallirr,deepirr,lai_aamx
+!> maximum leaf area index for the entire period of simulation in the HRU (none)
+   real*8, dimension (:), allocatable :: lai_aamx
+   real*8, dimension (:), allocatable :: shallirr,deepirr
 !> longest tributary channel length in subbasin (km)
    real*8, dimension (:), allocatable :: ch_l1
 !> amount of nitrate in wetland (kg N)
@@ -2214,7 +2233,11 @@ module parm
    real*8, dimension (:), allocatable :: drydep_no3
 !> atmospheric dry deposition of ammonia (kg/ha/yr)
    real*8, dimension (:), allocatable :: drydep_nh4
-   real*8, dimension (:), allocatable :: phubase,bio_yrms,hvstiadj
+!> annual biomass (dry weight) in the HRU (metric tons/ha)
+   real*8, dimension (:), allocatable :: bio_yrms
+!> base zero total heat units (used when no land cover is growing) (heat units)
+   real*8, dimension (:), allocatable :: phubase
+   real*8, dimension (:), allocatable :: hvstiadj
    real*8, dimension (:), allocatable :: laiday !< leaf area index (m^2/m^2)
 !> chlorophyll-a production coefficient for pond (none)
    real*8, dimension (:), allocatable :: chlap
@@ -2222,12 +2245,16 @@ module parm
 !> water clarity coefficient for pond (none)
    real*8, dimension (:), allocatable :: seccip
    real*8, dimension (:), allocatable :: wet_psed,plantn,plt_et
-   real*8, dimension (:), allocatable :: plt_pet,plantp,bio_aams
+!> average annual biomass in the HRU (metric tons)
+   real*8, dimension (:), allocatable :: bio_aams
+   real*8, dimension (:), allocatable :: plt_pet,plantp
 !> time threshold used to define dormant period for plant (when daylength is
 !> within the time specified by dl from the minimum daylength for the area, the
 !> plant will go dormant) (hour)
    real*8, dimension (:), allocatable :: dormhr
-   real*8, dimension (:), allocatable :: bio_aamx,lai_yrmx
+!> maximum leaf area index for the year in the HRU (none)
+   real*8, dimension (:), allocatable :: lai_yrmx
+   real*8, dimension (:), allocatable :: bio_aamx
    real*8, dimension (:), allocatable :: lat_pst
 !> fraction of HRU area that drains into floodplain (km^2/km^2)
    real*8, dimension (:), allocatable :: fld_fr
@@ -2354,10 +2381,14 @@ module parm
 !>  0: no pesticides used in HRU\n
 !>  1: pesticides used in HRU
    integer, dimension (:), allocatable :: hrupest
-   integer, dimension (:), allocatable :: nrelease,swtrg
+!> sequence number of impound/release operation within the year (none)
+   integer, dimension (:), allocatable :: nrelease
+   integer, dimension (:), allocatable :: swtrg
 !> number of years of rotation (none)
    integer, dimension (:), allocatable :: nrot
-   integer, dimension (:), allocatable :: nro,nfert
+!> sequence number of fertilizer application within the year (none)
+   integer, dimension (:), allocatable :: nfert
+   integer, dimension (:), allocatable :: nro
 !> land cover status code (none). This code informs the model whether or not a
 !> land cover is growing at the beginning of the simulation\n
 !> 0 no land cover growing\n
@@ -2367,6 +2398,7 @@ module parm
    integer, dimension (:), allocatable :: ipnd1
 !> ending month of nutrient settling season (none)
    integer, dimension (:), allocatable :: ipnd2
+!> sequence number of auto-irrigation application within the year (none)
    integer, dimension (:), allocatable :: nair
 !> beginning month of non-flood season (none)
    integer, dimension (:), allocatable :: iflod1
@@ -2375,6 +2407,7 @@ module parm
 !> number of days required to reach target storage from current pond storage
 !> (none)
    integer, dimension (:), allocatable :: ndtarg
+!> sequence number of irrigation application within the year (none)
    integer, dimension (:), allocatable :: nirr
    integer, dimension (:), allocatable :: iafrttyp, nstress
    integer, dimension (:), allocatable :: igrotree
@@ -2382,7 +2415,11 @@ module parm
    integer, dimension (:), allocatable :: grz_days
 !> management code (for GIS output only) (none)
    integer, dimension (:), allocatable :: nmgt
-   integer, dimension (:), allocatable :: icr,ncut,nsweep,nafert
+!> sequence number of auto-fert application within the year (none)
+   integer, dimension (:), allocatable :: nafert
+!> sequence number of street sweeping operation within the year (none)
+   integer, dimension (:), allocatable :: nsweep
+   integer, dimension (:), allocatable :: icr,ncut
 !> irrigation source location (none)\n
 !> if IRRSC=1, IRRNO is the number of the reach\n
 !> if IRRSC=2, IRRNO is the number of the reservoir\n
@@ -2393,7 +2430,11 @@ module parm
 !> number of soil in soil profile layers (none)
    integer, dimension (:), allocatable :: sol_nly
    integer, dimension (:), allocatable :: irn,npcp
-   integer, dimension (:), allocatable :: igrz,ndeat,ngr,ncf
+!> sequence number of continuous fertilization operation within the year (none)
+   integer, dimension (:), allocatable :: ncf
+!> sequence number of grazing operation within the year (none)
+   integer, dimension (:), allocatable :: ngr
+   integer, dimension (:), allocatable :: igrz,ndeat
 !> subbasin in which HRU is located (none)
    integer, dimension (:), allocatable :: hru_sub
 !> urban land type identification number from urban.dat (none)

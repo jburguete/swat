@@ -1,8 +1,11 @@
-subroutine std3
+!> @file std3.f90
+!> file containing the subroutine std3
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the annual table header to the standard output
-!!    file
+!> this subroutine writes the annual table header to the standard output
+!> file
+subroutine std3
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units       |definition
@@ -47,19 +50,4 @@ subroutine std3
    &t26,'(mm)',t34,'(mm)',t42,'(mm)',t50,'(mm)',t58,'(mm)',t66,'(mm)',&
    &t74,'(mm)',t82,'(mm)',t89,'(t/ha)',t97'------------------(kg nutri&
    &ent/ha)--------------------',t152,'(kg/ha)')
-! 1300 format (' UNIT',t36,'PERCO',t44,'TILE',t71,'WATER',t80,'SED',t87, &
-!     &    'NO3',t94,'NO3',t101,'NO3',t108,'NO3',t119,'N',t127,'P',t135, &
-!    &    'NO3',t94,'NO3',t99,'NO3',t104,'NO3',t115,'N',t123,           &
-!     &    'P      P',
-!     &    'P',/,' TIME',t9,'PREC',t16,'SURQ',t23,'LATQ',t31,'GWQ',t37,  &
-!    &    /,' TIME',t10,'PREC',t16,'SURQ',t23,'LATQ',t31,'GWQ',t37,      &
-!    &    'LATE',t47,'Q',t52,'SW',t59,'ET',t66,'PET',t71,'YIELD',t78,   &
-!     &    'YIELD',t86,'SURQ',t93,'LATQ',t98,'PERC',t104,'CROP',t111,    &
-!    &    'ORGANIC',t119,'SOLUBLE',t127,'ORGANIC',t135,'TILENO3'/,      &
-!    &    t9,'(mm)',t16,'(mm)'                                          &
-!     &    'ORGANIC',t121,'SOLUBLE',t129,'ORGANIC',/,t9,'(mm)',t16,'(mm)'&
-!    &    ,t23,'(mm)',t30,'(mm)',t37,'(mm)',t44,'(mm)',t51,'(mm)',t58,  &
-!     &    '(mm)',t65,'(mm)',t72,'(mm)',t77,'(t/ha)',t85,                &
-!     &    '-----------------(kg nutrient/ha)-----------------',         &
-!     &    t135,'(kg/ha)')
 end

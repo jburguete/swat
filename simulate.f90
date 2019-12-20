@@ -7,10 +7,6 @@
 !> in the watershed
 subroutine simulate
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine contains the loops governing the modeling of processes
-!!    in the watershed
-
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -84,25 +80,36 @@ subroutine simulate
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    eof
 !!    ic          |none          |counter
+!!    idap
 !!    idlst       |julian date   |last day of simulation in current year
+!!    ii
+!!    isb
+!!    iyp
+!!    iyr_at
 !!    j           |none          |counter
+!!    k
+!!    l
+!!    ly
+!!    mo_at
+!!    mon
 !!    xx          |none          |current year in simulation sequence
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Mod, real*8
-!!    SWAT: sim_inityr, std3, xmon, sim_initday, clicon, command
-!!    SWAT: writed, writem, tillmix
+!!    Intrinsic: Mod
+!!    SWAT: sim_inityr, std3, xmon, sim_initday, gcycl, clicon, resetlu, command
+!!    SWAT: operatn, writed, soil_write, writem, tillmix
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: idlst, j, ic, mon, ii, idap, isb, iyp, k, l, ly, mo_at, iyr_at
    real*8 :: xx
-   integer :: eof
+   integer :: eof, ic, idap, idlst, ii, isb, iyp, iyr_at, j, k, l, ly, mo_at,&
+      &mon
 
    eof = 0
 

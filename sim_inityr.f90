@@ -1,7 +1,10 @@
-subroutine sim_inityr
+!> @file sim_inityr.f90
+!> file containing the subroutine sim_inityr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes variables at the beginning of the year
+!> this subroutine initializes variables at the beginning of the year
+subroutine sim_inityr
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -94,8 +97,6 @@ subroutine sim_inityr
       endif
    endif
 
-   !!add by zhang
-   !!================
    sedc_m = 0.
    surfqc_m =0.
    latc_m = 0.
@@ -121,8 +122,6 @@ subroutine sim_inityr
    emitc_a = 0.
    soc_a = 0.
    rspc_a = 0.
-   !!add by zhang
-   !!================
 
    return
 end
