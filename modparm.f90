@@ -480,7 +480,9 @@ module parm
    real*8 :: wdlprch
 !> die-off factor for persistent bacteria in reservoirs (1/day)
    real*8 :: wdpres
-   real*8 :: bury, difus, reactb, solpesto, petmeas
+!> potential ET value read in for day (mm H2O)
+   real*8 :: petmeas
+   real*8 :: bury, difus, reactb, solpesto
 !> die-off factor for less persistent bacteria in reservoirs (1/day)
    real*8 :: wdlpres
    real*8 :: sorpesto, spcon_bsn, spexp_bsn, solpesti, sorpesti
@@ -586,10 +588,12 @@ module parm
    integer :: irte
    integer :: nrch !< number of reaches in watershed (none)
    integer :: nres !< number of reservoirs in watershed (none)
-   integer :: nhru !< number of last HRU in previous subbasin (none)
+!> number of last HRU in previous subbasin or\n
+!> number of HRUs in watershed (none)
+   integer :: nhru
    integer :: i_mo !< current month being simulated (none)
    integer :: mo, immo
-!> wind speed input code\n
+!> wind speed input code (noen)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: wndsim
@@ -659,7 +663,7 @@ module parm
    integer :: idist
    integer :: mrecy !< maximum number of recyear files
    integer :: nyskip !< number of years to not print output
-!> solar radiation input code\n
+!> solar radiation input code (none)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: slrsim
@@ -671,7 +675,7 @@ module parm
 !> 1 sub-daily rainfall/Green&Ampt/hourly routing
 !> 3 sub-daily rainfall/Green&Ampt/hourly routing
    integer :: ievent
-!> code for potential ET method\n
+!> code for potential ET method (none)\n
 !> 0 Priestley-Taylor method\n
 !> 1 Penman/Monteith method\n
 !> 2 Hargreaves method\n
@@ -680,7 +684,7 @@ module parm
    integer :: iopera
    integer :: idaf !< beginning day of simulation (julian date)
    integer :: idal !< ending day of simulation (julian date)
-!> relative humidity input code\n
+!> relative humidity input code (none)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: rhsim
@@ -688,7 +692,8 @@ module parm
 !> 0  leap year\n
 !> 1  regular year
    integer :: leapyr
-   integer :: id1, mo_chk
+   integer :: id1 !< first day of simulation in year (julian date)
+   integer :: mo_chk
    integer :: nhtot !< number of relative humidity records in file
    integer :: nstot !< number of solar radiation records in file
    integer :: nwtot !< number of wind speed records in file
@@ -702,6 +707,9 @@ module parm
    integer :: iwq
 !> flag for calculations performed only for the first year of simulation (none)
    integer :: iskip
+!> potential ET data search code (none)\n
+!> 0 first day of potential ET data located in file\n
+!> 1 first day of potential ET data not located in file
    integer :: ifirstpet
 !> print code for output.pst file\n
 !> 0 do not print pesticide output\n
@@ -710,7 +718,7 @@ module parm
    integer :: itotb !< number of output variables printed (output.sub)
    integer :: itots !< number of output variables printed (output.hru)
    integer :: itoth !< number of HRUs printed (output.hru/output.wtr)
-!> rainfall input code\n
+!> rainfall input code (none)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: pcpsim
@@ -1175,7 +1183,7 @@ module parm
 !> time of concentration for subbasin (hour)
    real*8, dimension (:), allocatable :: sub_tc
    real*8, dimension (:), allocatable :: sub_pet
-!> elevation of weather station used to compile data (m)
+!> elevation of weather station used to compile weather generator data (m)
    real*8, dimension (:), allocatable :: welev
    real*8, dimension (:), allocatable :: sub_orgn,sub_orgp,sub_bd
    real*8, dimension (:), allocatable :: sub_wtmp,sub_sedpa,sub_sedps
@@ -1239,7 +1247,7 @@ module parm
 !> studies) (none)
    real*8, dimension (:,:), allocatable :: huminc
 !> monthly solar radiation adjustment. Daily radiation within the month is
-!> raised or lowered by the specified amount. (used in climate change studies)
+!> raised or lowered by the specified amount (used in climate change studies)
 !> (MJ/m^2)
    real*8, dimension (:,:), allocatable :: radinc
 !> monthly rainfall adjustment. Daily rainfall within the month is adjusted to
@@ -1281,7 +1289,8 @@ module parm
 !> average daily solar radiation for the month (MJ/m^2/day)
    real*8, dimension (:,:), allocatable :: solarav
    real*8, dimension (:,:), allocatable :: tmpstdmx
-!> normalization coefficient for precipitation generator (none)
+!> normalization coefficient for precipitation generated from skewed
+!> distribution (none)
    real*8, dimension (:,:), allocatable :: pcf
 !> avg monthly minimum air temperature (deg C)
    real*8, dimension (:,:), allocatable :: tmpmn
@@ -1318,9 +1327,9 @@ module parm
    integer, dimension (:), allocatable :: iwgage
 !> GIS code printed to output files (output.sub) (none
    integer, dimension (:), allocatable :: subgis
-!> subbasin rain gage data code (none)
+!> subbasin rain gage data code (gage # for rainfall data used in HRU) (none)
    integer, dimension (:), allocatable :: irgage
-!> subbasin temp gage data code (none)
+!> subbasin temp gage data code (gage # for temperature data used in HRU) (none)
    integer, dimension (:), allocatable :: itgage
 !> (none) irelh = 0 (dewpoint)\n
 !>        irelh = 1 (relative humidity)\n
@@ -2063,19 +2072,30 @@ module parm
    real*8, dimension (:), allocatable :: bactlpq
 !> chlorophyll-a production coefficient for wetland (none)
    real*8, dimension (:), allocatable :: chlaw
-   real*8, dimension (:), allocatable :: bactps,bactlps,tmpav
+!> average temperature for the day in HRU (deg C)
+   real*8, dimension (:), allocatable :: tmpav
+   real*8, dimension (:), allocatable :: bactps,bactlps
 !> amount of water stored as snow (mm H2O)
    real*8, dimension (:), allocatable :: sno_hru
 !> amount of organic N in wetland (kg N)
    real*8, dimension (:), allocatable :: wet_orgn
-   real*8, dimension (:), allocatable :: subp,hru_ra
+!> solar radiation for the day in HRU (MJ/m^2)
+   real*8, dimension (:), allocatable :: hru_ra
+!> precipitation for the day in HRU (mm H2O)
+   real*8, dimension (:), allocatable :: subp
    real*8, dimension (:), allocatable :: rsdin !< initial residue cover (kg/ha)
-   real*8, dimension (:), allocatable :: tmx,tmn,tmp_hi,tmp_lo
+!> minimum temperature for the day in HRU (deg C)
+   real*8, dimension (:), allocatable :: tmn
+!> maximum temperature for the day in HRU (deg C)
+   real*8, dimension (:), allocatable :: tmx
+   real*8, dimension (:), allocatable :: tmp_hi,tmp_lo
 !> USLE equation soil erodibility (K) factor (none)
    real*8, dimension (:), allocatable :: usle_k
 !> time of concentration for HRU (hour)
    real*8, dimension (:), allocatable :: tconc
-   real*8, dimension (:), allocatable :: rwt,olai,hru_rmx
+!> maximum solar radiation for the day in HRU (MJ/m^2)
+   real*8, dimension (:), allocatable :: hru_rmx
+   real*8, dimension (:), allocatable :: rwt,olai
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
 !> amount of water held in soil profile at field capacity (mm H2O)
    real*8, dimension (:), allocatable :: sol_sumfc
@@ -2090,7 +2110,11 @@ module parm
    real*8, dimension (:), allocatable :: sol_avpor
 !> product of USLE K,P,LS,exp(rock) (none)
    real*8, dimension (:), allocatable :: usle_mult
-   real*8, dimension (:), allocatable :: aairr,cht,u10,rhd
+!> relative humidity for the day in HRU (none)
+   real*8, dimension (:), allocatable :: rhd
+!> wind speed for the day in HRU (m/s)
+   real*8, dimension (:), allocatable :: u10
+   real*8, dimension (:), allocatable :: aairr,cht
 !> maximum leaf area index for the entire period of simulation in the HRU (none)
    real*8, dimension (:), allocatable :: lai_aamx
    real*8, dimension (:), allocatable :: shallirr,deepirr
@@ -2215,8 +2239,9 @@ module parm
 !> pump capacity (default pump capacity = 1.042mm/hr or 25mm/day) (mm/hr)
    real*8, dimension (:), allocatable :: pc
    real*8, dimension (:), allocatable :: stmaxd
-!    Drainmod tile equations  01/2006
-   real*8, dimension (:), allocatable :: twash,rnd2,rnd3,sol_cnsw,doxq
+!> random number between 0.0 and 1.0 (none)
+   real*8, dimension (:), allocatable :: rnd3
+   real*8, dimension (:), allocatable :: twash,rnd2,sol_cnsw,doxq
    real*8, dimension (:), allocatable :: rnd8,rnd9,percn,sol_sumwp
    real*8, dimension (:), allocatable :: tauton,tautop,cbodu,chl_a,qdr
    real*8, dimension (:), allocatable :: tfertn,tfertp,tgrazn,tgrazp
@@ -2338,7 +2363,10 @@ module parm
 !> phi(13,:) storage time constant for reach at 0.1 bankfull depth (low flow)
 !> (ratio of storage to discharge) (hour)
    real*8, dimension (:,:), allocatable :: phi
-   real*8, dimension (:,:), allocatable :: pcpband,tavband
+!> precipitation for the day in band in HRU (mm H2O)
+   real*8, dimension (:,:), allocatable :: pcpband
+!> average temperature for the day in band in HRU (deg C)
+   real*8, dimension (:,:), allocatable :: tavband
    real*8, dimension (:,:), allocatable :: wat_phi
 !> initial snow water content in elevation band (mm H2O)
    real*8, dimension (:,:), allocatable :: snoeb
@@ -2348,6 +2376,7 @@ module parm
 !> average daily water removal from the shallow aquifer for the month
 !> (10^4 m^3/day)
    real*8, dimension (:,:), allocatable :: wushal
+!> minimum temperature for the day in band in HRU (deg C)
    real*8, dimension (:,:), allocatable :: tmnband
    real*8, dimension (:), allocatable :: bss1
    real*8, dimension (:), allocatable :: bss2
@@ -2362,9 +2391,13 @@ module parm
    real*8, dimension (:), allocatable :: nsetlp1
 !> nitrogen settling rate for 2nd season (m/day)
    real*8, dimension (:), allocatable :: nsetlp2
+!> maximum temperature for the day in band in HRU (deg C)
    real*8, dimension (:,:), allocatable :: tmxband
-   real*8, dimension (:,:), allocatable :: rainsub,frad
-   real*8, dimension (:),   allocatable ::  rstpbsb
+!> fraction of solar radiation occuring during hour in day in HRU (none)
+   real*8, dimension (:,:), allocatable :: frad
+!> precipitation for the time step during the day in HRU (mm H2O)
+   real*8, dimension (:,:), allocatable :: rainsub
+   real*8, dimension (:),   allocatable :: rstpbsb
    real*8, dimension (:,:), allocatable :: orig_snoeb,orig_pltpst
    real*8, dimension (:,:), allocatable :: terr_p, terr_cn, terr_sl
    real*8, dimension (:,:), allocatable :: drain_d, drain_t, drain_g
@@ -2429,7 +2462,11 @@ module parm
    integer, dimension (:), allocatable :: irrno
 !> number of soil in soil profile layers (none)
    integer, dimension (:), allocatable :: sol_nly
-   integer, dimension (:), allocatable :: irn,npcp
+!> prior day category (none)\n
+!> 1 dry day\n
+!> 2 wet day
+   integer, dimension (:), allocatable :: npcp
+   integer, dimension (:), allocatable :: irn
 !> sequence number of continuous fertilization operation within the year (none)
    integer, dimension (:), allocatable :: ncf
 !> sequence number of grazing operation within the year (none)
@@ -2625,7 +2662,7 @@ module parm
    real*8, dimension (:), allocatable :: srbpstcnst
 
 !> max number of time steps per day or number of lines of rainfall data for each
-!> day
+!> day (none)
    integer :: nstep
 !> length of time step used to report precipitation data for sub-daily modeling
 !> (minutes)

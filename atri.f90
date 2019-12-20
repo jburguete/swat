@@ -1,8 +1,16 @@
-function atri(at1,at2,at3,at4i) result (r_atri)
+!> @file atri.f90
+!> file containing the function atri
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this function generates a random number from a triangular distribution
-!!    given X axis points at start, end, and peak Y value
+!> this function generates a random number from a triangular distribution
+!> given X axis points at start, end, and peak Y value
+!> @param[in] at1 lower limit for distribution (none)
+!> @param[in] at2 monthly mean for distribution (none)
+!> @param[in] at3 upper limit for distribution (none)
+!> @param[in,out] at4i random number seed (none)
+!> @return daily value generated for distribution (none)
+real*8 function atri(at1,at2,at3,at4i) result (r_atri)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -44,8 +52,7 @@ function atri(at1,at2,at3,at4i) result (r_atri)
 
    real*8, intent (in) :: at1, at2, at3
    integer, intent (in out) :: at4i
-   real*8 :: u3, rn, y, b1, b2, x1, xx, yy, amn
-   real*8 :: r_atri
+   real*8 :: amn, b1, b2, rn, u3, x1, xx, y, yy
 
    u3 = at2 - at1
    rn = Aunif(at4i)

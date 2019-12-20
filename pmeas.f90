@@ -1,8 +1,11 @@
-subroutine pmeas
+!> @file pmeas.f90
+!> file containing the subroutine pmeas
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads in precipitation data and assigns it to the
-!!    proper subbasins
+!> this subroutine reads in precipitation data and assigns it to the
+!> proper subbasins
+subroutine pmeas
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -71,37 +74,32 @@ subroutine pmeas
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT subroutines: pgen
+!!    SWAT subroutines: pgen, pgenhr
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   character (len=1) :: a
-   integer :: k, kk1, kk2, iyp, idap, l, inum3sprev, ii
-   integer :: ihour, imin, flag
-   real*8 :: rbsb
    real*8, dimension (mrg) :: rmeas
    real*8, dimension (:,:), allocatable :: rainsb
-!     real*8, dimension (:), allocatable :: rhrbsb, rstpbsb
+   real*8 :: rbsb
+   integer :: flag, idap, ihour, ii, imin, inum3sprev, iyp, k, kk1, kk2, l
+   character (len=1) :: a
+
    if (nstep > 0) then
       allocate (rainsb(mrg,nstep))
-!       allocate (rstpbsb(nstep))
-!        allocate (hrmeas(mrg,25))
-!       allocate (rhrbsb(24))
    end if
 
-   inum3sprev = 0
 
    !! initialize variables for the day
    rmeas = 0.
    if (nstep > 0) then
       rainsb = 0.
-!       hrmeas = 0.
    end if
 
    rbsb = 0.
+   inum3sprev = 0
 
    select case (ievent)
     case (0)                       !!daily rainfall
@@ -133,7 +131,6 @@ subroutine pmeas
 
       !! assign precipitation data to HRUsoutput.std
 
-      inum3sprev = 0
       do k = 1, nhru
          subp(k) = rmeas(irgage(hru_sub(k)))
          !! generate data to replace missing values
@@ -187,7 +184,7 @@ subroutine pmeas
                   imin = 0
                   a = ""
                   read (100+k,5200) iyp, idap, ihour, imin,&
-                  &(rainsb(l,ii), l = kk1, kk2)
+                     &(rainsb(l,ii), l = kk1, kk2)
                   if (iyp /= iyr .or. idap /= i) flag = 1
                   if (flag == 1) then
                      write (24,5400) iyr, i
@@ -221,7 +218,7 @@ subroutine pmeas
                iyp = 0
                idap = 0
                read (100+k,5202) iyp, idap, ihour, a, imin,&
-               &(rainsb(l,1), l = kk1, kk2)
+                  &(rainsb(l,1), l = kk1, kk2)
                if (iyp == iyr .and. idap == i) flag = 1
                if (flag == 1) then
                   if (a /= " ") then
@@ -236,7 +233,7 @@ subroutine pmeas
                         ihour = 0
                         imin = 0
                         read (100+k,5200) iyp, idap, ihour, imin,&
-                        &(rainsb(l,ii), l = kk1, kk2)
+                           &(rainsb(l,ii), l = kk1, kk2)
                         do l = kk1, kk2
                            if (rainsb(l,1)<-97) then
                               call pgen(k)
@@ -280,8 +277,6 @@ subroutine pmeas
             else
                call pgen(k)
                !! set subbasin generated values
-               inum3sprev = 0
-               rbsb = 0.
                inum3sprev = hru_sub(k)
                rbsb = subp(k)
                rstpbsb(:) = 0.

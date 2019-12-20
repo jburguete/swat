@@ -1,9 +1,15 @@
-real*8 function dstn1(rn1,rn2) result (r_dstn1)
+!> @file dstn1.f90
+!> file containing the function dstn1
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this function computes the distance from the mean of a normal
-!!    distribution with mean = 0 and standard deviation = 1, given two
-!!    random numbers
+!> this function computes the distance from the mean of a normal
+!> distribution with mean = 0 and standard deviation = 1, given two
+!> random numbers
+!> @param[in] rn1 first random number
+!> @param[in] rn2 second random number
+!> @return distance from the mean
+real*8 function dstn1(rn1,rn2) result (r_dstn1)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units         |definition
@@ -15,7 +21,6 @@ real*8 function dstn1(rn1,rn2) result (r_dstn1)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name       |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    dstn1      |              |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~

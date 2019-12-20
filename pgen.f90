@@ -1,8 +1,12 @@
-subroutine pgen(j)
+!> @file pgen.f90
+!> file containing the subroutine pgen
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine generates precipitation data when the user chooses to
-!!    simulate or when data is missing for particular days in the weather file
+!> this subroutine generates precipitation data when the user chooses to
+!> simulate or when data is missing for particular days in the weather file
+!> @param[in] j HRU number
+subroutine pgen(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -23,8 +27,8 @@ subroutine pgen(j)
 !!                               |precipitation
 !!    pcp_stat(:,3,:)|none       |skew coefficient for the average daily
 !!                               |precipitation
-!!    pr_w1(:,:) |none          |probability of wet day after dry day in month
-!!    pr_w2(:,:) |none          |probability of wet day after wet day in month
+!!    pr_w1(:,:)  |none          |probability of wet day after dry day in month
+!!    pr_w2(:,:)  |none          |probability of wet day after wet day in month
 !!    rcor        |none          |correction coefficient for generated rainfall
 !!                               |to ensure that the annual means for generated
 !!                               |and observed values are comparable. (needed
@@ -46,17 +50,19 @@ subroutine pgen(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k           |none          |number of HRU
 !!    pcpgen      |mm H2O        |generated precipitation value for the day
 !!    r6          |none          |variable to hold intermediate calculation
 !!    v8          |none          |random number between 0.0 and 1.0
 !!    vv          |none          |random number between 0.0 and 1.0
 !!    xlv         |none          |variable to hold intermediate calculation
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Log
-!!    SWAT: Aunif, Dstn1
+!!    SWAT: Aunif, Dstn1, pgenhr
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -65,8 +71,8 @@ subroutine pgen(j)
 
    integer, intent (in) :: j
 
+   real*8 :: pcpgen, r6, v8, vv, xlv, xx
    integer :: k
-   real*8 :: xx, vv, pcpgen, v8, r6, xlv
 
    k = hru_sub(j)
    if (npcp(j) == 1) then

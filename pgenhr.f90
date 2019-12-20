@@ -1,7 +1,11 @@
-subroutine pgenhr(jj)
+!> @file pgenhr.f90
+!> file containing the subroutine pgenhr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine distributes daily rainfall exponentially within the day
+!> this subroutine distributes daily rainfall exponentially within the day
+!> @parameter[in] jj HRU number
+subroutine pgenhr(jj)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -37,7 +41,6 @@ subroutine pgenhr(jj)
 !!    blm          |none          |lowest random number value allowed
 !!    dur          |hours         |duration of storm during day
 !!    itime        |none          |time step during day
-!!    j            |none          |HRU number
 !!    k            |none          |random number seed, counter
 !!    pkrain       |mm H2O        |volume of rain at time of peak rainfall
 !!    pkrr         |mm/hr         |peak rainfall rate
@@ -62,7 +65,7 @@ subroutine pgenhr(jj)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Log
+!!    Intrinsic: Log, Int, Exp
 !!    SWAT: Atri, Expo
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -71,10 +74,10 @@ subroutine pgenhr(jj)
    implicit none
 
    integer, intent (in) :: jj
-   integer :: itime, pt, k
-   real*8 :: vv, dur, ajp, altc, pkrain, rtp
-   real*8 :: xk1, xk2, xkp1, xkp2, rx, pkrr, sumrain
    real*8, parameter :: ab = 0.02083, blm = 0.05, qmn = 0.25, uplm = 0.95
+   real*8 :: ajp, altc, dur, pkrain, pkrr, rtp, rx, sumrain, vv, xk1, xk2,&
+      &xkp1, xkp2
+   integer :: itime, k, pt
 
 
    !! calculate maximum half-hour rainfall

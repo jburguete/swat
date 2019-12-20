@@ -1,8 +1,13 @@
-real*8 function expo (xx) result(r_expo)
+!> @file expo.f90
+!> file containing the function expo
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This function checks the argument against upper and lower
-!!    boundary values prior to taking the Exponential
+!> this function checks the argument against upper and lower
+!> boundary values prior to taking the Exponential
+!> @param[in] xx exponential argument (none)
+!> @return \f$\exp(xx)\f$
+real*8 function expo (xx) result(r_expo)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -22,7 +27,8 @@ real*8 function expo (xx) result(r_expo)
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    implicit none
-   real*8 :: xx, yy
+   real*8, intent(in) :: xx
+   real*8 :: yy
 
    yy = xx
 

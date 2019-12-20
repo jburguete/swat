@@ -1,11 +1,14 @@
-subroutine clicon
+!> @file clicon.f90
+!> file containing the subroutine clicon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls weather inputs to SWAT. Precipitation and
-!!    temperature data is read in and the weather generator is called to
-!!    fill in radiation, wind speed and relative humidity as well as
-!!    missing precipitation and temperatures. Adjustments for climate
-!!    changes studies are also made in this subroutine.
+!> this subroutine controls weather inputs to SWAT. Precipitation and
+!> temperature data is read in and the weather generator is called to
+!> fill in radiation, wind speed and relative humidity as well as
+!> missing precipitation and temperatures. Adjustments for climate
+!> changes studies are also made in this subroutine.
+subroutine clicon
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -105,6 +108,7 @@ subroutine clicon
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    daylbsb
 !!    fradbsb(:)  |none          |hourly solar radiation fractions for subbasin
 !!    ib          |none          |counter
 !!    idap        |julain date   |day currently being simulated
@@ -112,6 +116,8 @@ subroutine clicon
 !!    inum3sprev  |none          |subbasin number of previous HRU
 !!    iyp         |none          |year currently being simulated
 !!    k           |none          |counter
+!!    l           |none          |counter
+!!    npcpbsb
 !!    pdif        |mm H2O        |difference in precipitation for station and
 !!                               |precipitation for elevation band
 !!    rabsb       |MJ/m^2        |generated solar radiation for subbasin
@@ -137,15 +143,10 @@ subroutine clicon
    use parm
    implicit none
 
-   integer :: k, inum3sprev, npcpbsb, ii, iyp, idap, ib, l
-   real*8 :: tmxbsb, tmnbsb, rbsb, rhdbsb, rabsb, u10bsb, rmxbsb
-   real*8 :: daylbsb,  fradbsb(nstep),tdif, pdif, ratio
-!     real*8, dimension (:), allocatable :: rhrbsb, rstpbsb
-!     if (nstep > 0) then
-!       allocate (rstpbsb(nstep))
-!       allocate (rhrbsb(24))
-!     end if
-
+   real*8, dimension(nstep) :: fradbsb
+   real*8 :: daylbsb, pdif, rabsb, ratio, rbsb, rhdbsb, rmxbsb, tdif, tmnbsb,&
+      &tmxbsb, u10bsb
+   integer :: ib, idap, ii, inum3sprev, iyp, k, l, npcpbsb
 
 !! Precipitation: Measured !!
    if (pcpsim == 1) call pmeas
@@ -262,7 +263,7 @@ subroutine clicon
       if (nstep > 0) then
          do ii = 1, nstep
             rainsub(k,ii) = rainsub(k,ii) *&
-            &(1. + rfinc(hru_sub(k),i_mo) / 100.)
+               &(1. + rfinc(hru_sub(k),i_mo) / 100.)
             if (rainsub(k,ii) < 0.) rainsub(k,ii) = 0.
          end do
       end if
@@ -279,24 +280,26 @@ subroutine clicon
 !! Elevation Adjustments !!
    do k = 1, nhru
       if (elevb(1,hru_sub(k)) > 0. .and.&
-      &elevb_fr(1,hru_sub(k)) > 0.) then
+         &elevb_fr(1,hru_sub(k)) > 0.) then
       !! determine temperature and precipitation for individual bands
          ratio = 0.
          do ib = 1, 10
             if (elevb_fr(ib,hru_sub(k)) < 0.) exit
             if (tmpsim == 1) then
                tdif = (elevb(ib,hru_sub(k)) -&
-               &dfloat(elevt(itgage(hru_sub(k))))) * tlaps(hru_sub(k)) / 1000.
+                  &dfloat(elevt(itgage(hru_sub(k))))) * tlaps(hru_sub(k))&
+                  &/ 1000.
             else
                tdif = (elevb(ib,hru_sub(k)) - welev(hru_sub(k)))&
-               &* tlaps(hru_sub(k)) / 1000.
+                  &* tlaps(hru_sub(k)) / 1000.
             end if
             if (pcpsim == 1) then
                pdif = (elevb(ib,hru_sub(k)) -&
-               &dfloat(elevp(irgage(hru_sub(k))))) * plaps(hru_sub(k)) / 1000.
+                  &dfloat(elevp(irgage(hru_sub(k))))) * plaps(hru_sub(k))&
+                  &/ 1000.
             else
                pdif = (elevb(ib,hru_sub(k)) - welev(hru_sub(k)))&
-               &* plaps(hru_sub(k)) / 1000.
+                  &* plaps(hru_sub(k)) / 1000.
             end if
             tavband(ib,k) = tmpav(k) + tdif
             tmxband(ib,k) = tmx(k) + tdif
@@ -336,11 +339,6 @@ subroutine clicon
          end if
       end if
    end do
-
-!     if (nstep > 0) then
-!       deallocate (rhrbsb)
-!       deallocate (rstpbsb)
-!     end if
 
    return
 5000 format (i4,i3,f5.1)
