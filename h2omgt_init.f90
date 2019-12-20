@@ -1,8 +1,11 @@
-subroutine h2omgt_init
+!> @file h2omgt_init.f90
+!> file containing the subroutine h2omgt_init
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine initializes variables related to water management
-!!    (irrigation, consumptive water use, etc.)
+!> This subroutine initializes variables related to water management
+!> (irrigation, consumptive water use, etc.)
+subroutine h2omgt_init
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -48,6 +51,7 @@ subroutine h2omgt_init
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |counter
 !!    mon         |none          |counter
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -56,15 +60,17 @@ subroutine h2omgt_init
    use parm
    implicit none
 
+   real*8 :: xx
    integer :: j, mon
 
 
 !!    partition subbasin consumptive water use between HRUs within subbasin
    do j = 1, nhru
+      xx = hru_fr(j)
       do mon = 1,12
-         wupnd(mon,j) = wupnd(mon,j) * hru_fr(j)
-         wushal(mon,j) = wushal(mon,j) * hru_fr(j)
-         wudeep(mon,j) = wudeep(mon,j) * hru_fr(j)
+         wupnd(mon,j) = wupnd(mon,j) * xx
+         wushal(mon,j) = wushal(mon,j) * xx
+         wudeep(mon,j) = wudeep(mon,j) * xx
       end do
    end do
 

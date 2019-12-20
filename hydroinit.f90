@@ -1,18 +1,21 @@
-subroutine hydroinit
+!> @file hydroinit.f90
+!> file containing the subroutine hydroinit
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine computes variables related to the watershed hydrology:
-!!    the time of concentration for the subbasins, lagged surface runoff,
-!!    the coefficient for the peak runoff rate equation, and lateral flow travel
-!!    time.
+!> This subroutine computes variables related to the watershed hydrology:
+!> the time of concentration for the subbasins, lagged surface runoff,
+!> the coefficient for the peak runoff rate equation, and lateral flow travel
+!> time.
+subroutine hydroinit
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~1
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_l1(:)    |km            |longest tributary channel length in subbasin
 !!    ch_l2(:)    |km            |main channel length in subbasin
-!!    ch_n1(:)   |none          |Manning's "n" value for the tributary channels
-!!    ch_s1(:)   |m/m           |average slope of tributary channels
+!!    ch_n1(:)    |none          |Manning's "n" value for the tributary channels
+!!    ch_s1(:)    |m/m           |average slope of tributary channels
 !!    da_km       |km2           |area of the watershed in square kilometers
 !!    gdrain(:)   |hrs           |drain tile lag time: the amount of time
 !!                               |between the transfer of water from the soil
@@ -41,8 +44,8 @@ subroutine hydroinit
 !!                               |day. SURLAG is used to create a "storage" for
 !!                               |surface runoff to allow the runoff to take
 !!                               |longer than 1 day to reach the subbasin outlet
-!!    tconc(:)     |hr           |time of concentration
-!!    uhalpha      |             |alpha coefficient for estimating unit hydrograph
+!!    tconc(:)    |hr            |time of concentration
+!!    uhalpha     |              |alpha coefficient for estimating unit hydrograph
 !!                               |using a gamma function (*.bsn)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -64,11 +67,18 @@ subroutine hydroinit
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    a
+!!    b
+!!    c
+!!    isb         |none          |counter
 !!    j           |none          |counter
 !!    l           |none          |counter
+!!    q
+!!    ql
 !!    scmx        |mm/hr         |maximum soil hydraulic conductivity
-!!    t_ch        |hr            |time for flow entering the farthest upstream
-!!                               |channel to reach the subbasin outlet
+!!    sumq
+!!    tb
+!!    tp
 !!    xx          |none          |variable to hold calculation result
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -81,18 +91,18 @@ subroutine hydroinit
    use parm
    implicit none
 
-   integer :: j, l, isb
-   real*8 :: t_ch, scmx, xx, a, b, c, rto, q, ql, sumq, tb, tp, xi
+   real*8 :: a, b, c, q, ql, scmx, sumq, tb, tp, xx
+   integer :: isb, j, l
 
    do j = 1, nhru
 
 !! subbasin !!
 !!    compute time of concentration (sum of overland and channel times)
       t_ov(j) = .0556 * (slsubbsn(j)*ov_n(j)) ** .6 / hru_slp(j) ** .3
-      t_ch = .62 * ch_l1(j) * ch_n1(hru_sub(j)) ** .75 /&
-      &((da_km * sub_fr(hru_sub(j)))**.125 *&
-      &ch_s1(hru_sub(j))**.375)
-      sub_tc(hru_sub(j)) = t_ov(j) + t_ch
+      xx = .62 * ch_l1(j) * ch_n1(hru_sub(j)) ** .75 /&
+         &((da_km * sub_fr(hru_sub(j)))**.125 *&
+         &ch_s1(hru_sub(j))**.375)
+      sub_tc(hru_sub(j)) = t_ov(j) + xx
 !! end subbasin !!
 
 
@@ -100,13 +110,13 @@ subroutine hydroinit
 !!    compute time of concentration (sum of overland and channel times)
       ch_l1(j) = ch_l1(j) * hru_dafr(j) / sub_fr(hru_sub(j))
       t_ov(j) = .0556 * (slsubbsn(j)*ov_n(j)) ** .6 / hru_slp(j) ** .3
-      t_ch = .62 * ch_l1(j) * ch_n1(hru_sub(j)) ** .75 /&
-      &((da_km*hru_dafr(j))**.125*ch_s1(hru_sub(j))**.375)
-      tconc(j) = t_ov(j) + t_ch
+      xx = .62 * ch_l1(j) * ch_n1(hru_sub(j)) ** .75 /&
+         &((da_km*hru_dafr(j))**.125*ch_s1(hru_sub(j))**.375)
+      tconc(j) = t_ov(j) + xx
 
 !!    compute delivery ratio
-      rto = tconc(j) / sub_tc(hru_sub(j))
-      dr_sub(j) = dmin1(.95,rto ** .5)
+      xx = tconc(j) / sub_tc(hru_sub(j))
+      dr_sub(j) = dmin1(.95,Sqrt(xx))
 
 
 !!    compute fraction of surface runoff that is reaching the main channel
@@ -173,55 +183,55 @@ subroutine hydroinit
 
          ! Triangular Unit Hydrograph
          if (iuh==1) then
-            do i = 1, itb(isb)
-               xi = float(i)
-               if (xi < tp) then           !! rising limb of hydrograph
-                  q = xi / tp
+            do l = 1, itb(isb)
+               xx = float(l)
+               if (xx < tp) then           !! rising limb of hydrograph
+                  q = xx / tp
                else                        !! falling limb of hydrograph
-                  q = (tb - xi) / (tb - tp)
+                  q = (tb - xx) / (tb - tp)
                end if
                q = Max(0.,q)
-               uh(isb,i) = (q + ql) / 2.
+               uh(isb,l) = (q + ql) / 2.
                ql = q
-               sumq = sumq + uh(isb,i)
+               sumq = sumq + uh(isb,l)
             end do
 
-            do i = 1, itb(isb)
-               uh(isb,i) = uh(isb,i) / sumq
+            do l = 1, itb(isb)
+               uh(isb,l) = uh(isb,l) / sumq
             end do
 
             ! Gamma Function Unit Hydrograph
          elseif (iuh==2) then
-            i = 1; q=1.
+            l = 1; q=1.
             do while (q>0.0001)
-               xi = float(i)
-               q = (xi / tp) ** uhalpha * exp((1.- xi / tp) * uhalpha)
+               xx = float(l) / tp
+               q = xx ** uhalpha * exp((1. - xx) * uhalpha)
                q = Max(0.,q)
-               uh(isb,i) = (q + ql) / 2.
+               uh(isb,l) = (q + ql) / 2.
                ql = q
-               sumq = sumq + uh(isb,i)
-               i = i + 1
-               if (i>3.*nstep) exit
+               sumq = sumq + uh(isb,l)
+               l = l + 1
+               if (l>3*nstep) exit
             end do
-            itb(isb) = i - 1
-            do i = 1, itb(isb)
-               uh(isb,i) = uh(isb,i) / sumq
+            itb(isb) = l - 1
+            do l = 1, itb(isb)
+               uh(isb,l) = uh(isb,l) / sumq
             end do
          endif
 
          !compute the number of hydrograph points for flood routing Jaehak 2017
+         b = itb(isb)
+         c = phi(13,isb) / dthy
          do j = 1, nhru
             a = sub_tc(hru_sub(j)) / dthy !# of timesteps
-            b = itb(isb)
-            c = phi(13,isb) / dthy
             NHY(isb) = max(4*nstep,ceiling(a),ceiling(b), ceiling(c),NHY(isb))
          end do
          RCSS(isb) = .5 * (ch_w2(isb) - phi(6,isb)) / ch_d(isb)
          RCHX(isb) = SQRT(ch_s2(isb)) / ch_n2(isb)
          CHXA(isb) = phi(7,isb) * (phi(6,isb) + phi(7,isb) * RCSS(isb))
          CHXP(isb) = phi(6,isb) + 2. * phi(7,isb) *&
-         &SQRT(RCSS(isb) * RCSS(isb) + 1.)
-         QCAP(isb) = CHXA(isb)**1.66667 * RCHX(isb) / CHXP(isb)**.66667 !bankfull flow, m3/s
+            &SQRT(RCSS(isb) * RCSS(isb) + 1.)
+         QCAP(isb) = CHXA(isb) * RCHX(isb) * (CHXA(isb) / CHXP(isb))**.66667 !bankfull flow, m3/s
       end do
    end if
 

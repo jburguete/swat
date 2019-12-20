@@ -8,12 +8,133 @@ module parm
 
 !> max number of variables routed through the reach
    integer, parameter :: mvaro = 33
-   integer, parameter :: mhruo = 79 !< max number of variables in output.hru
-   integer, parameter :: mrcho = 62 !< max number of variables in reach file
-   integer, parameter :: msubo = 24 !< max number of variables in output.sub
+!> maximum number of variables written to HRU output file (output.hru) (none)
+   integer, parameter :: mhruo = 79
+!> maximum number of variables written to reach output file (.rch) (none)
+   integer, parameter :: mrcho = 62
+!> maximum number of variables written to subbasin output file (output.sub)
+!> (none)
+   integer, parameter :: msubo = 24
 !> max number of variables summarized in output.std
    integer, parameter :: mstdo = 113
    integer, parameter :: motot = 600 !! (50 years limit)
+
+!> SWAT program header string (name and version)
+   character(len=80), parameter :: prog = "SWAT Sep 7    VER 2018/Rev 670"
+
+!> column headers for HRU output file
+   character(len=13), dimension(mhruo), parameter ::&
+      &heds = (/"  PRECIPmm"," SNOFALLmm"," SNOMELTmm","     IRRmm",&
+      &"     PETmm","      ETmm"," SW_INITmm","  SW_ENDmm",&
+      &"    PERCmm"," GW_RCHGmm"," DA_RCHGmm","   REVAPmm",&
+      &"  SA_IRRmm","  DA_IRRmm","   SA_STmm","   DA_STmm",&
+      &"SURQ_GENmm","SURQ_CNTmm","   TLOSSmm"," LATQGENmm",&
+      &"    GW_Qmm","    WYLDmm","   DAILYCN"," TMP_AVdgC",&
+      &" TMP_MXdgC"," TMP_MNdgC","SOL_TMPdgC","SOLARMJ/m2",&
+      &"  SYLDt/ha","  USLEt/ha","N_APPkg/ha","P_APPkg/ha",&
+      &"NAUTOkg/ha","PAUTOkg/ha"," NGRZkg/ha"," PGRZkg/ha",&
+      &"NCFRTkg/ha","PCFRTkg/ha","NRAINkg/ha"," NFIXkg/ha",&
+      &" F-MNkg/ha"," A-MNkg/ha"," A-SNkg/ha"," F-MPkg/ha",&
+      &"AO-LPkg/ha"," L-APkg/ha"," A-SPkg/ha"," DNITkg/ha",&
+      &"  NUPkg/ha","  PUPkg/ha"," ORGNkg/ha"," ORGPkg/ha",&
+      &" SEDPkg/ha","NSURQkg/ha","NLATQkg/ha"," NO3Lkg/ha",&
+      &"NO3GWkg/ha"," SOLPkg/ha"," P_GWkg/ha","    W_STRS",&
+      &"  TMP_STRS","    N_STRS","    P_STRS","  BIOMt/ha",&
+      &"       LAI","   YLDt/ha","  BACTPct ","  BACTLPct",&
+      &" WTAB CLIm"," WTAB SOLm","     SNOmm"," CMUPkg/ha",&
+      &"CMTOTkg/ha","   QTILEmm"," TNO3kg/ha"," LNO3kg/ha",&
+      &"  GW_Q_Dmm"," LATQCNTmm"," TVAPkg/ha"/)
+
+!> space number for beginning of column in HRU output file (none)
+   integer, dimension (mhruo), parameter ::&
+      &icols = (/43,53,63,73,83,93,103,113,123,133,143,153,&
+      &163,173,183,193,203,213,223,233,243,253,263,273,283,&
+      &293,303,313,323,333,343,353,363,373,383,393,403,413,&
+      &423,433,443,453,463,473,483,493,503,513,523,533,543,&
+      &553,563,573,583,593,603,613,623,633,643,653,663,673,&
+      &683,693,703,713,723,733,743,753,763,773,783,793,803,&
+      &813,823/)
+
+!> column headers for subbasin output file
+   character(len=13), dimension(msubo), parameter ::&
+      &hedb = (/"  PRECIPmm"," SNOMELTmm","     PETmm","      ETmm",&
+      &"      SWmm","    PERCmm","    SURQmm","    GW_Qmm",&
+      &"    WYLDmm","  SYLDt/ha"," ORGNkg/ha"," ORGPkg/ha",&
+      &"NSURQkg/ha"," SOLPkg/ha"," SEDPkg/ha"," LAT Q(mm)",&
+      &"LATNO3kg/h","GWNO3kg/ha","CHOLAmic/L","CBODU mg/L",&
+      &" DOXQ mg/L"," TNO3kg/ha","   QTILEmm"," TVAPkg/ha"/)
+
+!> space number for beginning of column in subbasin output file (none)
+   integer, dimension (msubo), parameter ::&
+      &icolb = (/35,45,55,65,75,85,95,105,115,125,135,145,&
+      &155,165,175,185,195,205,215,225,235,245,255,265/)
+
+!> column headers for reach output file
+   character(len=13), dimension(mrcho), parameter ::&
+      &hedr = (/"  FLOW_INcms"," FLOW_OUTcms","     EVAPcms",&
+      &"    TLOSScms","  SED_INtons"," SED_OUTtons",&
+      &" SEDCONCmg/L","   ORGN_INkg","  ORGN_OUTkg",&
+      &"   ORGP_INkg","  ORGP_OUTkg","    NO3_INkg",&
+      &"   NO3_OUTkg","    NH4_INkg","   NH4_OUTkg",&
+      &"    NO2_INkg","   NO2_OUTkg","   MINP_INkg",&
+      &"  MINP_OUTkg","   CHLA_INkg","  CHLA_OUTkg",&
+      &"   CBOD_INkg","  CBOD_OUTkg","  DISOX_INkg",&
+      &" DISOX_OUTkg"," SOLPST_INmg","SOLPST_OUTmg",&
+      &" SORPST_INmg","SORPST_OUTmg","  REACTPSTmg",&
+      &"    VOLPSTmg","  SETTLPSTmg","RESUSP_PSTmg",&
+      &"DIFFUSEPSTmg","REACBEDPSTmg","   BURYPSTmg",&
+      &"   BED_PSTmg"," BACTP_OUTct","BACTLP_OUTct",&
+      &"  CMETAL#1kg","  CMETAL#2kg","  CMETAL#3kg",&
+      &"     TOT Nkg","     TOT Pkg"," NO3ConcMg/l",&
+      &"    WTMPdegc","            ","            ",&
+      &"            ","            ","            ",&
+      &"            ","            ","            ",&
+      &"            ","            ","            ",&
+      &"            ","            ","            ",&
+      &"            ","            "/)
+
+!> space number for beginning of column in reach output file (none)
+   integer, dimension (mrcho), parameter ::&
+      &icolr = (/38,50,62,74,86,98,110,122,134,146,158,170,182,194,206,&
+      &218,230,242,254,266,278,290,302,314,326,338,350,362,374,386,398,&
+      &410,422,434,446,458,470,482,494,506,518,530,542,554,566,578,590,&
+      &602,614,626,638,650,662,674,686,698,710,722,734,746,758,770/)
+
+!> column headers for reservoir output file
+   character(len=13), dimension(41), parameter ::&
+      &hedrsv = (/"    VOLUMEm3","  FLOW_INcms"," FLOW_OUTcms",&
+      &"    PRECIPm3","      EVAPm3","   SEEPAGEm3",&
+      &"  SED_INtons"," SED_OUTtons"," SED_CONCppm",&
+      &"   ORGN_INkg","  ORGN_OUTkg"," RES_ORGNppm",&
+      &"   ORGP_INkg","  ORGP_OUTkg"," RES_ORGPppm",&
+      &"    NO3_INkg","   NO3_OUTkg","  RES_NO3ppm",&
+      &"    NO2_INkg","   NO2_OUTkg","  RES_NO2ppm",&
+      &"    NH3_INkg","   NH3_OUTkg","  RES_NH3ppm",&
+      &"   MINP_INkg","  MINP_OUTkg"," RES_MINPppm",&
+      &"   CHLA_INkg","  CHLA_OUTkg","SECCHIDEPTHm",&
+      &"   PEST_INmg","  REACTPSTmg","    VOLPSTmg",&
+      &"  SETTLPSTmg","RESUSP_PSTmg","DIFFUSEPSTmg",&
+      &"REACBEDPSTmg","   BURYPSTmg","  PEST_OUTmg",&
+      &"PSTCNCWmg/m3","PSTCNCBmg/m3"/)
+
+!> space number for beginning of column in reservoir output file (none)
+   integer, dimension (41), parameter ::&
+      &icolrsv = (/38,50,62,74,86,98,110,122,134,146,158,170,182,194,&
+      &206,218,230,242,254,266,278,290,302,314,326,338,350,362,374,386,&
+      &398,410,422,434,446,458,470,482,494,506,518/)
+
+!> column headers for HRU impoundment output file
+   character(len=13), dimension(40), parameter ::&
+      &hedwtr = (/"  PNDPCPmm","  PND_INmm","PSED_It/ha","  PNDEVPmm",&
+      &"  PNDSEPmm"," PND_OUTmm","PSED_Ot/ha"," PNDVOLm^3",&
+      &"PNDORGNppm"," PNDNO3ppm","PNDORGPppm","PNDMINPppm",&
+      &"PNDCHLAppm","  PNDSECIm","  WETPCPmm","  WET_INmm",&
+      &"WSED_It/ha","  WETEVPmm","  WETSEPmm"," WET_OUTmm",&
+      &"WSED_Ot/ha"," WETVOLm^3","WETORGNppm"," WETNO3ppm",&
+      &"WETORGPppm","WETMINPppm","WETCHLAppm","  WETSECIm",&
+      &"  POTPCPmm","  POT_INmm","OSED_It/ha","  POTEVPmm",&
+      &"  POTSEPmm"," POT_OUTmm","OSED_Ot/ha"," POTVOLm^3",&
+      &"  POT_SAha","HRU_SURQmm","PLANT_ETmm"," SOIL_ETmm"/)
 
 !> forecast region, subbasin, HRU, reach, reservoir or file number (none)
    integer :: i
@@ -98,12 +219,24 @@ module parm
    real*8 :: wshd_snob
 !> average amount of water stored in soil for the entire watershed (mm H2O)
    real*8 :: wshd_sw
-   real*8 :: wshd_pndfr, wshd_pndv, wshd_pndsed
+!> fraction of watershed area which drains into ponds (none)
+   real*8 :: wshd_pndfr
+!> total amount of suspended sediment in ponds in the watershed (metric tons)
+   real*8 :: wshd_pndsed
+!> total volume of water in ponds in the watershed (m^3)
+   real*8 :: wshd_pndv
 !> pesticide percolation coefficient (0-1)\n
 !> 0: concentration of pesticide in surface runoff is zero\n
 !> 1: percolate has same concentration of pesticide as surface runoff
    real*8 :: percop
-   real*8 :: wshd_wetfr, wshd_resfr, wshd_resha, wshd_pndha
+!> fraction of watershed area that drains into reservoirs (none)
+   real*8 :: wshd_resfr
+!> watershed area in hectares which drains into ponds (ha)
+   real*8 :: wshd_pndha
+!> watershed area in hectares which drains into reservoirs (ha)
+   real*8 :: wshd_resha
+!> fraction of watershed area which drains into wetlands (none)
+   real*8 :: wshd_wetfr
    real*8 :: wshd_fminp, wshd_ftotn, wshd_fnh3, wshd_fno3, wshd_forgn
    real*8 :: wshd_forgp, wshd_ftotp, wshd_yldn, wshd_yldp, wshd_fixn
    real*8 :: wshd_pup, wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
@@ -221,7 +354,9 @@ module parm
    real*8 :: wgpf !< growth factor for persistent bacteria on foliage (1/day)
    real*8 :: bactlchp, bactlchlp, enratio, wetpcp, pndpcp, wetsep
    real*8 :: pndsep, wetev, pndev, pndsedo, wetsedo, pndflwi, wetflwi
-   real*8 :: pndflwo, wetflwo, wetsedi, da_ha, vpd
+!> drainage area of watershed in hectares (ha)
+   real*8 :: da_ha
+   real*8 :: pndflwo, wetflwo, wetsedi, vpd
 !> leaf area index at which no evaporation occurs.  This variable is used in
 !> ponded HRUs where evaporation from the water surface is restricted by the
 !> plant canopy cover. Evaporation from the water surface equals potential ET
@@ -441,10 +576,11 @@ module parm
 !> 1 calculate algae/CBOD drainmod tile equations
    integer :: isubwq
    integer :: ffcst
-!> special project code: 1 test rewind (run simulation twice)
+!> special project code (none):\n
+!> 1 test rewind (run simulation twice)
    integer :: isproj
-   integer :: nbyr !< number of calendar years simulated
-!> water routing method:\n
+   integer :: nbyr !< number of calendar years simulated (none)
+!> water routing method (none):\n
 !> 0 variable storage method\n
 !> 1 Muskingum method\n
    integer :: irte
@@ -465,13 +601,13 @@ module parm
    integer :: icfac
    integer :: inum5, inum6, inum7, inum8
    integer :: mrech !< maximum number of rechour files
-   integer :: nrgage !< number of raingage files
-   integer :: nrgfil !< number of rain gages per file
-   integer :: nrtot !< total number of rain gages
-   integer :: ntgage !< number of temperature gage files
-   integer :: ntgfil !< number of temperature gages per file
-   integer :: nttot !< total number of temperature gages
-!> temperature input code\n
+   integer :: nrgage !< number of raingage files (none)
+   integer :: nrgfil !< number of rain gages per file (none)
+   integer :: nrtot !< total number of rain gages (none)
+   integer :: ntgage !< number of temperature gage files (none)
+   integer :: ntgfil !< number of temperature gages per file (none)
+   integer :: nttot !< total number of temperature gages (none)
+!> temperature input code (none)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: tmpsim
@@ -589,7 +725,7 @@ module parm
    integer :: mpst !< max number of pesticides used in wshed
    integer :: mres !< maximum number of reservoirs
    integer :: msub !< maximum number of subbasins
-!> random number generator code:\n
+!> random number generator seed code (none):\n
 !> 0: use default numbers\n
 !> 1: generate new numbers in every simulation
    integer :: igen
@@ -618,7 +754,6 @@ module parm
 !> time difference with respect to Coordinated Universal Time (ie Greenwich Mean
 !> Time)
    character(len=5) :: zone
-   character(len=80) :: prog !< SWAT program header string
 !> name of file containing calibration parameters
    character(len=13) :: calfile
    character(len=13) :: rhfile !< relative humidity file name (.hmd)
@@ -759,18 +894,12 @@ module parm
    real*8, dimension (:), allocatable :: tile_solpo,tile_orgno
    real*8, dimension (:), allocatable :: tile_orgpo,tile_minpso
    real*8, dimension (:), allocatable :: tile_minpao
-! output files
-!!  added for binary files 3/25/09 gsm
    integer :: ia_b, ihumus, itemp, isnow
-   integer, dimension (41) :: icolrsv
-   integer, dimension (mhruo) :: icols
-   integer, dimension (mrcho) :: icolr
-   integer, dimension (msubo) :: icolb
-!> output variable codes for output.rch file
+!> output variable codes for output.rch file (none)
    integer, dimension (46) :: ipdvar
-!> output varaible codes for output.hru file
+!> output varaible codes for output.hru file (none)
    integer, dimension (mhruo) :: ipdvas
-!> output variable codes for output.sub file
+!> output variable codes for output.sub file (none)
    integer, dimension (msubo) :: ipdvab
 !> HRUs whose output information will be printed to the output.hru and 
 !> output.wtr files
@@ -796,10 +925,11 @@ module parm
    real*8, dimension (:,:), allocatable :: sub_smfmn
    real*8, dimension (:,:,:), allocatable :: hrupstd,hrupsta,hrupstm
    real*8, dimension (:,:,:), allocatable :: hrupsty
-! mrg = max number of rainfall/temperature gages
    integer, dimension (:), allocatable :: ifirstt,ifirstpcp
-   integer, dimension (:), allocatable :: elevp,elevt
-! mfcst = max number of forecast regions
+!> elevation of precipitation gage station (m)
+   integer, dimension (:), allocatable :: elevp
+!> elevation of temperature gage station (m)
+   integer, dimension (:), allocatable :: elevt
 !> avg monthly minimum air temperature (deg C)
    real*8, dimension (:,:), allocatable :: ftmpmn
 !> avg monthly maximum air temperature (deg C)
@@ -1020,14 +1150,18 @@ module parm
 !> method) same as soil index coeff used in APEX range: 0.5 - 2.0
    real*8, dimension (:), allocatable :: cncoef_sub
    real*8, dimension (:), allocatable :: dr_sub
-   real*8, dimension (:), allocatable :: wcklsp,sub_fr,sub_minp,sub_sw
+!> fraction of total watershed area contained in subbasin (km2/km2)
+   real*8, dimension (:), allocatable :: sub_fr
+   real*8, dimension (:), allocatable :: wcklsp,sub_minp,sub_sw
    real*8, dimension (:), allocatable :: sub_sumfc,sub_gwno3,sub_gwsolp
    real*8, dimension (:), allocatable :: co2 !< CO2 concentration (ppmv)
 !> area of subbasin in square kilometers (km^2)
    real*8, dimension (:), allocatable :: sub_km
 !> latitude of weather station used to compile data (degrees)
    real*8, dimension (:), allocatable :: wlat
-   real*8, dimension (:), allocatable :: sub_tc,sub_pet
+!> time of concentration for subbasin (hour)
+   real*8, dimension (:), allocatable :: sub_tc
+   real*8, dimension (:), allocatable :: sub_pet
 !> elevation of weather station used to compile data (m)
    real*8, dimension (:), allocatable :: welev
    real*8, dimension (:), allocatable :: sub_orgn,sub_orgp,sub_bd
@@ -1222,7 +1356,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_st
 !> water content of soil at -0.033 MPa (field capacity) (mm H2O/mm soil)
    real*8, dimension (:,:), allocatable :: sol_up
-!> percent clay content in soil material (%)
+!> percent clay content in soil material (UNIT CHANGE!) (% or none)
    real*8, dimension (:,:), allocatable :: sol_clay
 !> beta coefficent to calculate hydraulic conductivity (none)
    real*8, dimension (:,:), allocatable :: sol_hk
@@ -1259,7 +1393,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_fop
 !> percent of rock fragments in soil layer (%)
    real*8, dimension (:,:), allocatable :: sol_rock
-!> percent silt content in soil material (%)
+!> percent silt content in soil material (UNIT CHANGE!) (% or none)
    real*8, dimension (:,:), allocatable :: sol_silt
 !> percent sand content of soil material (%)
    real*8, dimension (:,:), allocatable :: sol_sand
@@ -1620,13 +1754,13 @@ module parm
    real*8, dimension (:), allocatable :: ranrns
 !> 8-character name for the tillage operation
    character(len=8), dimension (550) :: tillnm
-! mhyd = max number of hydrograph nodes
 !> For ICODES equal to (none)\n
 !> 0,1,3,5,9: not used\n
 !> 2: Fraction of flow in channel\n
 !> 4: amount of water transferred (as defined by INUM4S)\n
 !> 7,8,10,11: drainage area in square kilometers associated with the record file
    real*8, dimension (:), allocatable :: rnum1s
+!> total drainage area of hydrograph in square kilometers (km^2)
    real*8, dimension (:), allocatable :: hyd_dakm
    real*8, dimension (:,:), allocatable :: varoute,shyd, vartran
    real*8, dimension (:,:,:), allocatable :: hhvaroute
@@ -1787,9 +1921,9 @@ module parm
    real*8, dimension (:), allocatable :: pnd_seci
 !> maximum canopy storage (mm H2O)
    real*8, dimension (:), allocatable :: canmx
-!> maximum daily irrigation diversion from the reach (when IRRSC=1): when value
-!> is positive the units are mm H2O; when the value is negative, the units are
-!> (10^4 m^3 H2O) (mm H2O or 10^4 m^3 H2O)
+!> maximum daily irrigation diversion from the reach (when IRRSC=1 or IRR=3):
+!> when value is positive the units are mm H2O; when the value is negative, the
+!> units are (10^4 m^3 H2O) (mm H2O or 10^4 m^3 H2O)
    real*8, dimension (:), allocatable :: divmax
 !> minimum instream flow for irrigation diversions when IRRSC=1, irrigation
 !> water will be diverted only when streamflow is at or above FLOWMIN (m^3/s)
@@ -1798,8 +1932,12 @@ module parm
    real*8, dimension (:), allocatable :: usle_p
 !> sediment concentration in lateral flow (g/L)
    real*8, dimension (:), allocatable :: lat_sed
-   real*8, dimension (:), allocatable :: rch_dakm,pnd_no3s,cn1
-!> lateral flow travel time (days)
+!> total drainage area contributing to flow at the outlet (pour point) of the
+!> reach in square kilometers (km^2)
+   real*8, dimension (:), allocatable :: rch_dakm
+   real*8, dimension (:), allocatable :: pnd_no3s,cn1
+!> lateral flow travel time or exponential of the lateral flow travel time
+!> (days or none)
    real*8, dimension (:), allocatable :: lat_ttime
 !> SCS runoff curve number for moisture condition II (none)
    real*8, dimension (:), allocatable :: cn2
@@ -1807,6 +1945,7 @@ module parm
 !> (none)
    real*8, dimension (:), allocatable :: flowfr
    real*8, dimension (:), allocatable :: sol_zmx !< maximum rooting depth (mm)
+!> exponential of the tile flow travel time (none)
    real*8, dimension (:), allocatable :: tile_ttime
 !> slope length for lateral subsurface flow (m)
    real*8, dimension (:), allocatable :: slsoil
@@ -1814,6 +1953,8 @@ module parm
    real*8, dimension (:), allocatable :: gwminp
 !> amount of residue on soil surface (kg/ha)
    real*8, dimension (:), allocatable :: sol_cov
+!> fraction of sediment remaining suspended in impoundment after settling for
+!> one day (kg/kg)
    real*8, dimension (:), allocatable :: sed_stl
 !> Manning's "n" value for overland flow (none)
    real*8, dimension (:), allocatable :: ov_n
@@ -1848,19 +1989,19 @@ module parm
 !> surface area of ponds when filled to principal spillway (ha)
    real*8, dimension (:), allocatable :: pnd_psa
 !> runoff volume from catchment area needed to fill the ponds to the principal
-!> spillway (10^4 m^3 H2O)
+!> spillway (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: pnd_pvol
 !> surface area of ponds when filled to emergency spillway (ha)
    real*8, dimension (:), allocatable :: pnd_esa
 !> runoff volume from catchment area needed to fill the ponds to the emergency
-!> spillway (10^4 m^3 H2O)
+!> spillway (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: pnd_evol
-!> volume of water in ponds (10^4 m^3 H2O)
+!> volume of water in ponds (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: pnd_vol
    real*8, dimension (:), allocatable :: yldaa
-!> normal sediment concentration in pond water (mg/L)
+!> normal sediment concentration in pond water (UNIT CHANGE!) (mg/kg or kg/kg)
    real*8, dimension (:), allocatable :: pnd_nsed
-!> sediment concentration in pond water (mg/L)
+!> sediment concentration in pond water (UNIT CHANGE!) (mg/kg or kg/kg)
    real*8, dimension (:), allocatable :: pnd_sed
    real*8, dimension (:), allocatable :: strsa,dep_imp
    real*8, dimension (:), allocatable :: evpnd, evwet
@@ -1871,22 +2012,31 @@ module parm
 !> surface area of wetlands in subbasin at normal water level (ha)
    real*8, dimension (:), allocatable :: wet_nsa
 !> runoff volume from catchment area needed to fill wetlands to normal water
-!> level (10^4 m^3 H2O)
+!> level (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: wet_nvol
    integer, dimension (:), allocatable :: iwetgw, iwetile
 !> surface area of wetlands at maximum water level (ha)
    real*8, dimension (:), allocatable :: wet_mxsa
 !> runoff volume from catchment area needed to fill wetlands to maximum water
-!> level (10^4 m^3 H2O)
+!> level (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: wet_mxvol
-!> volume of water in wetlands (10^4 m^3 H2O)
+!> volume of water in wetlands (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: wet_vol
-!> normal sediment concentration in wetland water (mg/L)
+!> normal sediment concentration in wetland water (UNIT CHANGE!)
+!> (mg/kg or kg/kg)
    real*8, dimension (:), allocatable :: wet_nsed
-!> sediment concentration in wetland water (mg/L)
+!> sediment concentration in wetland water (UNIT CHANGE!) (mg/L or kg/L)
    real*8, dimension (:), allocatable :: wet_sed
-   real*8, dimension (:), allocatable :: smx,sci,bp1,bp2
-   real*8, dimension (:), allocatable :: bw1,bw2,bactpq
+!> 1st shape parameter for pond surface area equation (none)
+   real*8, dimension (:), allocatable :: bp1
+!> 2nd shape parameter for the pond surface area equation (none)
+   real*8, dimension (:), allocatable :: bp2
+   real*8, dimension (:), allocatable :: smx,sci
+!> 1st shape parameter for the wetland surface area equation (none)
+   real*8, dimension (:), allocatable :: bw1
+!> 2nd shape parameter for the wetland surface area equation (none)
+   real*8, dimension (:), allocatable :: bw2
+   real*8, dimension (:), allocatable :: bactpq
    real*8, dimension (:), allocatable :: bactp_plt,bactlp_plt,cnday
 !> fertilizer application efficiency calculated as the amount of N applied
 !> divided by the amount of N removed at harvest (none)
@@ -1908,11 +2058,15 @@ module parm
    real*8, dimension (:), allocatable :: tmx,tmn,tmp_hi,tmp_lo
 !> USLE equation soil erodibility (K) factor (none)
    real*8, dimension (:), allocatable :: usle_k
-   real*8, dimension (:), allocatable :: rwt,olai,tconc,hru_rmx
+!> time of concentration for HRU (hour)
+   real*8, dimension (:), allocatable :: tconc
+   real*8, dimension (:), allocatable :: rwt,olai,hru_rmx
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
 !> amount of water held in soil profile at field capacity (mm H2O)
    real*8, dimension (:), allocatable :: sol_sumfc
-   real*8, dimension (:), allocatable :: anano3,aird,t_ov
+!> time for flow from farthest point in subbasin to enter a channel (hour)
+   real*8, dimension (:), allocatable :: t_ov
+   real*8, dimension (:), allocatable :: anano3,aird
 !> amount of organic P in wetland (kg P)
    real*8, dimension (:), allocatable :: wet_orgp
 !> average porosity for entire soil profile (none)
@@ -2024,7 +2178,10 @@ module parm
    real*8, dimension (:), allocatable :: ddrain
 !> crack volume potential of soil (none)
    real*8, dimension (:), allocatable :: sol_crk
-   real*8, dimension (:), allocatable :: dayl,brt
+!> fraction of surface runoff within the subbasin which takes 1 day or less to
+!> reach the subbasin outlet (none)
+   real*8, dimension (:), allocatable :: brt
+   real*8, dimension (:), allocatable :: dayl
 !    Drainmod tile equations  01/2006
 !> static maximum depressional storage; read from .sdr (mm)
    real*8, dimension (:), allocatable :: sstmaxd
@@ -2137,7 +2294,24 @@ module parm
    real*8, dimension (:,:), allocatable :: pst_sed
 !> average daily water removal from the pond for the month (10^4 m^3/day)
    real*8, dimension (:,:), allocatable :: wupnd
-   real*8, dimension (:,:), allocatable :: pcpband,tavband,phi
+!> phi(1,:) cross-sectional area of flow at bankfull depth (m^2)
+!> phi(2,:) (none)
+!> phi(3,:) (none)
+!> phi(4,:) (none)
+!> phi(5,:) (none)
+!> phi(6,:) bottom width of main channel (m)
+!> phi(7,:) depth of water when reach is at bankfull depth (m)
+!> phi(8,:) average velocity when reach is at bankfull depth (m/s)
+!> phi(9,:) wave celerity when reach is at bankfull depth (m/s)
+!> phi(10,:) storage time constant for reach at bankfull depth (ratio of storage
+!> to discharge) (hour)
+!> phi(11,:) average velocity when reach is at 0.1 bankfull depth (low flow)
+!> (m/s)
+!> phi(12,:) wave celerity when reach is at 0.1 bankfull depth (low flow) (m/s)
+!> phi(13,:) storage time constant for reach at 0.1 bankfull depth (low flow)
+!> (ratio of storage to discharge) (hour)
+   real*8, dimension (:,:), allocatable :: phi
+   real*8, dimension (:,:), allocatable :: pcpband,tavband
    real*8, dimension (:,:), allocatable :: wat_phi
 !> initial snow water content in elevation band (mm H2O)
    real*8, dimension (:,:), allocatable :: snoeb
@@ -2216,7 +2390,7 @@ module parm
 !> if IRRSC=4, IRRNO is the number of the subbasin\n
 !> if IRRSC=5, not used
    integer, dimension (:), allocatable :: irrno
-!> number of soil layers (none)
+!> number of soil in soil profile layers (none)
    integer, dimension (:), allocatable :: sol_nly
    integer, dimension (:), allocatable :: irn,npcp
    integer, dimension (:), allocatable :: igrz,ndeat,ngr,ncf
@@ -2252,7 +2426,7 @@ module parm
    integer, dimension (:), allocatable :: iday_pest, irr_flag
    integer, dimension (:), allocatable :: irra_flag
 !> random number generator seed. The seeds in the array are used to generate
-!> random numbers for the following purposes:\n
+!> random numbers for the following purposes (none):\n
 !> (1) wet/dry day probability\n
 !> (2) solar radiation\n
 !> (3) precipitation\n
@@ -2289,8 +2463,6 @@ module parm
    character(len=1), dimension (:), allocatable :: hydgrp
    character(len=16), dimension (:), allocatable :: snam !< soil series name
    character(len=17), dimension (300) :: pname !< name of pesticide/toxin
-   character(len=13) :: heds(79),hedb(24),hedr(46),hedrsv(41)
-   character(len=13) :: hedwtr(40)
    character(len=4) :: title(60) !< description lines in file.cio (1st 3 lines)
    character(len=4) :: cpnm(5000) !< four character code to represent crop name
    character(len=17), dimension(50) :: fname

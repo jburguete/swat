@@ -1,8 +1,11 @@
-subroutine std1
+!> @file std1.f90
+!> file containing the subroutine std1
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes general information to the standard output file
-!!    and header lines to miscellaneous output files
+!> this subroutine writes general information to the standard output file
+!> and header lines to miscellaneous output files
+subroutine std1
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -42,7 +45,7 @@ subroutine std1
 
 !!    input summary file
    write (24,1000) prog,values(2),values(3),values(1),values(5),&
-   &values(6),values(7)
+      &values(6),values(7)
    write (24,1010) title
    write (24,1020) nbyr, da_km
    if (igen == 0) then
@@ -127,12 +130,12 @@ subroutine std1
 
 !!    standard output file
    write (26,1000) prog,values(2),values(3),values(1),values(5),&
-   &values(6),values(7)
+      &values(6),values(7)
    write (26,1010) title
    write (26,1020) nbyr, da_km
    if (isproj == 1) then
       write (19,1000) prog,values(2),values(3),values(1),values(5),&
-      &values(6),values(7)
+         &values(6),values(7)
       write (19,1010) title
       write (19,1020) nbyr, da_km
    end if

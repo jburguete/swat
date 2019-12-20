@@ -24,13 +24,11 @@ program main
 !!    iscen       |none        |scenarios counter
 !!    isproj      |none        |special project code:
 !!                             |1 test rewind (run simulation twice)
-!!    prog        |NA          |SWAT program header string
 !!    subnum      |NA          |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    prog        |NA           |program name and version
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
@@ -49,7 +47,6 @@ program main
    implicit none
    integer :: ii, scenario
 
-   prog = "SWAT Sep 7    VER 2018/Rev 670"
    write (*,1000)
 1000 format(1x,"               SWAT2018               ",/,&
    &"               Rev. 670               ",/,&

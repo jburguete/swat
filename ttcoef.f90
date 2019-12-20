@@ -1,14 +1,18 @@
-subroutine ttcoef(k)
+!> @file ttcoef.f90
+!> file containing the subroutine ttcoef
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes travel time coefficients for routing
-!!    along the main channel
+!> this subroutine computes travel time coefficients for routing
+!> along the main channel
+!> @param[in] k HRU number
+subroutine ttcoef(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_d(:)     |m             |average depth of main channel
-!!    ch_l2(:)    |km            |length of main channel
+!!    ch_d(:)    |m             |average depth of main channel
+!!    ch_l2(:)   |km            |length of main channel
 !!    ch_n2(:)   |none          |Manning's "n" value for the main channel
 !!    ch_s2(:)   |m/m           |average slope of main channel
 !!    ch_w2(:)   |m             |average width of main channel
@@ -17,9 +21,6 @@ subroutine ttcoef(k)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    chsslope(:)   |none          |change in horizontal distance per unit
-!!                               |change in vertical distance on channel side
-!!                               |slopes; always set to 2 (slope=1/2)
 !!    phi(1,:)    |m^2           |cross-sectional area of flow at bankfull
 !!                               |depth
 !!    phi(2,:)    |none          |
@@ -52,6 +53,9 @@ subroutine ttcoef(k)
 !!                               |Manning's equation)
 !!    a           |m^2           |cross-sectional area of channel
 !!    b           |m             |bottom width of channel
+!!    chsslope(:) |none          |change in horizontal distance per unit
+!!                               |change in vertical distance on channel side
+!!                               |slopes; always set to 2 (slope=1/2)
 !!    d           |m             |depth of flow
 !!    fps         |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on floodplain side
@@ -74,9 +78,9 @@ subroutine ttcoef(k)
    implicit none
 
    integer, intent (in) :: k
-   integer :: jj
-   real*8 :: d, b, p, a, qq1, rh, tt1, tt2, chsslope
    real*8, parameter :: aa = 1., fps = 4.
+   real*8 :: a, b, chsslope, d, p, qq1, rh, tt1, tt2
+   integer :: jj
 
    do jj = 1, 13
       phi(jj,k) = 0.
@@ -115,8 +119,8 @@ subroutine ttcoef(k)
 
 !!    compute flow and travel time at 1.2 bankfull depth
    d = 1.2 * ch_d(k)
-   a = a + (ch_w2(k) * ch_d(k) + fps * (d - ch_d(k)) ** 2)
-   p = p + 4. * ch_w2(k) + (0.4 * ch_d(k) * Sqrt(fps * fps + 1.))
+   a = a + ch_w2(k) * ch_d(k) + fps * (d - ch_d(k)) ** 2
+   p = p + 4. * ch_w2(k) + 0.4 * ch_d(k) * Sqrt(fps * fps + 1.)
    rh = a / p
    qq1 = Qman(a, rh, ch_n2(k), ch_s2(k))
    tt1 = ch_l2(k) * a / qq1

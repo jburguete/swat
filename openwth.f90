@@ -1,9 +1,12 @@
-subroutine openwth
+!> @file openwth.f90
+!> file containing the subroutine openwth
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine opens the precipitation, temperature, solar radiation,
-!!    relative humidity and wind speed files for simulations using measured
-!!    weather data
+!> this subroutine opens the precipitation, temperature, solar radiation,
+!> relative humidity and wind speed files for simulations using measured
+!> weather data
+subroutine openwth
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -36,6 +39,7 @@ subroutine openwth
 !!    k           |none           |counter
 !!    kk1         |none           |gage code for first dataset in weather file
 !!    kk2         |none           |gage code for last dataset in weather file
+!!    titldum     |none           |title line
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -43,7 +47,7 @@ subroutine openwth
    use parm
    implicit none
 
-   integer :: j, kk1, kk2, k
+   integer :: j, k, kk1, kk2
    character (len=80) :: titldum
 
 !! open precip files and read elevation

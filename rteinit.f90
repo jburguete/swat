@@ -1,9 +1,12 @@
-subroutine rteinit
+!> @file rteinit.f90
+!> file containing the subroutine rteinit
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine reads in the areas associated with files processed with
-!!    the recday, recepic, recmon and recyear commands, calculates subbasin
-!!    areas, calculates reach and hydrograph node drainage areas.
+!> This subroutine reads in the areas associated with files processed with
+!> the recday, recepic, recmon and recyear commands, calculates subbasin
+!> areas, calculates reach and hydrograph node drainage areas.
+subroutine rteinit
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -97,7 +100,13 @@ subroutine rteinit
 !!    inm2        |none          |variable to hold value for inum2s(:)
 !!    inm3        |none          |variable to hold value for inum3s(:)
 !!    inm4        |none          |variable to hold value for inum4s(:)
+!!    isb
+!!    j
+!!    j1
+!!    jseq
+!!    k
 !!    rnm1        |none          |variable to hold value for rnum1s(:)
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -106,8 +115,8 @@ subroutine rteinit
    use parm
    implicit none
 
-   integer :: icd, inm1, inm2, inm3, inm4, iht, isb, j, j1, jseq, k
-   real*8 :: rnm1
+   real*8 :: rnm1, xx
+   integer :: icd, iht, inm1, inm2, inm3, inm4, isb, j, j1, jseq, k
 
 !!    calculate watershed area in hectares
    da_ha = da_km * 100.
@@ -174,7 +183,7 @@ subroutine rteinit
          hyd_dakm(iht) = hyd_dakm(inm2)
          rch_dakm(inm1) = hyd_dakm(inm2)
 
-       case (3)   !! ROUTRES command
+       case (3, 18)   !! ROUTRES or ROUTEOVER command
          hyd_dakm(iht) = hyd_dakm(inm2)
 
        case (5)   !! ADD command
@@ -185,14 +194,10 @@ subroutine rteinit
          j1 = hru1(inm2) - 1
          do j = 1, hrutot(inm2)
             jseq = j1 + j
-            hru_fr(jseq) = hru_fr(jseq) + hru_rufr(inm1,j) *&
-               &daru_km(inm2,inm1) / sub_km(inm2)
-            hru_dafr(jseq) = hru_dafr(jseq) + hru_rufr(inm1,j) *&
-               &daru_km(inm2,inm1) / da_km
+            xx = hru_rufr(inm1,j) * daru_km(inm2,inm1)
+            hru_fr(jseq) = hru_fr(jseq) + xx / sub_km(inm2)
+            hru_dafr(jseq) = hru_dafr(jseq) + xx / da_km
          end do
-
-       case (18)   !! ROUTEOVER command
-         hyd_dakm(iht) = hyd_dakm(inm2)
 
       end select
    end do

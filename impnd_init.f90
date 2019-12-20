@@ -1,10 +1,11 @@
+!> @file impnd_init.f90
+!> file containing the subroutine impnd_init
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine initializes variables related to impoundments (ponds,
+!> wetlands, reservoirs and potholes)
 subroutine impnd_init
-
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes variables related to impoundments (ponds,
-!!    wetlands, reservoirs and potholes)
-
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -105,14 +106,15 @@ subroutine impnd_init
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cl          |none          |variable to hold calculation result
 !!    j           |none          |counter
-!!    mnpsz       |none          |mean particle size
 !!    lnvol       |none          |variable to hold denominator value
+!!    mnpsz       |none          |mean particle size
 !!    pe_sa       |ha            |local variable to hold value for pnd_esa(:)
 !!    pe_vo       |m^3           |local variable to hold value for pnd_evol(:)
 !!    pp_sa       |ha            |local variable to hold value for pnd_psa(:)
 !!    pp_vo       |m^3           |local variable to hold value for pnd_pvol(:)
-!!    sol_sand(:,:) |none          |fraction of sand in soil material
+!!    sa
 !!    si          |none          |variable to hold calculation result
+!!    sol_sand(:,:)|none         |fraction of sand in soil material
 !!    targ        |10^4 m^3 H2O  |target pond volume
 !!    wetdif      |m^3           |difference between maximum and normal amounts
 !!                               |of water held in wetlands
@@ -126,9 +128,8 @@ subroutine impnd_init
    use parm
    implicit none
 
+   real*8 :: cl, lnvol, mnpsz, pe_sa, pe_vo, pp_sa, pp_vo, sa, si, targ, wetdif
    integer :: j
-   real*8 :: cl, si, mnpsz, targ, lnvol
-   real*8 :: pe_sa, pp_sa, pe_vo, pp_vo, wetdif, sa
 
 
    do j = 1, nhru

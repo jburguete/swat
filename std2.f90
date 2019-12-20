@@ -1,15 +1,18 @@
-subroutine std2
+!> @file std2.f90
+!> file containing the subroutine std2
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes general information to the standard output file
-!!    and to miscellaneous output files
+!> this subroutine writes general information to the standard output file
+!> and to miscellaneous output files
+subroutine std2
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)       |m           |average depth of main channel
-!!    ch_s2(:)     |m/m         |average slope of main channel
-!!    ch_w2(:)     |m           |average width of main channel
+!!    ch_s2(:)      |m/m         |average slope of main channel
+!!    ch_w2(:)      |m           |average width of main channel
 !!    hru_fr(:)     |none        |fraction of subbasin area in HRU
 !!    hru_ha(:)     |ha          |area of HRU
 !!    hrupest(:)    |none        |pesticide use flag:
@@ -88,6 +91,7 @@ subroutine std2
 !!    kpnd          |NA          |pond in subbasin
 !!    kpot          |NA          |pothole in HRU
 !!    kpst          |NA          |pesticide in HRU
+!!    ksep
 !!    kubn          |NA          |urban area simulated in HRU
 !!    kwet          |NA          |wetlands in subbasin
 !!    sumarea       |none        |sum of all hru_fr
@@ -102,9 +106,9 @@ subroutine std2
    use parm
    implicit none
 
+   real*8 :: sumarea, xch_l1, xkm
    integer :: j
-   real*8 :: sumarea, xkm, xch_l1
-   character (len=1) :: kpnd, kbnd, kwet, kubn, kpot, kdrn, kpst,ksep
+   character (len=1) :: kbnd, kdrn, kpnd, kpot, kpst, ksep, kubn, kwet
 
 !!    input summary file
    !!write subbasin info
@@ -126,7 +130,7 @@ subroutine std2
          kwet = " "
       end if
       write (24,1001)j, sub_lat(hru_sub(j)), sub_elev(j), hrutot(j),&
-      &kpnd, kbnd, kwet
+         &kpnd, kbnd, kwet
 
    end do
 
@@ -141,25 +145,25 @@ subroutine std2
       if (pot_fr(j) > 0.) kpot = "x"
       if (ddrain(j) > 0.) kdrn = "x"
       write (24,1021)hru_sub(j),j,hru_ha(j),hru_slp(j),slsubbsn(j),&
-      &ov_n(j),cn2(j),tconc(j),esco(j),epco(j)
+         &ov_n(j),cn2(j),tconc(j),esco(j),epco(j)
    end do
 
    write (24,1028)
    do j = 1, nhru
       if (idplt(j) > 0) then
          write (24,1029) hru_sub(j), j, hru_ha(j),cpnm(idplt(j)),snam(j),&
-         &cn1(j), cn2(j), cn3(j), sol_sumwp(j),sol_sumfc(j), sol_sumul(j)
+            &cn1(j), cn2(j), cn3(j), sol_sumwp(j),sol_sumfc(j), sol_sumul(j)
       else
          write (24,1030)hru_sub(j),j,hru_ha(j), snam(j), cn1(j), cn2(j),&
-         &cn3(j), sol_sumwp(j), sol_sumfc(j), sol_sumul(j)
+            &cn3(j), sol_sumwp(j), sol_sumfc(j), sol_sumul(j)
       end if
    end do
 
    write (24,1022)
    do j = 1, nhru
       write (24,1023) hru_sub(j),j,hru_ha(j),snam(j),hydgrp(j),&
-      &sol_zmx(j),sol_alb(j),usle_k(j),usle_p(j),usle_ls(j),&
-      &sol_sumfc(j),sol_sw(j)
+         &sol_zmx(j),sol_alb(j),usle_k(j),usle_p(j),usle_ls(j),&
+         &sol_sumfc(j),sol_sw(j)
    end do
    write (24,1024)
    do j = 1, nhru
@@ -176,13 +180,13 @@ subroutine std2
       if (isep_hru(j) == 1) ksep = "x"
 
       write (24,1025) hru_sub(j),j,hru_ha(j),kubn,kirr(j),kdrn,kpot,&
-      &kpst,biomix(j),ksep
+         &kpst,biomix(j),ksep
    end do
    write (24,1026)
    do j = 1, nhru
       write (24,1027) hru_sub(j),j,hru_ha(j),delay(j),alpha_bf(j),&
-      &gwqmn(j),gw_revap(j),revapmn(j),rchrg_dp(j),gwno3(j),&
-      &gwminp(j)
+         &gwqmn(j),gw_revap(j),revapmn(j),rchrg_dp(j),gwno3(j),&
+         &gwminp(j)
    end do
 
    !! write reach characteristics
@@ -193,8 +197,8 @@ subroutine std2
          xkm = phi(10,j) * msk_co1 + phi(13,j) * msk_co2
          xch_l1 = ch_l1(hru1(j)) / hru_fr(hru1(j))
          write (24,1014) j,xch_l1,ch_s1(j),ch_w1(j),ch_k1(j)&
-         &,ch_n1(j),ch_l2(j),ch_s2(j),ch_w2(j),ch_d(j),&
-         &ch_k2(j),ch_n2(j),xkm
+            &,ch_n1(j),ch_l2(j),ch_s2(j),ch_w2(j),ch_d(j),&
+            &ch_k2(j),ch_n2(j),xkm
       end do
    else
       write (24,1011)
@@ -202,8 +206,8 @@ subroutine std2
          xch_l1 = 0.
          xch_l1 = ch_l1(hru1(j)) / hru_fr(hru1(j))
          write (24,1012) j,xch_l1,ch_s1(j),ch_w1(j),ch_k1(j),&
-         &ch_n1(j),ch_l2(j),ch_s2(j),ch_w2(j),ch_d(j),&
-         &ch_k2(j),ch_n2(j)
+            &ch_n1(j),ch_l2(j),ch_s2(j),ch_w2(j),ch_d(j),&
+            &ch_k2(j),ch_n2(j)
       end do
    end if
 

@@ -35,8 +35,13 @@ subroutine readinpt
 !!                                 |watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
+!!    name        |units         |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ii          |none          |counter
+
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: soil_chem, soil_phys, rteinit, h2omgt_init, hydro_init,
+!!    SWAT: soil_chem, soil_phys, rteinit, h2omgt_init, hydroinit,
 !!    impnd_init
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -54,7 +59,6 @@ subroutine readinpt
    !! watershed
 
    do ii = 1, nhru
-      !call soil_par
       call soil_chem(ii)       !! initialize soil chemical parameters
       call soil_phys(ii)       !! initialize soil physical parameters
    end do
