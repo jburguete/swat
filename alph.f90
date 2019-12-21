@@ -7,6 +7,7 @@ subroutine alph(iwave)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ab          |mm H2O      |lowest value al5 can have
 !!    amp_r(:,:)  |none        |alpha factor for rain(mo max 0.5h rain)
 !!    idg(:)      |none        |array location of random number seed
 !!                             |used for a given process
@@ -51,7 +52,6 @@ subroutine alph(iwave)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ab          |mm H2O      |lowest value al5 can have
 !!    ajp         |mm H2O      |highest value al5 can have
 !!    j           |none        |HRU number
 !!    jj          |none        |counter
@@ -72,7 +72,6 @@ subroutine alph(iwave)
    integer, intent (in) :: iwave
    integer :: j, k, kk, jj
    real*8 :: ajp, preceff, rainsum
-   real*8, parameter :: ab = 0.02083
 
    j = ihru
 

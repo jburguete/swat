@@ -1,7 +1,7 @@
 SWAT
 ====
 
-An updated SWAT 2012 revision 670 code
+An upgraded SWAT 2012 revision 670 code
 
 Objectives
 ----------
@@ -182,6 +182,11 @@ variables is not possible.
 * In grass\_wway.f:
   - `sf_depth` and `sf_sed` could be used not initialized at lines 133 and 137
     if `sf_area>0` and `sf_area<=1.e-6`
+
+* In headout.f:
+  - `hedr` array of column titles is written out of defined bounds at lines 118,
+    119, 121 and 133. It is written to `mrcho` (set to 62 in allocate\_parms.f
+    line 59) but in modparm.f the bound of `hedr` array is set to 46 (line 663)
 
 * In hhnoqual.f:
   - `algon` seems to be `algcon` at line 190

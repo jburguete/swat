@@ -14,9 +14,9 @@ subroutine dailycn
 !!    sol_sw(:)   |mm H2O        |amount of water stored in soil profile on
 !!                               |any given day
 !!    sol_tmp(2,:)|deg C         |daily average temperature of second soil layer
-!!    wrt(1,:)    |none          |1st shape parameter for calculation of
+!!    wrt1(:)    |none          |1st shape parameter for calculation of
 !!                               |water retention
-!!    wrt(2,:)    |none          |2nd shape parameter for calculation of
+!!    wrt2(:)    |none          |2nd shape parameter for calculation of
 !!                               |water retention
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -64,7 +64,7 @@ subroutine dailycn
    j = ihru
 
 
-   xx = wrt(1,j) - wrt(2,j) * sol_sw(j)
+   xx = wrt1(j) - wrt2(j) * sol_sw(j)
    if (xx < -20.) xx = -20.
    if (xx > 20.) xx = 20.
 

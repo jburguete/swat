@@ -6,6 +6,7 @@ subroutine eiusle
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ab          |mm H2O      |lowest value xa can have
 !!    amp_r(:,:)  |none        |alpha factor for rain (mo max 0.5h rain)
 !!    idg(:)      |none        |array location of random number seed
 !!                             |used for a given process
@@ -28,7 +29,6 @@ subroutine eiusle
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ab          |mm H2O      |lowest value xa can have
 !!    ajp         |mm H2O      |highest value xa can have
 !!    j           |none        |HRU number
 !!    pkrf        |none        |intermediate calculation
@@ -49,12 +49,11 @@ subroutine eiusle
    use parm
    implicit none
 
+   real*8 :: xa, preceff, ajp, xb, pkrf, pkrf30
    integer :: j
-   real*8 :: ab, xa, preceff, ajp, xb, pkrf, pkrf30
 
    j = ihru
 
-   ab = 0.02083
    pkrf = 0.
    pkrf30 = 0.
    xa = 0.

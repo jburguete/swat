@@ -252,6 +252,7 @@ subroutine virtual
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: dmax1
 !!    SWAT: hruday, impndday, subday
 !!    SWAT: alph, pkq, ysed, enrsb, pesty, orgn, psed
 !!    SWAT: Tair
@@ -261,8 +262,8 @@ subroutine virtual
    use parm
    implicit none
 
-   integer :: j, sb, kk, ii, ib
-   real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr, hr, ratio
+   integer :: hr, j, sb, kk, ii, ib
+   real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr, ratio
    real*8 :: sub_hwyld(nstep), hqd(4*nstep), hsd(4*nstep)   ! hqd, hsd locally defined. J.Jeong 4/26/2009
 
    j = ihru
@@ -312,7 +313,7 @@ subroutine virtual
                if (sub_hhsedy(sb,ii) < 1.e-20) sub_hhsedy(sb,ii) = 0.
             end if
             !air temperature
-            hr = ii * idt / 60.
+            hr = ii * idt / 60
             sub_atmp(sb,ii) = sub_atmp(sb,ii) + Tair(hr,j) * hru_fr(j)
          end do
       end if

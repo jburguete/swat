@@ -1,3 +1,9 @@
+!> @file water_hru.f90
+!> file containing the subroutine water_hru
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine compute pet and et using Priestly-Taylor and a coefficient
 subroutine water_hru
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -13,14 +19,15 @@ subroutine water_hru
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Exp
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: d, gma, ho, tmpk
    real*8, parameter :: pet_alpha = 1.28
+   real*8 :: d, gma, ho, tmpk
+   integer :: j
 
    j = ihru
 !! if the HRU is water compute only pet and et

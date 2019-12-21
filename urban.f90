@@ -97,7 +97,7 @@ subroutine urban
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max, Log
+!!    Intrinsic: Max, Log, Exp
 !!    SWAT: Regres, sweep
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -154,7 +154,7 @@ subroutine urban
          !! calculate wash-off of solids
          urbk = urbcoef(urblu(j)) * (peakr * 3.6 / hru_km(j))
          !! expression in () peakr in mm/hr
-         if(al5==0) al5 = 1e-6    !J.Jeong urban modeling
+         al5 = Max(al5, ab)
          rp1 = -2. * Log(1.- al5)
          durf = 4.605 / rp1
          turo = durf + tconc(j)

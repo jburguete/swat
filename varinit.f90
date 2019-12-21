@@ -1,8 +1,11 @@
-subroutine varinit
+!> @file varinit.f90
+!> file containing the subroutine varinit
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes variables for the daily simulation of the
-!!    land phase of the hydrologic cycle (the subbasin command loop)
+!> this subroutine initializes variables for the daily simulation of the
+!> land phase of the hydrologic cycle (the subbasin command loop)
+subroutine varinit
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -185,6 +188,7 @@ subroutine varinit
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ii          |none          |counter
 !!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -194,7 +198,7 @@ subroutine varinit
    use parm
    implicit none
 
-   integer :: j, ii
+   integer :: ii, j
 
    j = ihru
 

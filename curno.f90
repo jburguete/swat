@@ -1,13 +1,18 @@
-subroutine curno(cnn,h)
+!> @file curno.f90
+!> file containing the subroutine curno
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine determines the curve numbers for moisture conditions
-!!    I and III and calculates coefficents and shape parameters for the
-!!    water retention curve
-!!    the coefficents and shape parameters are calculated by one of two methods:
-!!    the default method is to make them a function of soil water, the
-!!    alternative method (labeled new) is to make them a function of
-!!    accumulated PET, precipitation and surface runoff.
+!> this subroutine determines the curve numbers for moisture conditions
+!> I and III and calculates coefficents and shape parameters for the
+!> water retention curve.
+!> The coefficents and shape parameters are calculated by one of two methods:\n
+!> the default method is to make them a function of soil water,\n
+!> the alternative method (labeled new) is to make them a function of
+!> accumulated PET, precipitation and surface runoff
+!> @param[in] cnn SCS runoff curve number for moisture condition II
+!> @param[in] h HRU number
+subroutine curno(cnn,h)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -32,9 +37,9 @@ subroutine curno(cnn,h)
 !!                               |plant ET
 !!    smx(:)      |none          |retention coefficient for cn method based on
 !!                               |soil moisture
-!!    wrt(1,:)    |none          |1st shape parameter for calculation of
+!!    wrt1(:)    |none          |1st shape parameter for calculation of
 !!                               |water retention
-!!    wrt(2,:)    |none          |2nd shape parameter for calculation of
+!!    wrt2(:)    |none          |2nd shape parameter for calculation of
 !!                               |water retention
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!
@@ -47,6 +52,8 @@ subroutine curno(cnn,h)
 !!    rtos        |none          |fraction difference between CN=99 and CN1
 !!                               |retention parameters
 !!    s3          |none          |retention parameter for CN3
+!!    sumfc_ul
+!!    smxold
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -58,9 +65,9 @@ subroutine curno(cnn,h)
    use parm
    implicit none
 
-   integer, intent (in) :: h
    real*8, intent (in) :: cnn
-   real*8 :: c2, s3, rto3, rtos, sumfc_ul, smxold
+   integer, intent (in) :: h
+   real*8 :: c2, rto3, rtos, s3, sumfc_ul, smxold
 
    cn2(h) = cnn
    smxold = 0.
@@ -84,7 +91,7 @@ subroutine curno(cnn,h)
 
    sumfc_ul = sol_sumfc(h) !+ r2adj(h) * (sol_sumul(h) - sol_sumfc(h))
 !! calculate shape parameters
-   call ascrv(rto3,rtos,sumfc_ul,sol_sumul(h),wrt(1,h),wrt(2,h))
+   call ascrv(rto3,rtos,sumfc_ul,sol_sumul(h),wrt1(h),wrt2(h))
 
    if (curyr == 0) then
       sci(h) = 0.9 * smx(h)

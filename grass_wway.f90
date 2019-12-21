@@ -18,27 +18,27 @@ subroutine grass_wway
 !!    mhru
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 
-!!    wat_phi(1,:)    |m^2           |cross-sectional area of flow at bankfull
+!!    wat_phi1(:)    |m^2           |cross-sectional area of flow at bankfull
 !!                                   |depth
-!!    wat_phi(2,:)    |none          |
-!!    wat_phi(3,:)    |none          |
-!!    wat_phi(4,:)    |none          |
-!!    wat_phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
-!!    wat_phi(6,:)    |m             |bottom width of main channel
-!!    wat_phi(7,:)    |m             |depth of water when reach is at bankfull
+!!    wat_phi2(:)    |none          |
+!!    wat_phi3(:)    |none          |
+!!    wat_phi4(:)    |none          |
+!!    wat_phi5(:)    |m^3/s         |flow rate when reach is at bankfull depth
+!!    wat_phi6(:)    |m             |bottom width of main channel
+!!    wat_phi7(:)    |m             |depth of water when reach is at bankfull
 !!                                   |depth
-!!    wat_phi(8,:)    |m/s           |average velocity when reach is at
+!!    wat_phi8(:)    |m/s           |average velocity when reach is at
 !!                                   |bankfull depth
-!!    wat_phi(9,:)    |m/s           |wave celerity when reach is at
+!!    wat_phi9(:)    |m/s           |wave celerity when reach is at
 !!                                   |bankfull depth
-!!    wat_phi(10,:)   |hr            |storage time constant for reach at
+!!    wat_phi10(:)   |hr            |storage time constant for reach at
 !!                                   |bankfull depth (ratio of storage to
 !!                                   |discharge)
-!!    wat_phi(11,:)   |m/s           |average velocity when reach is at
+!!    wat_phi13(:)   |m/s           |average velocity when reach is at
 !!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi(12,:)   |m/s           |wave celerity when reach is at
+!!    wat_phi13(:)   |m/s           |wave celerity when reach is at
 !!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi(13,:)   |hr            |storage time constant for reach at
+!!    wat_phi13(:)   |hr            |storage time constant for reach at
 !!                                   |0.1 bankfull depth (low flow) (ratio
 !!                                   |of storage to discharge)
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
@@ -91,8 +91,8 @@ subroutine grass_wway
       peakr = 2. * chflow_m3 / (1.5 * tc_gwat(j))
 
 !! if peak rate is greater than bankfull discharge
-      if (peakr > wat_phi(5,j)) then
-         rcharea = wat_phi(1,j)
+      if (peakr > wat_phi5(j)) then
+         rcharea = wat_phi1(j)
          rchdep = grwat_d(j)
       else
 !!          find the crossectional area and depth for todays flow
@@ -103,8 +103,8 @@ subroutine grass_wway
 
          Do While (sdti < peakr)
             rchdep = rchdep + 0.01
-            rcharea = (wat_phi(6,j) + 8 * rchdep) * rchdep
-            p = wat_phi(6,j) + 2. * rchdep * Sqrt(1. + 8 * 8)
+            rcharea = (wat_phi6(j) + 8 * rchdep) * rchdep
+            p = wat_phi6(j) + 2. * rchdep * Sqrt(1. + 8 * 8)
             rh = rcharea / p
             sdti = Qman(rcharea, rh, grwat_n(j), grwat_s(j))
          end do
@@ -153,7 +153,7 @@ subroutine grass_wway
       vc = 0.001
       if (rcharea > 1.e-4) then
          vc = peakr / rcharea
-         if (vc > wat_phi(9,j)) vc = wat_phi(9,j)
+         if (vc > wat_phi9(j)) vc = wat_phi9(j)
       end if
 
 !!        compute deposition in the waterway

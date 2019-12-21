@@ -1,4 +1,4 @@
-function tair(hr,jj) result (r_tair)
+real*8 function tair(hr,jj) result (r_tair)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this function approximates hourly air temperature from daily max and
@@ -29,7 +29,7 @@ function tair(hr,jj) result (r_tair)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: real*8, Cos
+!!    Intrinsic: Cos
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -40,9 +40,7 @@ function tair(hr,jj) result (r_tair)
    use parm, only: tmn, tmp_hi, tmp_lo, tmx
    implicit none
 
-   integer, intent (in) ::  jj
-   real*8, intent(in) :: hr
-   real*8 :: r_tair
+   integer, intent (in) ::  hr, jj
 
 !! update hi or lo temperature depending on hour of day
    if (hr == 3) tmp_lo(jj) = tmn(jj)

@@ -311,7 +311,8 @@ subroutine zero2
    wpstaao = 0.
    wpstmono = 0.
    wpstyro = 0.
-   wrt = 0.
+   wrt1 = 0.
+   wrt2 = 0.
    wshd_pstdg = 0.
    wshdaao = 0.
    wshdmono = 0.

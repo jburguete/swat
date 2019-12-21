@@ -10,6 +10,7 @@ subroutine pgenhr(jj)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ab           |mm H2O        |lowest value al5 can have
 !!    amp_r(:,:)   |none          |alpha factor for rain(mo max 0.5h rain)
 !!    hru_km(:)    |km^2          |area of HRU in square kilometers
 !!    hru_sub(:)   |none          |subbasin in which HRU is located
@@ -33,7 +34,6 @@ subroutine pgenhr(jj)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ab           |mm H2O        |lowest value al5 can have
 !!    ajp          |mm H2O        |highest value al5 can have
 !!    al5          |none          |fraction of total rainfall on day that occurs
 !!                                |during 0.5h highest intensity rainfall
@@ -74,7 +74,7 @@ subroutine pgenhr(jj)
    implicit none
 
    integer, intent (in) :: jj
-   real*8, parameter :: ab = 0.02083, blm = 0.05, qmn = 0.25, uplm = 0.95
+   real*8, parameter :: blm = 0.05, qmn = 0.25, uplm = 0.95
    real*8 :: ajp, altc, dur, pkrain, pkrr, rtp, rx, sumrain, vv, xk1, xk2,&
       &xkp1, xkp2
    integer :: itime, k, pt

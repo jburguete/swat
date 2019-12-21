@@ -1,8 +1,11 @@
-subroutine schedule_ops
+!> @file schedule_ops.f90
+!> file containing the subroutine schedule_ops
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls the simulation of the land phase of the
-!!    hydrologic cycle
+!> this subroutine controls the simulation of the land phase of the
+!> hydrologic cycle
+subroutine schedule_ops
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
@@ -20,7 +23,13 @@ subroutine schedule_ops
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    b
 !!    j           |none          |HRU number
+!!    jj          |none          |counter
+!!    sin_sl
+!!    tch
+!!    tover
+!!    xm
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -32,11 +41,10 @@ subroutine schedule_ops
    use parm
    implicit none
 
-   integer :: j, plant_no, jj
    real*8 :: b, sin_sl, tch, tover, xm
+   integer :: j, jj
  
    j = ihru
-
 
    iops = ioper(j)
 
@@ -50,9 +58,9 @@ subroutine schedule_ops
          xm = 0.6 * (1. - Exp(-35.835 * hru_slp(j)))
          sin_sl = Sin(Atan(hru_slp(j)))
          usle_ls(j) = (terr_sl(iops,j)/22.128) ** xm * (65.41 *&
-         &sin_sl * sin_sl + 4.56 * sin_sl + .065)
+            &sin_sl * sin_sl + 4.56 * sin_sl + .065)
          usle_mult(j) = sol_rock(1,j) * usle_k(j) *&
-         &terr_p(iops,j) * usle_ls(j) * 11.8
+            &terr_p(iops,j) * usle_ls(j) * 11.8
          if (terr_cn(iops,j) > 1.e-6) then
             call curno(terr_cn(iops,j),j)
          end if
@@ -81,7 +89,7 @@ subroutine schedule_ops
 
        case (3)
          usle_mult(j) = usle_mult(j) * cont_p(iops,j) /&
-         &usle_p(j)
+            &usle_p(j)
          call curno(cont_cn(iops,j),j)
 
        case (4) !! filter strip
@@ -108,7 +116,7 @@ subroutine schedule_ops
          call curno(strip_cn(iops,j),j)
          usle_mult(j) = usle_mult(j) * strip_p(iops,j) / usle_p(j)
          tover = .0556 * (slsubbsn(j) * strip_n(iops,j)) ** .6 /&
-         &hru_slp(j) ** .3
+            &hru_slp(j) ** .3
 
          tconc(j) = tconc(j) + tover - t_ov(j)
 
@@ -130,7 +138,7 @@ subroutine schedule_ops
          grwat_spcon(j) = gwatspcon(iops,j)
 !! Calculate time of concentration for waterway similar to hydroinit.f
          tch = .62 * grwat_l(j) * grwat_n(j) ** .6 /&
-         &(hru_km(j) ** .125 * grwat_s(j) ** .375)
+            &(hru_km(j) ** .125 * grwat_s(j) ** .375)
          tc_gwat(j) = tch + t_ov(j)
 !! Set counter
          !k = mhru + ngrwat(j) ! not used
@@ -141,9 +149,9 @@ subroutine schedule_ops
          call ttcoef_wway
 
        case (8)
-         plant_no = Int(cropno_upd(iops,j))
-         blai(plant_no) = laimx_upd(iops,j)
-         hvsti(plant_no) = hi_upd(iops,j)
+         jj = Int(cropno_upd(iops,j))
+         blai(jj) = laimx_upd(iops,j)
+         hvsti(jj) = hi_upd(iops,j)
 
        case (9)
          !! Implement Residue Management MJW
