@@ -1,7 +1,10 @@
-subroutine tmeas
+!> @file tmeas.f90
+!> file containing the subroutine tmeas
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads in temperature data and assigns it to the HRUs
+!> this subroutine reads in temperature data and assigns it to the HRUs
+subroutine tmeas
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -52,16 +55,16 @@ subroutine tmeas
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT subroutines: tgen, weatgn
+!!    SWAT subroutines: weatgn, tgen
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: k, kk1, kk2, iyp, idap, l, inum3sprev
-   real*8 :: tmxbsb, tmnbsb
-   real*8, dimension (mrg) :: txmeas, tnmeas
+   real*8, dimension (mrg) :: tnmeas, txmeas
+   real*8 :: tmnbsb, tmxbsb
+   integer :: idap, inum3sprev, iyp, k, kk1, kk2, l
 
    !! initialize variables for the day
    txmeas = 0.

@@ -121,13 +121,7 @@ subroutine sub_subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max
-!!    SWAT: varinit, albedo, solt, surface, percmain, etpot, etact, fert
-!!    SWAT: confert, graze, plantmod, nminrl, nitvol, pminrl, gwmod, apply
-!!    SWAT: washp, decay, pestlch, enrsb, pesty, orgn, psed, nrain, nlch
-!!    SWAT: solp, subwq, bacteria, urban, pothole, latsed, surfstor
-!!    SWAT: substor, wetland, hrupond, irrsub, autoirr, watuse, watbal
-!!    SWAT: sumv, virtual
+!!    Intrinsic: Max, Min, Sum
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm

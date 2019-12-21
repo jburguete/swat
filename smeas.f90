@@ -1,8 +1,11 @@
-subroutine smeas
+!> @file smeas.f90
+!> file containing the subroutine smeas
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads in daily solar radiation data and assigns the
-!!    values to the proper HRUs
+!> this subroutine reads in daily solar radiation data and assigns the
+!> values to the proper HRUs
+subroutine smeas
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -53,13 +56,12 @@ subroutine smeas
    use parm
    implicit none
 
-   integer :: k, iyp, idap, l, inum3sprev
-   real*8 :: rabsb
    real*8, dimension (mrg) :: slrmeas
+   real*8 :: rabsb
+   integer :: idap, inum3sprev, iyp, k, l
 
    !! initialize variables for the day
    slrmeas = 0.
-
 
    !! read solar radiation data from file
    if (ifirsts == 0) then
@@ -96,8 +98,6 @@ subroutine smeas
    end do
 
    return
-! 5200 format (7x,300f8.3)
-! 5300 format (i4,i3,300f8.3)
 5200 format (7x,1800f8.3)
 5300 format (i4,i3,1800f8.3)
 end

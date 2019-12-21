@@ -1,8 +1,13 @@
-real*8 function ee(tk) result (r_ee)
+!> @file ee.f90
+!> file containing the subroutine ee
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This function calculates saturation vapor pressure at a given
-!!    air temperature.
+!> this function calculates saturation vapor pressure at a given
+!> air temperature
+!> @param[in] tk mean air temperature (deg C)
+!> @return saturation vapor pressure (kPa)
+real*8 function ee(tk) result (r_ee)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

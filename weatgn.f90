@@ -1,12 +1,17 @@
-subroutine weatgn(j)
+!> @file weatgn.f90
+!> file containing the subroutine weatgn
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine generates weather parameters used to simulate the impact
-!!    of precipitation on the other climatic processes
+!> this subroutine generates weather parameters used to simulate the impact
+!> of precipitation on the other climatic processes
+!> @param[in] j HRU number
+subroutine weatgn(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    rnd2(:)     |none          |random number between 0.0 and 1.0
 !!    rnd8(:)     |none          |random number between 0.0 and 1.0
 !!    rnd9(:)     |none          |random number between 0.0 and 1.0
@@ -37,7 +42,6 @@ subroutine weatgn(j)
 !!                               |and radiation have the desired serial-
 !!                               |correlation and cross-correlation coefficients
 !!    e(:)        |none          |3 x 1 matrix of independent random components
-!!    j           |none          |HRU number
 !!    l           |none          |counter
 !!    n           |none          |counter
 !!    v2          |none          |random number between 0.0 and 1.0
@@ -47,6 +51,7 @@ subroutine weatgn(j)
 
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Reshape
 !!    SWAT: Aunif, Dstn1
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -55,19 +60,16 @@ subroutine weatgn(j)
    implicit none
 
    integer, intent (in) :: j
-   integer, dimension (2) :: zshape
-   integer :: n, l
+   integer, dimension (2), parameter :: zshape = (/3, 3/)
    real*8, dimension (3,3) :: a, b
-   real*8, dimension (3) :: xx, e
+   real*8, dimension (3) :: e, xx
    real*8 :: v2
+   integer :: l, n
 
-   zshape = (/3, 3/)
    a = Reshape((/.567, .253, -.006, .086, .504, -.039, -.002, -.050,&
-   &.244/), zshape)
-   b = Reshape((/.781, .328, .238, 0., .637, -.341, 0., 0., .873/),&
-   &zshape)
+      &.244/), zshape)
+   b = Reshape((/.781, .328, .238, 0., .637, -.341, 0., 0., .873/), zshape)
    xx = 0.
-   e = 0.
 
 !!    set random number array values
    v2 = Aunif(rndseed(idg(8),j))

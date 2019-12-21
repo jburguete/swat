@@ -1,7 +1,11 @@
-subroutine slrgen(j)
+!> @file slrgen.f90
+!> file containing the subroutine slrgen
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine generates solar radiation
+!> this subroutine generates solar radiation
+!> @param[in] j HRU number
+subroutine slrgen(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -9,7 +13,7 @@ subroutine slrgen(j)
 !!    hru_rmx(:)  |MJ/m^2        |maximum possible radiation for the day in HRU
 !!    j           |none          |HRU number
 !!    i_mo        |none          |month being simulated
-!!    pr_w3(:,:) |none          |proportion of wet days in a month
+!!    pr_w3(:,:)  |none          |proportion of wet days in a month
 !!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
 !!    wgncur(3,:) |none          |parameter which predicts impact of precip on
@@ -25,6 +29,7 @@ subroutine slrgen(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k           |none          |counter
 !!    rav         |MJ/m^2        |modified monthly average solar radiation
 !!    rx          |none          |variable to hold intermediate calculation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -36,10 +41,11 @@ subroutine slrgen(j)
 
    integer, intent (in) :: j
 
-   real*8 :: rx, rav
+   real*8 :: rav, rx
+   integer :: k
 
-
-   rav = solarav(i_mo,hru_sub(j)) / (1. - 0.5 * pr_w3(i_mo,hru_sub(j)))
+   k = hru_sub(j)
+   rav = solarav(i_mo,k) / (1. - 0.5 * pr_w3(i_mo,k))
    if (subp(j) > 0.0) rav = 0.5 * rav
    rx = hru_rmx(j) - rav
    hru_ra(j) = rav + wgncur(3,j) * rx / 4.

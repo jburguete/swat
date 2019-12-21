@@ -144,7 +144,7 @@ subroutine readops
 
        case (10) !! Generic Conservation Practice  mjw
          !! Get user defined removal eff and use these  mjw
-         ro_bmp_flag(j,k) = mgt(1)  !! Flag to turn on or off user BMP
+         ro_bmp_flag(j,k) = Int(mgt(1)) !! Flag to turn on or off user BMP
 
          !! surface runoff removal efficiency
          ro_bmp_flo(j,k) = mgt(3)    !! Flow

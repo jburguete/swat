@@ -1,8 +1,12 @@
-subroutine clgen(j)
+!> @file clgen.f90
+!> file containing the subroutine clgen
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the daylength, distribution of
-!!    radiation throughout the day and maximum radiation for day
+!> this subroutine calculates the daylength, distribution of
+!> radiation throughout the day and maximum radiation for day
+!> @param[in] j HRU number
+subroutine clgen(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -41,12 +45,13 @@ subroutine clgen(j)
 !!    dd          |none          |relative distance of the earth from the sun
 !!    h           |none          |Acos(-Tan(sd)*Tan(lat))
 !!    ii          |none          |counter
+!!    k           |none          |counter
 !!    sd          |radians       |solar declination: latitude at which the sun
 !!                               |is directly overhead at noon
 !!    totrho      |none          |sum of cosrho values for all hours of day
+!!    w           |none          |hour angle
 !!    yc          |none          |Cos(sd)*Cos(lat)
 !!    ys          |none          |Sin(sd)*Sin(lat)
-!!    w           |none          |hour angle
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
@@ -59,8 +64,11 @@ subroutine clgen(j)
    implicit none
 
    integer, intent (in) :: j
-   integer :: ii
-   real*8 :: sd, ch, h, ys, yc, dd, w, cosrho(nstep), totrho
+   real*8, dimension(nstep) :: cosrho
+   real*8 :: ch, dd, h, sd, totrho, w, yc, ys
+   integer :: ii, k
+
+   k = hru_sub(j)
 
    !! Reset prior day category for precipitation
    if (subp(j) >= 0.1) then
@@ -68,7 +76,6 @@ subroutine clgen(j)
    else
       npcp(j) = 1
    end if
-
 
    !! Calculate Daylength !!
    !! calculate solar declination: equation 2.1.2 in SWAT manual
@@ -84,7 +91,7 @@ subroutine clgen(j)
    !! to 15 deg/hr or 0.2618 rad/hr and 2/0.2618 = 7.6374
    !! equation 2.1.6 in SWAT manual
 
-   ch = -latsin(hru_sub(j)) * Tan(sd) / latcos(hru_sub(j))
+   ch = -latsin(k) * Tan(sd) / latcos(k)
    if (ch > 1.) then    !! ch will be >= 1. if latitude exceeds +/- 66.5 deg in winter
       h = 0.
    elseif (ch >= -1.) then
@@ -96,8 +103,8 @@ subroutine clgen(j)
 
    !! Calculate Potential (maximum) Radiation !!
    !! equation 2.2.7 in SWAT manual
-   ys = latsin(hru_sub(j)) * Sin(sd)
-   yc = latcos(hru_sub(j)) * Cos(sd)
+   ys = latsin(k) * Sin(sd)
+   yc = latcos(k) * Cos(sd)
    hru_rmx(j) = 30. * dd * (h * ys + yc * Sin(h))
 
    !! Calculate fraction of radiation recieved during each hour in day

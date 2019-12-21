@@ -176,6 +176,7 @@ subroutine soil_chem(ii)
          jj = npno(j)
          if (jj > 0) then
             solpst = sol_pst(j,ii,1)  !!concentration of pesticide in soil
+            xx = 0.
             do n = 1, nly
                dg = (sol_z(n,ii) - xx)
                xx = sol_z(n,ii)

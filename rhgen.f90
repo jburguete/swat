@@ -1,8 +1,11 @@
-subroutine rhgen(j)
+!> @file rhgen.f90
+!> file containing the subroutine rhgen
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine generates weather relative humidity, solar
-!!    radiation, and wind speed.
+!> this subroutine generates weather relative humidity, solar
+!> radiation, and wind speed.
+subroutine rhgen(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -56,8 +59,7 @@ subroutine rhgen(j)
 
    integer, intent (in) :: j
 
-   real*8 :: vv, rhm, yy, uplm, blm
-   real*8 :: rhmo, tmpmean
+   real*8 :: blm, rhm, rhmo, tmpmean, uplm, vv, yy
 
    !! Climate Paramenters required for Penman-Monteith !!
 

@@ -1,16 +1,20 @@
-subroutine tgen(j)
+!> @file tgen.f90
+!> file containing the subroutine tgen
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine generates temperature data when the user chooses to
-!!    simulate or when data is missing for particular days in the
-!!    weather file
+!> this subroutine generates temperature data when the user chooses to
+!> simulate or when data is missing for particular days in the
+!> weather file
+!> @param[in] j HRU number
+subroutine tgen(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
 !!    i_mo        |none          |month being simulated
-!!    pr_w3(:,:) |none          |proportion of wet days in month
+!!    pr_w3(:,:)  |none          |proportion of wet days in month
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
 !!    tmpmx(:,:)  |deg C         |avg monthly maximum air temperature
@@ -41,7 +45,6 @@ subroutine tgen(j)
 !!    txxm        |deg C         |modified monthly maximum temperature
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: abs
 
@@ -52,7 +55,7 @@ subroutine tgen(j)
 
    integer, intent (in) :: j
 
-   real*8 :: tmxg, tmng, tamp, txxm
+   real*8 :: tamp, tmng, tmxg, txxm
 
 
    tamp = (tmpmx(i_mo,hru_sub(j)) - tmpmn(i_mo,hru_sub(j))) / 2

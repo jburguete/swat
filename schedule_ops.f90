@@ -24,7 +24,8 @@ subroutine schedule_ops
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-
+!!    INTRINSIC: Exp, Sin, Atan, Int
+!!    SWAT: curno, ttcoef_wway
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -140,7 +141,7 @@ subroutine schedule_ops
          call ttcoef_wway
 
        case (8)
-         plant_no = cropno_upd(iops,j)
+         plant_no = Int(cropno_upd(iops,j))
          blai(plant_no) = laimx_upd(iops,j)
          hvsti(plant_no) = hi_upd(iops,j)
 

@@ -56,7 +56,7 @@ subroutine conapply
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: Erfc
+!!    INTRINSIC: Int, Erfc
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -81,9 +81,9 @@ subroutine conapply
       iday_pest(j) = 1
 
       !! initialize local variables
-      kk = cpst_id(j)
+      kk = Int(cpst_id(j))
       k = nope(kk)
-      !xx = cpst_kg(j) ! overwritten by a following line
+      xx = cpst_kg(j)
       jj = inum1
 
       !! calculate amount of pesticide drifting onto main channel in subbasin

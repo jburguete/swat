@@ -24,8 +24,8 @@ subroutine bmp_sand_filter(kk,flw,sed)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Min
-!!    SWAT: pipeflow coded in bmp_sed_pond.f90
+!!    Intrinsic: Exp, Log, Max, Abs, Int
+!!    SWAT: lognormal
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -351,7 +351,7 @@ subroutine bmp_sand_filter(kk,flw,sed)
    ft_qin(sb,kk) = qin(nstep)
    ft_qout(sb,kk) = qout(nstep)
    ft_sedpnd(sb,kk) = sedpnd
-   ft_fc(sb,kk) = fc(nstep)
+   ft_fc(sb,kk) = Int(fc(nstep))
 
    return
 end subroutine bmp_sand_filter

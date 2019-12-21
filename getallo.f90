@@ -93,7 +93,7 @@ subroutine getallo
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
+!!    Intrinsic: Int, Max, Sum
 !!    SWAT: caps, hruallo
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -191,7 +191,7 @@ subroutine getallo
    if (dthy <= 0) then
       nstep = 1
    else
-      nstep = 24 / dthy
+      nstep = Int(24 / dthy)
    end if
    nstep = nstep + 1
 

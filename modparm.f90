@@ -289,7 +289,11 @@ module parm
 !> average amount of phosphorus initially in the organic P pool in watershed
 !> soil (kg P/ha)
    real*8 :: basorgpi
-   real*8 :: peakr, pndsedin, sw_excess, albday
+   real*8 :: peakr !< peak runoff rate (m^3/s)
+!> albedo, the fraction of the solar radiation reflected at the soil surface
+!> back into space (none)
+   real*8 :: albday
+   real*8 :: pndsedin, sw_excess
 !> Snow pack temperature lag factor (0-1)\n
 !> 1 = no lag (snow pack temp=current day air temp) as the lag factor goes to
 !> zero, the snow pack's temperature will be less influenced by the current
@@ -297,14 +301,18 @@ module parm
    real*8 :: timp
    real*8 :: wtabelo, tilep, wt_shall
    real*8 :: sq_rto
-   real*8 :: tloss, inflpcp, snomlt, snofall, fixn, qtile, crk, latlyr
+   real*8 :: qtile !< drainage tile flow in soil layer for the day (mm H2O)
+!> amount of precipitation that infiltrates into soil (enters soil) (mm H2O)
+   real*8 :: inflpcp
+   real*8 :: tloss, snomlt, snofall, fixn, crk, latlyr
    real*8 :: pndloss, wetloss,potloss, lpndloss, lwetloss
    real*8 :: sedrch, fertn, sol_rd, cfertn, cfertp, sepday, bioday
    real*8 :: sepcrk, sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
    real*8 :: fertorgp
 !> growth factor for persistent bacteria adsorbed to soil particles (1/day)
    real*8 :: wgps
-   real*8 :: fertp, grazn, grazp, soxy, qdfr, sdti, rtwtr, ressa
+   real*8 :: qdfr !< fraction of water yield that is surface runoff (none)
+   real*8 :: fertp, grazn, grazp, soxy, sdti, rtwtr, ressa
 !> die-off factor for less persistent bacteria absorbed to soil particles
 !> (1/day)
    real*8 :: wdlps
@@ -338,7 +346,10 @@ module parm
    real*8 :: bactkdq
 !> die-off factor for persistent bacteria on foliage (1/day)
    real*8 :: wdpf
-   real*8 :: uno3d, canev, usle, rcn, surlag_bsn, precipday
+!> amount of water evaporated from canopy storage (mm H2O)
+   real*8 :: canev
+   real*8 :: precipday !< precipitation for the day in HRU (mm H2O)
+   real*8 :: uno3d, usle, rcn, surlag_bsn
    real*8 :: thbact !< temperature adjustment factor for bacteria die-off/growth
 !> overall rate change for less persistent bacteria in soil solution (1/day)
    real*8 :: wlpq20
@@ -368,7 +379,11 @@ module parm
    real*8 :: evrch
 !> die-off factor for less persistent bacteria on foliage (1/day)
    real*8 :: wdlpf
-   real*8 :: bactrolp, bactsedlp, pet_day, ep_day
+!> actual amount of transpiration that occurs on day in HRU (mm H2O)
+   real*8 :: ep_day
+!> potential evapotranspiration on current day in HRU (mm H2O)
+   real*8 :: pet_day
+   real*8 :: bactrolp, bactsedlp
 !> peak rate adjustment factor in the subbasin. Used in the MUSLE equation to
 !> account for impact of peak flow on erosion (none)
    real*8 :: adj_pkr
@@ -394,7 +409,9 @@ module parm
 !> increases
    real*8 :: p_updis
    real*8 :: snoev, sno3up, reactw
-   real*8 :: sdiegropq, sdiegrolpq, sdiegrops, sdiegrolps, es_day
+!> actual amount of evaporation (soil et) that occurs on day in HRU (mm H2O)
+   real*8 :: es_day
+   real*8 :: sdiegropq, sdiegrolpq, sdiegrops, sdiegrolps
 !> wash off fraction for less persistent bacteria on foliage during a rainfall
 !> event
    real*8 :: wof_lp
@@ -402,7 +419,9 @@ module parm
    real*8 :: sbactlchp, sbactlchlp, psp_bsn, rchwtr, resuspst, setlpst
    real*8 :: bsprev, bssprev, spadyo, spadyev, spadysp, spadyrfv
    real*8 :: spadyosp
-   real*8 :: qday, usle_ei, al5, pndsedc, no3pcp, rcharea, volatpst
+!> surface runoff loading to main channel from HRU for day (mm H2O)
+   real*8 :: qday
+   real*8 :: usle_ei, al5, pndsedc, no3pcp, rcharea, volatpst
 !> water uptake distribution parameter. This parameter controls the amount of
 !> water removed from the different soil layers by the plant. In particular,
 !> this parameter allows the amount of water removed from the surface layer via
@@ -474,7 +493,10 @@ module parm
    real*8 :: lambda2
    real*8 :: mumax !< maximum specific algal growth rate (1/day or 1/hr)
    real*8 :: p_n !< algal preference factor for ammonia
-   real*8 :: rnum1, autop, auton, etday, hmntl, rwntl, hmptl, rmn2tl
+   real*8 :: rnum1 !< variable to hold value for rnum1s(:) (none)
+!> actual evapotranspiration occuring on day in HRU (mm H2O)
+   real*8 :: etday
+   real*8 :: autop, auton, hmntl, rwntl, hmptl, rmn2tl
    real*8 :: rmptl,wdntl,cmn_bsn,rmp1tl,roctl,gwseep,revapday,reswtr
 !> die-off factor for less persistent bacteria in streams (1/day)
    real*8 :: wdlprch
@@ -564,15 +586,15 @@ module parm
 !> maximum number of crops/landcover in database file (crop.dat)
    integer :: mcrdb
    integer :: mfcst !< maximum number of forecast stations
-   integer :: mfdb !< max number of fertilizers in fert.dat
+   integer :: mfdb !< maximum number of fertilizers in fert.dat
    integer :: mhru !< maximum number of HRUs in watershed
    integer :: mhyd !< maximum number of hydrograph nodes
-   integer :: mpdb !< max number of pesticides in pest.dat
-   integer :: mrg !< max number of rainfall/temp gages
+   integer :: mpdb !< maximum number of pesticides in pest.dat
+   integer :: mrg !< maximum number of rainfall/temp gages (none)
    integer :: mcut !< maximum number of cuttings per year
    integer :: mgr !< maximum number of grazings per year
-   integer :: mnr !< max number of years of rotation
-   integer :: myr !< max number of years of simulation
+   integer :: mnr !< maximum number of years of rotation
+   integer :: myr !< maximum number of years of simulation
 !> subbasin water quality code\n
 !> 0 do not calculate algae/CBOD
 !> 1 calculate algae/CBOD drainmod tile equations
@@ -597,9 +619,14 @@ module parm
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: wndsim
-!> HRU number (none)
-   integer :: ihru
-   integer :: icode, ihout, inum1, inum2, inum3, inum4
+   integer :: ihru !< HRU number (none)
+   integer :: icode !< variable to hold value for icodes(:) (none)
+   integer :: ihout !< variable to hold value for ihouts(:) (none)
+!> variable to hold value for inum1s(:) (subbasin number) (none)
+   integer :: inum1
+   integer :: inum2 !< variable to hold value for inum2s(:) (none)
+   integer :: inum3 !< variable to hold value for inum3s(:) (none)
+   integer :: inum4 !< variable to hold value for inum4s(:) (none)
 !> icfac = 0 for C-factor calculation using Cmin (as described in manual)\n
 !> = 1 for new C-factor calculation from RUSLE (no minimum needed)
    integer :: icfac
@@ -692,12 +719,24 @@ module parm
 !> 0  leap year\n
 !> 1  regular year
    integer :: leapyr
-   integer :: id1 !< first day of simulation in year (julian date)
+   integer :: id1 !< first day of simulation in current year (julian date)
    integer :: mo_chk
-   integer :: nhtot !< number of relative humidity records in file
-   integer :: nstot !< number of solar radiation records in file
-   integer :: nwtot !< number of wind speed records in file
-   integer :: ifirsts, ifirsth, ifirstw, icst
+   integer :: nhtot !< total number of relative humidity records in file
+   integer :: nstot !< total number of solar radiation records in file (none)
+   integer :: nwtot !< total number of wind speed records in file
+!> solar radiation data search code (none)\n
+!> 0 first day of solar radiation data located in file\n
+!> 1 first day of solar radiation data not located in file
+   integer :: ifirsts
+!> relative humidity data search code (none)\n
+!> 0 first day of relative humidity data located in file\n
+!> 1 first day of relative humidity data not located in file
+   integer :: ifirsth
+!> wind speed data search code (none)\n
+!> 0 first day of wind speed data located in file\n
+!> 1 first day of wind speed data not located in file
+   integer :: ifirstw
+   integer :: icst
    integer :: ilog !< streamflow print code
    integer :: itotr !< number of output variables printed (output.rch)
    integer :: iyr !< beginning year of simulation (year)
@@ -741,7 +780,7 @@ module parm
 !> 1: generate new numbers in every simulation
    integer :: igen
    integer :: iprint !< print code: 0=monthly, 1=daily, 2=annual
-   integer :: iida !< day being simulated (current julian day) (julian date)
+   integer :: iida !< day being simulated (current julian date) (julian date)
 !> CN method flag (for testing alternative method):\n
 !> 0 use traditional SWAT method which bases CN on soil moisture\n
 !> 1 use alternative method which bases CN on plant ET
@@ -946,7 +985,11 @@ module parm
    real*8, dimension (:,:), allocatable :: sub_smfmn
    real*8, dimension (:,:,:), allocatable :: hrupstd,hrupsta,hrupstm
    real*8, dimension (:,:,:), allocatable :: hrupsty
-   integer, dimension (:), allocatable :: ifirstt,ifirstpcp
+!> temperature data search code (none)\n
+!> 0 first day of temperature data located in file\n
+!> 1 first day of temperature data not located in file
+   integer, dimension (:), allocatable :: ifirstt
+   integer, dimension (:), allocatable :: ifirstpcp
 !> elevation of precipitation gage station (m)
    integer, dimension (:), allocatable :: elevp
 !> elevation of temperature gage station (m)
@@ -1288,6 +1331,7 @@ module parm
    real*8, dimension (:,:), allocatable :: amp_r
 !> average daily solar radiation for the month (MJ/m^2/day)
    real*8, dimension (:,:), allocatable :: solarav
+!> standard deviation for avg monthly maximum air temperature (deg C)
    real*8, dimension (:,:), allocatable :: tmpstdmx
 !> normalization coefficient for precipitation generated from skewed
 !> distribution (none)
@@ -1296,6 +1340,7 @@ module parm
    real*8, dimension (:,:), allocatable :: tmpmn
 !> avg monthly maximum air temperature (deg C)
    real*8, dimension (:,:), allocatable :: tmpmx
+!> standard deviation for avg monthly minimum air temperature (deg C)
    real*8, dimension (:,:), allocatable :: tmpstdmn
    real*8, dimension (:,:), allocatable :: otmpstdmn,otmpmn,otmpmx
    real*8, dimension (:,:), allocatable :: otmpstdmx, ch_erodmo
@@ -1319,11 +1364,13 @@ module parm
 !> number of HRUs in subbasin (none)
    integer, dimension (:), allocatable :: hrutot
    integer, dimension (:), allocatable :: hru1
-!> subbasin relative humidity data code (none)
+!> HRU relative humidity data code (gage # for relative humidity data used in
+!> as HRU) (none)
    integer, dimension (:), allocatable :: ihgage
-!> subbasin radiation gage data code (none)
+!> HRU solar radiation data code (record # for solar radiation used in HRU)
+!> (none)
    integer, dimension (:), allocatable :: isgage
-!> subbasin wind speed gage data code (none)
+!> HRU wind speed gage data code (gage # for wind speed data used in HRU) (none)
    integer, dimension (:), allocatable :: iwgage
 !> GIS code printed to output files (output.sub) (none
    integer, dimension (:), allocatable :: subgis
@@ -1780,7 +1827,9 @@ module parm
 !> 0,1,3,5,9: not used\n
 !> 2: Fraction of flow in channel\n
 !> 4: amount of water transferred (as defined by INUM4S)\n
-!> 7,8,10,11: drainage area in square kilometers associated with the record file
+!> 7,8,10,11: drainage area in square kilometers associated with the record
+!> file\n
+!> 12: rearation coefficient
    real*8, dimension (:), allocatable :: rnum1s
 !> total drainage area of hydrograph in square kilometers (km^2)
    real*8, dimension (:), allocatable :: hyd_dakm
@@ -1828,7 +1877,8 @@ module parm
 !> 9,14:print frequency (0=daily, 1=hourly)
    integer, dimension (:), allocatable :: inum2s
 !> For ICODES equal to (none)\n
-!> 0,1,2,3,5,7,8,10,11: not used\n
+!> 0,1,5,7,8,10,11: not used\n
+!> 2,3: subbasin number
 !> 4: destination number. Reach or reservoir receiving water\n
 !> 9: print format (0=normal, fixed format; 1=txt format for AV interface,
 !> recday)
@@ -1869,8 +1919,9 @@ module parm
 !> average daily outflow to main channel from tile flow if drainage tiles are
 !> installed in pothole (needed only if current HRU is IPOT) (m^3/s)
    real*8, dimension (:), allocatable :: pot_tile
-!> initial volume of water stored in the depression/impounded area (read in as
-!> mm and converted to m^3) (needed only if current HRU is IPOT) (mm)
+!> initial or current volume of water stored in the depression/impounded area
+!> (read in as mm and converted to m^3) (needed only if current HRU is IPOT)
+!> (mm or m^3 H20)
    real*8, dimension (:), allocatable :: pot_vol
    real*8, dimension (:), allocatable :: potsa
 !> maximum volume of water stored in the depression/impounded area (read in as
@@ -1917,8 +1968,7 @@ module parm
    real*8, dimension (:), allocatable :: usle_ls
 !> filter strip width for bacteria transport (m)
    real*8, dimension (:), allocatable :: filterw
-!> fraction of plant heat units accumulated continuous fertilization is
-!> initialized(none)
+!> fraction of plant heat units accumulated (none)
    real*8, dimension (:), allocatable :: phuacc
 !> sum of all tillage mixing efficiencies for HRU operation (none)
    real*8, dimension (:), allocatable :: sumix
@@ -2055,7 +2105,10 @@ module parm
    real*8, dimension (:), allocatable :: bp1
 !> 2nd shape parameter for the pond surface area equation (none)
    real*8, dimension (:), allocatable :: bp2
-   real*8, dimension (:), allocatable :: smx,sci
+!> retention coefficient for CN method based on plant ET (none)
+   real*8, dimension (:), allocatable :: sci
+!> retention coefficient for CN method based on soil moisture (none)
+   real*8, dimension (:), allocatable :: smx
 !> 1st shape parameter for the wetland surface area equation (none)
    real*8, dimension (:), allocatable :: bw1
 !> 2nd shape parameter for the wetland surface area equation (none)
@@ -2093,7 +2146,7 @@ module parm
    real*8, dimension (:), allocatable :: usle_k
 !> time of concentration for HRU (hour)
    real*8, dimension (:), allocatable :: tconc
-!> maximum solar radiation for the day in HRU (MJ/m^2)
+!> maximum possible solar radiation for the day in HRU (MJ/m^2)
    real*8, dimension (:), allocatable :: hru_rmx
    real*8, dimension (:), allocatable :: rwt,olai
    real*8, dimension (:), allocatable :: usle_cfac,usle_eifac
@@ -2150,7 +2203,7 @@ module parm
    integer, dimension (:), allocatable :: imp_trig
    integer, dimension (:), allocatable :: fert_days,irr_sca
 !> land cover/crop identification code for first crop grown in HRU (the only
-!> crop if there is no rotation) (none)
+!> crop if there is no rotation) (from crop.dat) (none)
    integer, dimension (:), allocatable :: idplt
    integer, dimension (:), allocatable :: pest_days, wstrs_id
    real*8, dimension (:,:), allocatable :: bio_aahv
@@ -2164,7 +2217,9 @@ module parm
 !> zone to reach the shallow aquifer (days)
    real*8, dimension (:), allocatable :: delay
    real*8, dimension (:), allocatable :: gwht !< groundwater height (m)
-   real*8, dimension (:), allocatable :: gw_q,pnd_solpg
+!> groundwater contribution to streamflow from HRU on current day (mm H2O)
+   real*8, dimension (:), allocatable :: gw_q
+   real*8, dimension (:), allocatable :: pnd_solpg
 !> alpha factor for groundwater recession curve (1/days)
    real*8, dimension (:), allocatable :: alpha_bf
 !> \f$\exp(-alpha_bf)\f$ (none)
@@ -2224,8 +2279,8 @@ module parm
 !> fraction of surface runoff within the subbasin which takes 1 day or less to
 !> reach the subbasin outlet (none)
    real*8, dimension (:), allocatable :: brt
+!> day length (hours)
    real*8, dimension (:), allocatable :: dayl
-!    Drainmod tile equations  01/2006
 !> static maximum depressional storage; read from .sdr (mm)
    real*8, dimension (:), allocatable :: sstmaxd
    real*8, dimension (:), allocatable :: re !< effective radius of drains (mm)
@@ -2241,15 +2296,29 @@ module parm
    real*8, dimension (:), allocatable :: stmaxd
 !> random number between 0.0 and 1.0 (none)
    real*8, dimension (:), allocatable :: rnd3
-   real*8, dimension (:), allocatable :: twash,rnd2,sol_cnsw,doxq
-   real*8, dimension (:), allocatable :: rnd8,rnd9,percn,sol_sumwp
-   real*8, dimension (:), allocatable :: tauton,tautop,cbodu,chl_a,qdr
+!> random number between 0.0 and 1.0 (none)
+   real*8, dimension (:), allocatable :: rnd2
+   real*8, dimension (:), allocatable :: twash,sol_cnsw,doxq
+!> random number between 0.0 and 1.0 (none)
+   real*8, dimension (:), allocatable :: rnd8
+!> random number between 0.0 and 1.0 (none)
+   real*8, dimension (:), allocatable :: rnd9
+   real*8, dimension (:), allocatable :: percn,sol_sumwp
+!> total amount of water entering main channel for day from HRU (mm H2O)
+   real*8, dimension (:), allocatable :: qdr
+   real*8, dimension (:), allocatable :: tauton,tautop,cbodu,chl_a
    real*8, dimension (:), allocatable :: tfertn,tfertp,tgrazn,tgrazp
-   real*8, dimension (:), allocatable :: latno3,latq,minpgw,no3gw,nplnt
+!> total lateral flow in soil profile for the day in HRU (mm H2O)
+   real*8, dimension (:), allocatable :: latq
+   real*8, dimension (:), allocatable :: latno3,minpgw,no3gw,nplnt
    real*8, dimension (:), allocatable :: tileq, tileno3
    real*8, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
-   real*8, dimension (:), allocatable :: sedorgp,sedyld,sepbtm,strsn
-   real*8, dimension (:), allocatable :: strsp,strstmp,surfq,surqno3
+!> soil loss for day in HRU (metric tons)
+   real*8, dimension (:), allocatable :: sedyld
+   real*8, dimension (:), allocatable :: sedorgp,sepbtm,strsn
+!> surface runoff generated on day in HRU (mm H2O)
+   real*8, dimension (:), allocatable :: surfq
+   real*8, dimension (:), allocatable :: strsp,strstmp,surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
 !> fraction of total watershed area contained in HRU (km2/km2)
    real*8, dimension (:), allocatable :: hru_dafr
@@ -2333,7 +2402,18 @@ module parm
    real*8, dimension (:), allocatable :: psetlp1
 !> phosphorus settling rate for 2nd seaso (m/day)n
    real*8, dimension (:), allocatable :: psetlp2
-   real*8, dimension (:,:), allocatable :: wgncur,wgnold,wrt
+!> previous value of wgncur(:,:) (none)
+   real*8, dimension (:,:), allocatable :: wgnold
+!> parameter to predict the impact of precip on other weather attributes
+!> (none)\n
+!> wgncur(1,:) parameter which predicts impact of precip on daily maximum air
+!> temperature\n
+!> wgncur(2,:) parameter which predicts impact of precip on daily minimum air
+!> temperature\n
+!> wgncur(3,:) parameter which predicts impact of precip on daily solar
+!> radiation
+   real*8, dimension (:,:), allocatable :: wgncur
+   real*8, dimension (:,:), allocatable :: wrt
 !> pesticide enrichment ratio (none)
    real*8, dimension (:,:), allocatable :: pst_enr
    real*8, dimension (:,:), allocatable :: zdb,pst_surq
@@ -2421,6 +2501,7 @@ module parm
    integer, dimension (:), allocatable :: nrot
 !> sequence number of fertilizer application within the year (none)
    integer, dimension (:), allocatable :: nfert
+!> sequence number of year in rotation (none)
    integer, dimension (:), allocatable :: nro
 !> land cover status code (none). This code informs the model whether or not a
 !> land cover is growing at the beginning of the simulation\n
@@ -2503,8 +2584,8 @@ module parm
    integer, dimension (:), allocatable :: ncpest,icpst,ndcpst
    integer, dimension (:), allocatable :: iday_pest, irr_flag
    integer, dimension (:), allocatable :: irra_flag
-!> random number generator seed. The seeds in the array are used to generate
-!> random numbers for the following purposes (none):\n
+!> random number generator seeds array. The seeds in the array are used to
+!> generate random numbers for the following purposes (none):\n
 !> (1) wet/dry day probability\n
 !> (2) solar radiation\n
 !> (3) precipitation\n

@@ -560,8 +560,11 @@ subroutine writeaa
    write(173,'(1/,20x,a5,a7)') 'HRU',' Failyr'
    do j=1,nhru
       if (isep_opt(j)/=0) then
-         if(failyr(j)==0) write(173,'(20x,i5,a8)') j,' No Fail'
-         if(failyr(j)/=0) write(173,'(20x,i5,f7.3)') j,failyr(j)
+         if (failyr(j) == 0) then
+            write(173,'(20x,i5,a8)') j,' No Fail'
+         else
+            write(173,'(20x,i5,f7.3)') j,failyr(j)
+         end if
       end if
    end do
 

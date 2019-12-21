@@ -1,9 +1,12 @@
-subroutine resetlu
+!> @file resetlu.f90
+!> file containing the subroutine resetlu
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads data from the HRU/subbasin management input file
-!!    (.mgt). This file contains data related to management practices used in
-!!    the HRU/subbasin.
+!> this subroutine reads data from the HRU/subbasin management input file
+!> (.mgt). This file contains data related to management practices used in
+!> the HRU/subbasin.
+subroutine resetlu
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units            |definition
@@ -19,49 +22,50 @@ subroutine resetlu
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
-!!    eof         |none          |end of file flag (=-1 if eof, else = 0)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!
+!!    hru
+!!    j
+!!    mon
+!!    titldum
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: Jdt
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
+
    character(len=80) :: titldum
+   real*8 xx
    integer :: j, mon
-   real*8 hru
 
    open (9123,file=fname(no_lup))
    read (9123, 5101) titldum
    do j = 1, mhru
-      read (9123,*,end=99) hru, hru_fr(j)
+      read (9123,*,end=99) xx, hru_fr(j)
    end do
 
 !!    reset all hru_fr variables
    do j = 1, mhru
       if (hru_fr(j) <= 0.) hru_fr(j) = .0000001
-      hru_km(j) = sub_km(hru_sub(j)) * hru_fr(j)
+      xx = hru_fr(j)
+      hru_km(j) = sub_km(hru_sub(j)) * xx
       hru_ha(j) = hru_km(j) * 100.  !MJW
       hru_dafr(j) = hru_km(j) / da_km  !MJW
       do mon = 1, 12
-         wupnd(mon,j) = wupnd(mon,j) * hru_fr(j)
-         wushal(mon,j) = wushal(mon,j) * hru_fr(j)
-         wudeep(mon,j) = wudeep(mon,j) * hru_fr(j)
+         wupnd(mon,j) = wupnd(mon,j) * xx
+         wushal(mon,j) = wushal(mon,j) * xx
+         wudeep(mon,j) = wudeep(mon,j) * xx
       end do
-      pnd_psa(j) = pnd_psa(j) * hru_fr(j)
-      pnd_esa(j) = pnd_esa(j) * hru_fr(j)
-      pnd_pvol(j) = pnd_pvol(j) * hru_fr(j)
-      pnd_evol(j) = pnd_evol(j) * hru_fr(j)
-      pnd_vol(j) = pnd_vol(j) * hru_fr(j)
-      wet_nsa(j) = wet_nsa(j) * hru_fr(j)
-      wet_mxsa(j) = wet_mxsa(j) * hru_fr(j)
-      wet_nvol(j) = wet_nvol(j) * hru_fr(j)
-      wet_mxvol(j) = wet_mxvol(j) * hru_fr(j)
-      wet_vol(j) = wet_vol(j) * hru_fr(j)
+      pnd_psa(j) = pnd_psa(j) * xx
+      pnd_esa(j) = pnd_esa(j) * xx
+      pnd_pvol(j) = pnd_pvol(j) * xx
+      pnd_evol(j) = pnd_evol(j) * xx
+      pnd_vol(j) = pnd_vol(j) * xx
+      wet_nsa(j) = wet_nsa(j) * xx
+      wet_mxsa(j) = wet_mxsa(j) * xx
+      wet_nvol(j) = wet_nvol(j) * xx
+      wet_mxvol(j) = wet_mxvol(j) * xx
+      wet_vol(j) = wet_vol(j) * xx
       hru_ha(j) = hru_km(j) * 100.
 !   pot_vol(j) = 10. * pot_volmm(j) * hru_ha(j)   !! mm => m^3     NUBZ
       pot_volx(j) = pot_volxmm(j)

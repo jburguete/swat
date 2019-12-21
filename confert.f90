@@ -147,8 +147,7 @@ subroutine confert
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-!!    SWAT: Erfc
+!!    Intrinsic: Int, Erfc
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -166,7 +165,7 @@ subroutine confert
 
    if (iday_fert(j) == ifrt_freq(j)) then
       !! apply manure
-      it = cfrt_id(j)
+      it = Int(cfrt_id(j))
       if (cfrt_kg(j) > 0.) then
          l = 1
          if (cswat == 0 .or. cswat == 1) then

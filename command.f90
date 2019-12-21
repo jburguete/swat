@@ -1,9 +1,12 @@
-subroutine command
+!> @file command.f90
+!> file containing the subroutine command
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    for every day of simulation, this subroutine steps through the command
-!!    lines in the watershed configuration (.fig) file. Depending on the
-!!    command code on the .fig file line, a command loop is accessed
+!> for every day of simulation, this subroutine steps through the command
+!> lines in the watershed configuration (.fig) file. Depending on the
+!> command code on the .fig file line, a command loop is accessed
+subroutine command
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -91,19 +94,21 @@ subroutine command
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ii       |none          |counter
 !!    j        |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: subbasin, route, routres, transfer, addh, recmon
-!!    SWAT: recepic, save, recday, recyear
+!!    SWAT: subbasin, print_hyd, route, bmp_det_pond, bmp_wet_pond, sumhyd,
+!!          routres, transfer, addh, rechour, recmon, recyear, save, recday,
+!!          reccnst, structure, apex_day, saveconc, routeunit, routels
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: ii, iru_sub, j
+   integer :: ii, j
 
    j = 0
 
@@ -170,9 +175,8 @@ subroutine command
          call routeunit
          call sumhyd
        case (18)
-         iru_sub = inum1   !!routing unit number
          inum8 = 1
-         call routels(iru_sub)
+         call routels(inum1)
          call sumhyd
       end select
 

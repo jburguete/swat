@@ -1,8 +1,11 @@
-subroutine subbasin
+!> @file subbasin.f90
+!> file containing the subroutine subbasin
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls the simulation of the land phase of the
-!!    hydrologic cycle
+!> this subroutine controls the simulation of the land phase of the
+!> hydrologic cycle
+subroutine subbasin
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
@@ -110,26 +113,37 @@ subroutine subbasin
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i_wtrhru
+!!    ihout1
+!!    iru_sub
 !!    j           |none          |HRU number
+!!    ovs
+!!    ovsl
+!!    sumdaru
+!!    sumk
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max
-!!    SWAT: varinit, albedo, solt, surface, percmain, etpot, etact, fert
-!!    SWAT: confert, graze, plantmod, nminrl, nitvol, pminrl, gwmod, apply, gwmod_deep
-!!    SWAT: washp, decay, pestlch, enrsb, pesty, orgn, psed, nrain, nlch
-!!    SWAT: solp, subwq, bacteria, urban, pothole, latsed, surfstor
-!!    SWAT: substor, wetland, hrupond, irrsub, autoirr, watuse, watbal
-!!    SWAT: sumv, virtual
+!!    Intrinsic: Max, Exp, Dmin1
+!!    SWAT: sub_subbasin, varinit, water_hru, schedule_ops, albedo, solt,
+!!          surface, operatn, autoirr, percmain, etpot, etact, wattable,
+!!          confert, conapply, graze, plantmod, dormant, nminrl, carbon,
+!!          carbon_zhang2, nitvol, pminrl, pminrl2, biozone, gwmod, gwmod_deep,
+!!          washp, decay, pestlch, enrsb, pesty, orgn, orgncswat, orgncswat2,
+!!          psed, nrain, nlch, solp, bacteria, urban, urbanhr, latsed, gwnutr,
+!!          gw_no3, surfstor, substor, filter, buffer, filtw, grass_wway,
+!!          wetland, hrupond, hrupondhr, pothole, urb_bmp, watuse, watbal,
+!!          subwq, sumv, virtual, routeunit, sumhyd, routels, addh
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, i_wtrhru, ihout1
-   real*8 :: ovs, ovsl, sumdaru, sumk, xx
    integer, parameter :: iru_sub = 1 ! route across landscape unit
+   real*8 :: ovs, ovsl, sumdaru, sumk, xx
+   integer :: i_wtrhru, ihout1, j
 
    ihru = hru1(inum1)
 
@@ -320,13 +334,9 @@ subroutine subbasin
                   call orgncswat(0)
                end if
 
-               !! Add by zhang
-               !! ====================
                if (cswat == 2) then
                   call orgncswat2(0)
                end if
-               !! Add by zhang
-               !! ====================
 
                call psed(0)
             end if

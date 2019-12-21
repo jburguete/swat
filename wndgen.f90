@@ -1,7 +1,11 @@
-subroutine wndgen(j)
+!> @file wndgen.f90
+!> file containing the subroutine wndgen
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine generates wind speed
+!> this subroutine generates wind speed
+!> @param[in] j HRU number
+subroutine wndgen(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

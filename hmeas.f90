@@ -1,8 +1,11 @@
-subroutine hmeas
+!> @file hmeas.f90
+!> file containing the subroutine hmeas
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads in relative humidity data from file and
-!!    assigns the data to the HRUs
+!> this subroutine reads in relative humidity data from file and
+!> assigns the data to the HRUs
+subroutine hmeas
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -37,12 +40,14 @@ subroutine hmeas
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    idap        |julian date   |julian date of measured weather data
+!!    ih          |              |counter
 !!    inum3sprev  |none          |subbasin number of previous HRU
 !!    iyp         |none          |last 2 digits of year measured weather data
 !!    k           |none          |counter
 !!    l           |none          |counter
 !!    rhdbsb      |none          |generated relative humidity for subbasin
 !!    rhmeas(:)   |none          |relative humidity read in from file (fraction)
+!!    tmpmean     |deg C         |average temperature for the month in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -53,9 +58,9 @@ subroutine hmeas
    use parm
    implicit none
 
-   integer :: k, iyp, idap, l, inum3sprev
-   real*8 :: rhdbsb, tmpmean
    real*8, dimension (mrg) :: rhmeas
+   real*8 :: rhdbsb, tmpmean
+   integer :: idap, ih, inum3sprev, iyp, k, l
 
    !! initialize variables for the day
    rhmeas = 0.
@@ -79,32 +84,30 @@ subroutine hmeas
    inum3sprev = 0
    rhdbsb = 0.
    do k = 1, nhru
+      l = hru_sub(k)
+      ih = ihgage(l)
       !! generate values to replace missing data
-      if (rhmeas(ihgage(hru_sub(k))) <  -97.) then
+      if (rhmeas(ih) <  -97.) then
          !! use same generated data for all HRUs in a subbasin
-         if (hru_sub(k) == inum3sprev .and. hru_sub(k) /= 0) then
+         if (l == inum3sprev .and. l /= 0) then
             rhd(k) = rhdbsb
          else
             call rhgen(k)
             !! set subbasin generated values
-            inum3sprev = hru_sub(k)
+            inum3sprev = l
             rhdbsb = rhd(k)
          end if
       else
-!!       if (i == 1) then
-         if (rhmeas(ihgage(hru_sub(k))) < 1. .and.&
-         &rhmeas(ihgage(hru_sub(k))) > 0.) then
-            rhd(k) = rhmeas(ihgage(hru_sub(k)))
+         if (rhmeas(ih) < 1. .and. rhmeas(ih) > 0.) then
+            rhd(k) = rhmeas(ih)
          else
-            tmpmean=(tmpmx(i_mo,hru_sub(k))+tmpmn(i_mo,hru_sub(k)))/2.
-            rhd(k) = Ee(rhmeas(ihgage(hru_sub(k)))) / Ee(tmpmean)
+            tmpmean=(tmpmx(i_mo,l)+tmpmn(i_mo,l))/2.
+            rhd(k) = Ee(rhmeas(ih)) / Ee(tmpmean)
          endif
       end if
    end do
 
    return
-! 5200 format (7x,300f8.3)
-! 5300 format (i4,i3,300f8.3)
 5200 format (7x,1800f8.3)
 5300 format (i4,i3,1800f8.3)
 end

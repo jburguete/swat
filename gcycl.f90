@@ -52,6 +52,7 @@ subroutine gcycl
 
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Int
 !!    SWAT: Aunif
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -85,7 +86,7 @@ subroutine gcycl
       !! assign new random number seeds
       do j = 1, 9
          rn = Aunif(rndseed10)
-         ii = 100 * igen * rn
+         ii = Int(100 * igen * rn)
          do k = 1, ii
             xx = Aunif(rndseed10)
          end do
@@ -96,7 +97,7 @@ subroutine gcycl
       do j = 9, 1, -1
          ii = idg(j)
          rn = Aunif(rndseed10)
-         k = j * rn + 1
+         k = Int(j * rn) + 1
          idg(j) = idg(k)
          idg(k) = ii
       end do

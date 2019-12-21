@@ -1,8 +1,11 @@
-subroutine wmeas
+!> @file wmeas.f90
+!> file containing the subroutine wmeas
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reads in wind speed data from file and assigns the
-!!    data to HRUs
+!> this subroutine reads in wind speed data from file and assigns the
+!> data to HRUs
+subroutine wmeas
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -53,13 +56,12 @@ subroutine wmeas
    use parm
    implicit none
 
-   integer :: k, iyp, idap, l, inum3sprev
-   real*8 :: u10bsb
    real*8, dimension (mrg) :: wndmeas
+   real*8 :: u10bsb
+   integer :: idap, inum3sprev, iyp, k, l
 
    !! initialize variables for the day
    wndmeas = 0.
-
 
    !! read wind speed data from file
    if (ifirstw == 0) then
@@ -79,26 +81,23 @@ subroutine wmeas
    inum3sprev = 0
    u10bsb = 0.
    do k = 1, nhru
-      u10(k) = wndmeas(iwgage(hru_sub(k)))
+      l = hru_sub(k)
+      u10(k) = wndmeas(iwgage(l))
       !! generate values to replace missing data
       if (u10(k) <  -97.) then
          !! use same generated data for all HRUs in a subbasin
-         if (hru_sub(k) == inum3sprev .and. hru_sub(k) /= 0) then
+         if (l == inum3sprev .and. l /= 0) then
             u10(k) = u10bsb
          else
             call wndgen(k)
             !! set subbasin generated values
-            inum3sprev = 0
-            u10bsb = 0.
-            inum3sprev = hru_sub(k)
+            inum3sprev = l
             u10bsb = u10(k)
          end if
       end if
    end do
 
    return
-! 5200 format (7x,300f8.3)
-! 5300 format (i4,i3,300f8.3)
 5200 format (7x,1800f8.3)
 5300 format (i4,i3,1800f8.3)
 end
