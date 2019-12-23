@@ -1,8 +1,12 @@
-subroutine fert(j)
+!> @file fert.f90
+!> file containing the subroutine fert
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies N and P specified by date and
-!!    amount in the management file (.mgt)
+!> this subroutine applies N and P specified by date and
+!> amount in the management file (.mgt)
+!> @param[in] j HRU number
+subroutine fert(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -58,7 +62,7 @@ subroutine fert(j)
 !!                                 |in soil layer
 !!    sol_orgp(:,:) |kg P/ha       |amount of phosphorus stored in the organic
 !!                                 |P pool
-!!    sol_solp(:,:) |kg P/ha       |amount of inorganic phosohorus stored in
+!!    sol_solp(:,:) |kg P/ha       |amount of inorganic phosphorus stored in
 !!                                 |solution
 !!    sol_z(:,:)    |mm            |depth to bottom of soil layer
 !!    wshd_fminp    |kg P/ha       |average annual amount of mineral P applied
@@ -67,9 +71,9 @@ subroutine fert(j)
 !!                                 |watershed
 !!    wshd_fno3     |kg N/ha       |average annual amount of NO3-N applied in
 !!                                 |watershed
-!!    wshd_orgn     |kg N/ha       |average annual amount of organic N applied
+!!    wshd_forgn    |kg N/ha       |average annual amount of organic N applied
 !!                                 |in watershed
-!!    wshd_orgp     |kg P/ha       |average annual amount of organic P applied
+!!    wshd_forgp    |kg P/ha       |average annual amount of organic P applied
 !!                                 |in watershed
 !!    wshd_ftotn    |kg N/ha       |average annual amount of N (mineral &
 !!                                 |organic) applied in watershed
@@ -106,7 +110,7 @@ subroutine fert(j)
 !!                                |in soil layer
 !!    sol_orgp(:,:) |kg P/ha      |amount of phosphorus stored in the organic
 !!                                |P pool
-!!    sol_solp(:,:) |kg P/ha      |amount of inorganic phosohorus stored in
+!!    sol_solp(:,:) |kg P/ha      |amount of inorganic phosphorus stored in
 !!                                |solution
 !!    wshd_fminp    |kg P/ha      |average annual amount of mineral P applied
 !!                                |in watershed
@@ -114,9 +118,9 @@ subroutine fert(j)
 !!                                |watershed
 !!    wshd_fno3     |kg N/ha      |average annual amount of NO3-N applied in
 !!                                |watershed
-!!    wshd_orgn     |kg N/ha      |average annual amount of organic N applied
+!!    wshd_forgn    |kg N/ha      |average annual amount of organic N applied
 !!                                |in watershed
-!!    wshd_orgp     |kg P/ha      |average annual amount of organic P applied
+!!    wshd_forgp    |kg P/ha      |average annual amount of organic P applied
 !!                                |in watershed
 !!    wshd_ftotn    |kg N/ha      |average annual amount of N (mineral &
 !!                                |organic) applied in watershed
@@ -132,11 +136,20 @@ subroutine fert(j)
 !!    gc1          |
 !!    ifrt
 !!    l            |none         |counter (soil layer #)
+!!    RLN
 !!    rtof         |none         |weighting factor used to partition the
 !!                               |organic N & P content of the fertilizer
 !!                               |between the fresh organic and the active
 !!                               |organic pools
+!!    X1
+!!    X8
+!!    X10
 !!    xx           |none         |fraction of fertilizer applied to layer
+!!    XXX
+!!    XZ
+!!    YY
+!!    YZ
+!!    ZZ
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -151,14 +164,8 @@ subroutine fert(j)
          !orgc_f is the fraction of organic carbon in fertilizer
          !for most fertilziers this value is set to 0.
    real*8, parameter :: rtof=0.5, orgc_f = 0.0
+   real*8 :: frt_t, gc, gc1, RLN, X1, X8, X10, xx, XXX, XZ, YY, YZ, ZZ
    integer :: l, ifrt
-   real*8 :: frt_t, gc, gc1, xx
-
-   !!added by zhang
-   !!======================
-   real*8 :: X1, X8, X10, XXX, YY, ZZ, XZ, YZ, RLN
-   !!added by zhang
-   !!======================
 
    ifrt = ifrttyp
 
@@ -170,12 +177,12 @@ subroutine fert(j)
       endif
 
       sol_no3(l,j) = sol_no3(l,j) + xx * frt_kg *&
-      &(1. - fnh3n(ifrt)) * fminn(ifrt)
+         &(1. - fnh3n(ifrt)) * fminn(ifrt)
 
       if (cswat == 0) then
          sol_fon(l,j) = sol_fon(l,j) + rtof * xx * frt_kg * forgn(ifrt)
          sol_aorgn(l,j) = sol_aorgn(l,j) + (1. - rtof) * xx *&
-         &frt_kg * forgn(ifrt)
+            &frt_kg * forgn(ifrt)
          sol_fop(l,j) = sol_fop(l,j) + rtof * xx * frt_kg * forgp(ifrt)
          sol_orgp(l,j) = sol_orgp(l,j) + (1. - rtof) * xx * frt_kg * forgp(ifrt)
       end if
@@ -234,7 +241,7 @@ subroutine fert(j)
 
          !!remaining organic N is llocated to structural litter N pool
          sol_LSN(l,j) = sol_LSN(l,j) + X1&
-         &*forgn(ifrt) -ZZ
+            &*forgn(ifrt) -ZZ
          !XZ is the amount of organic carbon allocated to structural litter C pool
          XZ = X1 *orgc_f-XXX
          sol_LSC(l,j) = sol_LSC(l,j) + XZ
@@ -270,8 +277,8 @@ subroutine fert(j)
 
 !!!    write statement for virgina/mari-vaughn study        !!!
 !      write (1112,1112) (sol_no3(l,j), sol_fon(l,j), sol_aorgn(l,j),    &
-!    &sol_nh3(l,j),  sol_solp(l,j), sol_fop(l,j), sol_orgp(l,j),        &
-!     &l = 1,4)
+!       &sol_nh3(l,j),  sol_solp(l,j), sol_fop(l,j), sol_orgp(l,j),        &
+!        &l = 1,4)
 !1112  format (200f8.2)
 
 
@@ -316,17 +323,17 @@ subroutine fert(j)
 
    if (curyr > nyskip) then
       wshd_ftotn = wshd_ftotn + frt_kg * hru_dafr(j)&
-      &* (fminn(ifrt) + forgn(ifrt))
+         &* (fminn(ifrt) + forgn(ifrt))
 
       wshd_forgn = wshd_forgn + frt_kg * hru_dafr(j) * forgn(ifrt)
 
       wshd_fno3 = wshd_fno3 + frt_kg * hru_dafr(j) *&
-      &fminn(ifrt) * (1. - fnh3n(ifrt))
+         &fminn(ifrt) * (1. - fnh3n(ifrt))
 
       wshd_fnh3 = wshd_fnh3 + frt_kg * hru_dafr(j) * fminn(ifrt) * fnh3n(ifrt)
 
       wshd_ftotp = wshd_ftotp + frt_kg * hru_dafr(j)&
-      &* (fminp(ifrt) + forgp(ifrt))
+         &* (fminp(ifrt) + forgp(ifrt))
 
       wshd_fminp = wshd_fminp + frt_kg * hru_dafr(j) * fminp(ifrt)
 

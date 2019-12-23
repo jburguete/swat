@@ -11,7 +11,7 @@
 !> using code which ensures that no intermediate result uses more than
 !> 31 bits.
 !> The theory behind the code is summarized in \cite Bratley83
-!> @param x1
+!> @param[inout] x1
 !> random number generator seed (integer) where \f$0 < x1 < 2147483647\f$
 !> @return random number ranging from 0.0 to 1.0
 real*8 function aunif (x1) result (unif)
@@ -40,7 +40,7 @@ real*8 function aunif (x1) result (unif)
 !!     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    implicit none
 
-   integer, intent (in out) :: x1
+   integer, intent (inout) :: x1
    integer :: x2
 
    x2 = x1 / 127773

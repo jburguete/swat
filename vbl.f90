@@ -54,7 +54,7 @@ subroutine vbl(evx,spx,pp,qin,ox,vx1,vy,yi,yo,ysx,vf,vyf,aha)
 
    real*8, intent (in) :: evx, spx, pp, qin, ox, yi, yo, ysx
    real*8, intent (in) :: vf, vyf, aha
-   real*8, intent (in out) :: vx1, vy
+   real*8, intent (inout) :: vx1, vy
    real*8 :: dfw, dfy
 
    !! ysx undefined for reservoirs

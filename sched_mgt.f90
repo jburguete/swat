@@ -122,13 +122,13 @@ subroutine sched_mgt(j)
       pst_kg = mgt4op(n,j)
       pst_dep = mgt5op(n,j)
 
-      call apply
+      call apply(j)
 
       if (imgt ==1) then
          write (143, 1004) subnum(j), hruno(j), iyr, i_mo, iida,&
             &hru_km(j), pname(ipest),&
             &"   PEST", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j),pst_kg
+            &sol_rsd(1,j), sol_sumno3(j), sol_sumsolp(j), pst_kg
       endif
 
     case (5)   !! harvest and kill operation

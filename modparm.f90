@@ -237,8 +237,21 @@ module parm
    real*8 :: wshd_resha
 !> fraction of watershed area which drains into wetlands (none)
    real*8 :: wshd_wetfr
-   real*8 :: wshd_fminp, wshd_ftotn, wshd_fnh3, wshd_fno3, wshd_forgn
-   real*8 :: wshd_forgp, wshd_ftotp, wshd_yldn, wshd_yldp, wshd_fixn
+!> average annual amount of mineral P applied in watershed (kg P/ha)
+   real*8 :: wshd_fminp
+!> average annual amount of NH3-N applied in watershed (kg N/ha)
+   real*8 :: wshd_fnh3
+!> average annual amount of NO3-N applied in watershed (kg N/ha)
+   real*8 :: wshd_fno3
+!> average annual amount of organic N applied in watershed (kg N/ha)
+   real*8 :: wshd_forgn
+!> average annual amount of N (mineral & organic) applied in watershed (kg N/ha)
+   real*8 :: wshd_ftotn
+!> average annual amount of organic P applied in watershed (kg P/ha)
+   real*8 :: wshd_forgp
+!> average annual amount of P (mineral & organic) applied in watershed (kg P/ha)
+   real*8 :: wshd_ftotp
+   real*8 :: wshd_yldn, wshd_yldp, wshd_fixn
    real*8 :: wshd_pup, wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
    real*8 :: wshd_astrs
 !> initial soil water content expressed as a fraction of field capacity
@@ -329,7 +342,7 @@ module parm
 !> amount of phosphorus added to soil in continuous fertilizer operation on day
 !> (kg P/ha)
    real*8 :: cfertp
-!> total amount of nitrogen added to soil in HRU on day (kg N/ha)
+!> total amount of nitrogen applied to soil in HRU on day (kg N/ha)
    real*8 :: fertn
 !> micropore percolation from bottom of the soil layer on day in HRU (mm H2O)
    real*8 :: sepday
@@ -340,7 +353,7 @@ module parm
 !> growth factor for persistent bacteria adsorbed to soil particles (1/day)
    real*8 :: wgps
    real*8 :: qdfr !< fraction of water yield that is surface runoff (none)
-!> total amount of phosphorus added to soil in HRU on day (kg P/ha)
+!> total amount of phosphorus applied to soil in HRU on day (kg P/ha)
    real*8 :: fertp
 !> amount of nitrogen added to soil in grazing on the day in HRU (kg N/ha)
    real*8 :: grazn
@@ -1568,7 +1581,8 @@ module parm
 !> amount of phosphorus stored in the active mineral phosphorus pool (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_actp
 !> soluble P concentration in top soil layer (mg P/kg soil) or\n
-!> amount of phosohorus stored in solution. NOTE UNIT CHANGE! (kg P/ha)
+!> amount of inorganic phosphorus stored in solution. NOTE UNIT CHANGE!
+!> (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_solp
 !> maximum or potential crack volume (mm)
    real*8, dimension (:,:), allocatable :: crdep
@@ -1578,10 +1592,9 @@ module parm
 !> amount of water held in the soil layer at saturation (sat - wp water)
 !> (mm H2O)
    real*8, dimension (:,:), allocatable :: sol_ul
-!> bulk density of the soil (Mg/m^3)
+!> bulk density of the soil layer in HRU (Mg/m^3)
    real*8, dimension (:,:), allocatable :: sol_bd
 !> depth to bottom of soil layer (mm)
-!!    sol_z(:,:)  !> mm            !> depth to bottom of soil layer
    real*8, dimension (:,:), allocatable :: sol_z
 !> amount of water stored in the soil layer on any given day (less wp water)
 !> (mm H2O)
@@ -1594,6 +1607,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_hk
 !> lateral flow storage array (mm H2O)
    real*8, dimension (:,:), allocatable :: flat
+!> amount of nitrogen stored in the ammonium pool in soil layer (kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_nh3
 !> electrical conductivity of soil layer (dS/m)
    real*8, dimension (:,:), allocatable :: sol_ec
@@ -1928,22 +1942,23 @@ module parm
    integer, dimension (:), allocatable :: mat_yrs
 !> concentration of persistent bacteria in manure (fertilizer) (cfu/g manure)
    real*8, dimension (:), allocatable :: bactpdb
-!> fraction of mineral N (NO3 + NH3) (kg minN/kg fert)
+!> fraction of fertilize that is mineral N (NO3 + NH3) (kg minN/kg fert)
    real*8, dimension (:), allocatable :: fminn
-!> fraction of organic N (kg orgN/kg fert)
+!> fraction of organic N (kg orgN/kg fert) (kg orgN/kg frt)
    real*8, dimension (:), allocatable :: forgn
-!> fraction of organic P (kg orgP/kg fert)
+!> fraction of fertilizer that is organic P (kg orgP/kg frt)
    real*8, dimension (:), allocatable :: forgp
-!> bacteria partition coefficient (none):\n
+!> fraction of bacteria in solution (the remaining fraction is sorbed to soil
+!> particles) (none):\n
 !> 1: all bacteria in solution\n
 !> 0: all bacteria sorbed to soil particles
    real*8, dimension (:), allocatable :: bactkddb
 !> concentration of less persistent bacteria in manure (fertilizer)
 !> (cfu/g manure)
    real*8, dimension (:), allocatable :: bactlpdb
-!> fraction of mineral P (kg minP/kg fert)
+!> fraction of fertilizer that is mineral P (kg minP/kg fert)
    real*8, dimension (:), allocatable :: fminp
-!> fraction of NH3-N in mineral N (kg NH3-N/kg minN)
+!> fraction of mineral N in fertilizer that is NH3-N (kgNH3-N/kgminN)
    real*8, dimension (:), allocatable :: fnh3n
    character(len=8), dimension (200) :: fertnm !< name of fertilizer
 !> curb length density in HRU (km/ha)
@@ -2290,10 +2305,14 @@ module parm
    real*8, dimension (:), allocatable :: bw1
 !> 2nd shape parameter for the wetland surface area equation (none)
    real*8, dimension (:), allocatable :: bw2
+!> persistent bacteria in soil solution (# cfu/m^2)
    real*8, dimension (:), allocatable :: bactpq
 !> curve number for current day, HRU and at current soil moisture (none)
    real*8, dimension (:), allocatable :: cnday
-   real*8, dimension (:), allocatable :: bactp_plt,bactlp_plt
+!> less persistent bacteria on foliage (# cfu/m^2)
+   real*8, dimension (:), allocatable :: bactlp_plt
+!> persistent bacteria on foliage (# cfu/m^2)
+   real*8, dimension (:), allocatable :: bactp_plt
 !> fertilizer application efficiency calculated as the amount of N applied
 !> divided by the amount of N removed at harvest (none)
    real*8, dimension (:), allocatable :: auto_eff
@@ -2301,12 +2320,16 @@ module parm
    real*8, dimension (:), allocatable :: secciw
 !> amount of water stored in soil profile on current day (mm H2O)
    real*8, dimension (:), allocatable :: sol_sw
+!> less persistent bacteria in soil solution (# cfu/m^2)
    real*8, dimension (:), allocatable :: bactlpq
 !> chlorophyll-a production coefficient for wetland (none)
    real*8, dimension (:), allocatable :: chlaw
 !> average air temperature on current day in HRU (deg C)
    real*8, dimension (:), allocatable :: tmpav
-   real*8, dimension (:), allocatable :: bactps,bactlps
+!> less persistent bacteria attached to soil particles (# cfu/m^2)
+   real*8, dimension (:), allocatable :: bactlps
+!> persistent bacteria attached to soil particles (# cfu/m^2)
+   real*8, dimension (:), allocatable :: bactps
 !> amount of water stored as snow in HRU on current day (mm H2O)
    real*8, dimension (:), allocatable :: sno_hru
 !> amount of organic N in wetland (kg N)
@@ -3413,11 +3436,11 @@ module parm
 
       real*8 function atri(at1,at2,at3,at4i) result (r_atri)
          real*8, intent (in) :: at1, at2, at3
-         integer, intent (in out) :: at4i
+         integer, intent (inout) :: at4i
       end function
 
       real*8 function aunif (x1) result (unif)
-         integer, intent (in out) :: x1
+         integer, intent (inout) :: x1
       end function
 
       real*8 function dstn1(rn1,rn2) result (r_dstn1)
@@ -3458,7 +3481,7 @@ module parm
       end subroutine
 
       SUBROUTINE HQDAV(A,CBW,QQ,SSS,ZCH,ZX,CHW,FPW,jrch)
-         real*8, intent (in out) :: A, ZX, CHW, FPW
+         real*8, intent (inout) :: A, ZX, CHW, FPW
          real*8, intent (in) :: CBW, QQ, SSS, ZCH
          integer, intent (in) :: jrch
       end subroutine
@@ -3479,7 +3502,7 @@ module parm
       subroutine vbl(evx,spx,pp,qin,ox,vx1,vy,yi,yo,ysx,vf,vyf,aha)
          real*8, intent (in) :: evx, spx, pp, qin, ox, yi, yo, ysx
          real*8, intent (in) :: vf, vyf, aha
-         real*8, intent (in out) :: vx1, vy
+         real*8, intent (inout) :: vx1, vy
       end subroutine
 
    END INTERFACE

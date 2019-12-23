@@ -1,4 +1,4 @@
-subroutine apply
+subroutine apply(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies pesticide
@@ -6,6 +6,7 @@ subroutine apply
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    ap_ef(:)     |none             |application efficiency (0-1)
 !!    curyr        |none             |current year of simulation
 !!    drift(:)     |kg               |amount of pesticide drifting onto main
@@ -14,7 +15,6 @@ subroutine apply
 !!                                   |onto stream
 !!    hru_dafr(:)  |km**2/km**2      |fraction of watershed area in HRU
 !!    hru_km(:)    |km**2            |area of HRU in square kilometers
-!!    ihru         |none             |HRU number
 !!    ipest        |none             |pesticide identification number from
 !!                                   |pest.dat
 !!    irtpest      |none             |the sequence number of the pesticide type
@@ -48,7 +48,6 @@ subroutine apply
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    gc          |none          |fraction of ground covered by plant foliage
-!!    j           |none          |HRU number
 !!    jj          |none          |subbasin number
 !!    k           |none          |sequence number of pesticide in NPNO(:)
 !!    kk          |none          |pesticide identification number from
@@ -64,10 +63,9 @@ subroutine apply
    use parm
    implicit none
 
-   integer :: j, kk, k, jj, nly
+   integer, intent(in) :: j
+   integer :: kk, k, jj, nly
    real*8 :: xx, gc
-
-   j = ihru
 
 !! initialize local variables
 

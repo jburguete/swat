@@ -40,7 +40,7 @@ subroutine carbon(i)
       end function
 
       real*8 Function ftilf(tillage, wc, sat)
-         real*8, intent (in out) :: tillage
+         real*8, intent (inout) :: tillage
          real*8, intent (in) :: wc, sat
       End function
 
@@ -63,7 +63,7 @@ subroutine carbon(i)
 
       real*8 Function fnetmin(poold, R1, R2, hc, dummy, poolm, xinorg, cc1)
          real*8, intent(in) :: R1, R2, hc, poolm, xinorg, cc1
-         real*8, intent(in out) :: poold, dummy
+         real*8, intent(inout) :: poold, dummy
       End function
 
    END INTERFACE
@@ -542,7 +542,7 @@ End function
 
 real*8 Function ftilf(tillage, wc, sat)
    implicit none
-   real*8, intent (in out) :: tillage
+   real*8, intent (inout) :: tillage
    real*8, intent (in) :: wc, sat
    !! tillage factor effect on decomposition
    !! tillage factor returns to baseline (=1) based on WC
@@ -627,7 +627,7 @@ real*8 Function fnetmin(poold, R1, R2, hc, dummy, poolm, xinorg, cc1)
    !! cc1 = pool's carbon fraction
    implicit none
    real*8, intent(in) :: R1, R2, hc, poolm, xinorg, cc1
-   real*8, intent(in out) :: poold, dummy
+   real*8, intent(inout) :: poold, dummy
    real*8 :: xx
 
    xx = poold * cc1 * (1. / R1 - hc / R2)

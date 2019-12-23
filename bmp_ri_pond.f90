@@ -40,7 +40,7 @@ subroutine bmp_ri_pond(kk,riflw,rised)
    real*8 :: qin,qout,qpnd,hpnd,qet
    real*8 :: qseep,qpump
    real*8 :: sedconc,sedpndi, sedpnde,ksed,td,sedpump
-   real*8, dimension(4,0:nstep), intent(in out) :: riflw,rised
+   real*8, dimension(4,0:nstep), intent(inout) :: riflw,rised
    real*8, dimension(0:nstep) :: inflw,insed,outflw,outsed
 
    sb = inum1

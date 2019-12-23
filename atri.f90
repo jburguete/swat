@@ -8,7 +8,7 @@
 !> @param[in] at1 lower limit for distribution (none)
 !> @param[in] at2 monthly mean for distribution (none)
 !> @param[in] at3 upper limit for distribution (none)
-!> @param[in,out] at4i random number seed (none)
+!> @param[inout] at4i random number seed (none)
 !> @return daily value generated for distribution (none)
 real*8 function atri(at1,at2,at3,at4i) result (r_atri)
 
@@ -51,7 +51,7 @@ real*8 function atri(at1,at2,at3,at4i) result (r_atri)
    implicit none
 
    real*8, intent (in) :: at1, at2, at3
-   integer, intent (in out) :: at4i
+   integer, intent (inout) :: at4i
    real*8 :: amn, b1, b2, rn, u3, x1, xx, y, yy
 
    u3 = at2 - at1

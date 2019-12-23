@@ -5,7 +5,7 @@ SUBROUTINE HQDAV(A,CBW,QQ,SSS,ZCH,ZX,CHW,FPW,jrch)
    USE PARM, ONLY: ch_w2, ch_n1, qcap, chxp, rchx, rcss, ch_s2, chxa
    implicit none
 
-   real*8, intent (in out) :: A, ZX, CHW, FPW
+   real*8, intent (inout) :: A, ZX, CHW, FPW
    real*8, intent (in) :: CBW, QQ, SSS, ZCH
    integer, intent (in) :: jrch
 

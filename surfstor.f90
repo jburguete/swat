@@ -1,4 +1,4 @@
-subroutine surfstor
+subroutine surfstor(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine stores and lags sediment and nutrients in surface runoff
@@ -6,6 +6,7 @@ subroutine surfstor
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bactrolp      |# colonies/ha|less persistent bacteria transported to main
 !!                                |channel with surface runoff
 !!    bactrop       |# colonies/ha|persistent bacteria transported to main
@@ -20,7 +21,6 @@ subroutine surfstor
 !!    hrupest(:)    |none         |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
-!!    ihru          |none         |HRU number
 !!    npmx          |none         |number of different pesticides used in
 !!                                |the simulation
 !!    pst_lag(:,1,:)|kg pst/ha    |amount of soluble pesticide in surface runoff
@@ -127,7 +127,6 @@ subroutine surfstor
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -139,9 +138,8 @@ subroutine surfstor
    use parm
    implicit none
 
-   integer :: j, k
-
-   j = ihru
+   integer, intent(in) :: j
+   integer :: k
 
    if (ievent == 0) then
       surf_bs2(j) = Max(1.e-9, surf_bs2(j) + sedyld(j))

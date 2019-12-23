@@ -384,7 +384,7 @@ subroutine subbasin(i)
          call gw_no3
 
          !! lag nutrients and sediment in surface runoff
-         call surfstor
+         call surfstor(j)
 
          !! lag subsurface flow and nitrate in subsurface flow
 
