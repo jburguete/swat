@@ -1,4 +1,4 @@
-subroutine subday
+subroutine subday(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes daily subbasin output to the output.sub file
@@ -6,6 +6,7 @@ subroutine subday
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j             |none          |HRU number
 !!    da_ha         |ha            |area of watershed in hectares
 !!    iida          |julian date   |current day of simulation
 !!    ipdvab(:)     |none          |output variable codes for output.sub file
@@ -58,11 +59,12 @@ subroutine subday
    use parm
    implicit none
 
+   integer, intent(in) :: j
    integer :: sb, ii, icl
    real*8 :: sub_ha
    real*8, dimension (msubo) :: pdvab, pdvb
 
-   sb = hru_sub(ihru)
+   sb = hru_sub(j)
 
    sub_ha = da_ha * sub_fr(sb)
 

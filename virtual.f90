@@ -1,4 +1,4 @@
-subroutine virtual(i,j)
+subroutine virtual(i,j,k)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine summarizes data for subbasins with multiple HRUs and
@@ -262,7 +262,7 @@ subroutine virtual(i,j)
    use parm
    implicit none
 
-   integer, intent(in) :: i, j
+   integer, intent(in) :: i, j, k
    integer :: hr, sb, kk, ii, ib
    real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr, ratio
    real*8 :: sub_hwyld(nstep), hqd(4*nstep), hsd(4*nstep)   ! hqd, hsd locally defined. J.Jeong 4/26/2009
@@ -405,7 +405,7 @@ subroutine virtual(i,j)
 !! end subbasin summarization calculations
 
 !! perform subbasin level operations after processing last HRU in subbasin
-   if (iihru == hrutot(sb)) then
+   if (k == hrutot(sb)) then
       sub_ha = da_ha * sub_fr(sb)
 
       !! calculate subbasin average values for weighted parameters
@@ -654,7 +654,7 @@ subroutine virtual(i,j)
          submono(19,sb) = submono(19,sb) + sub_tileno3(sb)
          submono(20,sb) = submono(20,sb) + sub_vaptile(sb)  !! jane f.
 
-         if (iprint == 1) call subday
+         if (iprint == 1) call subday(j)
       end if
    endif
 

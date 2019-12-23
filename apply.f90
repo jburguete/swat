@@ -1,12 +1,16 @@
-subroutine apply(j)
+!> @file apply.f90
+!> file containing the subroutine apply
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies pesticide
+!> this subroutine applies pesticide
+!> @param[in] j HRU number
+subroutine apply(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    j            |none             |HRU number
 !!    ap_ef(:)     |none             |application efficiency (0-1)
 !!    curyr        |none             |current year of simulation
 !!    drift(:)     |kg               |amount of pesticide drifting onto main
@@ -95,7 +99,7 @@ subroutine apply(j)
             endif
          else
             if (pst_dep > sol_z((nly-1),j) .and.&
-            &pst_dep < sol_z(nly,j)) then
+               &pst_dep < sol_z(nly,j)) then
                sol_pst(k,j,nly) = sol_pst(k,j,nly) + xx
                exit
             endif
@@ -117,7 +121,7 @@ subroutine apply(j)
 !! summary calculations
    if (curyr > nyskip) then
       wshd_pstap(k) = wshd_pstap(k) + pst_kg *&
-      &ap_ef(kk) * hru_dafr(j)
+         &ap_ef(kk) * hru_dafr(j)
    end if
 
    return

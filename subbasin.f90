@@ -117,6 +117,7 @@ subroutine subbasin(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i_wtrhru
 !!    ihout1
+!!    iihru
 !!    iru_sub
 !!    j           |none          |HRU number
 !!    ovs
@@ -146,13 +147,13 @@ subroutine subbasin(i)
    integer, intent(in) :: i
    integer, parameter :: iru_sub = 1 ! route across landscape unit
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
-   integer :: i_wtrhru, ihout1, j
+   integer :: i_wtrhru, ihout1, j, k
 
    ihru = hru1(inum1)
 
    call sub_subbasin(ihru)
 
-   do iihru = 1, hrutot(inum1)
+   do k = 1, hrutot(inum1)
 
       j = ihru
 
@@ -206,7 +207,7 @@ subroutine subbasin(i)
          call albedo
 
          !! calculate soil temperature for soil layers
-         call solt
+         call solt(j)
 
 !       if (ipot(j) /= j .and. imp_trig(nro(j),nrelease(j),j)==1)       &  Srini pothole
 !
@@ -229,7 +230,7 @@ subroutine subbasin(i)
          if (auto_wstr(j) > 1.e-6 .and. irrsc(j) > 2) call autoirr
 
          !! perform soil water routing
-         call percmain
+         call percmain(j)
 
          !! compute evapotranspiration
          call etpot
@@ -352,7 +353,7 @@ subroutine subbasin(i)
          call nlch
 
          !! compute phosphorus movement
-         call solp
+         call solp(j)
 
          !! compute bacteria transport
          call bacteria
@@ -387,8 +388,7 @@ subroutine subbasin(i)
          call surfstor(j)
 
          !! lag subsurface flow and nitrate in subsurface flow
-
-         call substor
+         call substor(j)
 
          !! add lateral flow that was routed across the landscape on the previous day
          !!  latq(j) = latq(j) + latq_ru(j)
@@ -449,7 +449,7 @@ subroutine subbasin(i)
          call watbal(j)
 
          !! compute chl-a, CBOD and dissolved oxygen loadings
-         call subwq
+         call subwq(j)
 
          !! qdayout is surface runoff leaving the hru - after wetlands, ponds, and potholes
          qdayout(j) = qday
@@ -457,11 +457,11 @@ subroutine subbasin(i)
       endif
 
       !! perform output summarization
-      call sumv
+      call sumv(j)
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method
-      call virtual(i,j)
+      call virtual(i,j,k)
       aird(j) = 0.
 
       ihru = ihru + 1

@@ -283,8 +283,6 @@ subroutine soil_chem(ii)
    basminpi = basminpi + summinp * xx
    basorgpi = basorgpi + sumorgp * xx
 
-   !! By Zhang for C/N cycling
-   !!===============================
    if (cswat == 2) then
       if (rsdin(ii) > 0.) sol_rsd(1,ii) = rsdin(ii)
       do j = 1, nly
@@ -306,60 +304,19 @@ subroutine soil_chem(ii)
          !!kg/ha mineral nitrogen
          sol_min_n = sol_no3(j,ii)+sol_nh3(j,ii)
 
-         !XCB = 0.2
-         !mm
          dg = sol_z(j,ii)
          if (j > 1) dg = dg - sol_z(j-1,ii)
 
-         !if(sol_WOC(j,ihru)<1.E-5) sol_WOC(j,ihru)=XCB*exp(-.001*dg)
-
-         !XCB=sol_WOC(j,ihru)
-         !XZ=sol_WOC(j,ihru) *.0172
-         !ZZ=1.-XZ
-         !sol_BDM(j,ihru)=ZZ/(1./sol_BD(j,ihru)-XZ/.224)
-         !if(sol_BDM(j,ihru)<1.)then
-         !    sol_BDM(j,ihru)=1.
-         !    sol_BD(j,ihru)=1./(ZZ+XZ/.224)
-         !end if
-
-
-         !ton/ha
-         !WT = sol_mass/1000.
-
-         !WT1 = WT/1000.
-         !X1 = 10. * sol_cbn(j,ihru) * WT
-         !WT(J)=BD(J)*dg*10.
-         !DG1=dg
-         !WT1=WT(J)/1000.
-         !X1=10.*WOC(J)*WT(J)
-         !WOC(J)=X1
-         !kg/ha
-         !sol_WOC(j,ihru)=X1
          sol_WOC(j,ii) = sol_mass * sol_cbn(j,ii)/100
-         !if(sol_WON(j,ihru)>0.)then
-         !      sol_WON(j,ihru)=WT1*sol_WON(j,ihru)
-         !      KK=0
-         !else
          sol_WON(j,ii) = sol_aorgn(j,ii)+  sol_orgn(j,ii)!0.1 * sol_WOC(j,ii)
-         !      KK=1
-         !end if
 
 
-         !NCC = 0
-         !IF(NCC==0)THEN
-         !sol_WBM(j,ihru)=FBM*X1
          sol_BM(j,ii)=FBM*sol_WOC(j,ii)
          sol_BMC(j,ii)=sol_BM(j,ii)
-         !IF(KK==0)THEN
          RTO=sol_WON(j,ii)/sol_WOC(j,ii)
-         !ELSE
-         !      RTO=.1
-         !END IF
          sol_BMN(j,ii)=RTO*sol_BMC(j,ii)
-         !sol_HP(j,ihru)=FHP*(X1-sol_BM(j,ihru))
          sol_HP(j,ii)=FHP*(sol_WOC(j,ii)-sol_BM(j,ii))
          sol_HS(j,ii)=sol_WOC(j,ii)-sol_BM(j,ii)-sol_HP(j,ii)
-         !sol_HP(j,ii)=sol_WOC(j,ii)-sol_BM(j,ii)-sol_HP(j,ii)
          sol_HSC(j,ii)=sol_HS(j,ii)
          sol_HSN(j,ii)= RTO*sol_HSC(j,ii)  !sol_aorgn(j,ii)
          sol_HPC(j,ii)=sol_HP(j,ii)
@@ -367,8 +324,6 @@ subroutine soil_chem(ii)
 
 
          X1=sol_rsd(j,ii) /1000.
-         !!skip std in SWAT
-         !IF(j==1)X1=X1+STD(j)/1000.
 
          sol_LM(j,ii)=500.*X1
          sol_LS(j,ii)=sol_LM(j,ii)
@@ -380,23 +335,12 @@ subroutine soil_chem(ii)
          sol_LSLC(j,ii)=.8*sol_LSC(j,ii)
          sol_LSLNC(j,ii)=.2*sol_LSC(j,ii)
          sol_LSN(j,ii)=sol_LSC(j,ii)/150.
-         !sol_WOC(j,ihru)=sol_WOC(j,ihru)+sol_LSC(j,ihru)+sol_WLMC(j,ihru)
          sol_WOC(j,ii)=sol_WOC(j,ii)+sol_LSC(j,ii)+sol_LMC(j,ii)
-         !sol_WON(j,ihru)=sol_WON(j,ihru)+sol_LSN(j,ihru)+sol_WLMN(j,ihru)
          sol_WON(j,ii)=sol_WON(j,ii)+sol_LSN(j,ii)+sol_LMN(j,ii)
-         !END IF
 
-         !if (sol_orgn(j,ii) > 0.0001) then
-         !  sol_orgn(j,ii) = sol_orgn(j,ii) * wt1      !! mg/kg => kg/ha
-         !else
-         !! assume C:N ratio of 10:1
-         !  sol_orgn(j,ii) = 10000. * (sol_cbn(j,ii) / 11.) * wt1  !! CN ratio was 14 before 01-22-09 Armen
-         !end if
          sol_orgn(j,ii) = sol_HPN(j,ii)
          sol_aorgn(j,ii) = sol_HSN(j,ii)
          sol_fon(1,ii) = sol_LMN(j,ii) + sol_LSN(j,ii)
-         !sol_aorgn(j,ii) = sol_orgn(j,ii) * nactfr
-         !sol_orgn(j,ii) = sol_orgn(j,ii) * (1. - nactfr)
          sumorgn = sumorgn + sol_aorgn(j,ii) + sol_orgn(j,ii) +&
             &sol_fon(j,ii) + sol_BMN(j,ii)
 
@@ -404,15 +348,6 @@ subroutine soil_chem(ii)
       end do
 
    end if
-   !! By Zhang for C/N cycling
-
-   !!May need to think about moving the following lines which appear before in this module to the end of this module,
-   !!because orgn has been re-calculated.
-   !!============================
-   !basno3i = basno3i + sumno3 * hru_km(ii) / da_km
-   !basorgni = basorgni + sumorgn * hru_km(ii) / da_km
-   !basminpi = basminpi + summinp * hru_km(ii) / da_km
-   !basorgpi = basorgpi + sumorgp * hru_km(ii) / da_km
 
    return
 end

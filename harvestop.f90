@@ -1,4 +1,4 @@
-subroutine harvestop
+subroutine harvestop(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the harvest operation (no kill)
@@ -6,16 +6,17 @@ subroutine harvestop
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none           |HRU number
 !!    auto_eff(:) |none           |fertilizer application efficiency calculated
 !!                                |as the amount of N applied divided by the
 !!                                |amount of N removed at harvest
-!!    bio_hv(:,:,:)|kg/ha          |harvested biomass (dry weight)
+!!    bio_hv(:,:,:)|kg/ha         |harvested biomass (dry weight)
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
 !!    bio_yrms(:) |metric tons/ha |annual biomass (dry weight) in the HRU
 !!    cnyld(:)    |kg N/kg yield  |fraction of nitrogen in yield
 !!    cpyld(:)    |kg P/kg yield  |fraction of phosphorus in yield
 !!    curyr       |none           |current year in simulation
-!!    harveff       |none         |harvest efficiency: fraction of harvested
+!!    harveff     |none           |harvest efficiency: fraction of harvested
 !!                                |yield that is removed from HRU; the
 !!                                |remainder becomes residue on the soil
 !!                                |surface
@@ -40,7 +41,6 @@ subroutine harvestop
 !!                                |6 perennial
 !!                                |7 trees
 !!    idplt(:)    |none           |land cover code from crop.dat
-!!    ihru        |none           |HRU number
 !!    laiday(:)   |none           |leaf area index
 !!    ncut(:)     |none           |sequence number of harvest operation within
 !!                                |a year
@@ -80,7 +80,7 @@ subroutine harvestop
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bio_hv(:,:,:)|kg/ha          |harvested biomass (dry weight)
+!!    bio_hv(:,:,:)|kg/ha         |harvested biomass (dry weight)
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
 !!    bio_yrms(:) |metric tons/ha |annual biomass (dry weight) in the HRU
 !!    laiday(:)   |none           |leaf area index
@@ -115,7 +115,6 @@ subroutine harvestop
 !!    clipp       |kg P/ha        |phosphorus in clippings
 !!    clippst     |kg pst/ha      |pesticide in clippings
 !!    hiad1       |none           |actual harvest index (adj for water/growth)
-!!    j           |none           |HRU number
 !!    k           |none           |counter
 !!    wur         |none           |water deficiency factor
 !!    yield       |kg             |yield (dry weight)
@@ -126,13 +125,14 @@ subroutine harvestop
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Min
+!!    Intrinsic: Exp, Min, Log
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
    implicit none
 
-   integer :: j, k, l
+   integer, intent(in) :: j
+   integer :: k, l
 
 !!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
 !!    real*8 :: hiad1, wur, yield, clip, yieldn, yieldp, clipn, clipp
@@ -164,8 +164,6 @@ subroutine harvestop
 
    !!add by zhang
    !!===================
-
-   j = ihru
 
    yieldgrn = 0.
    yieldbms = 0.
@@ -296,10 +294,10 @@ subroutine harvestop
       BLG1 = 0.01/0.10 !BLG1/BLG2
       BLG2 = 0.99
       !CALL ASCRV(BLG(1,I),BLG(2,I),.5,1.)
-      XX = log(0.5/BLG1-0.5)
-      BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
+      XX = Log(0.5/BLG1-0.5)
+      BLG2 = (XX -Log(1./BLG2-1.))/(1.-0.5)
       BLG1 = XX + 0.5*BLG2
-      CLG=BLG3*phuacc(j)/(phuacc(j)+ EXP(BLG1-BLG2*phuacc(j)))
+      CLG=BLG3*phuacc(j)/(phuacc(j)+ Exp(BLG1-BLG2*phuacc(j)))
       sf = 0.05
       !kg/ha
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
@@ -310,7 +308,7 @@ subroutine harvestop
       !RLN = 1000*(resnew * CLG/(resnew_n+1.E-5))
       RLN = (resnew * CLG/(resnew_n+1.E-5))
       !RLR is the fraction of lignin in the added residue
-      RLR = MIN(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
+      RLR = Min(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
       !In most cases, lignin content in residue should be less than 30%
       !Therefore, RLR is expected to be less than 0.3
       !In the future, we may want to add a check make sure LMF is less than 1.0 - RLR.
@@ -415,10 +413,10 @@ subroutine harvestop
          BLG1 = 0.01/0.10
          BLG2 = 0.99
 
-         XX = log(0.5/BLG1-0.5)
-         BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
+         XX = Log(0.5/BLG1-0.5)
+         BLG2 = (XX -Log(1./BLG2-1.))/(1.-0.5)
          BLG1 = XX + 0.5*BLG2
-         CLG=BLG3*phuacc(j)/(phuacc(j)+ EXP(BLG1-BLG2*phuacc(j)))
+         CLG=BLG3*phuacc(j)/(phuacc(j)+ Exp(BLG1-BLG2*phuacc(j)))
          !kg/ha
          sol_min_n = (sol_no3(l,j)+sol_nh3(l,j))
 
@@ -430,7 +428,7 @@ subroutine harvestop
          !Not sure 1000 should be here or not!
          !RLN = 1000*(resnew * CLG/(resnew_n+1.E-5))
          RLN = (resnew * CLG/(resnew_n+1.E-5))
-         RLR = MIN(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
+         RLR = Min(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
 
          LMF = 0.85 - 0.018 * RLN
          if (LMF <0.01) then

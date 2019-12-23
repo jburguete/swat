@@ -5,15 +5,16 @@
 
 !> this subroutine estimates daily average temperature at the bottom
 !> of each soil layer
-subroutine solt
+!> @parameter[in] j HRU number
+subroutine solt(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    albday      |none          |albedo of ground for day
 !!    hru_ra(:)   |MJ/m^2        |solar radiation for the day in HRU
 !!    hru_sub(:)  |none          |subbasin in which HRU is located
-!!    ihru        |none          |HRU number
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_avbd(:) |Mg/m^3        |average bulk density of soil profile
 !!    sol_cov(:)  |kg/ha         |amount of residue on soil surface
@@ -45,7 +46,6 @@ subroutine solt
 !!    dp          |mm            |maximum damping depth
 !!    f           |none          |variable to hold intermediate calculation
 !!                               |result
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    st0         |MJ/m^2        |radiation hitting soil surface on day
 !!    tbare       |deg C         |temperature of bare soil surface
@@ -70,11 +70,10 @@ subroutine solt
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8, parameter :: tlag = 0.8
    real*8 :: b, bcv, dd, df, dp, f, st0, tbare, tcov, tmp_srf, wc, ww, xx, zd
-   integer :: j, k
-
-   j = ihru
+   integer :: k
 
    !! calculate maximum damping depth
    !! SWAT manual equation 2.3.6

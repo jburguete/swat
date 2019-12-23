@@ -177,7 +177,9 @@ module parm
    real*8 :: r2adj_bsn
 !> amount of pesticide applied to HRU (kg/ha)
    real*8 :: pst_kg
-   real*8 :: yield, burn_frlb
+!> yield (dry weight) (kg)
+   real*8 :: yield
+   real*8 :: burn_frlb
    real*8 :: yieldgrn, yieldbms, yieldtbr, yieldn, yieldp
    real*8 :: hi_bms, hi_rsd, yieldrsd
 !!    arrays for Landscape Transport Capacity 5/28/2009 nadia
@@ -251,7 +253,11 @@ module parm
    real*8 :: wshd_forgp
 !> average annual amount of P (mineral & organic) applied in watershed (kg P/ha)
    real*8 :: wshd_ftotp
-   real*8 :: wshd_yldn, wshd_yldp, wshd_fixn
+!> amount of nitrogen removed from soil in watershed in the yield (kg N/ha)
+   real*8 :: wshd_yldn
+!> amount of phosphorus removed from soil in watershed in the yield (kg P/ha)
+   real*8 :: wshd_yldp
+   real*8 :: wshd_fixn
    real*8 :: wshd_pup, wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
    real*8 :: wshd_astrs
 !> initial soil water content expressed as a fraction of field capacity
@@ -817,8 +823,6 @@ module parm
 !> number of different pesticides used in the simulation (none)
    integer :: npmx
    integer :: curyr !< current year in simulation (sequence) (none)
-   integer :: iihru
-!    Drainmod tile equations  01/2006
 !> tile drainage equations flag/code\n
 !> 1 simulate tile flow using subroutine drains(wt_shall)\n
 !> 0 simulate tile flow using subroutine origtile(wt_shall,d)
@@ -998,6 +1002,8 @@ module parm
 !> harvest index target of cover defined at planting ((kg/ha)/(kg/ha))
    real*8, dimension (:), allocatable :: hi_targ
    real*8, dimension (:), allocatable :: bio_targ !< biomass target (kg/ha)
+!> modifier for autofertilization target nitrogen content for plant
+!> (kg N/kg yield)
    real*8, dimension (:), allocatable :: tnyld
    integer, dimension (:), allocatable :: idapa, iypa, ifirsta
    integer, dimension (100) :: mo_transb, mo_transe
@@ -1118,7 +1124,10 @@ module parm
    real*8, dimension (16) :: fcstaao
    real*8, dimension (mstdo) :: wshdaao
    real*8, dimension (:,:), allocatable :: wpstdayo,wpstmono,wpstyro
-   real*8, dimension (:,:), allocatable :: yldkg, bio_hv
+!> harvested biomass (dry weight) (kg/ha)
+   real*8, dimension (:,:), allocatable :: bio_hv
+!> yield (dry weight) by crop type in the HRU (kg/ha)
+   real*8, dimension (:,:), allocatable :: yldkg
 !> reach monthly output array (varies)
    real*8, dimension (:,:), allocatable :: rchmono
    real*8, dimension (:,:), allocatable :: wpstaao,rchyro
@@ -1185,7 +1194,9 @@ module parm
 !> channel organic p concentration (ppm)
    real*8, dimension (:), allocatable :: ch_opco
    real*8, dimension (:), allocatable :: ch_orgn, ch_orgp
-   real*8, dimension (:), allocatable :: drift,rch_dox,rch_bactp
+!> amount of pesticide drifting onto main channel in subbasin (kg)
+   real*8, dimension (:), allocatable :: drift
+   real*8, dimension (:), allocatable :: rch_dox,rch_bactp
 !> alpha factor for bank storage recession curve (days)
    real*8, dimension (:), allocatable :: alpha_bnk
 !> \f$\exp(-alpha_bnk)\f$ (none)
@@ -1574,7 +1585,7 @@ module parm
 !> surface to soluble phosphorus in percolate
    real*8, dimension (:,:), allocatable :: pperco_sub
 !> amount of phosphorus in the soil layer stored in the stable mineral
-!> phosphorus pool(kg P/ha)
+!> phosphorus pool (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_stap
 !> factor which converts kg/kg soil to kg/ha (none)
    real*8, dimension (:,:), allocatable :: conv_wt
@@ -1839,13 +1850,11 @@ module parm
    integer, dimension (:), allocatable :: nop
    integer, dimension (:), allocatable :: yr_skip, isweep
    integer, dimension (:), allocatable :: icrmx, nopmx
-! new management scehduling variables
    integer, dimension (:,:), allocatable :: mgtop, idop
    integer, dimension (:,:), allocatable :: mgt1iop,mgt2iop,mgt3iop
    real*8, dimension (:,:), allocatable ::  mgt4op, mgt5op, mgt6op
    real*8, dimension (:,:), allocatable :: mgt7op, mgt8op, mgt9op
    real*8, dimension (:,:), allocatable :: mgt10iop, phu_op
-! mcrdb = maximum number of crops in database
 !> fraction of nitrogen in yield (kg N/kg yield)
    real*8, dimension (:), allocatable :: cnyld
 !> plant residue decomposition coefficient. The fraction of residue which will
@@ -1998,9 +2007,9 @@ module parm
 
    real*8, dimension (:), allocatable :: ranrns_hru
    integer, dimension (:), allocatable :: itill
-!> depth of mixing caused by operation (mm)
+!> depth of mixing caused by tillage operation (mm)
    real*8, dimension (:), allocatable :: deptil
-!> mixing efficiency of operation (none)
+!> mixing efficiency of tillage operation (none)
    real*8, dimension (:), allocatable :: effmix
 !> random roughness of a given tillage operation (mm)
    real*8, dimension (:), allocatable :: ranrns
@@ -2246,6 +2255,8 @@ module parm
    real*8, dimension (:), allocatable :: bio_ms
 !> albedo when soil is moist (none)
    real*8, dimension (:), allocatable :: sol_alb
+!> fraction of potential plant growth achieved on the day where the reduction is
+!> caused by water stress (none)
    real*8, dimension (:), allocatable :: strsw
 !> fraction of HRU/subbasin area that drains into ponds (none)
    real*8, dimension (:), allocatable :: pnd_fr
@@ -2582,7 +2593,9 @@ module parm
 !> fraction of HRU area that drains into floodplain (km^2/km^2)
    real*8, dimension (:), allocatable :: fld_fr
    real*8, dimension (:), allocatable :: orig_snohru,orig_potvol
-   real*8, dimension (:), allocatable :: orig_alai,orig_bioms,pltfr_n
+!> fraction of plant biomass that is nitrogen (none)
+   real*8, dimension (:), allocatable :: pltfr_n
+   real*8, dimension (:), allocatable :: orig_alai,orig_bioms
    real*8, dimension (:), allocatable :: orig_phuacc,orig_sumix,pltfr_p
 !> total number of heat units to bring plant to maturity (heat units)
    real*8, dimension (:), allocatable :: phu_plt
@@ -2863,7 +2876,9 @@ module parm
 !> 4 divert water from deep aquifer\n
 !> 5 divert water from source outside watershed
    integer, dimension (:), allocatable :: irrsc
-   integer, dimension (:), allocatable :: orig_igro,ntil
+!> sequence number of tillage operation within current year (none)
+   integer, dimension (:), allocatable :: ntil
+   integer, dimension (:), allocatable :: orig_igro
    integer, dimension (:), allocatable :: iwatable,curyr_mat
    integer, dimension (:), allocatable :: ncpest,icpst,ndcpst
    integer, dimension (:), allocatable :: iday_pest, irr_flag
@@ -2886,13 +2901,14 @@ module parm
 !> manure (fertilizer) identification number from fert.dat (none)
    integer, dimension (:), allocatable :: manure_id
 
-!!     gsm added for sdr (drainage) 7/24/08
    integer, dimension (:,:), allocatable :: mgt_sdr,idplrot
    integer, dimension (:,:), allocatable :: icont, iycont
    integer, dimension (:,:), allocatable :: ifilt, iyfilt
    integer, dimension (:,:), allocatable :: istrip, iystrip
    integer, dimension (:,:), allocatable :: iopday, iopyr, mgt_ops
-   real*8, dimension (:), allocatable :: wshd_pstap, wshd_pstdg
+!> total amount of pesticide type applied in watershed during simulation (kg/ha)
+   real*8, dimension (:), allocatable :: wshd_pstap
+   real*8, dimension (:), allocatable :: wshd_pstdg
    integer, dimension (12) :: ndmo
 !> array of unique pesticides used in watershed (none)
    integer, dimension (:), allocatable :: npno
@@ -3205,7 +3221,10 @@ module parm
    real*8, dimension (:,:),allocatable :: sol_cal, sol_ph
    integer:: sol_p_model
    integer, dimension (:,:),allocatable :: a_days, b_days
-   real*8, dimension (:), allocatable :: harv_min, fstap, min_res
+!> minimum residue allowed due to implementation of residue managment in the OPS
+!> file (kg/ha)
+   real*8, dimension (:), allocatable :: min_res
+   real*8, dimension (:), allocatable :: harv_min, fstap
    real*8, dimension (:,:),allocatable :: ro_bmp_flo, ro_bmp_sed
    real*8, dimension (:,:),allocatable :: ro_bmp_bac
    real*8, dimension (:,:),allocatable :: ro_bmp_pp, ro_bmp_sp

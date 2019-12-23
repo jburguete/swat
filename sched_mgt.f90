@@ -137,7 +137,7 @@ subroutine sched_mgt(j)
       frac_harvk = mgt6op(n,j)
       biomass = bio_ms(j)
 
-      call harvkillop
+      call harvkillop(j)
 
       if (imgt ==1) then
          write (143, 1001) subnum(j), hruno(j), iyr, i_mo, iida,&
@@ -172,7 +172,7 @@ subroutine sched_mgt(j)
       hi_rsd = mgt6op(n,j)
       harveff = mgt4op(n,j)
       if (harveff <= 0.) harveff = 1.0
-      call harvestop
+      call harvestop(j)
 
       if (imgt == 1) then
          write (143, 1001) subnum(j), hruno(j), iyr, i_mo, iida,&

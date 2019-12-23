@@ -1,4 +1,4 @@
-subroutine substor
+subroutine substor(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine stores and lags lateral soil flow and nitrate
@@ -6,6 +6,7 @@ subroutine substor
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bss1(:)      |mm H2O       |amount of lateral flow lagged
 !!    bss2(:)      |kg N/ha      |amount of nitrate in lateral flow lagged
 
@@ -14,7 +15,6 @@ subroutine substor
 !!    hrupest(:)    |none         |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
-!!    ihru          |none         |HRU number
 !!    lat_pst(:)    |kg pst/ha    |amount of pesticide in lateral flow in HRU
 !!                                |for the day
 !!    lat_ttime(:)  |none         |Exponential of the lateral flow travel time
@@ -48,7 +48,6 @@ subroutine substor
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -57,9 +56,8 @@ subroutine substor
    use parm
    implicit none
 
-   integer :: j, k
-
-   j = ihru
+   integer, intent(in) :: j
+   integer :: k
 
    bssprev = bss1(j)
    bss1(j) = bss1(j) + latq(j)

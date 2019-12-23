@@ -1,4 +1,4 @@
-subroutine sat_excess(j1)
+subroutine sat_excess(j1,j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine is the master soil percolation component.
@@ -6,11 +6,12 @@ subroutine sat_excess(j1)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j1          |none          |counter
+!!    j           |none          |HRU number
 !!    icrk        |none          |crack flow code
 !!                               |1 simulate crack flow in watershed
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
-!!    ihru        |none          |HRU number
 !!    nn          |none          |number of soil layers
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc - wp)
@@ -46,8 +47,6 @@ subroutine sat_excess(j1)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    j1          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -59,11 +58,10 @@ subroutine sat_excess(j1)
    use parm
    implicit none
 
-   integer, intent(in) :: j1
-   integer :: j, ii, isp, ly, nn
+   integer, intent(in) :: j1, j
+   integer :: ii, isp, ly, nn
    real*8 :: ul_excess, qlyr, rtof, qvol, xx
 
-   j = ihru
    isp = isep_typ(j)     !! J.Jeong 3/09/09
    rtof = 0.5
 

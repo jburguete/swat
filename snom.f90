@@ -4,17 +4,18 @@
 !> modified by Javier Burguete
 
 !> this subroutine predicts daily snom melt when the average air
-!> temperature exceeds 0 degrees Celcius
-subroutine snom
+!> temperature exceeds 0 degrees Celsius
+!> @param[in] j HRU number
+subroutine snom(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j            |none          |HRU number
 !!    elevb(:,:)   |m             |elevation at center of band
 !!    elevb_fr(:,:)|none          |fraction of subbasin area within elevation
 !!                                |band
 !!    iida         |julian date   |day being simulated (current julian date)
-!!    ihru         |none          |HRU number
 !!    pcpband(:,:) |mm H2O        |precipitation for the day in band in HRU
 !!    precipday    |mm H2O        |precipitation on the current day in the HRU
 !!    sub_sftmp    |deg C         |Snowfall temperature
@@ -82,7 +83,6 @@ subroutine snom
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    j           |none          |HRU number
 !!    ratio
 !!    smfac       |
 !!    smleb       |mm H2O        |amount of snow melt in elevation band on
@@ -104,10 +104,10 @@ subroutine snom
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: ratio, smfac, smleb, smp, snocov, sum1, xx
-   integer :: ii, j
+   integer :: ii
 
-   j = ihru
    sum1 =0.
    smp =0.
    isub = hru_sub(j)

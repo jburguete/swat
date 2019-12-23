@@ -9,17 +9,18 @@
 !> previous day and will exclude surface runoff generated on the
 !> current day which takes longer than one day to reach the main
 !> channel
-subroutine surfst_h2o
+!> @param[in] j HRU number
+subroutine surfst_h2o(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    brt(:)      |none          |fraction of surface runoff that takes
 !!                               |one day or less to reach the subbasin
 !!                               |outlet
 !!    hhqday(:)   |mm H2O        |surface runoff generated in HRU on the
 !!                               |current hour at current day
-!!    ihru        |none          |HRU number
 !!    surf_bs1(:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day
 !!    surfq(:)    |mm H2O        |surface runoff generated in HRU on the
@@ -41,7 +42,6 @@ subroutine surfst_h2o
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -54,9 +54,8 @@ subroutine surfst_h2o
    use parm
    implicit none
 
-   integer :: j, k
-
-   j = ihru
+   integer, intent(in) :: j
+   integer :: k
 
    if (ievent == 0) then
 

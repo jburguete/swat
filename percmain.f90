@@ -1,4 +1,4 @@
-subroutine percmain
+subroutine percmain(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine is the master soil percolation component.
@@ -6,6 +6,7 @@ subroutine percmain
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    drainmod tile equations   08/2006
 !!    dep_imp(:)  |mm            |depth to impervious layer
 !!    drainmod tile equations   08/2006
@@ -76,7 +77,6 @@ subroutine percmain
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    j1          |none          |counter
 !!    w2          |mm            |
 !!    y1          |mm            |dummy variable for wat
@@ -91,13 +91,13 @@ subroutine percmain
    use parm
    implicit none
 
-   integer :: j, j1, sb, isp, ii
+   integer, intent(in) :: j
+   integer :: j1, sb, isp, ii
    real*8 :: lid_cuminf_total, hru_mm, qvol, sumqtile, swst_del, wtst_del, xx, yy, d
    real*8, parameter :: por_air = 0.5
 
    lid_cuminf_total = 0.
 
-   j = ihru
    sb = inum1
    isp = isep_typ(j)     !! J.Jeong 6/25/14
 

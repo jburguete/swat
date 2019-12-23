@@ -1,4 +1,4 @@
-subroutine sumv
+subroutine sumv(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs summary calculations for HRU
@@ -55,7 +55,6 @@ subroutine sumv
 !!                               |on current day in HRU
 !!    hru_dafr(:) |none          |fraction of watershed area in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
-!!    ihru        |none          |HRU number
 !!    lat_pst(:)  |kg pst/ha     |amount of pesticide in lateral flow in HRU
 !!                               |for the day
 !!    latno3(:)   |kg N/ha       |amount of NO3-N in lateral flow in HRU for the
@@ -441,10 +440,9 @@ subroutine sumv
    use parm
    implicit none
 
-   integer :: j, k, ii
+   integer, intent (in) :: j
+   integer :: k, ii
    real*8 :: cnv
-
-   j = ihru
 
    cnv = 10. * hru_ha(j)
 

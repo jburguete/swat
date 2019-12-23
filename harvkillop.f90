@@ -1,15 +1,20 @@
-subroutine harvkillop
+!> @file harvkillop.f90
+!> file containing the subroutine harvkillop
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the harvest and kill operation
+!> this subroutine performs the harvest and kill operation
+!> @param[in] j HRU number
+subroutine harvkillop(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none           |HRU number
 !!    auto_eff(:) |none           |fertilizer application efficiency calculated
 !!                                |as the amount of N applied divided by the
 !!                                |amount of N removed at harvest
-!!    bio_hv(:,:,:)|kg/ha          |harvested biomass (dry weight)
+!!    bio_hv(:,:,:)|kg/ha         |harvested biomass (dry weight)
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
 !!    bio_yrms(:) |metric tons/ha |annual biomass (dry weight) in the HRU
 !!    cnop        |none           |SCS runoff curve number for moisture
@@ -30,12 +35,12 @@ subroutine harvkillop
 !!    icr(:)      |none           |sequence number of crop grown within the
 !!                                |current year
 !!    idplt(:)    |none           |land cover code from crop.dat
-!!    ihru        |none           |HRU number
 !!    ncrops(:,:,:)|
 !!    npmx        |none           |number of different pesticides used in
 !!                                |the simulation
 !!    nro(:)      |none           |sequence number for year in rotation
 !!    nyskip      |none           |number of years to not summarize/print output
+!!    plantn(:)   |kg N/ha        |amount of nitrogen in plant biomass
 !!    plantp(:)   |kg P/ha        |amount of phosphorus in plant biomass
 !!    plt_et(:)   |mm H2O         |actual ET simulated during life of plant
 !!    plt_pet(:)  |mm H2O         |potential ET simulated during life of plant
@@ -43,10 +48,10 @@ subroutine harvkillop
 !!    pltfr_n(:)  |none           |fraction of plant biomass that is nitrogen
 !!    rwt(:)      |none           |fraction of total plant biomass that is
 !!                                |in roots
-!!    plantn(:)   |kg N/ha        |amount of nitrogen in plant biomass
 !!    sol_fon(:,:)|kg N/ha        |amount of nitrogen stored in the fresh
 !!                                |organic (residue) pool
 !!    sol_fop(:,:)|kg P/ha        |amount of phosphorus stored in the fresh
+!!                                |organic (residue) pool
 !!    sol_pst(:,:,1)|kg/ha        |pesticide in first layer of soil
 !!                                |organic (residue) pool0
 !!    sol_rsd(:,:)|kg/ha          |amount of organic matter in the soil
@@ -65,7 +70,7 @@ subroutine harvkillop
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bio_hv(:,:,:)|kg/ha         |harvested biomass (dry weight)
+!!    bio_hv(:,:,:)|kg/ha        |harvested biomass (dry weight)
 !!    bio_ms(:)   |kg/ha         |land cover/crop biomass (dry weight)
 !!    bio_yrms(:) |metric tons/ha|annual biomass (dry weight) in the HRU
 !!    hvstiadj(:) |(kg/ha)/(kg/ha)|optimal harvest index for current time during
@@ -98,6 +103,9 @@ subroutine harvkillop
 !!                               |watershed in the yield
 !!    wshd_yldp   |kg P/ha       |amount of phosphorus removed from soil in
 !!                               |watershed in the yield
+!!    yield       |kg            |yield (dry weight)
+!!    yieldn      |
+!!    yieldp      |
 !!    yldanu(:)   |metric tons/ha|annual yield (dry weight) in the HRU
 !!    yldkg(:,:,:)|kg/ha         |yield (dry weight) by crop type in the HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -105,46 +113,42 @@ subroutine harvkillop
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    BLG3
+!!    BLG1
+!!    BLG2
+!!    CLG
 !!    hiad1       |
-!!    j           |none          |HRU number
 !!    k           |none          |counter
+!!    l           |none          |counter
+!!    LMF
+!!    LSF
 !!    resnew      |
+!!    resnew_n
+!!    resnew_ne
+!!    RLN
+!!    RLR
+!!    rtresnew
+!!    sf
+!!    sol_min_n
 !!    wur         |
-!!    yield       |kg            |yield (dry weight)
-!!    yieldn      |
-!!    yieldp      |
+!!    xx
 !!    yldpst      |kg pst/ha     |pesticide removed in yield
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max, Min
-!!    SWAT: curno
+!!    Intrinsic: Exp, Min, Max, Log
+!!    SWAT: rootfr, curno
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, k, l
-   real*8 :: RLN, RLR, xx
-
-!!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
-!!      real*8 :: wur, hiad1, yield, yieldn, yieldp, yldpst
-   real*8 :: wur, hiad1, yldpst
-   real*8 :: resnew, rtresnew
-
-
-   !!By Zhang
-   !!=============
-   real*8 :: BLG1, BLG2, CLG, sf
-   real*8 :: sol_min_n, resnew_n, resnew_ne
-   real*8 :: LMF, LSF
+   integer, intent(in) :: j
    real*8, parameter :: BLG3 = 0.10
-   !!By Zhang
-   !!==================
-
-
-   j = ihru
+   real*8 :: BLG1, BLG2, CLG, hiad1, LMF, LSF, resnew, resnew_n, resnew_ne,&
+      &RLN, RLR, rtresnew, sf, sol_min_n, wur, xx, yldpst
+   integer :: k, l
 
    !! calculate modifier for autofertilization target nitrogen content
    tnyld(j) = (1. - rwt(j)) * bio_ms(j) * pltfr_n(j) * auto_eff(j)
@@ -164,8 +168,8 @@ subroutine harvkillop
          wur = 100. * plt_et(j) / plt_pet(j)
       endif
       hiad1 = (hvstiadj(j) - wsyf(idplt(j))) *&
-      &(wur / (wur + Exp(6.13 - .0883 * wur))) +&
-      &wsyf(idplt(j))
+         &(wur / (wur + Exp(6.13 - .0883 * wur))) +&
+         &wsyf(idplt(j))
 
       if (hiad1 > hvsti(idplt(j))) then
          hiad1 = hvsti(idplt(j))
@@ -233,7 +237,7 @@ subroutine harvkillop
 
    !! Armen 19 May 2008 / 21 January 2008
    !! fraction of roots in each layer
-   call rootfr
+   call rootfr(j)
 
    !! fraction of N, P in residue (ff1) or roots (ff2)
    ff1 = (1 - hiad1) / (1 - hiad1 + rwt(j))
@@ -272,10 +276,10 @@ subroutine harvkillop
 
       BLG1 = 0.01/0.10
       BLG2 = 0.99
-      XX = log(0.5/BLG1-0.5)
-      BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
+      XX = Log(0.5/BLG1-0.5)
+      BLG2 = (XX -Log(1./BLG2-1.))/(1.-0.5)
       BLG1 = XX + 0.5*BLG2
-      CLG=BLG3*phuacc(j)/(phuacc(j)+EXP(BLG1-BLG2*phuacc(j)))
+      CLG=BLG3*phuacc(j)/(phuacc(j)+Exp(BLG1-BLG2*phuacc(j)))
 
 
       !if (k == 1) then
@@ -294,7 +298,7 @@ subroutine harvkillop
       !RLN = 1000*(resnew * CLG/(resnew_n+1.E-5))
       !RLN is the ratio of lignin to nitrogen in the newly added residue
       RLN = (resnew * CLG/(resnew_n+1.E-5))
-      RLR = MIN(.8, resnew * CLG/(resnew+1.E-5))
+      RLR = Min(.8, resnew * CLG/(resnew+1.E-5))
 
       LMF = 0.85 - 0.018 * RLN
       if (LMF <0.01) then
@@ -332,7 +336,7 @@ subroutine harvkillop
       if (resnew_n >= (0.42 * LSF * resnew /150)) then
          sol_LSN(1,j) = sol_LSN(1,j) + 0.42 * LSF * resnew / 150
          sol_LMN(1,j) = sol_LMN(1,j) + resnew_n -&
-         &(0.42 * LSF * resnew / 150) + 1.E-25
+            &(0.42 * LSF * resnew / 150) + 1.E-25
       else
          sol_LSN(1,j) = sol_LSN(1,j) + resnew_n
          sol_LMN(1,j) = sol_LMN(1,j) + 1.E-25
@@ -381,10 +385,10 @@ subroutine harvkillop
 
          BLG1 = 0.01/0.10
          BLG2 = 0.99
-         XX = log(0.5/BLG1-0.5)
-         BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
+         XX = Log(0.5/BLG1-0.5)
+         BLG2 = (XX -Log(1./BLG2-1.))/(1.-0.5)
          BLG1 = XX + 0.5*BLG2
-         CLG=BLG3*phuacc(j)/(phuacc(j)+EXP(BLG1-BLG2*phuacc(j)))
+         CLG=BLG3*phuacc(j)/(phuacc(j)+Exp(BLG1-BLG2*phuacc(j)))
 
 
          if (l == 1) then
@@ -396,13 +400,14 @@ subroutine harvkillop
          !kg/ha
          sol_min_n = (sol_no3(l,j)+sol_nh3(l,j))
 
+
          resnew = rtfr(l) *rtresnew
          resnew_n = rtfr(l) *ff2 * (plantn(j) - yieldn)
          resnew_ne = resnew_n + sf * sol_min_n
          !Not sure 1000 should be here or not!
          !RLN = 1000*(resnew * CLG/(resnew_n+1.E-5))
          RLN = (resnew * CLG/(resnew_n+1.E-5))
-         RLR = MIN(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
+         RLR = Min(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
 
          LMF = 0.85 - 0.018 * RLN
          if (LMF <0.01) then
@@ -439,7 +444,7 @@ subroutine harvkillop
          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
             sol_LSN(l,j) = sol_LSN(l,j) + 0.42 * LSF * resnew / 150
             sol_LMN(l,j) = sol_LMN(l,j) + resnew_ne -&
-            &(0.42 * LSF * resnew / 150) + 1.E-25
+               &(0.42 * LSF * resnew / 150) + 1.E-25
          else
             sol_LSN(l,j) = sol_LSN(l,j) + resnew_ne
             sol_LMN(l,j) = sol_LMN(l,j) + 1.E-25

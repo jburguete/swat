@@ -60,7 +60,7 @@ subroutine surface(i,j)
    end if
 
    !! compute snow melt
-   call snom
+   call snom(j)
 
    !! output by elevation band to output.snw
    if (isnow == 1) then
@@ -123,7 +123,7 @@ subroutine surface(i,j)
 
    !! calculate amount of surface runoff reaching main channel during day
    !! (qday) and store the remainder
-   call surfst_h2o
+   call surfst_h2o(j)
 
    !! calculate half-hour rainfall
    if (precipday > 0.01) call alph(0)

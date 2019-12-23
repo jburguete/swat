@@ -1,4 +1,4 @@
-subroutine subwq
+subroutine subwq(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes HRU loadings of chlorophyll-a, CBOD,
@@ -7,9 +7,9 @@ subroutine subwq
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    enratio     |none          |enrichment ratio calculated for day in HRU
 !!    hru_km(:)   |km^2          |area of HRU in square kilometers
-!!    ihru        |none          |HRU number
 !!    qtile       |mm H2O        |drainage tile flow in soil layer for the
 !!                               |day
 !!    sedorgn(:)  |kg N/ha       |amount of organic nitrogen in surface runoff
@@ -44,7 +44,6 @@ subroutine subwq
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    org_c       |kg            |organic carbon content of surface runoff on
 !!                               |day in HRU
 !!    tp          |kmoles P      |kilomoles of phosphorus in nutrient loading to
@@ -68,10 +67,8 @@ subroutine subwq
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: tp, org_c, wtmp, ww, xx, yy, zz
-
-   j = ihru
 
    !! calculcate water temperature
    !! Stefan and Preudhomme. 1993.  Stream temperature estimation

@@ -1,4 +1,4 @@
-subroutine solp
+subroutine solp(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the amount of phosphorus lost from the soil
@@ -8,10 +8,10 @@ subroutine solp
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    conv_wt(:,:)  |none         |factor which converts kg/kg soil to kg/ha
 !!    curyr         |none         |current year of simulation
 !!    hru_dafr(:)   |none         |fraction of watershed area located in HRU
-!!    ihru          |none         |HRU number
 !!    nyskip        |none         |number of years to skip output summarization
 !!                                |and printing
 !!    phoskd        |none         |Phosphorus soil partitioning coefficient
@@ -45,7 +45,6 @@ subroutine solp
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    vap         |kg P/ha       |amount of P leached from soil layer
 !!    xx          |none          |variable to hold intermediate calculation
 !!                               |result
@@ -59,10 +58,10 @@ subroutine solp
    use parm
    implicit none
 
-   integer :: j, ii
+   integer, intent(in) :: j
+   integer :: ii
    real*8 :: xx, vap
 
-   j = ihru
    vap_tile = 0
 
 !! compute soluble P lost in surface runoff

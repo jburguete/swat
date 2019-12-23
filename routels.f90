@@ -145,7 +145,7 @@ subroutine routels(iru_sub)
                   latq(jj) = 0.
                   sepbtm(jj) = 0.
                   qtile = 0.
-                  call percmain
+                  call percmain(jj)
                   latqout = latqout + latq(jj) * 10. * xx
                   gwqout = gwqout + sepbtm(jj) * 10. * xx
                end if
