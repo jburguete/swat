@@ -1,4 +1,4 @@
-subroutine sched_mgt
+subroutine sched_mgt(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
@@ -36,10 +36,10 @@ subroutine sched_mgt
    use parm
    implicit none
 
-   integer :: j, n, ncrp
+   integer, intent(in) :: j
+   integer :: n, ncrp
    real*8 :: biomass, husc
 
-   j = ihru
    n = nop(j)
 
    select case (mgtop(n,j))
@@ -60,13 +60,13 @@ subroutine sched_mgt
 !            if (mgt4op(n,j) > 5000.) mgt4op(n,j) = 5000.
       phu_plt(j) = mgt4op(n,j)
 
-      call plantop
+      call plantop(j)
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j),cpnm(idplt(j))," PLANT", phubase(j), phuacc(j),&
-         &sol_sw(j),bio_ms(j), sol_rsd(1,j),sol_sumno3(j),&
-         &sol_sumsolp(j)
+            &hru_km(j),cpnm(idplt(j))," PLANT", phubase(j), phuacc(j),&
+            &sol_sw(j),bio_ms(j), sol_rsd(1,j),sol_sumno3(j),&
+            &sol_sumsolp(j)
       end if
 
 
@@ -84,15 +84,15 @@ subroutine sched_mgt
       if (irr_no(j) <= 0) irr_no(j) = irrno(j)
       if (irr_no(j) <= 0) irr_no(j) = hru_sub(j)
       if (irr_sc(j) > 2) then    !! reach and res flag ??
-         call irrsub
+         call irrsub(j)
       endif
 
       if (imgt ==1) then
          write (143, 1002) subnum(j), hruno(j), iyr, i_mo,&
-         &iida, hru_km(j), "        ",&
-         &"IRRIGATE", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),irramt(j),&
-         &irr_sc(j), irr_no(j)
+            &iida, hru_km(j), "        ",&
+            &"IRRIGATE", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),irramt(j),&
+            &irr_sc(j), irr_no(j)
 1002     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,10x,f10.2,70x,2i7)
 
       end if
@@ -104,14 +104,14 @@ subroutine sched_mgt
       frt_surface = mgt5op(n,j)
       if (frt_surface <= 1.e-6) frt_surface = 0.2
 
-      call fert
+      call fert(j)
 
       if (imgt ==1) then
          write (143, 1004) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), fertnm(ifrttyp),&
-         &"   FERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),frt_kg,&
-         &fertno3, fertnh3, fertorgn, fertsolp, fertorgp
+            &hru_km(j), fertnm(ifrttyp),&
+            &"   FERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),frt_kg,&
+            &fertno3, fertnh3, fertorgn, fertsolp, fertorgp
 1004     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,20x,f10.2,10x,5f10.2)
       endif
 
@@ -126,9 +126,9 @@ subroutine sched_mgt
 
       if (imgt ==1) then
          write (143, 1004) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), pname(ipest),&
-         &"   PEST", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j),pst_kg
+            &hru_km(j), pname(ipest),&
+            &"   PEST", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j),pst_kg
       endif
 
     case (5)   !! harvest and kill operation
@@ -141,11 +141,11 @@ subroutine sched_mgt
 
       if (imgt ==1) then
          write (143, 1001) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), cpnm(idplt(j)),&
-         &"HARV/KILL", phubase(j), phuacc(j), sol_sw(j),biomass,&
-         &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),yield,&
-         &strsn_sum(j), strsp_sum(j), strstmp_sum(j), strsw_sum(j),&
-         &strsa_sum(j)
+            &hru_km(j), cpnm(idplt(j)),&
+            &"HARV/KILL", phubase(j), phuacc(j), sol_sw(j),biomass,&
+            &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),yield,&
+            &strsn_sum(j), strsp_sum(j), strstmp_sum(j), strsw_sum(j),&
+            &strsa_sum(j)
 !!1001  format (a5,1x,a4,3i6,2a15,8f10.2,30x,11f10.2)
 1001     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,8f10.2,30x,5f10.2, 14x,6f10.2)
       end if
@@ -161,9 +161,9 @@ subroutine sched_mgt
 
       if (imgt ==1) then
          write (143, 1003) subnum(j), hruno(j),iyr, i_mo, iida,&
-         &hru_km(j), tillnm(idtill),&
-         &"TILLAGE", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j), effmix(idtill)
+            &hru_km(j), tillnm(idtill),&
+            &"TILLAGE", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j), effmix(idtill)
 1003     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,30x,f10.2)
       end if
 
@@ -176,12 +176,12 @@ subroutine sched_mgt
 
       if (imgt == 1) then
          write (143, 1001) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), cpnm(idplt(j)),&
-         &"HARVEST ONLY", phubase(j), phuacc(j),sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j), sol_sumno3(j), sol_sumsolp(j), yield,&
-         &strsn_sum(j), strsp_sum(j), strstmp_sum(j), strsw_sum(j),&
-         &strsa_sum(j), yieldgrn, yieldbms, yieldtbr, yieldrsd,&
-         &yieldn, yieldp
+            &hru_km(j), cpnm(idplt(j)),&
+            &"HARVEST ONLY", phubase(j), phuacc(j),sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j), sol_sumno3(j), sol_sumsolp(j), yield,&
+            &strsn_sum(j), strsp_sum(j), strstmp_sum(j), strsw_sum(j),&
+            &strsa_sum(j), yieldgrn, yieldbms, yieldtbr, yieldrsd,&
+            &yieldn, yieldp
       end if
 
     case (8)   !! kill operation
@@ -189,9 +189,9 @@ subroutine sched_mgt
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ",&
-         &"    KILL", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j)
+            &hru_km(j), "         ",&
+            &"    KILL", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j)
       end if
 
       phubase(j) = 0.
@@ -213,9 +213,9 @@ subroutine sched_mgt
 
       if (imgt == 1) then
          write (143, 1005) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ",&
-         &"   GRAZE", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j),manure_kg(j)
+            &hru_km(j), "         ",&
+            &"   GRAZE", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j),manure_kg(j)
 1005     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,20x,f10.2)
       end if
 
@@ -237,9 +237,9 @@ subroutine sched_mgt
       irra_flag(j) = 1
       if (imgt ==1) then
          write (143, 1010) subnum(j), hruno(j), iyr, i_mo,&
-         &iida, hru_km(j), "        ",&
-         &"SCHED AUTORR", phubase(j), phuacc(j), sol_sw(j), bio_ms(j),&
-         &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j)
+            &iida, hru_km(j), "        ",&
+            &"SCHED AUTORR", phubase(j), phuacc(j), sol_sw(j), bio_ms(j),&
+            &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j)
 1010     format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2)
       end if
 
@@ -284,9 +284,9 @@ subroutine sched_mgt
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ",&
-         &"STREET SWEEP",phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j)
+            &hru_km(j), "         ",&
+            &"STREET SWEEP",phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j)
       end if
 
     case (13)    !! release/impound water in rice fields
@@ -294,9 +294,9 @@ subroutine sched_mgt
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ","RELEASE/IMPOUND", phubase(j),&
-         &phuacc(j),sol_sw(j),bio_ms(j),sol_rsd(1,j),sol_sumno3(j),&
-         &sol_sumsolp(j)
+            &hru_km(j), "         ","RELEASE/IMPOUND", phubase(j),&
+            &phuacc(j),sol_sw(j),bio_ms(j),sol_rsd(1,j),sol_sumno3(j),&
+            &sol_sumsolp(j)
       end if
 
     case (14)    !! continuous fertilization operation
@@ -322,9 +322,9 @@ subroutine sched_mgt
       call burnop
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ",&
-         &"      BURN", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j)
+            &hru_km(j), "         ",&
+            &"      BURN", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j)
       end if
 
     case (17)    !! skip a year

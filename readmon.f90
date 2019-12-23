@@ -4,7 +4,7 @@
 !> modified by Javier Burguete
 
 !> reads in the input data for the recmon command
-subroutine readmon
+subroutine readmon(i)
 
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name         |units         |definition
@@ -71,6 +71,7 @@ subroutine readmon
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    integer :: begmon, eof, ia1, ia2, ii, iya, mon
 

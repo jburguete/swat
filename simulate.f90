@@ -49,7 +49,6 @@ subroutine simulate
 !!                               |planting
 !!    hvstiadj(:) |(kg/ha)/(kg/ha)|optimal harvest index for current time during
 !!                               |growing season
-!!    i           |julian date   |current day in simulation--loop counter
 !!    icr(:)      |none          |sequence number of crop grown within the
 !!                               |current year
 !!    id1         |julian date   |first day of simulation in current year
@@ -81,6 +80,7 @@ subroutine simulate
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof
+!!    i           |julian date   |current day in simulation--loop counter
 !!    ic          |none          |counter
 !!    idap
 !!    idlst       |julian date   |last day of simulation in current year
@@ -108,8 +108,8 @@ subroutine simulate
    implicit none
 
    real*8 :: xx
-   integer :: eof, ic, idap, idlst, ii, isb, iyp, iyr_at, j, k, l, ly, mo_at,&
-      &mon
+   integer :: eof, i, ic, idap, idlst, ii, isb, iyp, iyr_at, j, k, l, ly,&
+      &mo_at, mon
 
    eof = 0
 
@@ -235,7 +235,7 @@ subroutine simulate
 
          if (curyr > nyskip) ndmo(i_mo) = ndmo(i_mo) + 1
 
-         if (pcpsim < 3) call clicon      !! read in/generate weather
+         if (pcpsim < 3) call clicon(i)   !! read in/generate weather
          if (iatmodep == 2) then
             read (127,*,iostat=eof) iyp, idap, (rammo_d(l), rcn_d(l),&
             &drydep_nh4_d(l), drydep_no3_d(l),l=1, matmo)
@@ -248,7 +248,7 @@ subroutine simulate
             no_lup = no_lup + 1
          end if
 
-         call command              !! command loop
+         call command(i)           !! command loop
 
 
          do ihru = 1, nhru
@@ -277,11 +277,11 @@ subroutine simulate
             call writed
 
             !! output.sol file
-            if (isol == 1) call soil_write
+            if (isol == 1) call soil_write(i)
 
             iida = i + 1
             call xmon
-            call writem
+            call writem(i)
          else
             iida = i + 1
             call xmon

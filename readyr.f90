@@ -4,7 +4,8 @@
 !> modified by Javier Burguete
 
 !> reads in the input data for the recyear command
-subroutine readyr
+!> @param[in] i reservoir number (none)
+subroutine readyr(i)
 
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name         |units         |definition
@@ -61,6 +62,7 @@ subroutine readyr
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    integer :: eof, ia1, ii, iya
 

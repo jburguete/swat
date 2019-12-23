@@ -5,13 +5,13 @@
 
 !> this subroutine initializes variables for the daily simulation of the
 !> land phase of the hydrologic cycle (the subbasin command loop)
-subroutine varinit
+!> @param[in] j HRU number
+subroutine varinit(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    deepst(:)   |mm H2O        |depth of water in deep aquifer
-!!    ihru        |none          |HRU number
 !!    nstep       |none          |number of lines of rainfall data for each
 !!                               |day
 !!    rainsub(:,:)|mm H2O        |precipitation for the time step during the
@@ -198,9 +198,8 @@ subroutine varinit
    use parm
    implicit none
 
-   integer :: ii, j
-
-   j = ihru
+   integer, intent(in) :: j
+   integer :: ii
 
    !!initialize variables
    al5 = 0.

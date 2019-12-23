@@ -1,4 +1,4 @@
-subroutine urb_bmp
+subroutine urb_bmp(j)
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine
 
@@ -22,10 +22,8 @@ subroutine urb_bmp
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: sednppm, sedppm, sedpppm, solnppm, solpppm, xx
-
-   j = ihru
 
 !! convert to ppm -> (kg/ha)*100./mm = ppm
    if (qdr(j) > 0.1) then

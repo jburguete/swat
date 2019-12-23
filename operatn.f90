@@ -1,4 +1,4 @@
-subroutine operatn
+subroutine operatn(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs all management operations
@@ -6,6 +6,7 @@ subroutine operatn
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    dayl(:)     |hours         |day length for current day
 !!    daylmn(:)   |hours         |shortest daylength occurring during the
 !!                               |year
@@ -30,7 +31,6 @@ subroutine operatn
 !!    igro(:)     |none          |land cover status code:
 !!                               |0 no land cover currently growing
 !!                               |1 land cover growing
-!!    ihru        |none          |HRU number
 !!    iop(:,:,:)  |julian date   |date of tillage operation
 !!    ncut(:)     |none          |sequence number of harvest operation within
 !!                               |current year
@@ -46,30 +46,30 @@ subroutine operatn
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    aphu        |heat units    |fraction of total heat units accumulated
-!!    j           |none          |HRU number
+!!    n           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: plantop, dormant, harvkillop, harvestop, killop, tillmix
+!!    SWAT: sched_mgt
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, n
+   integer, intent(in) :: j
    real*8 :: aphu
+   integer :: n
 
-   j = ihru
    n = nop(j)
 
 
 !! operations performed only when no land cover growing
 
    do while(idop(n,j) > 0 .and. iida == idop(n,j))
-      call sched_mgt
+      call sched_mgt(j)
       if (mgtop(n,j) == 17) then
-         call sched_mgt
+         call sched_mgt(j)
       end if
       if (yr_skip(j) == 1) exit
    end do
@@ -81,7 +81,7 @@ subroutine operatn
    end if
    if (dorm_flag == 1) aphu = 999.
    do while (phu_op(n,j) > 0. .and. aphu > phu_op(n,j))
-      call sched_mgt
+      call sched_mgt(j)
       if (igro(j) == 0) then
          aphu = phubase(j)
       else
@@ -89,7 +89,7 @@ subroutine operatn
       end if
       if (dorm_flag == 1) aphu = 999.
       if (mgtop(n,j) == 17) then
-         call sched_mgt
+         call sched_mgt(j)
       end if
       if (yr_skip(j) == 1) exit
    end do

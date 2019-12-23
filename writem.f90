@@ -1,4 +1,4 @@
-subroutine writem
+subroutine writem(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes monthly output
@@ -6,6 +6,7 @@ subroutine writem
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |julian date   |current day of simulation
 !!    curyr       |none          |current year of simulation
 !!    hrumono(:,:)|varies        |HRU monthly output array
 !!    hrupest(:)  |none          |pesticide use flag:
@@ -17,7 +18,6 @@ subroutine writem
 !!    hrupstm(:,2,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during month
 !!                               |(sorbed to sediment)
-!!    i           |julian date   |current day of simulation
 !!    idaf        |julian date   |beginning day of simulation
 !!    idal        |julian date   |ending day of simulation
 !!    iprint      |none          |print code:
@@ -201,6 +201,7 @@ subroutine writem
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: j, k
    real*8 :: sum
 
@@ -394,7 +395,7 @@ subroutine writem
       resoutm = 0.
       hrupstm = 0.
 
-      call writea
+      call writea(i)
    endif
 
    return

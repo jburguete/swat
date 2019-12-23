@@ -1,4 +1,4 @@
-subroutine sub_subbasin
+subroutine sub_subbasin(j)
 !!!!!!!!!!!!!!!!!!!!!This was split out from subbasin.f 01-13-2012 nubz
 !!!!!!!!!!!!!!!!!!!!!comments should be updated
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -8,6 +8,7 @@ subroutine sub_subbasin
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j              |none          |HRU number
 !!    auto_wstr(:)   |none          |water stress factor which triggers auto
 !!                                  |irrigation
 !!    bio_e(:)       |(kg/ha)/      |biomass-energy ratio
@@ -93,7 +94,6 @@ subroutine sub_subbasin
 !!                               |space
 !!    etday       |mm H2O        |actual evapotranspiration occuring on day
 !!                               |in HRU
-!!    ihru        |none          |HRU number
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
 !!    nafert(:)   |none          |sequence number of auto-fert application
@@ -127,10 +127,12 @@ subroutine sub_subbasin
    use parm
    implicit none
 
+   integer, intent(in) :: j
+
    real*8 :: hvol(10)
    integer :: sb, ii, kk
 
-   sb = hru_sub(ihru)
+   sb = hru_sub(j)
    ri_pmpvol = 0; ri_totpvol = 0
 
    !continue counting no rainfall time from previous day
@@ -138,19 +140,19 @@ subroutine sub_subbasin
 
    !! Count hours with no rainfall
    do ii = 1, nstep
-      if(rainsub(ihru,ii)/idt > 0.017) then
+      if(rainsub(j,ii)/idt > 0.017) then
          !! effective pcp is > 0.017 mm/min (or 4/100 inches/hr)
          hrnopcp(sb,ii) = 0
          !! the potential for initial dabstraction from paved surface is less than the user input initial dabstraction
-         abstinit = max(0.,abstinit - rainsub(ihru,ii))
+         abstinit = Max(0.,abstinit - rainsub(j,ii))
       else
          hrnopcp(sb,ii) = hrnopcp(sb,ii-1) + idt / 60.
          !! the potential for initial dabstraction from paved surface increases based on evaporation
-         abstinit = min(iabstr,abstinit + pet_day / nstep)
+         abstinit = Min(iabstr,abstinit + pet_day / nstep)
       end if
    end do
 
-   if (sum(ri_fr(sb,:))>0) then
+   if (Sum(ri_fr(sb,:))>0) then
       hvol(1:num_ri(sb)) = ri_qi(sb,1:num_ri(sb))
 
       do ii = 1, nstep
@@ -164,7 +166,7 @@ subroutine sub_subbasin
          else
             do kk=1,num_ri(sb)
                !irrigate after the first 12hrs and before 72hrs
-               ri_pmpvol(kk,ii) = min(hvol(kk),ri_pumpv(sb,kk))
+               ri_pmpvol(kk,ii) = Min(hvol(kk),ri_pumpv(sb,kk))
 
                ! total amount of water that irrigate the subbasin
                ri_totpvol(ii) = ri_totpvol(ii) + ri_pmpvol(kk,ii)

@@ -1,4 +1,4 @@
-subroutine washp
+subroutine washp(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the amount of pesticide washed off the plant
@@ -7,10 +7,10 @@ subroutine washp
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    hrupest(:)    |none          |pesticide use flag:
 !!                                 | 0: no pesticides used in HRU
 !!                                 | 1: pesticides used in HRU
-!!    ihru          |none          |HRU number
 !!    npmx          |none          |number of different pesticides used in
 !!                                 |the simulation
 !!    npno(:)       |none          |array of unique pesticides used in watershed
@@ -30,7 +30,6 @@ subroutine washp
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    kk          |none          |pesticide number from pest.dat
 !!    xx          |kg/ha         |amount of pesticide washed off foliage
@@ -41,10 +40,9 @@ subroutine washp
    use parm
    implicit none
 
-   integer :: j, k, kk
+   integer, intent(in) :: j
+   integer :: k, kk
    real*8 :: xx
-
-   j = ihru
 
    if (hrupest(j) == 0) return
 

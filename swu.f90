@@ -1,4 +1,4 @@
-subroutine swu
+subroutine swu(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine distributes potential plant evaporation through
@@ -8,6 +8,7 @@ subroutine swu
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    ep_max      |mm H2O        |maximum amount of transpiration (plant et)
 !!                               |that can occur on current day in HRU
 !!    epco(:)     |none          |plant water uptake compensation factor (0-1)
@@ -22,7 +23,6 @@ subroutine swu
 !!                               |6 perennial
 !!                               |7 trees
 !!    idplt(:)    |none          |land cover code from crop.dat
-!!    ihru        |none          |HRU number
 !!    iwatable    |none          |high water table code:
 !!                               |0 no high water table
 !!                               |1 high water table
@@ -77,12 +77,11 @@ subroutine swu
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    gx          |
 !!    ir          |
-!!    j           |none          |HRU number
 !!    k           |none          |counter (soil layer)
 !!    reduc       |none          |fraction of water uptake by plants achieved
 !!                               |where the reduction is caused by low water
 !!                               |content
-!!    sum         |
+!!    sum1         |
 !!    sump        |
 !!    wuse(:)     |mm H2O        |water uptake by plants in each soil layer
 !!    xx          |mm H2O        |water uptake by plants from all layers
@@ -96,12 +95,11 @@ subroutine swu
    use parm
    implicit none
 
-   integer :: j, k, ir
+   integer, intent(in) :: j
+   integer :: k, ir
    real*8, dimension(mlyr) :: wuse
-   real*8 :: sum, xx, gx, reduc, sump, satco, scparm
+   real*8 :: sum1, xx, gx, reduc, sump, satco, scparm
    real*8, parameter :: pl_aerfac = .85
-
-   j = ihru
 
    select case (idc(idplt(j)))
     case (1, 2, 4, 5)
@@ -146,9 +144,9 @@ subroutine swu
          end if
 
          if (sol_rd <= 0.01) then
-            sum = ep_max / uobw
+            sum1 = ep_max / uobw
          else
-            sum = ep_max * (1. - Exp(-ubw * gx / sol_rd)) / uobw
+            sum1 = ep_max * (1. - Exp(-ubw * gx / sol_rd)) / uobw
          end if
 
          !! don't allow compensation for aeration stress
@@ -157,9 +155,9 @@ subroutine swu
 !          else
 !            yy= sump - xx
 !          end if
-         !wuse(k) = sum - sump + 1. * epco(j) ! ovrewritten in the following line
-         wuse(k) = sum - sump + (sump - xx) * epco(j)
-         sump = sum
+         !wuse(k) = sum1 - sump + 1. * epco(j) ! ovrewritten in the following line
+         wuse(k) = sum1 - sump + (sump - xx) * epco(j)
+         sump = sum1
 
 !!! commented aeration stress out !!!
          !! adjust uptake if sw is greater than 90% of plant available water

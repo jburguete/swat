@@ -25,16 +25,15 @@ subroutine readfcst
 !!                               |precipitation
 !!    fpcp_stat(:,3,:)|none      |skew coefficient for the average daily
 !!                               |precipitation
-!!    fpr_w1(:,:) |none         |probability of wet day after dry day in month
-!!    fpr_w2(:,:) |none         |probability of wet day after wet day in month
-!!    fpr_w3(:,:) |none         |proportion of wet days in the month
-!!    ftmpmn(:,:)  |deg C        |avg monthly minimum air temperature
-!!    ftmpmx(:,:)  |deg C        |avg monthly maximum air temperature
+!!    fpr_w1(:,:) |none          |probability of wet day after dry day in month
+!!    fpr_w2(:,:) |none          |probability of wet day after wet day in month
+!!    fpr_w3(:,:) |none          |proportion of wet days in the month
+!!    ftmpmn(:,:) |deg C         |avg monthly minimum air temperature
+!!    ftmpmx(:,:) |deg C         |avg monthly maximum air temperature
 !!    ftmpstdmn(:,:)|deg C       |standard deviation for avg monthly minimum air
 !!                               |temperature
 !!    ftmpstdmx(:,:)|deg C       |standard deviation for avg monthly maximum air
 !!                               |temperature
-!!    i           |none          |forecast region number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -58,7 +57,7 @@ subroutine readfcst
 
    character (len=80) :: titldum
    real*8, dimension (12) :: pcpd, pcpmm
-   integer :: fcstregtot, j, mdays, mon
+   integer :: fcstregtot, i, j, mdays, mon
 
 
    fcstregtot = 0
@@ -99,7 +98,7 @@ subroutine readfcst
             !! if fpr_w values good, use calculated pcpd based on these values
             !! using first order Markov chain
             pcpd(mon) = mdays * fpr_w1(mon,i) /&
-            &(1. - fpr_w2(mon,i) + fpr_w1(mon,i))
+               &(1. - fpr_w2(mon,i) + fpr_w1(mon,i))
 
          end if
 

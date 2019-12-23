@@ -1,4 +1,4 @@
-subroutine rtmusk
+subroutine rtmusk(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine routes a daily flow through a reach using the
@@ -7,6 +7,7 @@ subroutine rtmusk
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |none          |current day of simulation
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_k2(:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
@@ -24,7 +25,6 @@ subroutine rtmusk
 !!                               |evaporation predicted in arid regions.
 !!    flwin(:)    |m^3 H2O       |flow into reach on previous day
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
-!!    i           |none          |current day of simulation
 !!    id1         |none          |first day of simulation in year
 !!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
@@ -109,6 +109,7 @@ subroutine rtmusk
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: jrch,nn,ii
    real*8 :: xkm, det, yy, c1, c2, c3, wtrin, p, vol, c, rh
    real*8 :: topw,msk1,msk2,detmax,detmin,qinday,qoutday

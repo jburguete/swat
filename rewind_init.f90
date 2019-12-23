@@ -206,7 +206,23 @@ subroutine rewind_init
    bss4 = 0.
    newrti = 0.
    pst_lag = 0.
-   surf_bs = 0.
+   surf_bs1 = 0.
+   surf_bs2 = 0.
+   surf_bs3 = 0.
+   surf_bs4 = 0.
+   surf_bs5 = 0.
+   surf_bs6 = 0.
+   surf_bs7 = 0.
+   surf_bs8 = 0.
+   surf_bs9 = 0.
+   surf_bs10 = 0.
+   surf_bs11 = 0.
+   surf_bs12 = 0.
+   surf_bs13 = 0.
+   surf_bs14 = 0.
+   surf_bs15 = 0.
+   surf_bs16 = 0.
+   surf_bs17 = 0.
    do j = 1, nhru
       call curno(cn2(j),j)
    end do

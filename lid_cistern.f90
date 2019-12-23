@@ -1,11 +1,19 @@
-subroutine lid_cistern(sb,j,k,lid_prec)
+!> @file lid_cistern.f90
+!> file containing the subroutine lid_cistern
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    Simulate cistern processes
+!> simulate cistern processes
+!> @param[in] sb subbasin number (none)
+!> @param[in] j HRU number (none)
+!> @param[in] k subdaily time index (none)
+!> @param[in] lid_prec
+!> precipitation depth a LID receives in a simulation time interval (mm)
+subroutine lid_cistern(sb,j,k,lid_prec)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~ ~ ~ ~ ~
 !!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    sb               |none          |Subbasin number
 !!    j                |none          |HRU number
 !!    k                |none          |Subdaily time index
@@ -14,48 +22,47 @@ subroutine lid_cistern(sb,j,k,lid_prec)
 !!    ihru             |none          |HRU number
 !!    nstep            |none          |Number of time intervals for a day
 !!    urblu(:)         |none          |Urban land type identification number from urban.dat
-!!    lid_vol          |m3            |Volume of a cistern storage
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    lid_qsurf        |mm H2O        |Depth of runoff generated on a LID in a given time interval
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    dt               |hour          |Time interval in hours
 !!    jj               |none          |Urban land type identification number from
 !!                                    |urban.dat
-!!    dt               |hour          |Time interval in hours
-!!    lid_cumr         |mm H2O        |Cumulative amount of rainfall a LID receives in a time interval
-!!    Cumulative amount of rainfall a LID receives in a time interval        |mm H2O        |Cumulative amount of excess rainfall at a time step in a day
-!!    lid_exinc        |mm H2O        |Amount of excess rainfall
+!!    lid_bypass       |mm            |Depth of flow bypassing the cistern
+!!    lid_cumirr       |mm H2O        |Cumulative amount of rainfall a LID receives in a time interval
+!!    lid_irr          |m3            |Volume of water taken from the cistern for irrigation
 !!    lid_str          |m3            |Volume of stored water in the cistern
 !!    lid_vbypass      |m3            |Volume of flow bypassing the cistern
-!!    lid_bypass       |mm            |Depth of flow bypassing the cistern
-!!    lid_irr          |m3            |Volume of water taken from the cistern for irrigation
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    lid_vol          |m3            |Volume of a cistern storage
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    None
 
-!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jj,sb,j,k
-   real*8 :: lid_str,lid_vbypass,lid_bypass,lid_irr,lid_vol,lid_cumirr
-   real*8 :: lid_prec
+   integer, intent(in) :: sb, j, k
+   real*8, intent(in) :: lid_prec
+   real*8 :: lid_bypass, lid_cumirr, lid_irr, lid_str, lid_vbypass, lid_vol
+   integer :: jj
 
    jj = urblu(j)
 
    lid_vol = cs_vol(sb,jj)         ! commented out for testing
    if (lid_vol <= 0) then
       lid_vol = (cs_rdepth(sb,jj) / 1000.) *&
-      &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)         ! for testing, assuming the storage can handle excess rainfall of 2.5 mm
+         &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)         ! for testing, assuming the storage can handle excess rainfall of 2.5 mm
    end if
 
    lid_str = lid_str_last(j,3)
@@ -70,7 +77,7 @@ subroutine lid_cistern(sb,j,k,lid_prec)
 
    if (cs_grcon(sb,jj)==0) then
       lid_str = lid_str_last(j,3) + (lid_prec / 1000.) *&
-      &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)           ! m3
+         &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)           ! m3
    else
       lid_str = lid_str_last(j,3) + (lid_prec / 1000.) * (hru_ha(j) * 10000.) ! m3
    end if

@@ -1,7 +1,10 @@
-subroutine eiusle
+!> @file eiusle.f90
+!> file containing the subroutine eiusle
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine computes the USLE erosion index (EI)
+!> this subroutine computes the USLE erosion index (EI)
+subroutine eiusle
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
@@ -49,15 +52,10 @@ subroutine eiusle
    use parm
    implicit none
 
-   real*8 :: xa, preceff, ajp, xb, pkrf, pkrf30
+   real*8 :: ajp, pkrf, pkrf30, preceff, xa, xb
    integer :: j
 
    j = ihru
-
-   pkrf = 0.
-   pkrf30 = 0.
-   xa = 0.
-   xb = 0.
 
    preceff = precipday   !- snomlt - ovrlnd(j)
    if (preceff > 1.e-4) then
@@ -67,7 +65,7 @@ subroutine eiusle
       pkrf30 = 2. * preceff * xa
       pkrf = 2. * xb * preceff
       usle_ei = preceff * (12.1 + 8.9 * (Log10(pkrf) - .4343)) *&
-      &preceff / 1000.
+         &preceff / 1000.
       if (usle_ei < 1.e-4) usle_ei = 0.
       usle_eifac(j) = usle_ei
    endif

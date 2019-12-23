@@ -123,11 +123,11 @@ subroutine sat_excess(j1)
                surqsolp(j) =  surqsolp(j) +  xx * sptminps(isp)
 
                !compute runoff lag for the ponded STE and add to already estimated qday
-               surf_bs(1,j) = Max(1.e-6, surf_bs(1,j) + qlyr)
+               surf_bs1(j) = Max(1.e-6, surf_bs1(j) + qlyr)
                cbodu(j) = (cbodu(j) * qday + sptbodconcs(isep_typ(j))&
                &* qlyr * brt(j)) / (qday + qlyr * brt(j)) !add septic effluent cbod (mg/l) concentration
                qday = qday + qlyr * brt(j) !runoff that drains into the main channel for the day
-               surf_bs(1,j) = surf_bs(1,j) - qday
+               surf_bs1(j) = surf_bs1(j) - qday
 
                ! Initiate counting the number of days the system fails and makes surface ponding of STE
                if(sep_tsincefail(j)==0) sep_tsincefail(j) = 1

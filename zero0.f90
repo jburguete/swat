@@ -9,6 +9,8 @@ subroutine zero0
    use parm
    implicit none
 
+   integer :: ii
+
 !!    Srin co2 (EPA)
    co2_x2 = 0.
    co2_x = 0.
@@ -548,8 +550,8 @@ subroutine zero0
    yr_skip = 0
 
    !initialize flood routing variables
-   do i=1,4
-      IHX(i) = i
+   do ii=1,4
+      IHX(ii) = ii
    end do
    QHY = 0.
    NHY = 1

@@ -7,7 +7,8 @@
 !> (.wus). The water use file extracts water from the subbasin and it is
 !> considered to be lost from the watershed. These variables should be used
 !> to remove water transported outside the watershed.
-subroutine readwus
+!> @param[in] i HRU number
+subroutine readwus(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -45,6 +46,7 @@ subroutine readwus
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    integer :: eof, j, mon
    real*8 :: swudp(12), swupnd(12), swush(12)

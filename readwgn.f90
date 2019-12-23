@@ -5,7 +5,8 @@
 
 !> this subroutine reads the HRU weather generator parameters from the
 !> .wgn file
-subroutine readwgn
+!> @param[in] ii HRU number (none)
+subroutine readwgn(ii)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -15,7 +16,7 @@ subroutine readwgn
 !!                               |impact of peak flow on erosion
 !!    ffcb        |none          |initial soil water content expressed as a
 !!                               |fraction of field capacity
-!!    i           |none          |HRU number
+!!    ii          |none          |HRU number
 !!    idaf        |julian date   |beginning day of simulation
 !!    idist       |none          |rainfall distribution code
 !!                               |  0 for skewed normal dist
@@ -136,6 +137,7 @@ subroutine readwgn
    use parm
    implicit none
 
+   integer, intent(in) :: ii
    real*8, dimension (12) :: pcpd, pcpmm, rain_hhsm, rainhhmx
    character (len=80) :: titldum
    real*8 :: dl, lattan, pcp, r6, rain_yrs, rndm1, rnm2, sffc, sum, summm_p,&
@@ -148,38 +150,38 @@ subroutine readwgn
    pcpmm = 0.
 
    read (114,5000) titldum
-   read (114,5100) wlat(i)
-   read (114,5100) welev(i)
+   read (114,5100) wlat(ii)
+   read (114,5100) welev(ii)
    read (114,5100) rain_yrs
-   read (114,5200) (tmpmx(mon,i),mon = 1,12)
-   read (114,5200) (tmpmn(mon,i),mon = 1,12)
-   read (114,5200) (tmpstdmx(mon,i),mon = 1,12)
-   read (114,5200) (tmpstdmn(mon,i),mon = 1,12)
+   read (114,5200) (tmpmx(mon,ii),mon = 1,12)
+   read (114,5200) (tmpmn(mon,ii),mon = 1,12)
+   read (114,5200) (tmpstdmx(mon,ii),mon = 1,12)
+   read (114,5200) (tmpstdmn(mon,ii),mon = 1,12)
    read (114,5201) (pcpmm(mon),mon = 1,12)
-   read (114,5200) (pcp_stat(mon,2,i),mon = 1,12)  !pcpstd
-   read (114,5200) (pcp_stat(mon,3,i),mon = 1,12)  !pcpskw
-   read (114,5200) (pr_w1(mon,i),mon = 1,12)
-   read (114,5200) (pr_w2(mon,i),mon = 1,12)
+   read (114,5200) (pcp_stat(mon,2,ii),mon = 1,12)  !pcpstd
+   read (114,5200) (pcp_stat(mon,3,ii),mon = 1,12)  !pcpskw
+   read (114,5200) (pr_w1(mon,ii),mon = 1,12)
+   read (114,5200) (pr_w2(mon,ii),mon = 1,12)
    read (114,5200) (pcpd(mon),mon = 1,12)
    read (114,5200) (rainhhmx(mon),mon = 1,12)
-   read (114,5200) (solarav(mon,i),mon = 1,12)
-   read (114,5200) (dewpt(mon,i),mon = 1,12)
-   read (114,5200) (wndav(mon,i),mon = 1,12)
+   read (114,5200) (solarav(mon,ii),mon = 1,12)
+   read (114,5200) (dewpt(mon,ii),mon = 1,12)
+   read (114,5200) (wndav(mon,ii),mon = 1,12)
 
 !! determine if input for dewpt is relative humidity
    do mon = 1,12
-      if (dewpt(mon,i) > 1.0  .or. dewpt(mon,i) < 0.0) then
-         irelh(i) = 0
+      if (dewpt(mon,ii) > 1.0  .or. dewpt(mon,ii) < 0.0) then
+         irelh(ii) = 0
       end if
    end do
 
 !! variables needed for radiation calcs.
    x2 = 0.0
-   if (sub_lat(i) < 1.e-4) sub_lat(i) = wlat(i)
-   xx = sub_lat(i) / 57.296
+   if (sub_lat(ii) < 1.e-4) sub_lat(ii) = wlat(ii)
+   xx = sub_lat(ii) / 57.296
    !!convert degrees to radians (2pi/360=1/57.296)
-   latsin(i) = Sin(xx)
-   latcos(i) = Cos(xx)
+   latsin(ii) = Sin(xx)
+   latcos(ii) = Cos(xx)
    lattan = Tan(xx)
 !! calculate minimum daylength
 !! daylength=2*acos(-tan(sd)*tan(lat))/omega
@@ -192,16 +194,16 @@ subroutine readwgn
    x1 = .4348 * abs(lattan)
    if (x1 < 1.) x2 = Acos(x1)
    !!x1 will be >= 1. if sub_lat > 66.5 or < -66.5
-   daylmn(i) = 7.6394 * x2
+   daylmn(ii) = 7.6394 * x2
 
 !! calculate day length threshold for dormancy
    if (dorm_hr < -1.e-6) then
-      if (abs(sub_lat(i)) > 40.) then
+      if (abs(sub_lat(ii)) > 40.) then
          dl = 1.
-      else if (abs(sub_lat(i)) < 20.) then
+      else if (abs(sub_lat(ii)) < 20.) then
          dl = -1.
       else
-         dl = (abs(sub_lat(i)) - 20.) / 20.
+         dl = (abs(sub_lat(ii)) - 20.) / 20.
       end if
    else
       dl = dorm_hr
@@ -224,41 +226,41 @@ subroutine readwgn
    summm_p = 0.
    !tmin = 100. ! not used
    !tmax = 0. ! not used
-   pcpdays(i) = 0.
+   pcpdays(ii) = 0.
    do mon = 1, 12
       mdays = ndays(mon+1) - ndays(mon)
-      tav = (tmpmx(mon,i) + tmpmn(mon,i)) / 2.
+      tav = (tmpmx(mon,ii) + tmpmn(mon,ii)) / 2.
       !if (tav > tmax) tmax = tav ! not used
       !if (tav < tmin) tmin = tav ! not used
-      summx_t = summx_t + tmpmx(mon,i)
-      summn_t = summn_t + tmpmn(mon,i)
+      summx_t = summx_t + tmpmx(mon,ii)
+      summn_t = summn_t + tmpmn(mon,ii)
 
       !! calculate total potential heat units
-      if (tav > 0.) phutot(i) = phutot(i) + tav * mdays
+      if (tav > 0.) phutot(ii) = phutot(ii) + tav * mdays
 
       !! calculate values for pr_w if missing or bad
-      if (pr_w2(mon,i) <= pr_w1(mon,i).or.pr_w1(mon,i) <= 0.) then
+      if (pr_w2(mon,ii) <= pr_w1(mon,ii).or.pr_w1(mon,ii) <= 0.) then
          if (pcpd(mon) < .1) pcpd(mon) = 0.1
-         pr_w1(mon,i) = .75 * pcpd(mon) / mdays
-         pr_w2(mon,i) = .25 + pr_w1(mon,i)
+         pr_w1(mon,ii) = .75 * pcpd(mon) / mdays
+         pr_w2(mon,ii) = .25 + pr_w1(mon,ii)
       else
          !! if pr_w values good, use calculated pcpd based on these values
          !! using first order Markov chain
-         pcpd(mon) = mdays * pr_w1(mon,i) /&
-         &(1. - pr_w2(mon,i) + pr_w1(mon,i))
+         pcpd(mon) = mdays * pr_w1(mon,ii) /&
+         &(1. - pr_w2(mon,ii) + pr_w1(mon,ii))
 
       end if
 
       !! calculate precipitation-related values
       if (pcpd(mon) <= 0.) pcpd(mon) = .001
-      pr_w3(mon,i) = pcpd(mon) / mdays
-      pcp_stat(mon,1,i) = pcpmm(mon) / pcpd(mon)
-      if (pcp_stat(mon,3,i) < 0.2) pcp_stat(mon,3,i) = 0.2
+      pr_w3(mon,ii) = pcpd(mon) / mdays
+      pcp_stat(mon,1,ii) = pcpmm(mon) / pcpd(mon)
+      if (pcp_stat(mon,3,ii) < 0.2) pcp_stat(mon,3,ii) = 0.2
       summm_p = summm_p + pcpmm(mon)
-      pcpdays(i) = pcpdays(i) + pcpd(mon)
+      pcpdays(ii) = pcpdays(ii) + pcpd(mon)
    end do
 
-   tmp_an(i) = (summx_t + summn_t) / 24.
+   tmp_an(ii) = (summx_t + summn_t) / 24.
 
    !! calculate initial temperature of soil layers
    if (idaf > ndays(2)) then
@@ -270,9 +272,9 @@ subroutine readwgn
    else
       mon = 1
    end if
-   tmpsoil = (tmpmx(mon,i) + tmpmn(mon,i)) / 2.
+   tmpsoil = (tmpmx(mon,ii) + tmpmn(mon,ii)) / 2.
 
-   xrnd = rndseed(idg(3),i)
+   xrnd = rndseed(idg(3),ii)
    rndm1 = Aunif(xrnd)
    do mon = 1, 12
       !! calculate precipitation correction factor for pcp generator
@@ -281,20 +283,20 @@ subroutine readwgn
          xlv = 0.
          pcp = 0.
          sum = 0.
-         r6 = pcp_stat(mon,3,i) / 6.
+         r6 = pcp_stat(mon,3,ii) / 6.
          do j = 1, 1000
             rnm2 = Aunif(xrnd)
             xlv = (Dstn1(rndm1,rnm2) -r6) * r6 + 1
             rndm1 = rnm2
-            xlv = (xlv**3 - 1.) * 2 / pcp_stat(mon,3,i)
-            pcp = xlv * pcp_stat(mon,2,i) + pcp_stat(mon,1,i)
+            xlv = (xlv**3 - 1.) * 2 / pcp_stat(mon,3,ii)
+            pcp = xlv * pcp_stat(mon,2,ii) + pcp_stat(mon,1,ii)
             if (pcp < 0.01) pcp = 0.01
             sum = sum + pcp
          end do
          if (sum > 0.) then
-            pcf(mon,i) = 1000. * pcp_stat(mon,1,i) / sum
+            pcf(mon,ii) = 1000. * pcp_stat(mon,1,ii) / sum
          else
-            pcf(mon,i) = 1.
+            pcf(mon,ii) = 1.
          end if
       end if
 
@@ -303,19 +305,19 @@ subroutine readwgn
       x1 = .5 / rain_yrs
       x2 = x1 / pcpd(mon)
       x3 = rain_hhsm(mon) / Log(x2)
-      if (pcp_stat(mon,1,i) > 1.e-4) then
-         amp_r(mon,i) = adj_pkr * (1. - Exp(x3 / pcp_stat(mon,1,i)))
+      if (pcp_stat(mon,1,ii) > 1.e-4) then
+         amp_r(mon,ii) = adj_pkr * (1. - Exp(x3 / pcp_stat(mon,1,ii)))
       else
-         amp_r(mon,i) = 0.95
+         amp_r(mon,ii) = 0.95
       end if
-      if (amp_r(mon,i) < .1) amp_r(mon,i) = .1
-      if (amp_r(mon,i) > .95) amp_r(mon,i) = .95
+      if (amp_r(mon,ii) < .1) amp_r(mon,ii) = .1
+      if (amp_r(mon,ii) > .95) amp_r(mon,ii) = .95
    end do
 
 !!    determine precipitation category (ireg initialized to category 1)
    xx = summm_p
-   if (summm_p > 508.) ireg(i) = 2
-   if (summm_p > 1016.) ireg(i) = 3
+   if (summm_p > 508.) ireg(ii) = 2
+   if (summm_p > 1016.) ireg(ii) = 3
 
 !!    set fraction of field capacity in soil
    if (ffcb <= 0.) then
@@ -326,7 +328,7 @@ subroutine readwgn
    end if
 
 !! assign HRU values
-   do j = 1, hrutot(i)
+   do j = 1, hrutot(ii)
       ihru = nhru + j
       do k = 1, sol_nly(ihru)
          sol_tmp(k,ihru) = tmpsoil

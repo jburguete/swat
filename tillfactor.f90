@@ -30,7 +30,7 @@ subroutine tillfactor(jj,bmix,emix,dtil,sol_thick)
       do l=1, sol_nly(jj)
 
          if (sol_z(l,jj) <= dtil) then
-            emix = emix
+            !emix = emix !redundant
          else if (sol_z(l,jj) > dtil .AND. sol_z(l-1,jj) < dtil) then
             emix = emix * (dtil - sol_z(l-1,jj)) / sol_thick(l)
          else
@@ -39,7 +39,7 @@ subroutine tillfactor(jj,bmix,emix,dtil,sol_thick)
 
          ! to save computation time if emix = 0 here then the other layers can be avoided
          ! tillage always proceeds from top to bottom
-         if (emix == 0.) exit
+         if (emix <= 0.) exit
 
          xx = 0.
          zz = 3. + (8. - 3.) * exp(-5.5 * sol_clay(l,jj)/100.)

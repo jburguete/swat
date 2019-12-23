@@ -1,4 +1,4 @@
-subroutine hruday
+subroutine hruday(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes daily HRU output to the output.hru file
@@ -6,6 +6,7 @@ subroutine hruday
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i             |julian date   |current day in simulation--loop counter
 !!    aird(:)       |mm H2O        |amount of water applied to HRU on current
 !!                                 |day
 !!    auton         |kg N/ha       |amount of nitrogen applied in auto-fert
@@ -183,6 +184,7 @@ subroutine hruday
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: j, sb, ii, iflag, idplant, k, icl
    real*8 :: sol_mass, sol_cmass, sol_nmass, tot_mass, tot_cmass, tot_nmass,&
    &tot_LSC, tot_LMC, tot_HSC, tot_HPC, tot_BMC, tot_pmass, tot_solp,&

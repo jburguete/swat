@@ -1,22 +1,31 @@
-subroutine ysed(iwave)
+!> @file ysed.f90
+!> file containing the subroutine ysed
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine predicts daily soil loss caused by water erosion
-!!    using the modified universal soil loss equation
+!> this subroutine predicts daily soil loss caused by water erosion
+!> using the modified universal soil loss equation
+!> @param[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU\n
+!> iwave = subbasin # for subbasin
+!> @param[in] j HRU number
+subroutine ysed(iwave, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    iwave       |none          |flag to differentiate calculation of HRU and
+!!                               |subbasin sediment calculation
+!!                               |iwave = 0 for HRU
+!!                               |iwave = subbasin # for subbasin
+!!    j           |none          |HRU number
 !!    cvm(:)      |none          |natural log of USLE_C (the minimum value
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    icr(:)      |none          |sequence number of crop grown within a year
 !!    idplt(:,:,:)|none          |land cover code from crop.dat
-!!    ihru        |none          |HRU number
-!!    iwave       |none          |flag to differentiate calculation of HRU and
-!!                               |subbasin sediment calculation
-!!                               |iwave = 0 for HRU
-!!                               |iwave = subbasin # for subbasin
 !!    nro(:)      |none          |sequence number of year in rotation
 !!    peakr       |m^3/s         |peak runoff rate
 !!    rsd_covco   |              |residue cover factor for computing fraction of
@@ -39,17 +48,6 @@ subroutine ysed(iwave)
 !!    usle        |metric tons/ha|daily soil loss predicted with USLE equation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    c           |
-!!    j           |none          |HRU number
-!!    bio_frcov   |              |fraction of cover by biomass - adjusted for
-!!                                  canopy height
-!!    grcov_fr    |              |fraction of cover by biomass as function of lai
-!!    rsd_frcov   |              |fraction of cover by residue
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
 
@@ -58,14 +56,7 @@ subroutine ysed(iwave)
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j
-   real*8 :: c
-
-   j = ihru
-
-   !! initialize variables
-   c = 0.
+   integer, intent (in) :: iwave, j
 
    if (iwave > 0) then
       !! subbasin sediment calculations
@@ -79,7 +70,7 @@ subroutine ysed(iwave)
    if (iwave > 0) then
       !! subbasin sediment calculations
       sedyld(j) = (sub_qd(iwave) * peakr * 1000. * sub_km(iwave))&
-      &** .56 * cklsp(j)
+         &** .56 * cklsp(j)
    else
       !! HRU sediment calculations
       sedyld(j) = (surfq(j) * peakr * 1000. * hru_km(j)) ** .56 * cklsp(j)

@@ -1,4 +1,4 @@
-subroutine wetlan
+subroutine wetlan(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine simulates wetlands
@@ -6,6 +6,7 @@ subroutine wetlan
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bw1(:)      |none          |1st shape parameter for wetland surface area
 !!                               |equation
 !!    bw2(:)      |none          |2nd shape parameter for the wetland surface
@@ -14,7 +15,6 @@ subroutine wetlan
 !!                               |wetland
 !!    hru_dafr(:) |none          |fraction of watershed area in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
-!!    ihru        |none          |HRU number
 !!    ipnd1(:)    |none          |beginning month of 2nd "season" of nutrient
 !!                               |settling
 !!    ipnd2(:)    |none          |ending month of 2nd "season" of nutrient
@@ -118,7 +118,6 @@ subroutine wetlan
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    j           |none          |HRU number
 !!    nitrok      |none          |fraction of nitrogen in wetland removed by
 !!                               |settling
 !!    phosk       |none          |fraction of phosphorus in wetland removed by
@@ -137,15 +136,12 @@ subroutine wetlan
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: vol, cnv, sed, wetsa, xx, phosk, nitrok, tpco
    real*8 :: wetsani, wetsili, wetclai, wetsagi, wetlagi
    real*8 :: san, sil, cla, sag, lag, inised, finsed,setsed,remsetsed
    real*8 :: wetsano, wetsilo, wetclao, wetsago, wetlago
    real*8 :: qdayi, latqi, chlaco, fr_cur, yy
-
-
-   j = ihru
 
    if (wet_fr(j) > 0.) then
       cnv = hru_ha(j) * 10.               !conversion factor

@@ -1,4 +1,4 @@
-subroutine plantmod
+subroutine plantmod(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine predicts daily potential growth of total plant
@@ -9,11 +9,11 @@ subroutine plantmod
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bio_ms(:)   |kg/ha         |land cover/crop biomass (dry weight)
 !!    igro(:)     |none          |land cover status code:
 !!                               |0 no land cover currently growing
 !!                               |1 land cover growing
-!!    ihru        |none          |HRU number
 !!    phubase(:)  |heat units    |base zero total heat units (used when no
 !!                               |land cover is growing)
 !!    phutot(:)   |heat units    |total potential heat units for year (used
@@ -34,7 +34,6 @@ subroutine plantmod
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -46,9 +45,7 @@ subroutine plantmod
    use parm
    implicit none
 
-   integer :: j
-
-   j = ihru
+   integer, intent(in) :: j
 
 !$ $$$$$       !! update base zero total heat units
 !$ $$$$$       if (tmpav(j) > 0. .and. phutot(hru_sub(j)) > 0.01) then
@@ -65,8 +62,8 @@ subroutine plantmod
    !! compute plant water use and water stress
    !! compute actual plant transpiration
    if (igro(j) == 1) then
-      call swu
-      call grow
+      call swu(j)
+      call grow(j)
    endif
 !     write (99,9994) i, hru_ra(j), bio_ms(j), laiday(j),
 !    * strsw(j), strstmp(j), strsn(j), strsp(j)

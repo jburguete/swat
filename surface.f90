@@ -1,12 +1,18 @@
-subroutine surface
+!> @file surface.f90
+!> file containing the subroutine surface
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine models surface hydrology at any desired time step
+!> this subroutine models surface hydrology at any desired time step
+!> @param[in] i current day in simulation--loop counter (julian date)
+!> @param[in] j HRU number (none)
+subroutine surface(i,j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
+!!    i           |julian date   |current day in simulation--loop counter
+!!    j           |none          |HRU number
 !!    ovrlnd(:)   |mm H2O        |overland flow onto HRU from upstream
 !!                               |routing unit
 !!    peakr       |mm/hr         |peak runoff rate
@@ -26,13 +32,15 @@ subroutine surface
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    hruvirr
+!!    ii          |none          |counter
+!!    irfr
+!!    kk          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
 !!    SWAT: canopyint, snom, crackvol, dailycn, volq, crackflow, surfst_h2o,
-!!    SWAT: alph, pkq, tran, eiusle, ysed
+!!    SWAT: alph, pkq, tran, eiusle, ovr_sed, cfactor, ysed
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -40,11 +48,10 @@ subroutine surface
    use parm
    implicit none
 
-   integer :: j, sb, kk, ib, ii
+   integer, intent(in) :: i, j
    real*8 :: hruvirr, irfr
+   integer :: ii, kk
 
-   j = ihru
-   sb = hru_sub(j)
    irmmdt = 0.
 
    !! compute canopy interception
@@ -57,11 +64,11 @@ subroutine surface
 
    !! output by elevation band to output.snw
    if (isnow == 1) then
-      write(115,1010) i, iyr, subnum(j), hruno(j), (snoeb(ib,j), ib = 1,10)
+      write(115,1010) i, iyr, subnum(j), hruno(j), (snoeb(ii,j), ii = 1,10)
    end if
 
    if (isnow ==1) then
-      write (116,1010) i, iyr, subnum(j), hruno(j), (tavband(ib,j), ib = 1, 10)
+      write (116,1010) i, iyr, subnum(j), hruno(j), (tavband(ii,j), ii = 1, 10)
    end if
 
    !! compute crack volume
@@ -77,12 +84,13 @@ subroutine surface
 
    !! add irrigation from retention-irrigation ponds to soil water
    if (ri_luflg(j)==1) then
-      irfr = hru_km(j)* (1.-fimp(urblu(j))) / ri_subkm(sb)
+      kk = hru_sub(j)
+      irfr = hru_km(j) * (1. - fimp(urblu(j))) / ri_subkm(kk)
       do ii=1,nstep
          !amount irrigated in hru
          hruvirr = ri_totpvol(ii) * irfr !m3
          irmmdt(ii) = hruvirr / (hru_km(j)&
-         &* (1.- fimp(urblu(j))) * 1000.) !mm/dt
+            &* (1.- fimp(urblu(j))) * 1000.) !mm/dt
 
          !add irrigated water to soil water content
          do kk=1,sol_nly(j)
@@ -103,7 +111,7 @@ subroutine surface
 
    !! compute runoff - surfq in mm H2O
    if (precipday > 0.1) then
-      call volq
+      call volq(j)
       !! bmp adjustment
       surfq(j) = surfq(j) * bmp_flo(j)
       !! adjust runoff for loss into crack volume
@@ -127,7 +135,7 @@ subroutine surface
 
    if (qday > 0.0001 .and. peakr > 0.) then
       !! compute transmission losses for non-HUMUS datasets
-      call tran
+      call tran(j)
       call eiusle
 
       !! calculate sediment erosion by rainfall and overland flow
@@ -135,7 +143,7 @@ subroutine surface
    end if
 
    call cfactor
-   if (surfq(j) > 1.e-6 .and. peakr > 1.e-6) call ysed(0)
+   if (surfq(j) > 1.e-6 .and. peakr > 1.e-6) call ysed(0, j)
 
    if (qday < 0.) qday = 0.
 

@@ -1,4 +1,4 @@
-subroutine virtual
+subroutine virtual(i,j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine summarizes data for subbasins with multiple HRUs and
@@ -7,6 +7,8 @@ subroutine virtual
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i             |julian date   |current day in simulation--loop counter
+!!    j           |none          |HRU number
 !!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
 !!                                 |channel with surface runoff
 !!    bactrop       |# cfu/m^2     |persistent bacteria transported to main
@@ -39,7 +41,6 @@ subroutine virtual
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout         |none          |hydrograph storage location number for
 !!                                 |subbasin
-!!    ihru          |none          |HRU number
 !!    inum1         |none          |subbasin number
 !!    iprint        |none          |print code:
 !!                                 |0 monthly
@@ -243,7 +244,6 @@ subroutine virtual
 !!    baseflw     |mm H2O        |difference in total loading and surface runoff
 !!                               |loading
 !!    ii          |none          |counter
-!!    j           |none          |HRU number
 !!    kk          |none          |counter
 !!    sb          |none          |subbasin number
 !!    sub_ha      |ha            |area of subbasin in hectares
@@ -262,16 +262,16 @@ subroutine virtual
    use parm
    implicit none
 
-   integer :: hr, j, sb, kk, ii, ib
+   integer, intent(in) :: i, j
+   integer :: hr, sb, kk, ii, ib
    real*8 :: cnv, sub_ha, wtmp, baseflw, bf_fr, ratio
    real*8 :: sub_hwyld(nstep), hqd(4*nstep), hsd(4*nstep)   ! hqd, hsd locally defined. J.Jeong 4/26/2009
 
-   j = ihru
    sb = inum1
    cnv = hru_ha(j) * 10.
 
 !! write daily HRU output
-   if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call hruday
+   if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call hruday(i)
    if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call impndday
 
 !! sum HRU results for subbasin

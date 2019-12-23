@@ -99,7 +99,7 @@ subroutine rthvsc()
    inhyd = inum2
 
 
-   if (sum(QHY(:,inhyd,IHX(1)))==0.) return
+   if (sum(QHY(:,inhyd,IHX(1)))<=0.) return
 
    ii = 1
    DO J = 1, 4

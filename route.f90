@@ -1,4 +1,4 @@
-subroutine route
+subroutine route(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine simulates channel routing
@@ -6,6 +6,7 @@ subroutine route
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |julian date   |current day in simulation--loop counter
 !!    alpha_bnke(:)|none         |Exp(-alpha_bnk(:))
 !!    bankst(:)   |m^3 H2O       |bank storage
 !!    ch_eqn      |              |sediment routing methods
@@ -74,6 +75,7 @@ subroutine route
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: jrch, ii, j
    real*8 :: subwtr
 
@@ -97,10 +99,10 @@ subroutine route
 !! route water through reach
    if (ievent == 0) then
       if (irte == 0) call rtday
-      if (irte == 1) call rtmusk
+      if (irte == 1) call rtmusk(i)
    else
       if (irte == 0) call rthvsc
-      if (irte == 1) call rthmusk
+      if (irte == 1) call rthmusk(i)
    endif
 
 !! average daily water depth for sandi doty 09/26/07
@@ -210,7 +212,7 @@ subroutine route
 !! perform in-stream nutrient calculations
    if (ievent == 0) then
       if (iwq == 2) call watqual2
-      if (iwq == 1) call watqual
+      if (iwq == 1) call watqual(i)
       if (iwq == 0) call noqual
    else
       if (iwq == 1) call hhwatqual

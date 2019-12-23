@@ -1,17 +1,21 @@
-subroutine irrsub
+!> @file irrsub.f90
+!> file containing the subroutine irrsub
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the irrigation operation when the source is
-!!    the shallow or deep aquifer or a source outside the watershed
+!> this subroutine performs the irrigation operation when the source is
+!> the shallow or deep aquifer or a source outside the watershed
+!> @param[in] j HRU number (none)
+subroutine irrsub(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j              |none          |HRU number
 !!    aird(:)        |mm H2O        |amount of water applied to HRU on current
 !!                                  |day
 !!    deepst(:)      |mm H2O        |depth of water in deep aquifer
 !!    hru_sub(:)     |none          |subbasin in which HRU is located
-!!    ihru           |none          |HRU number
 !!    ipot(:)        |none          |number of HRU (in subbasin) that is ponding
 !!                                  |water--the HRU that the surface runoff from
 !!                                  |current HRU drains into. This variable is
@@ -65,7 +69,6 @@ subroutine irrsub
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    vmm         |mm H2O        |maximum amount of water to be applied
 !!    vmma        |mm H2O        |amount of water in source
@@ -85,10 +88,9 @@ subroutine irrsub
    use parm
    implicit none
 
-   integer :: j, k
+   integer, intent(in) :: j
+   integer :: k
    real*8 :: vmma, vmm, cnv, vmxi, vol, vmms, vmmd
-
-   j = ihru
 
 !! determine available amount of water in source
 !! ie upper limit on water removal on day

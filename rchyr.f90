@@ -1,4 +1,4 @@
-subroutine rchyr
+subroutine rchyr(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes the annual reach output to the .rch file
@@ -110,6 +110,7 @@ subroutine rchyr
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: j, ii
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av

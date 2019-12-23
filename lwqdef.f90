@@ -5,12 +5,13 @@
 
 !> this subroutine assigns default values for the lake water quality
 !> (.lwq) when the lake water quality file does not exists
-subroutine lwqdef
+!> @param[in] ii reservoir number (none)
+subroutine lwqdef(ii)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i            |none          |reservoir number
+!!    ii           |none          |reservoir number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -49,24 +50,26 @@ subroutine lwqdef
    use parm
    implicit none
 
+   integer, intent(in) :: ii
+
 !!    set default values for parameters
-   if (chlar(i) <= 1.e-6) chlar(i) = 1.
-   if (seccir(i) <= 1.e-6) seccir(i) = 1.
-   if (lkpst_conc(i) <= 1.e-6) lkpst_conc(i) = 0.
-   if (lkpst_rea(i) <= 1.e-6) lkpst_rea(i) = 0.007
-   if (lkpst_vol(i) <= 1.e-6) lkpst_vol(i) = 0.01
-   if (lkpst_koc(i) <= 1.e-6) lkpst_koc(i) = 0.
-   if (lkpst_stl(i) <= 1.e-6) lkpst_stl(i) = 1.
-   if (lkpst_rsp(i) <= 1.e-6) lkpst_rsp(i) = 0.002
-   if (lkpst_mix(i) <= 1.e-6) lkpst_mix(i) = 0.001
-   if (lkspst_conc(i) <= 1.e-6) lkspst_conc(i) = 0.
-   if (lkspst_rea(i) <= 1.e-6) lkspst_rea(i) = 0.05
-   if (lkspst_bry(i) <= 1.e-6) lkspst_bry(i) = 0.002
-   if (lkspst_act(i) <= 1.e-6) lkspst_act(i) = 0.030
-   if (theta_n(i) <= 0.) theta_n(i) = 1.08
-   if (theta_p(i) <= 0.) theta_p(i) = 1.08
-   if (con_nirr(i) <= 0.) con_nirr(i) = 0.0
-   if (con_pirr(i) <= 0.) con_pirr(i) = 0.0
+   if (chlar(ii) <= 1.e-6) chlar(ii) = 1.
+   if (seccir(ii) <= 1.e-6) seccir(ii) = 1.
+   if (lkpst_conc(ii) <= 1.e-6) lkpst_conc(ii) = 0.
+   if (lkpst_rea(ii) <= 1.e-6) lkpst_rea(ii) = 0.007
+   if (lkpst_vol(ii) <= 1.e-6) lkpst_vol(ii) = 0.01
+   if (lkpst_koc(ii) <= 1.e-6) lkpst_koc(ii) = 0.
+   if (lkpst_stl(ii) <= 1.e-6) lkpst_stl(ii) = 1.
+   if (lkpst_rsp(ii) <= 1.e-6) lkpst_rsp(ii) = 0.002
+   if (lkpst_mix(ii) <= 1.e-6) lkpst_mix(ii) = 0.001
+   if (lkspst_conc(ii) <= 1.e-6) lkspst_conc(ii) = 0.
+   if (lkspst_rea(ii) <= 1.e-6) lkspst_rea(ii) = 0.05
+   if (lkspst_bry(ii) <= 1.e-6) lkspst_bry(ii) = 0.002
+   if (lkspst_act(ii) <= 1.e-6) lkspst_act(ii) = 0.030
+   if (theta_n(ii) <= 0.) theta_n(ii) = 1.08
+   if (theta_p(ii) <= 0.) theta_p(ii) = 1.08
+   if (con_nirr(ii) <= 0.) con_nirr(ii) = 0.0
+   if (con_pirr(ii) <= 0.) con_pirr(ii) = 0.0
 
    return
 end

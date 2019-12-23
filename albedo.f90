@@ -1,7 +1,10 @@
-subroutine albedo
+!> @file albedo.f90
+!> file containing the subroutine albedo
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates albedo in the HRU for the day
+!> this subroutine calculates albedo in the HRU for the day
+subroutine albedo
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -36,13 +39,13 @@ subroutine albedo
    use parm
    implicit none
 
+   real*8, parameter :: cej = -5.e-5
+   real*8 :: eaj
    integer :: j
-   real*8 :: cej, eaj
 
    j = ihru
 
 !! calculate albedo
-   cej = -5.e-5
    eaj = Exp(cej * (sol_cov(j) + .1))   !! equation 2.2.16 in SWAT manual
 
    if (sno_hru(j) <= .5) then

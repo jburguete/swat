@@ -1,4 +1,4 @@
-subroutine print_hyd
+subroutine print_hyd(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine summarizes data for subbasins with multiple HRUs and
@@ -6,6 +6,7 @@ subroutine print_hyd
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i             |julian date   |current day in simulation--loop counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -25,6 +26,7 @@ subroutine print_hyd
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: ij
 
 !!    mauro/jerry whittaker hourly output file

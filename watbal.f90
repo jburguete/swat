@@ -1,4 +1,4 @@
-subroutine watbal
+subroutine watbal(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes the daily water balance for each HRU
@@ -11,6 +11,7 @@ subroutine watbal
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    aird(:)     |mm H2O        |amount of water applied to HRU on current
 !!                               |day
 !!    bsprev      |mm H2O        |surface runoff lagged from prior day
@@ -33,7 +34,6 @@ subroutine watbal
 !!    iida        |julian date   |current day of simulation
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates into
 !!                               |soil (enters soil)
-!!    ihru        |none          |HRU number
 !!    latq(:)     |mm H2O        |amount of water in lateral flow in HRU for the
 !!                               |day
 !!    precipday   |mm H2O        |precipitation for the day in HRU
@@ -62,7 +62,7 @@ subroutine watbal
 !!    sol_sw(:)   |mm H2O        |amount of water stored in soil profile on any
 !!                               |given day
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
-!!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
+!!    surf_bs1(:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day
 !!    swprev      |mm H2O        |amount of water stored in soil profile in the
 !!                               |HRU on the previous day
@@ -79,7 +79,6 @@ subroutine watbal
 !!    dstor       |mm H2O        |change in storage (snow, soil, shallow
 !!                               |and deep aquifers)
 !!    h2oloss     |mm H2O        |net movement of water out of system
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -90,19 +89,17 @@ subroutine watbal
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: dstor, h2oloss
-
-   j = ihru
 
    if (ievent == 0) then
       dstor = sno_hru(j) - snoprev + sol_sw(j) - swprev +&
       &shallst(j) - shallstp + deepst(j) - deepstp +&
-      &surf_bs(1,j) - bsprev + bss1(j) - bssprev
+      &surf_bs1(j) - bsprev + bss1(j) - bssprev
    else
       dstor = sno_hru(j) - snoprev + sol_sw(j) - swprev +&
       &shallst(j) - shallstp + deepst(j) - deepstp +&
-      &hhsurf_bs(1,j,nstep) - bsprev + bss1(j) - bssprev
+      &hhsurf_bs1(j,nstep) - bsprev + bss1(j) - bssprev
    endif
 
 !!   subtraction of snoev term in h2oloss variable removed

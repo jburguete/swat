@@ -1,4 +1,4 @@
-subroutine sweep
+subroutine sweep(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    the subroutine performs the street sweeping operation
@@ -6,11 +6,11 @@ subroutine sweep
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j            |none          |HRU number
 !!    fr_curb        |none          |availability factor, the fraction of the
 !!                                  |curb length that is sweepable
 !!    dirtmx(:)      |kg/curb km    |maximum amount of solids allowed to
 !!                                  |build up on impervious surfaces
-!!    ihru           |none          |HRU number
 !!    nro(:)         |none          |sequence number of year in rotation
 !!    nsweep(:)      |none          |sequence number of street sweeping
 !!                                  |operation within the year
@@ -34,7 +34,6 @@ subroutine sweep
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    dirt         |kg/curb km    |amount of solids built up on impervious
 !!                                |surfaces
-!!    j            |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -42,10 +41,8 @@ subroutine sweep
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: dirt
-
-   j = ihru
 
 !! calculate amount of dirt on streets prior to sweeping
    dirt = dirtmx(urblu(j)) * twash(j) / (thalf(urblu(j)) + twash(j))

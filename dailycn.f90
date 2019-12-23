@@ -1,11 +1,23 @@
-subroutine dailycn
+!> @file dailycn.f90
+!> file containing the subroutine dailycn
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    Calculates curve number for the day in the HRU
+!> calculates curve number for the day in the HRU
+subroutine dailycn
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    icn         |none          |CN method flag:
+!!                               |(for testing alternative methods)
+!!                               |0 use traditional SWAT method which bases
+!!                               |  CN on soil moisture
+!!                               |1 use alternative method which bases CN on
+!!                               |  plant ET
+!!                               |2 use tradtional SWAT method which bases
+!!                               |  CN on soil moisture but rention is adjusted
+!!                               |  for mildly-sloped tiled-drained watersheds
 !!    ihru        |none          |HRU number
 !!    sci(:)      |none          |retention coefficient for cn method based on
 !!                               |plant ET
@@ -30,17 +42,6 @@ subroutine dailycn
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    icn         |none          |CN method flag:
-!!                               |(for testing alternative methods)
-!!                               |0 use traditional SWAT method which bases
-!!                               |  CN on soil moisture
-!!                               |1 use alternative method which bases CN on
-!!                               |  plant ET
-!!                  Daniel 1/2012
-!!                               |2 use tradtional SWAT method which bases
-!!                               |  CN on soil moisture but rention is adjusted
-!!                               |  for mildly-sloped tiled-drained watersheds
-!!                  Daniel 1/2012
 !!    j           |none          |HRU number
 !!    r2          |none          |retention parameter in CN equation
 !!    xx          |none          |variable used to store intermediate
@@ -48,8 +49,7 @@ subroutine dailycn
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp
-
+!!    Intrinsic: Exp, Dmax1
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -57,9 +57,8 @@ subroutine dailycn
    use parm
    implicit none
 
+   real*8 :: r2, xx
    integer :: j
-
-   real*8 :: xx, r2
 
    j = ihru
 

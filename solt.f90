@@ -1,8 +1,11 @@
-subroutine solt
+!> @file solt.f90
+!> file containing the subroutine solt
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine estimates daily average temperature at the bottom
-!!    of each soil layer
+!> this subroutine estimates daily average temperature at the bottom
+!> of each soil layer
+subroutine solt
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -59,7 +62,7 @@ subroutine solt
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Log, Max, Min
+!!    Intrinsic: Exp, Log, Max
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -67,15 +70,11 @@ subroutine solt
    use parm
    implicit none
 
+   real*8, parameter :: tlag = 0.8
+   real*8 :: b, bcv, dd, df, dp, f, st0, tbare, tcov, tmp_srf, wc, ww, xx, zd
    integer :: j, k
-   real*8 :: f, dp, ww, b, wc, dd, xx, st0
-   real*8 :: tlag, df, zd, bcv, tbare, tcov, tmp_srf
 
    j = ihru
-
-   tlag = 0.8
-
-!! calculate damping depth
 
    !! calculate maximum damping depth
    !! SWAT manual equation 2.3.6
@@ -120,8 +119,6 @@ subroutine solt
 
    tmp_srf = 0.5 * (tbare + tcov)  ! following Jimmy's code
 
-
-
 !! calculate temperature for each layer on current day
    xx = 0.
    do k = 1, sol_nly(j)
@@ -131,7 +128,7 @@ subroutine solt
       df = zd / (zd + Exp(-.8669 - 2.0775 * zd))
       !! SWAT manual equation 2.3.3
       sol_tmp(k,j) = tlag * sol_tmp(k,j) + (1. - tlag) *&
-      &(df * (tmp_an(hru_sub(j)) - tmp_srf) + tmp_srf)
+         &(df * (tmp_an(hru_sub(j)) - tmp_srf) + tmp_srf)
       xx = sol_z(k,j)
 
       ! Temperature correction for Onsite Septic systems

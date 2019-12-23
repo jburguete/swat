@@ -1,4 +1,4 @@
-subroutine fert
+subroutine fert(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine applies N and P specified by date and
@@ -7,6 +7,7 @@ subroutine fert
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j             |none          |HRU number
 !!    bactkddb(:)   |none          |fraction of bacteria in solution (the
 !!                                 |remaining fraction is sorbed to soil
 !!                                 |particles)
@@ -39,7 +40,6 @@ subroutine fert
 !!                                 |the top 10 mm of soil (the remaining
 !!                                 |fraction is applied to first soil layer)
 !!    hru_dafr(:)   |km2/km2       |fraction of watershed area in HRU
-!!    ihru          |none          |HRU number
 !!    laiday(:)     |m**2/m**2     |leaf area index
 !!    nfert(:)      |none          |sequence number of fertilizer application
 !!                                 |within the year
@@ -130,7 +130,7 @@ subroutine fert
 !!    frt_t        |
 !!    gc           |
 !!    gc1          |
-!!    j            |none         |HRU number
+!!    ifrt
 !!    l            |none         |counter (soil layer #)
 !!    rtof         |none         |weighting factor used to partition the
 !!                               |organic N & P content of the fertilizer
@@ -140,26 +140,25 @@ subroutine fert
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: Erfc
+!!    INTRINSIC: Erfc
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   integer, intent(in) :: j
          !orgc_f is the fraction of organic carbon in fertilizer
          !for most fertilziers this value is set to 0.
    real*8, parameter :: rtof=0.5, orgc_f = 0.0
-   integer :: j, l, ifrt
-   real*8 :: xx, gc, gc1, frt_t
+   integer :: l, ifrt
+   real*8 :: frt_t, gc, gc1, xx
 
    !!added by zhang
    !!======================
    real*8 :: X1, X8, X10, XXX, YY, ZZ, XZ, YZ, RLN
    !!added by zhang
    !!======================
-
-   j = ihru
 
    ifrt = ifrttyp
 

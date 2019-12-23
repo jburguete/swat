@@ -5,11 +5,13 @@
 
 !> this subroutine controls the simulation of the land phase of the
 !> hydrologic cycle
-subroutine subbasin
+!> @param[in] i current day in simulation--loop counter (julian date)
+subroutine subbasin(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i              |julian date   |current day in simulation--loop counter
 !!    auto_wstr(:)   |none          |water stress factor which triggers auto
 !!                                  |irrigation
 !!    bio_e(:)       |(kg/ha)/      |biomass-energy ratio
@@ -141,13 +143,14 @@ subroutine subbasin
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer, parameter :: iru_sub = 1 ! route across landscape unit
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
    integer :: i_wtrhru, ihout1, j
 
    ihru = hru1(inum1)
 
-   call sub_subbasin
+   call sub_subbasin(ihru)
 
    do iihru = 1, hrutot(inum1)
 
@@ -175,7 +178,7 @@ subroutine subbasin
 
 
 
-      call varinit
+      call varinit(j)
       if (icr(j) <= 0) icr(j) = 1
 
       i_wtrhru = 0
@@ -187,7 +190,7 @@ subroutine subbasin
       endif
 
       if (i_wtrhru == 1) then
-         call water_hru
+         call water_hru(j)
       else
 
          !! Simulate land covers other than water
@@ -197,7 +200,7 @@ subroutine subbasin
             phubase(j) = phubase(j) + tmpav(j) / phutot(hru_sub(j))
          end if
 
-         call schedule_ops
+         call schedule_ops(j)
 
          !! calculate albedo for day
          call albedo
@@ -210,7 +213,7 @@ subroutine subbasin
 !     &        then
          !! calculate surface runoff if HRU is not impounded or an
          !! undrained depression--
-         call surface
+         call surface(i,j)
 
          !! add surface flow that was routed across the landscape on the previous day
          !!   qday = qday + surfq_ru(j)
@@ -221,7 +224,7 @@ subroutine subbasin
 !        end if
 
          !! perform management operations
-         if (yr_skip(j) == 0) call operatn
+         if (yr_skip(j) == 0) call operatn(j)
 
          if (auto_wstr(j) > 1.e-6 .and. irrsc(j) > 2) call autoirr
 
@@ -234,15 +237,15 @@ subroutine subbasin
          call etact
 
          !! compute water table depth using climate drivers
-         call wattable
+         call wattable(j)
 
          !! new CN method
          if (icn == 1) then
             sci(j) = sci(j) + pet_day*exp(-cncoef_sub(hru_sub(j))*sci(j)/&
-            &smx(j)) - precipday + qday + qtile + latq(j) + sepbtm(j)
+               &smx(j)) - precipday + qday + qtile + latq(j) + sepbtm(j)
          else if (icn == 2) then
             sci(j) = sci(j) + pet_day*exp(-cncoef_sub(hru_sub(j))*sci(j)/&
-            &smx(j)) - precipday + qday + latq(j) + sepbtm(j) + qtile
+               &smx(j)) - precipday + qday + latq(j) + sepbtm(j) + qtile
             sci(j) = dmin1(sci(j),smxco * smx(j))
          end if
 
@@ -265,7 +268,7 @@ subroutine subbasin
          end if
 
          !! compute crop growth
-         call plantmod
+         call plantmod(j)
 
          !! check for dormancy
          if (igro(j) == 1) call dormant
@@ -313,7 +316,7 @@ subroutine subbasin
          call gwmod_deep
 
          !! compute pesticide washoff
-         if (precipday >= 2.54) call washp
+         if (precipday >= 2.54) call washp(j)
 
          !! compute pesticide degradation
          call decay
@@ -357,9 +360,9 @@ subroutine subbasin
          !! compute loadings from urban areas
          if (urblu(j) > 0) then
             if(ievent == 0) then
-               call urban ! daily simulation
+               call urban(j) ! daily simulation
             else
-               call urbanhr ! subdaily simulation J.Jeong 4/20/2009
+               call urbanhr(j) ! subdaily simulation J.Jeong 4/20/2009
             endif
          endif
 
@@ -393,7 +396,7 @@ subroutine subbasin
 
          !! compute reduction in pollutants due to edge-of-field filter strip
          if (vfsi(j) >0.)then
-            call filter
+            call filter(i)
             if (filterw(j) > 0.) call buffer
          end if
          if (vfsi(j) == 0. .and. filterw(j) > 0.) then
@@ -422,7 +425,7 @@ subroutine subbasin
          end if
 
          !! compute wetland processes
-         call wetlan
+         call wetlan(j)
 
          !! compute pond processes
          if (ievent == 0) then
@@ -432,18 +435,18 @@ subroutine subbasin
          endif
 
 !       Srini pothole
-         if (pot_fr(j) > 0.) call pothole
+         if (pot_fr(j) > 0.) call pothole(i)
 
          xx = sed_con(j)+soln_con(j)+solp_con(j)+orgn_con(j)+orgp_con(j)
          if (xx > 1.e-6) then
-            call urb_bmp
+            call urb_bmp(j)
          end if
 
          !! consumptive water use (ponds, shallow aquifer, deep aquifer)
-         call watuse
+         call watuse(j)
 
          !! perform water balance
-         call watbal
+         call watbal(j)
 
          !! compute chl-a, CBOD and dissolved oxygen loadings
          call subwq
@@ -458,7 +461,7 @@ subroutine subbasin
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method
-      call virtual
+      call virtual(i,j)
       aird(j) = 0.
 
       ihru = ihru + 1

@@ -1,17 +1,21 @@
-subroutine surq_daycn
+!> @file surq_daycn.f90
+!> file containing the subroutine surq_daycn
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    Predicts daily runoff given daily precipitation and snow melt
-!!    using a modified SCS curve number approach
+!> predicts daily runoff given daily precipitation and snow melt
+!> using a modified SCS curve number approach
+!> @param[in] j HRU number (none)
+subroutine surq_daycn(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    cnday(:)    |none          |curve number for current day, HRU and at
 !!                               |current soil moisture
 !!    fcimp(:)    |fraction      |fraction of HRU area that is classified
 !!                               |as directly connected impervious
-!!    ihru        |none          |HRU number
 !!    iurban(:)   |none          |urban simulation code:
 !!                               |0  no urban sections in HRU
 !!                               |1  urban sections in HRU, simulate using USGS
@@ -35,7 +39,6 @@ subroutine surq_daycn
 !!    bb          |none          |variable used to store intermediate
 !!                               |calculation result
 !!    cnimp       |none          |curve number for impervious areas
-!!    j           |none          |HRU number
 !!    pb          |none          |variable used to store intermediate
 !!                               |calculation result
 !!    r2          |none          |retention parameter in CN equation
@@ -48,11 +51,9 @@ subroutine surq_daycn
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: r2, bb, pb, surfqimp
+   integer, intent(in) :: j
    real*8, parameter :: cnimp = 98.
-
-   j = ihru
+   real*8 :: bb, pb, r2, surfqimp
 
    r2 = 25400. / cnday(j) - 254.
    bb = .2 * r2

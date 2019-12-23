@@ -109,7 +109,7 @@ subroutine readops
          fire_cn(j,k) = mgt(4)
 
        case (7)  !! grass waterways
-         gwati(j,k) = mgt(1)
+         gwati(j,k) = Int(mgt(1))
          gwatn(j,k) = mgt(3)
          gwatspcon(j,k) = mgt(4)
          gwatd(j,k) = mgt(5)

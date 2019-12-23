@@ -1,14 +1,16 @@
-subroutine etpot
+!> @file etpot.f90
+!> file containing the subroutine etpot
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates potential evapotranspiration using one
-!!    of three methods. If Penman-Monteith is being used, potential plant
-!!    transpiration is also calculated.
+!> this subroutine calculates potential evapotranspiration using one
+!> of three methods. If Penman-Monteith is being used, potential plant
+!> transpiration is also calculated.
+subroutine etpot
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    laiday(:)  |m**2/m**2      |leaf area index
 !!    albday     |none           |albedo for the day in HRU
 !!    cht(:)     |m              |canopy height
 !!    co2(:)     |ppmv           |CO2 concentration
@@ -28,6 +30,7 @@ subroutine etpot
 !!                               |1 Penman/Monteith method
 !!                               |2 Hargreaves method
 !!                               |3 read in PET values
+!!    laiday(:)  |m**2/m**2      |leaf area index
 !!    nro(:)     |none           |sequence number of year in rotation
 !!    petmeas    |mm H2O         |potential ET value read in for day
 !!    rhd(:)     |none           |relative humidity for the day in HRU
@@ -64,9 +67,10 @@ subroutine etpot
 !!    fvpd        |kPa           |amount of vapro pressure deficit over
 !!                               |threshold value
 !!    gma         |kPa/deg C     |psychrometric constant
+!!    gsi_adj
 !!    j           |none          |HRU number
 !!    pb          |kPa           |mean atmospheric pressure
-!!    pet_alpha  |none           |alpha factor in Priestley-Taylor PET equation
+!!    pet_alpha   |none          |alpha factor in Priestley-Taylor PET equation
 !!    ralb        |MJ/m2         |net incoming radiation for PET
 !!    ralb1       |MJ/m2         |net incoming radiation
 !!    ramm        |MJ/m2         |extraterrestrial radiation
@@ -89,7 +93,7 @@ subroutine etpot
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Log, Sqrt, Max, Min
+!!    Intrinsic: Sqrt, Max, Log, Min
 !!    SWAT: Ee
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -97,11 +101,11 @@ subroutine etpot
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: tk, pb, gma, xl, ea, ed, dlt, ramm, ralb1, ralb, xx
-   real*8 :: rbo, rto, rn, uzz, zz, zom, zov, rv, rn_pet, fvpd
-   real*8 :: rc, rho, rout, d, chz, gsi_adj
    real*8, parameter :: pet_alpha = 1.28
+   real*8 :: chz, d, dlt, ea, ed, fvpd, gma, gsi_adj, pb, ralb, ralb1, ramm,&
+      &rbo, rc, rho, rn, rn_pet, rout, rto, rv, tk, uzz, xl, xx, zom, zov, zz
+   integer :: j
+
 
    !! initialize local variables
    j = ihru
@@ -110,7 +114,7 @@ subroutine etpot
 
    !! calculate mean barometric pressure
    pb = 101.3 - sub_elev(hru_sub(j)) *&
-   &(0.01152 - 0.544e-6 * sub_elev(hru_sub(j)))
+      &(0.01152 - 0.544e-6 * sub_elev(hru_sub(j)))
 
    !! calculate latent heat of vaporization
    xl = 2.501 - 2.361e-3 * tmpav(j)
@@ -205,7 +209,7 @@ subroutine etpot
       rv = 114. / (u10(j) * (170./1000.)**0.2)
       rc = 49. / (1.4 - 0.4 * co2(hru_sub(j)) / 330.)
       pet_day = (dlt * rn_pet + gma * rho * vpd / rv) /&
-      &(xl * (dlt + gma * (1. + rc / rv)))
+         &(xl * (dlt + gma * (1. + rc / rv)))
 
       pet_day = Max(0., pet_day)
 
@@ -261,11 +265,11 @@ subroutine etpot
             !! calculate canopy resistance
             rc = 1. / gsi_adj                    !single leaf resistance
             rc = rc / (0.5 * (laiday(j) + 0.01)&
-            &* (1.4 - 0.4 * co2(hru_sub(j)) / 330.))
+               &* (1.4 - 0.4 * co2(hru_sub(j)) / 330.))
 
             !! calculate maximum plant ET
             ep_max = (dlt * rn + gma * rho * vpd / rv) /&
-            &(xl * (dlt + gma * (1. + rc / rv)))
+               &(xl * (dlt + gma * (1. + rc / rv)))
             if (ep_max < 0.) ep_max = 0.
             ep_max = Min(ep_max, pet_day)
          else
@@ -282,7 +286,7 @@ subroutine etpot
 
       if (tmx(j) > tmn(j)) then
          pet_day = harg_petco(hru_sub(j))*(ramm / xl)*(tmpav(j) + 17.8)*&
-         &(tmx(j) - tmn(j))**0.5
+            &(tmx(j) - tmn(j))**0.5
          pet_day = Max(0., pet_day)
       else
          pet_day = 0.

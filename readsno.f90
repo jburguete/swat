@@ -4,11 +4,13 @@
 !> modified by Javier Burguete
 
 !> this subroutine reads snow data from the HRU/subbasin soil chemical input
-subroutine readsno
+!> @param[in] i subbasin number (none)
+subroutine readsno(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |none          |subbasin number
 !!    ihru        |none          |HRU number
 !!                               |watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -48,6 +50,7 @@ subroutine readsno
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    integer :: eof, ib
 

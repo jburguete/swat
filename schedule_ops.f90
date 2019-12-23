@@ -5,11 +5,13 @@
 
 !> this subroutine controls the simulation of the land phase of the
 !> hydrologic cycle
-subroutine schedule_ops
+!> @param[in] j HRU number
+subroutine schedule_ops(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j              |none          |HRU number
 !!    iida           |julian date   |day being simulated (current julian date)
 !!    inum1          |none          |subbasin number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -24,7 +26,6 @@ subroutine schedule_ops
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    b
-!!    j           |none          |HRU number
 !!    jj          |none          |counter
 !!    sin_sl
 !!    tch
@@ -41,11 +42,10 @@ subroutine schedule_ops
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: b, sin_sl, tch, tover, xm
-   integer :: j, jj
+   integer :: jj
  
-   j = ihru
-
    iops = ioper(j)
 
    do while (iida == iopday(iops,j).and.iyr == iopyr(iops,j))
@@ -146,7 +146,7 @@ subroutine schedule_ops
          b = (grwat_w(j) - 2.) * grwat_d(j) * 8
 !! Depth and Width not possible with 8:1 sideslope and trapazoidal channel assume b =.25*width
          if (b <= 0.) grwat_d(j) = 3. / 64. * grwat_w(j)
-         call ttcoef_wway
+         call ttcoef_wway(j)
 
        case (8)
          jj = Int(cropno_upd(iops,j))

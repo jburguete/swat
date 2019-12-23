@@ -1,8 +1,18 @@
-subroutine pkq(iwave)
+!> @file pkq.f90
+!> file containing the subroutine pkq
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes the peak runoff rate for each HRU
-!!    and the entire subbasin using a modification of the rational formula
+!> this subroutine computes the peak runoff rate for each HRU
+!> and the entire subbasin using a modification of the rational formula
+!> @parm[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU MUSLE(sedyld) each hru is calculated independently using
+!> hru area and adjusted channel length\n
+!> iwave = 1 subbasin # for subbasin MUSLE is computed for entire subbasin using
+!> hru weighted KLSCP
+subroutine pkq(iwave)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -18,11 +28,11 @@ subroutine pkq(iwave)
 !!    qday         |mm H2O        |surface runoff that reaches main channel
 !!                                |during day in HRU
 !!    sub_km(:)    |km^2          |area of subbasin in square kilometers
-!!    sub_tc(:)    |hr            |time of concentration for subbasin
-!!    tconc(:)     |hr            |time of concentration for HRU
 !!    sub_qd(:)    |mm H2O        |surface runoff that reaches main channel
 !!                                |during day in subbasin
+!!    sub_tc(:)    |hr            |time of concentration for subbasin
 !!    sub_tran(:)  |mm H2O        |transmission losses on day in subbasin
+!!    tconc(:)     |hr            |time of concentration for HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -51,8 +61,6 @@ subroutine pkq(iwave)
    real*8 :: altc
 
    j = ihru
-
-   altc = 0.
 
    if (iwave > 0) then
       !! subbasin sediment calculations

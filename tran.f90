@@ -1,17 +1,21 @@
-subroutine tran
+!> @file tran.f90
+!> file containing the subroutine tran
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes tributary channel transmission losses
+!> this subroutine computes tributary channel transmission losses
+!> @param[in] j HRU number (none)
+subroutine tran(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_k1(j)   |mm/hr         |effective hydraulic conductivity of tributary
+!!    j           |none          |HRU number
+!!    ch_k1(j)    |mm/hr         |effective hydraulic conductivity of tributary
 !!                               |channel alluvium
-!!    ch_w1(j)   |(m)           |average main channel width
+!!    ch_w1(j)    |(m)           |average main channel width
 !!    ch_l1(j)    |(km)          |main channel length
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
-!!    ihru        |none          |HRU number
 !!    peakr       |m^3/s         |peak runoff rate
 !!    qday        |mm H2O        |surface runoff loading to main channel
 !!                               |from HRU on current day
@@ -39,7 +43,6 @@ subroutine tran
 !!                               |and width W
 !!    dur         |hr            |length of time runoff occurs if traveling
 !!                               |at peak runoff rate
-!!    j           |none          |HRU number
 !!    k           |1/(m-km)      |decay factor for unit channel with a flow
 !!                               |duration DUR and volume VOL
 !!    pr1         |m^3/s         |peak runoff rate prior to accounting for
@@ -61,11 +64,8 @@ subroutine tran
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: qinit, vo, dur, k, b, zz, bxw, pr1, a, xx, axw, pxw
-
-   !! initialize variables
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: a, axw, b, bxw, dur, k, pr1, pxw, qinit, vo, xx, zz
 
    if (ch_k1(hru_sub(j)) <= 0.) return
 
@@ -80,19 +80,12 @@ subroutine tran
    dur = vo / (peakr * 3600.)      !!duration: hr
    if (dur > 24.) dur = 24.
 
-!! flagged by pdw, should be after xx condition
-!!!! zero surface runoff/peak rate
-!!      qday = 0.
-!!      peakr = 0.
-
    xx = 2.6466 * ch_k1(hru_sub(j)) * dur / vo
    if (xx < 1.) then
 
-      !moved by pdw
       !! zero surface runoff/peak rate
       qday = 0.
       peakr = 0.
-      ! end move pdw
 
       k = -2.22 * Log(1. - xx)
       b = Exp(-0.4905 * k)
@@ -119,7 +112,7 @@ subroutine tran
                if (qday < 0.) qday = 0.
                if (qday > 0.) then
                   peakr = (1. / (dur * 3600.)) * (axw - (1. - bxw) * vo)&
-                  &+ bxw * pr1              !!peak rate: m^3/s
+                     &+ bxw * pr1              !!peak rate: m^3/s
                   if (peakr < 0.) peakr = 0.
                end if
             end if
@@ -132,10 +125,6 @@ subroutine tran
       qday = qinit
       tloss = 0.
    end if
-
-   !! add transmission losses to shallow aquifer storage
-   !! This will be done in gwmod.
-!      shallst(j) = shallst(j) + tloss
 
    return
 end

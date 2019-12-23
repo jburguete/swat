@@ -1,8 +1,11 @@
-subroutine cfactor
+!> @file cfactor.f90
+!> file containing the subroutine cfactor
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine predicts daily soil loss caused by water erosion
-!!    using the modified universal soil loss equation
+!> this subroutine predicts daily soil loss caused by water erosion
+!> using the modified universal soil loss equation
+subroutine cfactor
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -13,10 +16,6 @@ subroutine cfactor
 !!    icr(:)      |none          |sequence number of crop grown within a year
 !!    idplt(:,:,:)|none          |land cover code from crop.dat
 !!    ihru        |none          |HRU number
-!!    iwave       |none          |flag to differentiate calculation of HRU and
-!!                               |subbasin sediment calculation
-!!                               |iwave = 0 for HRU
-!!                               |iwave = subbasin # for subbasin
 !!    nro(:)      |none          |sequence number of year in rotation
 !!    peakr       |m^3/s         |peak runoff rate
 !!    rsd_covco   |              |residue cover factor for computing fraction of
@@ -58,8 +57,8 @@ subroutine cfactor
    use parm
    implicit none
 
+   real*8 :: bio_frcov, c, grcov_fr, rsd_frcov
    integer :: j
-   real*8 :: c, bio_frcov, rsd_frcov, grcov_fr
 
    j = ihru
 
@@ -67,7 +66,7 @@ subroutine cfactor
    if (icfac == 0) then
       if (idplt(j) > 0) then
          c = Exp((-.2231 - cvm(idplt(j))) *&
-         &Exp(-.00115 * sol_cov(j)) + cvm(idplt(j)))
+            &Exp(-.00115 * sol_cov(j)) + cvm(idplt(j)))
       else
          if (sol_cov(j) > 1.e-4) then
             c = Exp(-.2231 * Exp(-.00115 * sol_cov(j)))
@@ -77,10 +76,9 @@ subroutine cfactor
       end if
    else
       rsd_frcov = Exp(-rsd_covco * sol_cov(j))
-      grcov_fr = laiday(j) / (laiday(j) +&
-      &Exp(1.748 - 1.748*laiday(j)))
-      bio_frcov = 1. - grcov_fr * Exp(-.01*cht(j))
-      c = dmax1(1.e-10,rsd_frcov*bio_frcov)
+      grcov_fr = laiday(j) / (laiday(j) + Exp(1.748 - 1.748 * laiday(j)))
+      bio_frcov = 1. - grcov_fr * Exp(-.01 * cht(j))
+      c = Dmax1(1.e-10, rsd_frcov * bio_frcov)
    end if
 
    usle_cfac(ihru) = c

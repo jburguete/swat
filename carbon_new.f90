@@ -1,4 +1,4 @@
-subroutine carbon
+subroutine carbon(i)
    !! This code simulates organic C, N, and P cycling in the soil
    !! The code was developed by Armen R. Kemanian and Stefan Julich
    !! It has been adapted from Kemanian and Stockle (2010) (European Journal of Agronomy 32:22-29)
@@ -68,6 +68,7 @@ subroutine carbon
 
    END INTERFACE
 
+   integer, intent (in) :: i
 
 !! private variables
    real*8 :: cx, rhc, mhc, sol_cdec, tilf

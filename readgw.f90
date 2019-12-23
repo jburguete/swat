@@ -5,7 +5,8 @@
 
 !> this subroutine reads the parameters from the HRU/subbasin groundwater
 !> input file (.gw)
-subroutine readgw
+!> @param[in] i HRU number
+subroutine readgw(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -23,7 +24,7 @@ subroutine readgw
 !!    ch_revap(:) |none          |revap coeff: this variable controls the amount
 !!                               |of water moving from bank storage to the root
 !!                               |zone as a result of soil moisture depletion
-!!    deepst(i)   |mm H2O        |depth of water in deep aquifer
+!!    deepst(i)  |mm H2O        |depth of water in deep aquifer
 !!    delay(:)    |days          |groundwater delay: time required for water
 !!                               |leaving the bottom of the root zone to
 !!                               |reach the shallow aquifer
@@ -66,6 +67,7 @@ subroutine readgw
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    real*8 :: hlife_ngw
    integer :: eof, j

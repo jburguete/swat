@@ -6,11 +6,13 @@
 !> for every day of simulation, this subroutine steps through the command
 !> lines in the watershed configuration (.fig) file. Depending on the
 !> command code on the .fig file line, a command loop is accessed
-subroutine command
+!> @param[in] i current day in simulation--loop counter (julian date)
+subroutine command(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |julian date   |current day in simulation--loop counter
 !!    icodes(:)   |none          |routing command code:
 !!                               |0 = finish       9 = save
 !!                               |1 = subbasin    10 = recday
@@ -108,6 +110,7 @@ subroutine command
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: ii, j
 
    j = 0
@@ -130,14 +133,14 @@ subroutine command
        case (0)
          return
        case (1)
-         call subbasin
-         call print_hyd
+         call subbasin(i)
+         call print_hyd(i)
        case (2)
-         call route
+         call route(i)
          if (dtp_onoff(inum1)==1) call bmp_det_pond  !route detention pond J.Jeong feb 2010
          if (wtp_onoff(inum1)==1) call bmp_wet_pond  !route wetention pond J.Jeong june 2010
          call sumhyd
-         call print_hyd
+         call print_hyd(i)
        case (3)
          call routres
          call sumhyd
@@ -146,11 +149,11 @@ subroutine command
        case (5)
          call addh
          call sumhyd
-         call print_hyd
+         call print_hyd(i)
        case (6)
          call rechour
          call sumhyd
-         call print_hyd
+         call print_hyd(i)
        case (7)
          call recmon
          call sumhyd
@@ -168,7 +171,7 @@ subroutine command
        case (12)
          call structure
        case (13)
-         call apex_day
+         call apex_day(i)
        case (14)
          call saveconc
        case (17)

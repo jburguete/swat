@@ -4,12 +4,13 @@
 !> modified by Javier Burguete
 
 !> reads in the loading information for the reccnst command
-subroutine readcnst
+!> @param[in] jj file number associated with reccnst command (none)
+subroutine readcnst(jj)
 
 !!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!     name         |units         |definition
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!     i            |none          |file number associated with reccnst
+!!     jj           |none          |file number associated with reccnst
 !!                                 |command
 !!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -51,6 +52,7 @@ subroutine readcnst
    use parm
    implicit none
 
+   integer, intent(in) :: jj
    character (len=80) :: titldum
    integer :: ii
 
@@ -58,12 +60,12 @@ subroutine readcnst
    do ii = 1, 6
       read (109,5000) titldum
    end do
-   read (109,*) flocnst(i), sedcnst(i), orgncnst(i), orgpcnst(i),&
-      &no3cnst(i), nh3cnst(i), no2cnst(i), minpcnst(i),&
-      &cbodcnst(i), disoxcnst(i), chlacnst(i),&
-      &solpstcnst(i), srbpstcnst(i), bactpcnst(i),&
-      &bactlpcnst(i), cmtl1cnst(i), cmtl2cnst(i),&
-      &cmtl3cnst(i)
+   read (109,*) flocnst(jj), sedcnst(jj), orgncnst(jj), orgpcnst(jj),&
+      &no3cnst(jj), nh3cnst(jj), no2cnst(jj), minpcnst(jj),&
+      &cbodcnst(jj), disoxcnst(jj), chlacnst(jj),&
+      &solpstcnst(jj), srbpstcnst(jj), bactpcnst(jj),&
+      &bactlpcnst(jj), cmtl1cnst(jj), cmtl2cnst(jj),&
+      &cmtl3cnst(jj)
 
    close (109)
 

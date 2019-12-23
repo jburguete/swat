@@ -1,4 +1,4 @@
-subroutine filter
+subroutine filter(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the reduction of pollutants in surface runoff
@@ -147,6 +147,7 @@ subroutine filter
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: j, k
    real*8 :: drain_vfs1, drain_vfs2, area_vfs1, area_vfs2, vfs_depth1,&
    &vfs_depth2, vfs_sed1, vfs_sed2, surq_remove1, surq_remove2,&

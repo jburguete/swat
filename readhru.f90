@@ -6,11 +6,13 @@
 !> this subroutine reads data from the HRU general input file (.hru).
 !> This file contains data related to general processes modeled
 !> at the HRU level.
-subroutine readhru
+!> @param[in] i HRU number
+subroutine readhru(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |none          |subbasin number
 !!    ifld(:)     |none          |number of HRU (in subbasin) that is a
 !!                               |floodplain
 !!    ihru        |none          |HRU number
@@ -118,6 +120,7 @@ subroutine readhru
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    real*8 :: epcohru, escohru, sin_sl, xm, xx
    integer :: eof, j

@@ -114,7 +114,7 @@ subroutine zero1
    grwat_l = 0.
    grwat_w = 0.
    grwat_d = 0.
-   gwati = 0.
+   gwati = 0
    gwatn = 0.
    gwatl = 0.
    gwatw = 0.

@@ -5,11 +5,13 @@
 
 !> this subroutine reads data from the sub input file (.sub).
 !> This file contains data related to routing
-subroutine readru
+!> @param[in] i subbasin number
+subroutine readru(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definitionov
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |none          |subbasin number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -42,6 +44,7 @@ subroutine readru
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    real*8 :: chk_ru, chl_ru, chn_ru, chs_ru, chw_ru, da_ru, ix,&
       &ovn_ru, ovs, ovsl, sumk, tck

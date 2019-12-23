@@ -1,4 +1,4 @@
-subroutine urban
+subroutine urban(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes loadings from urban areas using the
@@ -7,6 +7,7 @@ subroutine urban
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    al5          |none           |fraction of daily rainfall that occurs
 !!                                 |during 0.5h highest intensity
 !!    curbden(:)   |km/ha          |curb length density in HRU
@@ -17,7 +18,6 @@ subroutine urban
 !!                                 |indirectly connected)
 !!    hru_km(:)    |km^2           |area of HRU in square kilometers
 !!    iida         |julian date    |day being simulated (current julian date)
-!!    ihru         |none           |HRU number
 !!    iurban(:)    |none           |urban simulation code:
 !!                                 |0  no urban sections in HRU
 !!                                 |1  urban sections in HRU, simulate using
@@ -83,7 +83,6 @@ subroutine urban
 !!    dirto       |kg/ha         |amount of solids built up on impervious
 !!                               |surfaces at beginning of day
 !!    durf        |hr            |duration of rainfall
-!!    j           |none          |HRU number
 !!    rp1         |none          |variable to hold intermediate calculation
 !!                               |value
 !!    sus_sol     |kg            |suspended solid loading in surface runoff
@@ -105,10 +104,8 @@ subroutine urban
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt, tno3, xx
-   integer :: j
-
-   j = ihru
 
 
    select case (iurban(j))

@@ -1,16 +1,20 @@
-subroutine wattable
+!> @file wattable.f90
+!> file containing the subroutine wattable
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine is the master soil percolation component.
+!> this subroutine is the master soil percolation component.
+!> param[in] j HRU number
+subroutine wattable(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    icrk        |none          |crack flow code
 !!                               |1 simulate crack flow in watershed
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
-!!    ihru        |none          |HRU number
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc - wp)
 !!    sol_nly(:)  |none          |number of layers in soil profile
@@ -20,7 +24,7 @@ subroutine wattable
 !!                               |saturation
 !!    voltot      |mm            |total volume of cracks expressed as depth
 !!                               |per unit area
-!!    watab       |mm            |water table based on 30 day antecedent
+!!    wtab        |mm            |water table based on 30 day antecedent
 !!                               | climate (precip,et)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -48,23 +52,22 @@ subroutine wattable
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    i30         |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-!!    SWAT: percmacro, percmicro
+!!    Intrinsic: Dmin1, Abs
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, i30
+   integer, intent(in) :: j
+   integer :: i30
 
    real*8 :: w2, eo_sum, rfqeo_sum, w1, wtl
 
-   j = ihru
    wtab_mn(j) = 0.
    wtab_mx(j) = 2.5
 
@@ -84,7 +87,7 @@ subroutine wattable
    else
       w2 = 0.
    end if
-   w1 = dmin1 (0.1,abs(w2))
+   w1 = Dmin1 (0.1, Abs(w2))
    if (w2 > 0.) then
       wtl = wtab_mn(j)
    else

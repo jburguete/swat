@@ -1,15 +1,19 @@
-subroutine surq_greenampt
+!> @file surq_greenampt.f90
+!> file containing the subroutine surq_greenampt
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    Predicts daily runoff given breakpoint precipitation and snow melt
-!!    using the Green & Ampt technique
+!> predicts daily runoff given breakpoint precipitation and snow melt
+!> using the Green & Ampt technique
+!> @param[in] j HRU number (none)
+subroutine surq_greenampt(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    idt         |minutes       |length of time step used to report
 !!                               |precipitation data for sub-daily modeling
-!!    ihru        |none          |HRU number
 !!    iyr         |year          |year being simulated (eg 1980)
 !!    nstep       |none          |max number of time steps per day
 !!    newrti(:)   |mm/hr         |infiltration rate for last time step from the
@@ -53,7 +57,7 @@ subroutine surq_greenampt
 !!    excum(:)    |mm H2O        |cumulative runoff for day
 !!    exinc(:)    |mm H2O        |runoff for time step
 !!    f1          |mm H2O        |test value for cumulative infiltration
-!!    j           |none          |HRU number
+!!    ii          |none          |counter
 !!    k           |none          |counter
 !!    psidt       |mm            |suction at wetting front*initial moisture
 !!                               |deficit
@@ -64,7 +68,8 @@ subroutine surq_greenampt
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Sum, Exp, real*8, Mod
+!!    Intrinsic: Exp, Log, Abs, Sum
+!!    SWAT: lids
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -72,16 +77,13 @@ subroutine surq_greenampt
    use parm
    implicit none
 
-   integer :: j, k, sb, ii,ida
-   real*8 :: adj_hc, dthet, soilw, psidt, tst, f1
-   real*8 :: lid_prec, urban_prec
-   real*8, dimension (nstep+1) :: cumr, cuminf, excum, exinc, rateinf
-   real*8, dimension (nstep+1) :: rintns
+   integer, intent(in) :: j
+   real*8, dimension (nstep+1) :: cuminf, cumr, excum, exinc, rateinf, rintns
+   integer :: ii, k, sb
+   real*8 :: adj_hc, dthet, f1, lid_prec, psidt, soilw, tst, urban_prec
    !! array location #1 is for last time step of prev day
 
-   j = ihru
    sb = hru_sub(j)
-   ida=iida
 
    !! reset values for day
    cumr = 0.
@@ -94,7 +96,7 @@ subroutine surq_greenampt
    !! calculate effective hydraulic conductivity
    adj_hc = 0.
    adj_hc = (56.82 * sol_k(1,j) ** 0.286)&
-   &/ (1. + 0.051 * Exp(0.062 * cnday(j))) - 2.
+      &/ (1. + 0.051 * Exp(0.062 * cnday(j))) - 2.
    if (adj_hc <= 0.) adj_hc = 0.001
 
    dthet = 0.
@@ -141,8 +143,8 @@ subroutine surq_greenampt
          tst = adj_hc * dfloat(idt) / 60.  !!urban 60./idt NK Feb 4,08
          do
             f1 = cuminf(k-1) + adj_hc * dfloat(idt) / 60. +&
-            &psidt * Log((tst + psidt)/(cuminf(k-1) + psidt))
-            if (abs(f1 - tst) <= 0.001) then
+               &psidt * Log((tst + psidt)/(cuminf(k-1) + psidt))
+            if (Abs(f1 - tst) <= 0.001) then
                cuminf(k) = f1
                excum(k) = cumr(k) - cuminf(k)
                exinc(k) = excum(k) - excum(k-1)
@@ -171,7 +173,7 @@ subroutine surq_greenampt
             do ii = 1, 4
                if (lid_farea(j,ii) > 0) then
                   lid_qsurf_total = lid_qsurf_total + fcimp(urblu(j)) *&
-                  &lid_farea(j,ii) * lid_qsurf(j,ii)
+                     &lid_farea(j,ii) * lid_qsurf(j,ii)
                   if (ii==1) then
                      if (cs_grcon(sb,urblu(j))==0) then
                         lid_farea_sum = lid_farea_sum + lid_farea(j,ii)
@@ -186,7 +188,7 @@ subroutine surq_greenampt
 
 
             ubnrunoff(k-1) = lid_prec * fcimp(urblu(j))&
-            &* (1 - lid_farea_sum) + lid_qsurf_total
+               &* (1 - lid_farea_sum) + lid_qsurf_total
          else
             urban_prec = precipdt(k) - abstinit
             if (urban_prec < 0.) urban_prec = 0.

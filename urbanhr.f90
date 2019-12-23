@@ -1,4 +1,4 @@
-subroutine urbanhr
+subroutine urbanhr(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes loadings from urban areas using the
@@ -7,6 +7,7 @@ subroutine urbanhr
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    al5          |none           |fraction of daily rainfall that occurs
 !!                                 |during 0.5h highest intensity
 !!    curbden(:)   |km/ha          |curb length density in HRU
@@ -17,7 +18,6 @@ subroutine urbanhr
 !!                                 |indirectly connected)
 !!    hru_km(:)    |km^2           |area of HRU in square kilometers
 !!    iida         |julian date    |day being simulated (current julian date)
-!!    ihru         |none           |HRU number
 !!    isweep(:,:,:)|julian date    |date of street sweeping operation
 !!    iurban(:)    |none           |urban simulation code:
 !!                                 |0  no urban sections in HRU
@@ -83,7 +83,6 @@ subroutine urbanhr
 !!                               |surfaces
 !!    dirto       |kg/ha         |amount of solids built up on impervious
 !!                               |surfaces at the beginning of time step
-!!    j           |none          |HRU number
 !!    sus_sol     |kg            |suspended solid loading in surface runoff
 !!                               |from urban area
 !!    tn          |kg            |total nitrogen in surface runoff from
@@ -102,12 +101,10 @@ subroutine urbanhr
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: sus_sol, tn, tp, urbk, dirto, qdt
    real*8 :: dirt, tno3
-   integer :: j, k
-
-   j = ihru
-
+   integer :: k
 
    do k = 1, nstep
 
@@ -152,12 +149,12 @@ subroutine urbanhr
 
             !! perform street sweeping
             if (isweep(j) > 0 .and. iida >= isweep(j)) then
-               call sweep
+               call sweep(j)
             else if (phusw(j) > 0.0001) then
                if (igro(j) == 0) then
-                  if (phubase(j) > phusw(j)) call sweep
+                  if (phubase(j) > phusw(j)) call sweep(j)
                else
-                  if (phuacc(j) > phusw(j)) call sweep
+                  if (phuacc(j) > phusw(j)) call sweep(j)
                end if
             end if
          end if
@@ -172,15 +169,15 @@ subroutine urbanhr
    !! perform street sweeping
    if(surfq(j) < 0.1) then
       if (isweep(j) > 0 .and. iida >= isweep(j)) then
-         call sweep
+         call sweep(j)
       else if (phusw(j) > 0.0001) then
          if (igro(j) == 0) then
             if (phubase(j) > phusw(j)) then
-               call sweep
+               call sweep(j)
             endif
          else
             if (phuacc(j) > phusw(j)) then
-               call sweep
+               call sweep(j)
             endif
          end if
       end if

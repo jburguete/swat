@@ -1,4 +1,4 @@
-subroutine pothole
+subroutine pothole(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine simulates depressional areas that do not drain to the
@@ -7,6 +7,7 @@ subroutine pothole
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i              |julian date   |current day in simulation--loop counter
 !!    curyr          |none          |current year of simulation
 !!    evlai          |none          |leaf area index at which no evaporation
 !!                                  |occurs from the water surface. This
@@ -161,6 +162,7 @@ subroutine pothole
    use parm
    implicit none
 
+   integer, intent(in) :: i
    real*8, parameter :: pi = 3.1416
    integer :: j, ly
    real*8 :: potsep, sumo, potev, cnv, potpcp, no3in, qdayi

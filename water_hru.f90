@@ -4,7 +4,7 @@
 !> modified by Javier Burguete
 
 !> this subroutine compute pet and et using Priestly-Taylor and a coefficient
-subroutine water_hru
+subroutine water_hru(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!
@@ -25,11 +25,10 @@ subroutine water_hru
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8, parameter :: pet_alpha = 1.28
    real*8 :: d, gma, ho, tmpk
-   integer :: j
 
-   j = ihru
 !! if the HRU is water compute only pet and et
 !! using Priestly-Taylor and a coefficient
    albday = .08

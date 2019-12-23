@@ -6,24 +6,25 @@
 !> this subroutine reads data from the HRU/subbasin general input file
 !> (.sub). This file contains data related to general processes modeled
 !> at the HRU/subbasin level.
-subroutine readsub
+!> @param[in] i subbasin number (none)
+subroutine readsub(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    da_km       |km2           |area of the watershed in square kilometers
 !!    i           |none          |subbasin number
+!!    da_km       |km2           |area of the watershed in square kilometers
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_k1(:)   |mm/hr         |effective hydraulic conductivity of tributary
+!!    ch_k1(:)    |mm/hr         |effective hydraulic conductivity of tributary
 !!                               |channel alluvium
 !!    ch_l1(:)    |km            |longest tributary channel length in subbasin
-!!    ch_n1(:)   |none          |Manning's "n" value for the tributary channels
-!!    ch_s1(:)   |m/m           |average slope of tributary channels
-!!    ch_w1(:)   |m             |average width of tributary channels
+!!    ch_n1(:)    |none          |Manning's "n" value for the tributary channels
+!!    ch_s1(:)    |m/m           |average slope of tributary channels
+!!    ch_w1(:)    |m             |average width of tributary channels
 !!    cncoef_sub  |              |soil water depletion coefficient used
 !!                               | in the new (modified curve number method)
 !!                               | same as soil index coeff used in APEX
@@ -46,19 +47,19 @@ subroutine readsub
 !!                               |(used in climate change studies)
 !!    ifld(:)     |none          |number of HRU (in subbasin) that is a
 !!                               |floodplain
-!!    ihgage(:)    |none         |subbasin relative humidity data code
+!!    ihgage(:)   |none          |subbasin relative humidity data code
 !!    ipot(:)     |none          |number of HRU (in subbasin) that is ponding
 !!                               |water--the HRU that the surface runoff from
 !!                               |current HRU drains into. This variable is
 !!                               |used only for rice paddys or closed
 !!                               |depressional areas
-!!    irgage(:)    |none         |subbasin rain gage data code
+!!    irgage(:)   |none          |subbasin rain gage data code
 !!    irip(:)     |none          |number of HRU (in subbasin) that is a
 !!                               |riparian zone
-!!    isgage(:)    |none         |subbasin radiation gage data code
-!!    itgage(:)    |none         |subbasin temp gage data code
-!!    iwgage(:)    |none         |subbasin wind speed gage data code
-!!    plaps(:)     |mm H2O/km    |precipitation lapse rate: precipitation
+!!    isgage(:)   |none          |subbasin radiation gage data code
+!!    itgage(:)   |none          |subbasin temp gage data code
+!!    iwgage(:)   |none          |subbasin wind speed gage data code
+!!    plaps(:)    |mm H2O/km     |precipitation lapse rate: precipitation
 !!                               |change due to change in elevation
 !!    radinc(:,:) |MJ/m^2        |monthly solar radiation adjustment. Daily
 !!                               |radiation within the month is raised or
@@ -69,7 +70,7 @@ subroutine readsub
 !!                               |percentage of the original value (used in
 !!                               |climate change studies)
 !!    sub_smfmn(:)|mm/deg C/day  |min melt rate for snow during year (Dec 21)
-!!                                 for subbasin(:)
+!!                               | for subbasin(:)
 !!                               | (range: -5.0/5.0)
 !!    sub_smfmx(:)|mm/deg C/day  |max melt rate for snow during year (June 21)
 !!                               | for subbasin(:)
@@ -141,6 +142,7 @@ subroutine readsub
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: snofile, titldum
    real*8, dimension(10) :: ssnoeb
    character (len=13) :: chmfile, gwfile, hrufile, mgtfile, opsfile, pndfile,&
@@ -217,7 +219,7 @@ subroutine readsub
          if (snofile /= 'Climate Change') then
             open (113,file=snofile)
             call caps (snofile)
-            call readsno
+            call readsno(i)
          endif
       endif
    endif
@@ -297,11 +299,11 @@ subroutine readsub
       open (108,file=hrufile)
       open (109,file=mgtfile)
       open (110,file=gwfile)
-      call readhru
+      call readhru(i)
       call readchm
       call readmgt
       call readsol
-      call readgw
+      call readgw(i)
       if (opsfile /= '             ') then
          call caps(opsfile)
          open (111,file=opsfile)
@@ -453,12 +455,12 @@ subroutine readsub
    da_km = da_km + sub_km(i)
 
 !!read in weather generator parameter values
-   call readwgn
+   call readwgn(i)
    plaps(i) = plaps(i) / pcpdays(i)
 !!read in subbasin impoundment parameter values
-   call readpnd
+   call readpnd(i)
 !!read in subbasin water use parameter values
-   call readwus
+   call readwus(i)
 
 !! sediment delivery ration for the subbasin..... urban modeling by J.Jeong
    dratio(i) = 0.42 * sub_km(i) ** (-0.125)

@@ -1,18 +1,22 @@
-subroutine plantop
+!> @file plantop.f90
+!> file containing the subroutine plantop
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the plant operation
+!> this subroutine performs the plant operation
+!> @param[in] j HRU number
+subroutine plantop(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j              |none          |HRU number
 !!    lai_init       |none          |initial leaf area index of transplants
 !!    bio_init       |kg/ha         |initial biomass of transplants
 !!    cnop           |none          |SCS runoff curve number for moisture
 !!                                  |condition II
 !!    icr(:)         |none          |sequence number of crop grown within the
 !!                                  |current year
-!!    ihru           |none          |HRU number
 !!    nro(:)         |none          |sequence number of year in rotation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -45,10 +49,12 @@ subroutine plantop
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    nly
+!!    plt_zmx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Min
 !!    SWAT: curno
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -56,10 +62,9 @@ subroutine plantop
    use parm
    implicit none
 
-   integer :: j, nly
+   integer, intent(in) :: j
    real*8 :: plt_zmx
-
-   j = ihru
+   integer :: nly
 
    igro(j) = 1
    idorm(j) = 0

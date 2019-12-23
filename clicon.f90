@@ -8,11 +8,13 @@
 !> fill in radiation, wind speed and relative humidity as well as
 !> missing precipitation and temperatures. Adjustments for climate
 !> changes studies are also made in this subroutine.
-subroutine clicon
+!> @param[in] i current day of simulation (julian date)
+subroutine clicon(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |julian date   |current day of simulation
 !!    elevb(:,:)  |m             |elevation at center of band
 !!    elevb_fr(:,:)|none         |fraction of subbasin area within elevation
 !!                               |band
@@ -143,13 +145,14 @@ subroutine clicon
    use parm
    implicit none
 
+   integer, intent(in) :: i
    real*8, dimension(nstep) :: fradbsb
    real*8 :: daylbsb, pdif, rabsb, ratio, rbsb, rhdbsb, rmxbsb, tdif, tmnbsb,&
       &tmxbsb, u10bsb
    integer :: ib, idap, ii, inum3sprev, iyp, k, l, npcpbsb
 
 !! Precipitation: Measured !!
-   if (pcpsim == 1) call pmeas
+   if (pcpsim == 1) call pmeas(i)
 
 !! Temperature: Measured !!
    if (tmpsim == 1) call tmeas

@@ -5,11 +5,12 @@
 
 !> this subroutine computes travel time coefficients for routing
 !> along the main channel - grassed waterways
-subroutine ttcoef_wway
+subroutine ttcoef_wway(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    grwat_d(:)  |m             |average depth of main channel
 !!    grwat_l(:)  |km            |length of main channel
 !!    grwat_n(:)  |none          |Manning's "n" value for the main channel
@@ -58,7 +59,6 @@ subroutine ttcoef_wway
 !!    fps         |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on floodplain side
 !!                               |slopes; always set to 4 (slope=1/4)
-!!    k           |none          |dummy argument (HRU number)
 !!    p           |m             |wetting perimeter
 !!    qq1         |m^3/s         |flow rate for a specified depth
 !!    rh          |m             |hydraulic radius of channel
@@ -75,61 +75,59 @@ subroutine ttcoef_wway
    implicit none
 
 
+   integer, intent(in) :: j
    real*8, parameter :: aa = 1., fps = 4.
    real*8 :: a, b, chsslope, d, p, qq1, rh, tt1, tt2
-   integer :: k
-
-   k = ihru
 
 !!    If side slope is not set in .rte file then assume this default
 !!    If it is main reach default side slope to 2:1 if it is a waterway default to 8:1
-   !if (chside(k) <= 1.e-6) then
+   !if (chside(j) <= 1.e-6) then
    chsslope = 8.
    !else
-   !   chsslope = chside(k)
+   !   chsslope = chside(j)
    !end if
 
-   d = grwat_d(k)
-   b = grwat_w(k) - 2. * d * chsslope
+   d = grwat_d(j)
+   b = grwat_w(j) - 2. * d * chsslope
 
 
 !!    check if bottom width (b) is < 0
    if (b <= 0.) then
-      b = .5 * grwat_w(k)
-      chsslope = (grwat_w(k) - b) / (2. * d)
+      b = .5 * grwat_w(j)
+      chsslope = (grwat_w(j) - b) / (2. * d)
    end if
-   wat_phi6(k) = b
-   wat_phi7(k) = d
+   wat_phi6(j) = b
+   wat_phi7(j) = d
 
 !!    compute flow and travel time at bankfull depth
    p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
    a = b * d + chsslope * d * d
    rh = a / p
-   wat_phi1(k) = a
-   wat_phi5(k) = Qman(a, rh, grwat_n(k), grwat_s(k))
-   wat_phi8(k) = Qman(aa, rh, grwat_n(k), grwat_s(k))
-   wat_phi9(k) = wat_phi8(k) * 5. / 3.
-   wat_phi10(k) = grwat_l(k) / wat_phi9(k) / 3.6
-   tt2 = grwat_l(k) * a / wat_phi5(k)
+   wat_phi1(j) = a
+   wat_phi5(j) = Qman(a, rh, grwat_n(j), grwat_s(j))
+   wat_phi8(j) = Qman(aa, rh, grwat_n(j), grwat_s(j))
+   wat_phi9(j) = wat_phi8(j) * 5. / 3.
+   wat_phi10(j) = grwat_l(j) / wat_phi9(j) / 3.6
+   tt2 = grwat_l(j) * a / wat_phi5(j)
 
 !!    compute flow and travel time at 1.2 bankfull depth
-   d = 1.2 * grwat_d(k)
-   a = a + (grwat_w(k) * grwat_d(k) + fps * (d - grwat_d(k)) ** 2)
-   p=p + 4.*grwat_w(k) + (0.4 * grwat_d(k) * Sqrt(fps * fps + 1.))
+   d = 1.2 * grwat_d(j)
+   a = a + (grwat_w(j) * grwat_d(j) + fps * (d - grwat_d(j)) ** 2)
+   p=p + 4.*grwat_w(j) + (0.4 * grwat_d(j) * Sqrt(fps * fps + 1.))
    rh = a / p
-   qq1 = Qman(a, rh, grwat_n(k), grwat_s(k))
-   tt1 = grwat_l(k) * a / qq1
+   qq1 = Qman(a, rh, grwat_n(j), grwat_s(j))
+   tt1 = grwat_l(j) * a / qq1
 
 !!    compute flow and travel time at 0.1 bankfull depth
-   d = 0.1 * grwat_d(k)
+   d = 0.1 * grwat_d(j)
    p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
    a = b * d + chsslope * d * d
    rh = a / p
-   qq1 = Qman(a, rh, grwat_n(k), grwat_s(k))
-   tt1 = grwat_l(k) * a / qq1
-   wat_phi11(k) = Qman(aa, rh, grwat_n(k), grwat_s(k))
-   wat_phi12(k) = wat_phi11(k) * 5. / 3.
-   wat_phi13(k) = grwat_l(k) / wat_phi12(k) / 3.6
+   qq1 = Qman(a, rh, grwat_n(j), grwat_s(j))
+   tt1 = grwat_l(j) * a / qq1
+   wat_phi11(j) = Qman(aa, rh, grwat_n(j), grwat_s(j))
+   wat_phi12(j) = wat_phi11(j) * 5. / 3.
+   wat_phi13(j) = grwat_l(j) / wat_phi12(j) / 3.6
 
    return
 end

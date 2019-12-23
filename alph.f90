@@ -1,8 +1,18 @@
-subroutine alph(iwave)
+!> @file alph.f90
+!> file containing the subroutine alph
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes alpha, a dimensionless parameter that
-!!    expresses the fraction of total rainfall that occurs during 0.5h
+!> this subroutine computes alpha, a dimensionless parameter that
+!> expresses the fraction of total rainfall that occurs during 0.5h
+!> @parm[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU MUSLE(sedyld) each hru is calculated independently using
+!> hru area and adjusted channel length\n
+!> iwave = 1 subbasin # for subbasin MUSLE is computed for entire subbasin using
+!> hru weighted KLSCP
+subroutine alph(iwave)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
@@ -62,6 +72,7 @@ subroutine alph(iwave)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Max, Min
 !!    SWAT: Expo, Atri
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -70,14 +81,13 @@ subroutine alph(iwave)
    implicit none
 
    integer, intent (in) :: iwave
-   integer :: j, k, kk, jj
+   integer :: j, jj, k, kk
    real*8 :: ajp, preceff, rainsum
 
    j = ihru
 
    select case (ievent)
     case(0)                !! daily rainfall, estimate al5
-      preceff = 0.
       if (iwave > 0) then
          !! subbasin sediment calculations
          if (sub_precip(iwave) > sub_snom(iwave)) then
@@ -115,7 +125,7 @@ subroutine alph(iwave)
             do jj = 0, k
                if (precipdt(kk+jj) > (snomlt+ovrlnd(j))/nstep) then
                   rainsum = rainsum + precipdt(kk+jj) -&
-                  &(snomlt + ovrlnd(j)) / nstep
+                     &(snomlt + ovrlnd(j)) / nstep
                end if
             end do
             al5 = Max(al5,rainsum)
@@ -127,7 +137,6 @@ subroutine alph(iwave)
             al5 = ab
          end if
       else
-         preceff = 0.
          if (iwave > 0) then
             !! subbasin sediment calculations
             if (sub_precip(iwave) > sub_snom(iwave)) then

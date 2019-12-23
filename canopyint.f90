@@ -1,8 +1,11 @@
-subroutine canopyint
+!> @file canopyint.f90
+!> file containing the subroutine canopyint
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes canopy interception of rainfall
-!!    used for methods other than curve number
+!> this subroutine computes canopy interception of rainfall
+!> used for methods other than curve number
+subroutine canopyint
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -50,8 +53,8 @@ subroutine canopyint
    use parm
    implicit none
 
-   integer :: j, ii
-   real*8 :: xx, canmxl, canstori
+   real*8 :: canmxl, canstori, xx
+   integer :: ii, j
 
    j = ihru
 

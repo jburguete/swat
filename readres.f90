@@ -5,12 +5,13 @@
 
 !> the purpose of this subroutine is to read in data from the reservoir
 !> input file (.res)
-subroutine readres
+!> @param[in] i reservoir number (none)
+subroutine readres(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i           |none          |reservoir number
+!!    i          |none          |reservoir number
 !!    nbyr        |none          |number of calendar years simulated
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -119,6 +120,7 @@ subroutine readres
    use parm
    implicit none
 
+   integer, intent(in) :: i
    character (len=80) :: titldum
    character (len=13) :: resdayo, resmono
    real*8 :: lnvol, res_d50, res_d50mm, resdif, targ

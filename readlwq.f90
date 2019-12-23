@@ -8,12 +8,13 @@
 !> in the lake/reservoir and transformation processes occuring within the
 !> lake/reservoir. Data in the lake water quality input file is assumed to
 !> apply to all reservoirs in the watershed.
-subroutine readlwq
+!> @param[in] ii reservoir number (none)
+subroutine readlwq(ii)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i            |none          |reservoir number
+!!    ii           |none          |reservoir number
 !!    res_vol(:)   |m**3          |reservoir volume
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -87,6 +88,7 @@ subroutine readlwq
    use parm
    implicit none
 
+   integer, intent(in) :: ii
    character (len=80) :: titldum
    real*8 :: lkarea, nh3i, no2i, no3i, orgni, orgpi, solpi
    integer :: eof
@@ -106,21 +108,21 @@ subroutine readlwq
       if (eof < 0) exit
       read (106,1000,iostat=eof) titldum
       if (eof < 0) exit
-      read (106,*,iostat=eof) ires1(i)
+      read (106,*,iostat=eof) ires1(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) ires2(i)
+      read (106,*,iostat=eof) ires2(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) psetlr1(i)
+      read (106,*,iostat=eof) psetlr1(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) psetlr2(i)
+      read (106,*,iostat=eof) psetlr2(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) nsetlr1(i)
+      read (106,*,iostat=eof) nsetlr1(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) nsetlr2(i)
+      read (106,*,iostat=eof) nsetlr2(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) chlar(i)
+      read (106,*,iostat=eof) chlar(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) seccir(i)
+      read (106,*,iostat=eof) seccir(ii)
       if (eof < 0) exit
       read (106,*,iostat=eof) orgpi
       if (eof < 0) exit
@@ -136,57 +138,57 @@ subroutine readlwq
       if (eof < 0) exit
       read (106,1000,iostat=eof) titldum
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_conc(i)
+      read (106,*,iostat=eof) lkpst_conc(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_rea(i)
+      read (106,*,iostat=eof) lkpst_rea(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_vol(i)
+      read (106,*,iostat=eof) lkpst_vol(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_koc(i)
+      read (106,*,iostat=eof) lkpst_koc(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_stl(i)
+      read (106,*,iostat=eof) lkpst_stl(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_rsp(i)
+      read (106,*,iostat=eof) lkpst_rsp(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkpst_mix(i)
+      read (106,*,iostat=eof) lkpst_mix(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkspst_conc(i)
+      read (106,*,iostat=eof) lkspst_conc(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkspst_rea(i)
+      read (106,*,iostat=eof) lkspst_rea(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkspst_bry(i)
+      read (106,*,iostat=eof) lkspst_bry(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) lkspst_act(i)
+      read (106,*,iostat=eof) lkspst_act(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) theta_n(i)
+      read (106,*,iostat=eof) theta_n(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) theta_p(i)
+      read (106,*,iostat=eof) theta_p(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) con_nirr(i)
+      read (106,*,iostat=eof) con_nirr(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) con_pirr(i)
+      read (106,*,iostat=eof) con_pirr(ii)
       if (eof < 0) exit
       exit
    end do
 
 !!    convert units
-   psetlr1(i) = psetlr1(i) / 365.         !m/yr -> m/day
-   psetlr2(i) = psetlr2(i) / 365.
-   nsetlr1(i) = nsetlr1(i) / 365.
-   nsetlr2(i) = nsetlr2(i) / 365.
+   psetlr1(ii) = psetlr1(ii) / 365.         !m/yr -> m/day
+   psetlr2(ii) = psetlr2(ii) / 365.
+   nsetlr1(ii) = nsetlr1(ii) / 365.
+   nsetlr2(ii) = nsetlr2(ii) / 365.
 !     set initial n and p concentrations --> (ppm) * (m^3) / 1000 = kg
 !                                            ppm = t/m^3 * 10^6
-   res_solp(i) = solpi * res_vol(i) / 1000.
-   res_orgp(i) = orgpi * res_vol(i) / 1000.
-   res_no3(i) = no3i  * res_vol(i) / 1000.
-   res_no2(i) = no2i  * res_vol(i) / 1000.
-   res_nh3(i) = nh3i  * res_vol(i) / 1000.
-   res_orgn(i) = orgni * res_vol(i) / 1000.
+   res_solp(ii) = solpi * res_vol(ii) / 1000.
+   res_orgp(ii) = orgpi * res_vol(ii) / 1000.
+   res_no3(ii) = no3i  * res_vol(ii) / 1000.
+   res_no2(ii) = no2i  * res_vol(ii) / 1000.
+   res_nh3(ii) = nh3i  * res_vol(ii) / 1000.
+   res_orgn(ii) = orgni * res_vol(ii) / 1000.
 
 !!    lake pesticide mass
-   lkpst_mass(i) = lkpst_conc(i) * res_vol(i)
-   lkarea = br1(i) * res_vol(i) ** br2(i)
-   lkspst_mass(i) = lkspst_conc(i) * lkspst_act(i) * lkarea * 10000.
+   lkpst_mass(ii) = lkpst_conc(ii) * res_vol(ii)
+   lkarea = br1(ii) * res_vol(ii) ** br2(ii)
+   lkspst_mass(ii) = lkspst_conc(ii) * lkspst_act(ii) * lkarea * 10000.
 
    close (106)
 

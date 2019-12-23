@@ -1,8 +1,11 @@
-subroutine crackvol
+!> @file crackvol.f90
+!> file containing the subroutine crackvol
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this surboutine computes total crack volume for the soil profile and
-!!    modifies surface runoff to account for crack flow
+!> this surboutine computes total crack volume for the soil profile and
+!> modifies surface runoff to account for crack flow
+subroutine crackvol
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -47,9 +50,9 @@ subroutine crackvol
    use parm
    implicit none
 
-   integer :: l, j
-   real*8 :: volcrnew, crlag
    real*8, parameter :: crlagdry = .99, crlagwet = 0.
+   real*8 :: crlag, volcrnew
+   integer :: j, l
 
    j = ihru
    voltot = 0.
@@ -57,13 +60,9 @@ subroutine crackvol
    !! calculate volume of cracks in soil
    do l = 1, sol_nly(j)
       volcrnew = crdep(l,j) * (sol_fc(l,j) - sol_st(l,j)) /&
-      &(sol_fc(l,j))
-      if (sol_sw(j) < .90 * sol_sumfc(j)) then
-         if (volcrnew > volcr(l,j)) then
-            crlag = crlagdry
-         else
-            crlag = crlagwet
-         end if
+         &(sol_fc(l,j))
+      if (sol_sw(j) < .90 * sol_sumfc(j) .and. volcrnew > volcr(l,j)) then
+         crlag = crlagdry
       else
          crlag = crlagwet
       end if

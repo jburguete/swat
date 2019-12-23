@@ -1,11 +1,18 @@
-subroutine irrigate(jj,volmm)
+!> @file irrigate.f90
+!> file containing the subroutine irrigate
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine applies irrigation water to HRU
+!> this subroutine applies irrigation water to HRU
+!> @param[in] j HRU number (none)
+!> @param[in] volmm depth irrigation water applied to HRU (mm H2O)
+subroutine irrigate(j,volmm)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
+!!    volmm       |mm H2O        |depth irrigation water applied to HRU
 !!    aairr(:)    |mm H2O        |average annual amount of irrigation water
 !!                               |applied to HRU
 !!    curyr       |none          |current year of simulation
@@ -39,33 +46,26 @@ subroutine irrigate(jj,volmm)
 !!                               |during month
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
-!!    name        |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    jj          |none          |HRU number
-!!    volmm       |mm H2O        |depth irrigation water applied to HRU
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer, intent (in) :: jj
-   real*8, intent (in out) :: volmm
+   integer, intent (in) :: j
+   real*8, intent (in) :: volmm
 
 !! initialize variable for HRU
 !! (because irrigation can be applied in different command loops
 !! the variable is initialized here)
 
-   aird(jj) = volmm * (1. - sq_rto)
-   qird(jj) = volmm * sq_rto
+   aird(j) = volmm * (1. - sq_rto)
+   qird(j) = volmm * sq_rto
 
 !! summary calculations
    if (curyr > nyskip) then
-      irn(jj) = irn(jj) + 1
-      aairr(jj) = aairr(jj) + aird(jj)
-      hrumono(22,jj) = hrumono(22,jj) + aird(jj)
+      irn(j) = irn(j) + 1
+      aairr(j) = aairr(j) + aird(j)
+      hrumono(22,j) = hrumono(22,j) + aird(j)
    end if
 
 

@@ -5,13 +5,14 @@
 
 !> this subroutine reads in precipitation data and assigns it to the
 !> proper subbasins
-subroutine pmeas
+!> @param[in] i current day of simulation (julian date)
+subroutine pmeas(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hru_sub(:)  |none          |number of subbasin in which HRU is located
 !!    i           |julian date   |current day of simulation
+!!    hru_sub(:)  |none          |number of subbasin in which HRU is located
 !!    id1         |julian date   |first day of simulation in current year
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
@@ -81,6 +82,7 @@ subroutine pmeas
    use parm
    implicit none
 
+   integer, intent(in) :: i
    real*8, dimension (mrg) :: rmeas
    real*8, dimension (:,:), allocatable :: rainsb
    real*8 :: rbsb

@@ -1,4 +1,4 @@
-subroutine apex_day
+subroutine apex_day(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine inputs measured loadings to the stream network for
@@ -8,6 +8,7 @@ subroutine apex_day
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |julian date   |current day in simulation--loop counter
 !!    id1         |julian date   |first day of simulation in year
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
@@ -103,6 +104,7 @@ subroutine apex_day
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: ii, j
 
    do j = 1, mvaro

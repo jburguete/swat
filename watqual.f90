@@ -1,4 +1,4 @@
-subroutine watqual
+subroutine watqual(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs in-stream nutrient transformations and water
@@ -7,6 +7,7 @@ subroutine watqual
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i            |julian date   |current day in simulation--loop counter
 !!    ai0          |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    ai1          |mg N/mg alg   |fraction of algal biomass that is nitrogen
 !!    ai2          |mg P/mg alg   |fraction of algal biomass that is phosphorus
@@ -222,6 +223,7 @@ subroutine watqual
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: jrch
    real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
    real*8 :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra

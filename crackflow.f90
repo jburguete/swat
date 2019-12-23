@@ -1,7 +1,10 @@
-subroutine crackflow
+!> @file crackflow.f90
+!> file containing the subroutine crackflow
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this surboutine modifies surface runoff to account for crack flow
+!> this surboutine modifies surface runoff to account for crack flow
+subroutine crackflow
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -38,8 +41,8 @@ subroutine crackflow
    use parm
    implicit none
 
-   integer :: j, ii
    real*8 :: voli
+   integer :: ii, j
 
    j = ihru
 

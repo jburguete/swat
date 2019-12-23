@@ -1,4 +1,4 @@
-subroutine lidinit
+subroutine lidinit(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    This subroutine sets default values for LID parameters
@@ -35,6 +35,7 @@ subroutine lidinit
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: kk
 !      real*8 ::
 

@@ -1,4 +1,4 @@
-subroutine grow
+subroutine grow(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine adjusts plant biomass, leaf area index, and canopy height
@@ -8,6 +8,7 @@ subroutine grow
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none             |HRU number
 !!    blai(:)     |none             |maximum (potential) leaf area index
 !!    auto_nstrs(:) |none           |nitrogen stress factor which triggers
 !!                                  |auto fertilization
@@ -47,7 +48,6 @@ subroutine grow
 !!    igro(:)     |none             |land cover status code:
 !!                                  |0 no land cover currently growing
 !!                                  |1 land cover growing
-!!    ihru        |none             |HRU number
 !!    lai_yrmx(:) |none             |maximum leaf area index for the year in the
 !!                                  |HRU
 !!    laiday(:)   |m**2/m**2        |leaf area index
@@ -138,7 +138,6 @@ subroutine grow
 !!                                  |corresponding to a given fraction of
 !!                                  |potential heat units for plant
 !!    ff          |
-!!    j           |none             |HRU number
 !!    laimax      |none             |maximum leaf area index
 !!    par         |MJ/m^2           |photosynthetically active radiation
 !!    reg         |none             |stress factor that most limits plant growth
@@ -156,11 +155,11 @@ subroutine grow
    use parm
    implicit none
 
-   integer :: j, idp
+   integer, intent(in) :: j
+   integer :: idp
    real*8 :: delg, par, ruedecl, beadj, reg, f, ff, deltalai
    real*8 :: laimax, rto, biomxyr
 
-   j = ihru
    rto = 1.
 
    !! plant will not undergo stress if dormant
@@ -180,7 +179,7 @@ subroutine grow
    if (phuacc(j) <= 1.) then
 
       !! compute temperature stress - strstmp(j)
-      call tstr
+      call tstr(j)
 
       !! calculate optimal biomass
 

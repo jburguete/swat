@@ -6,14 +6,15 @@
 !> This subroutine reads data from the HRU/subbasin pond input file (.pnd).
 !> This file contains data related to ponds and wetlands in the
 !> HRUs/subbasins.
-subroutine readpnd
+!> @param[in] i HRU/subbasin number (none)
+subroutine readpnd(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hrutot(:)   |none          |number of HRUs in subbasin
-!!    i           |none          |subbasin number
 !!    ihru        |none          |HRU number
+!!    i          |none          |subbasin number
 !!    nhru        |none          |number of last HRU in previous subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -176,6 +177,7 @@ subroutine readpnd
    use parm
    implicit none
 
+   integer, intent(in) :: i
    real*8, dimension(mudb) :: dummy
    character (len=200) :: lus
    character (len=80) :: titldum
@@ -781,8 +783,8 @@ subroutine readpnd
 
    !! Set default values for urban BMP parameters
    if (ievent > 0) then
-      call bmpinit
-      call lidinit
+      call bmpinit(i)
+      call lidinit(i)
    endif
 
    return

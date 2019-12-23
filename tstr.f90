@@ -1,4 +1,4 @@
-subroutine tstr
+subroutine tstr(j)
 
 !!     ~ ~ ~ PURPOSE ~ ~ ~
 !!     computes temperature stress for crop growth - strstmp
@@ -6,10 +6,10 @@ subroutine tstr
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    icr(:)      |none          |sequence number of crop grown within the
 !!                               |current year
 !!    idplt(:)    |none          |land cover code from crop.dat
-!!    ihru        |none          |HRU number
 !!    nro(:)      |none          |sequence number of year in rotation
 !!    t_base(:)   |deg C         |minimum temperature for plant growth
 !!    t_opt(:)    |deg C         |optimal temperature for plant growth
@@ -29,7 +29,6 @@ subroutine tstr
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    rto         |
 !!    tgx         |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -42,10 +41,8 @@ subroutine tstr
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: tgx, rto
-
-   j = ihru
 
    tgx = tmpav(j) - t_base(idplt(j))
 

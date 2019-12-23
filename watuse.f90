@@ -1,4 +1,4 @@
-subroutine watuse
+subroutine watuse(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine removes water from appropriate source (pond,
@@ -7,8 +7,8 @@ subroutine watuse
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    deepst(:)   |mm H2O        |depth of water in deep aquifer
-!!    ihru        |none          |HRU number
 !!    pnd_vol(:)  |m^3 H2O       |volume of water in pond
 !!    shallst(:)  |mm H2O        |depth of water in shallow aquifer
 !!    wudeep(:,:) |10^4 m^3/day  |average daily water removal from the deep
@@ -33,7 +33,6 @@ subroutine watuse
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -41,10 +40,8 @@ subroutine watuse
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: cnv, sub_ha
-
-   j = ihru
 
    sub_ha = da_ha * sub_fr(hru_sub(j))
    cnv = sub_ha * 10.

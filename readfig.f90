@@ -126,7 +126,7 @@ subroutine readfig
    character (len=80) :: titldum
    character (len=13) :: annual_in, apex_in, day_in, hour_in, lwqfile,&
       &month_in, resfile, rtefile, rufile, subfile, swqfile, year_in
-   integer :: eof, ii, iijj, jjii, k
+   integer :: eof, i, ii, iijj, jjii, k
    character (len=3), dimension (mhyd) :: char6, char7, char8
    character (len=1) :: a
 
@@ -203,7 +203,7 @@ subroutine readfig
             i = inum1s(k)
             subed(ihouts(k)) = inum4s(k)
             open (101,file=subfile)
-            call readsub
+            call readsub(i)
             nhru = nhru + hrutot(i)
 
           case (2)  !! icode = 2  ROUTE CHANNEL command
@@ -232,13 +232,13 @@ subroutine readfig
             call caps(lwqfile)
             i = inum1s(k)
             open (105,file=resfile)
-            call readres
+            call readres(i)
             if (lwqfile /= '             ') then
                open (106,file=lwqfile)
-               call readlwq
+               call readlwq(i)
             end if
             !! lake water quality default values
-            call lwqdef
+            call lwqdef(i)
 
           case (4)  !! icode = 4  TRANSFER command: read in beg/end month
             read (102,5004) mo_transb(inum5s(k)),&
@@ -263,7 +263,7 @@ subroutine readfig
             call caps(month_in)
             i = inum1s(k)
             open (107,file=month_in,recl=350)
-            call readmon
+            call readmon(i)
 
           case (8)  !! icode = 8  RECYEAR command:
             !! read in average daily loadings for each year
@@ -273,7 +273,7 @@ subroutine readfig
             call caps(year_in)
             i = inum1s(k)
             open (108,file=year_in,recl=350)
-            call readyr
+            call readyr(i)
 
             close (108)
 
@@ -314,7 +314,7 @@ subroutine readfig
             call caps(annual_in)
             i = inum1s(k)
             open (109,file=annual_in,recl=350)
-            call readcnst
+            call readcnst(i)
 
 !! code to read from apex output file
           case (13)
@@ -351,7 +351,7 @@ subroutine readfig
             isub = inum2s(k)
             daru_km(isub,iru) = rnum1s(k)
             open (113,file=rufile)
-            call readru
+            call readru(i)
             close(113)
 
           case (18)  !! icode = 18  LANDSCAPE ROUTING command

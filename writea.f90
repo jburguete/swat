@@ -1,4 +1,4 @@
-subroutine writea
+subroutine writea(i)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes annual output
@@ -6,6 +6,7 @@ subroutine writea
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    i           |julian date   |current day of simulation
 !!    bio_yrms(:) |metric tons/ha|annual biomass (dry weight) in the HRU
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_s2(:)   |m/m           |average slope of main channel
@@ -21,7 +22,6 @@ subroutine writea
 !!                               |contribution to stream from HRU during year
 !!                               |(sorbed to sediment)
 !!    hruyro(:,:) |varies        |HRU annual output array
-!!    i           |julian date   |current day of simulation
 !!    id1         |julian date   |first day of simulation in current year
 !!    ideg        |none          |channel degredation code
 !!                               |0: do not compute channel degradation
@@ -189,6 +189,7 @@ subroutine writea
    use parm
    implicit none
 
+   integer, intent(in) :: i
    integer :: j, k
    real*8 :: sum
 
@@ -243,7 +244,7 @@ subroutine writea
          call subyr
 
          !! annual write--reach output (.rch)
-         call rchyr
+         call rchyr(i)
 
 !         !! annual write--sediment routing (.sed)
          call rsedyr
