@@ -50,13 +50,10 @@ subroutine submon
    use parm
    implicit none
 
-   integer :: sb, ii
    real*8, dimension (msubo) :: pdvab, pdvb
+   integer :: ii, sb
 
    do sb = 1, subtot
-
-      pdvab = 0.
-      pdvb = 0.
 
       pdvab(1) = submono(1,sb)
       pdvab(2) = submono(2,sb)
@@ -92,14 +89,13 @@ subroutine submon
             pdvb(ii) = pdvab(ipdvab(ii))
          end do
          write (31,1000) sb, subgis(sb), mo_chk, sub_km(sb),&
-         &(pdvb(ii), ii = 1, itotb)
+            &(pdvb(ii), ii = 1, itotb)
       else
          write (31,1000) sb, subgis(sb), mo_chk, sub_km(sb),&
-         &(pdvab(ii), ii = 1, msubo)
+            &(pdvab(ii), ii = 1, msubo)
       end if
    end do
 
    return
-!1000 format ('BIGSUB',i4,1x,i8,1x,i4,e10.5,21f10.3)
 1000 format ('BIGSUB',i5,1x,i8,1x,i4,e10.5,18f10.3,1x,e10.5,5e10.3)
 end
