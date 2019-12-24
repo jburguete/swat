@@ -1,29 +1,25 @@
+!> this subroutine performs all management operations
+!> @param[in] j HRU number
 subroutine sched_mgt(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
+!!    j          |none             |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name            |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    auto_eff(:) |none          |fertilizer application efficiency calculated
-!!                               |as the amount of N applied divided by the
-!!                               |amount of N removed at harvest
-!!    icpst                      |icpst = 0 do not apply = 1 application period
-!!    ipst_freq   |days          |number of days between applications
-!!    iday_pest   |day           |current day between applications
-!!    ndcpst      |day           |current day within the application period
-!!    irramt(:)   |mm H20        |depth of irrigation water applied to HRU
-!!    irrsalt(:)  |mg/kg         |concentration of salt in irrigation water
+!!    biomass
+!!    husc
+!!    n
+!!    ncrp
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -37,8 +33,8 @@ subroutine sched_mgt(j)
    implicit none
 
    integer, intent(in) :: j
-   integer :: n, ncrp
    real*8 :: biomass, husc
+   integer :: n, ncrp
 
    n = nop(j)
 
@@ -185,7 +181,7 @@ subroutine sched_mgt(j)
       end if
 
     case (8)   !! kill operation
-      call killop
+      call killop(j)
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
@@ -209,7 +205,7 @@ subroutine sched_mgt(j)
       if (manure_kg(j) <= 0.) then
          manure_kg(j) = 0.95 * mgt4op(n,j)
       end if
-      call graze
+      call graze(j)
 
       if (imgt == 1) then
          write (143, 1005) subnum(j), hruno(j), iyr, i_mo, iida,&
@@ -319,7 +315,7 @@ subroutine sched_mgt(j)
 
     case (16)   !! burning
       burn_frlb = mgt4op(n,j)
-      call burnop
+      call burnop(j)
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
             &hru_km(j), "         ",&

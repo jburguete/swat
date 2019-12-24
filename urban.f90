@@ -112,10 +112,10 @@ subroutine urban(j)
 
     case (1)                         !! USGS regression equations
       if (precipday > .1 .and. surfq(j) > .1) then
-         cod = Regres(1)
-         sus_sol = Regres(2)
-         tn = Regres(3)
-         tp = Regres(4)
+         cod = Regres(1,j)
+         sus_sol = Regres(2,j)
+         tn = Regres(3,j)
+         tp = Regres(4,j)
 
          sedyld(j) = (.001 * sus_sol) * fimp(urblu(j)) + sedyld(j)&
          &* (1. - fimp(urblu(j)))

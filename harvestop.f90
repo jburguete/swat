@@ -1,7 +1,11 @@
-subroutine harvestop(j)
+!> @file harvestop.f90
+!> file containing the subroutine harvestop
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the harvest operation (no kill)
+!> this subroutine performs the harvest operation (no kill)
+!> @param[in] j HRU number
+subroutine harvestop(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
@@ -110,18 +114,55 @@ subroutine harvestop(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    BLG1
+!!    BLG2
+!!    BLG3
+!!    CLG
 !!    clip        |kg/ha          |yield lost during harvesting
+!!    clipbms
+!!    clipgrn
 !!    clipn       |kg N/ha        |nitrogen in clippings
+!!    clipnbms
+!!    clipngrn
+!!    clipntbr
 !!    clipp       |kg P/ha        |phosphorus in clippings
+!!    clippbms
+!!    clippgrn
 !!    clippst     |kg pst/ha      |pesticide in clippings
+!!    clipptbr
+!!    cliptbr
+!!    ff3
 !!    hiad1       |none           |actual harvest index (adj for water/growth)
 !!    k           |none           |counter
+!!    l           |none           |counter
+!!    LMF
+!!    LSF
+!!    resnew
+!!    resnew_n
+!!    resnew_ne
+!!    RLN
+!!    RLR
+!!    rtresn
+!!    rtresnew
+!!    rtresp
+!!    sf
+!!    sol_min_n
+!!    ssabg
+!!    ssb
+!!    ssn
+!!    ssp
+!!    ssr
 !!    wur         |none           |water deficiency factor
-!!    yield       |kg             |yield (dry weight)
-!!    yieldn      |kg N/ha        |nitrogen removed in yield
-!!    yieldp      |kg P/ha        |phosphorus removed in yield
+!!    XX
+!!    yieldnbms
+!!    yieldngrn
+!!    yieldnrsd
+!!    yieldntbr
+!!    yieldpbms
+!!    yieldpgrn
+!!    yieldprsd
+!!    yieldptbr
 !!    yldpst      |kg pst/ha      |pesticide removed in yield
-!!    xx          |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -132,24 +173,15 @@ subroutine harvestop(j)
    implicit none
 
    integer, intent(in) :: j
-   integer :: k, l
-
-!!   change per JGA 8/31/2011 gsm PUT YIELD IN modparm.f
-!!    real*8 :: hiad1, wur, yield, clip, yieldn, yieldp, clipn, clipp
-   real*8 :: hiad1, wur, clip, clipn, clipp
-   real*8 :: yldpst, clippst, rtresnew
-   real*8 :: clipgrn,cliptbr,clipngrn,clippgrn,yieldngrn
-   real*8 :: yieldntbr,yieldnrsd,yieldpgrn,yieldptbr,yieldprsd
-   real*8 :: clipntbr,clipptbr,rtresp
-   real*8 :: clipbms, clipnbms, clippbms, ff3, rtresn, ssabg, ssb, ssn, ssp, ssr, XX, yieldnbms, yieldpbms
-
-   !!add by zhang
-   !!===================
-   real*8 :: BLG1, BLG2, CLG, sf
-   real*8 :: sol_min_n, resnew, resnew_n, resnew_ne
-   real*8 :: LMF, LSF
-   real*8 :: RLN, RLR
    real*8, parameter :: BLG3 = 0.10
+   real*8 :: BLG1, BLG2, CLG, clip, clipbms, clipgrn, clipn, clipnbms,&
+      &clipngrn, clipntbr, clipp, clippbms, clippgrn, clippst, clipptbr,&
+      &cliptbr, ff3, hiad1, LMF, LSF, resnew, resnew_n, resnew_ne, RLN, RLR,&
+      &rtresn, rtresnew, rtresp, sf, sol_min_n, ssabg, ssb, ssn, ssp, ssr, wur,&
+      &XX, yieldnbms, yieldngrn, yieldnrsd, yieldntbr, yieldpbms, yieldpgrn,&
+      &yieldprsd, yieldptbr, yldpst
+   integer :: k, l
+   
    sf = 0.
    clipbms = 0.
    clipnbms = 0.
@@ -161,9 +193,6 @@ subroutine harvestop(j)
    yieldngrn = 0.; yieldntbr = 0.; yieldnrsd = 0.; yieldpgrn = 0.
    yieldptbr = 0.; yieldprsd = 0.; clipntbr = 0.; clipptbr = 0.
    rtresnew = 0.; rtresn = 0.; rtresp = 0.
-
-   !!add by zhang
-   !!===================
 
    yieldgrn = 0.
    yieldbms = 0.
@@ -187,7 +216,7 @@ subroutine harvestop(j)
       wur = 100. * plt_et(j) / plt_pet(j)
    endif
    hiad1 = (hvstiadj(j) - wsyf(idplt(j))) *&
-   &(wur / (wur + Exp(6.13 - .0883 * wur))) + wsyf(idplt(j))
+      &(wur / (wur + Exp(6.13 - .0883 * wur))) + wsyf(idplt(j))
    if (hiad1 > hvsti(idplt(j))) then
       hiad1 = hvsti(idplt(j))
    end if
@@ -341,7 +370,7 @@ subroutine harvestop(j)
       if (resnew_ne >= (0.42 * LSF * resnew /150)) then
          sol_LSN(1,j) = sol_LSN(1,j) + 0.42 * LSF * resnew / 150
          sol_LMN(1,j) = sol_LMN(1,j) + resnew_ne -&
-         &(0.42 * LSF * resnew / 150) + 1.E-25
+            &(0.42 * LSF * resnew / 150) + 1.E-25
       else
          sol_LSN(1,j) = sol_LSN(1,j) + resnew_ne
          sol_LMN(1,j) = sol_LMN(1,j) + 1.E-25
@@ -362,18 +391,6 @@ subroutine harvestop(j)
    endif
    if (ff3 > 1.0) ff3 = 1.0
 
-   ! nssr is the new mass of roots
-!      nssr = rwt(j) * ssabg * (1. - ff3) / (1. - rwt(j))
-!      rtresnew = ssr - nssr
-!      if (ssr > 1.e-6) then
-!       ff4 = rtresnew / ssr
-!      else!
-!    ff4 = 0.
-!      end if
-!      rtresn = ff4 * ssn
-!      rtresp = ff4 * ssp
-
-
    !! reset leaf area index and fraction of growing season
    if (ssb > 0.001) then
       laiday(j) = laiday(j) * (1. - ff3)
@@ -389,17 +406,6 @@ subroutine harvestop(j)
    endif
 
 
-!      !! compute fraction of roots in each layer ! Armen 20 May 2008
-!      call rootfr
-!
-!      !! allocate roots, N, and P to soil pools ! Armen 20 May 2008
-!      do l=1, sol_nly(j)
-!            sol_rsd(l,j) = sol_rsd(l,j) + rtfr(l) * rtresnew
-!            sol_fon(l,j) = sol_fon(l,j) + rtfr(l) * rtresn
-!            sol_fop(l,j) = sol_fop(l,j) + rtfr(l) * rtresp
-!      end do
-!
-!     rtfr = 0.
    !! allocate roots, N, and P to soil pools ! Armen 20 May 2008
    do l=1, sol_nly(j)
       sol_rsd(l,j) = sol_rsd(l,j) + rtfr(l) * rtresnew
@@ -421,8 +427,6 @@ subroutine harvestop(j)
          sol_min_n = (sol_no3(l,j)+sol_nh3(l,j))
 
          resnew = rtfr(l) * rtresnew
-         !resnew_n = resnew * pltfr_n(j)
-         !resnew_ne = resnew_n + sf * sol_min_n
          resnew_n = rtfr(l) * rtresn
          resnew_ne = resnew_n + sf * sol_min_n
          !Not sure 1000 should be here or not!
@@ -452,7 +456,7 @@ subroutine harvestop(j)
          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
             sol_LSN(l,j) = sol_LSN(l,j) + 0.42 * LSF * resnew / 150
             sol_LMN(l,j) = sol_LMN(l,j) + resnew_ne -&
-            &(0.42 * LSF * resnew / 150) + 1.E-25
+               &(0.42 * LSF * resnew / 150) + 1.E-25
          else
             sol_LSN(l,j) = sol_LSN(l,j) + resnew_ne
             sol_LMN(l,j) = sol_LMN(l,j) + 1.E-25

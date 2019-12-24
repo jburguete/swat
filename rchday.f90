@@ -1,7 +1,10 @@
-subroutine rchday
+!> @file rchday.f90
+!> file containing the subroutine rchday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the daily reach output to the .rch file
+!> this subroutine writes the daily reach output to the .rch file
+subroutine rchday
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
@@ -78,8 +81,8 @@ subroutine rchday
 !!                               |out of reach on day
 !!    rchdy(42,:)  |kg           |amount of conservative metal #3 transported
 !!                               |out of reach on day
-!!    rchday(43,:) |kg           |Total N (org N + no3 + no2 + nh4 outs)
-!!    rchday(44,:) |kg           |Total P (org P + sol p outs)
+!!    rchdy(43,:)  |kg           |Total N (org N + no3 + no2 + nh4 outs)
+!!    rchdy(44,:)  |kg           |Total P (org P + sol p outs)
 
 !!    subgis(:)    |none         |GIS code printed to output files(output.sub,.rch)
 !!    subtot       |none         |number of subbasins in watershed
@@ -90,6 +93,7 @@ subroutine rchday
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
 !!    j           |none          |counter (reach number)
+!!    kk
 !!    pdvar(:)    |varies        |array of default reach output values
 !!    pdvr(:)     |varies        |array of custom reach output values
 !!    srch_av(:)  |varies        |daily flow values for reach
@@ -97,15 +101,17 @@ subroutine rchday
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Log10
+!!    SWAT: Icl, xmon
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, ii, kk, icl
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
+   integer :: ii, j, kk
+   integer :: Icl
 
    do j = 1, subtot
 
@@ -198,14 +204,14 @@ subroutine rchday
                end do
                if (iscen == 1 .and. isproj == 0) then
                   write (7,5001) j, subgis(j), iida, kk, rch_dakm(j),&
-                  &(pdvr(ii), ii = 1, itotr)
+                     &(pdvr(ii), ii = 1, itotr)
                end if
             end do
          else
             if (iscen == 1 .and. isproj == 0) then
                do kk=1,nstep
                   write (7,5001) j, subgis(j), iida, kk, rch_dakm(j),&
-                  &(rchhr(ii,j,kk), ii = 1, 7)
+                     &(rchhr(ii,j,kk), ii = 1, 7)
                end do
             endif
          endif
@@ -216,46 +222,46 @@ subroutine rchday
             end do
             if (iscen == 1 .and. isproj == 0) then
                if (icalen == 0) write (7,5000) j, subgis(j), iida,&
-               &rch_dakm(j), (pdvr(ii), ii = 1, itotr)
-               if(icalen == 1)write (7,5002) j, subgis(j), i_mo, icl(iida),&
-               &iyr, rch_dakm(j), (pdvr(ii), ii = 1, itotr)
+                  &rch_dakm(j), (pdvr(ii), ii = 1, itotr)
+               if(icalen == 1)write (7,5002) j, subgis(j), i_mo, Icl(iida),&
+                  &iyr, rch_dakm(j), (pdvr(ii), ii = 1, itotr)
 !!    added for binary files 3/25/09 gsm line below and write (77777
                if (ia_b == 1) then
                   write (77777) j, subgis(j), iida, rch_dakm(j),&
-                  &(pdvr(ii), ii = 1, itotr)
+                     &(pdvr(ii), ii = 1, itotr)
                endif
             else if (isproj == 1) then
                write (20,5000) j, subgis(j), iida, rch_dakm(j),&
-               &(pdvr(ii), ii = 1, itotr)
+                  &(pdvr(ii), ii = 1, itotr)
             else if (iscen == 1 .and. isproj == 2) then
                if(icalen == 0)write (7,6000) j, subgis(j), iida, rch_dakm(j),&
-               &(pdvr(ii), ii = 1, itotr),iyr
-               if (icalen == 1) write (7,6002) j, subgis(j), i_mo, icl(iida),&
-               &iyr, rch_dakm(j),(pdvr(ii), ii = 1, itotr), iyr
+                  &(pdvr(ii), ii = 1, itotr),iyr
+               if (icalen == 1) write (7,6002) j, subgis(j), i_mo, Icl(iida),&
+                  &iyr, rch_dakm(j),(pdvr(ii), ii = 1, itotr), iyr
             endif
          else
 
             !  increase to 45 in loops below from 42 gsm 10/26/2011
             if (iscen == 1 .and. isproj == 0) then
                if (icalen == 0)write(7,5000) j, subgis(j), iida, rch_dakm(j),&
-               &(pdvar(ii), ii = 1, 45)
-               if (icalen == 1) write (7,5002) j, subgis(j), i_mo, icl(iida),&
-               &iyr, rch_dakm(j),(pdvar(ii), ii = 1, 45)
+                  &(pdvar(ii), ii = 1, 45)
+               if (icalen == 1) write (7,5002) j, subgis(j), i_mo, Icl(iida),&
+                  &iyr, rch_dakm(j),(pdvar(ii), ii = 1, 45)
 
 !!    added for binary files 3/25/09 gsm line below and write (77777
                if (ia_b == 1) then
                   write (77777) j, subgis(j), iida, rch_dakm(j),&
-                  &(pdvr(ii), ii = 1, itotr)
+                     &(pdvr(ii), ii = 1, itotr)
                endif
 
             else if (isproj == 1) then
                write (20,5000) j, subgis(j), iida, rch_dakm(j),&
-               &(pdvar(ii), ii = 1, 45)
+                  &(pdvar(ii), ii = 1, 45)
             else if (iscen == 1 .and. isproj == 2) then
                if (icalen == 0)write(7,6000) j, subgis(j), iida, rch_dakm(j),&
-               &(pdvar(ii), ii = 1, 45), iyr
-               if (icalen == 1) write (7,6002) j, subgis(j), i_mo, icl(iida),&
-               &iyr, rch_dakm(j), (pdvar(ii), ii = 1, 45)
+                  &(pdvar(ii), ii = 1, 45), iyr
+               if (icalen == 1) write (7,6002) j, subgis(j), i_mo, Icl(iida),&
+                  &iyr, rch_dakm(j), (pdvar(ii), ii = 1, 45)
             endif
          end if
       endif

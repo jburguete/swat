@@ -1,4 +1,4 @@
-real*8 function regres(k) result (r_regres)
+real*8 function regres(k,j) result (r_regres)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this function calculates constituent loadings to the main channel using
@@ -7,20 +7,20 @@ real*8 function regres(k) result (r_regres)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fimp(:)      |fraction      |fraction of HRU area that is
-!!                                |impervious (both directly and
-!!                                |indirectly connected)
-!!    hru_km(:)    |km^2          |area of HRU in square kilometers
-!!    ihru         |none          |HRU number
-!!    ireg(:)      |none          |precipitation category:
-!!                                |  1 precipitation <= 508 mm/yr
-!!                                |  2 precipitation > 508 and <= 1016 mm/yr
-!!                                |  3 precipitation > 1016 mm/yr
 !!    k            |none          |identification code for regression data
 !!                                |  1 carbonaceous oxygen demand
 !!                                |  2 suspended solid load
 !!                                |  3 total nitrogen
 !!                                |  4 total phosphorus
+!!    j            |none          |HRU number
+!!    fimp(:)      |fraction      |fraction of HRU area that is
+!!                                |impervious (both directly and
+!!                                |indirectly connected)
+!!    hru_km(:)    |km^2          |area of HRU in square kilometers
+!!    ireg(:)      |none          |precipitation category:
+!!                                |  1 precipitation <= 508 mm/yr
+!!                                |  2 precipitation > 508 and <= 1016 mm/yr
+!!                                |  3 precipitation > 1016 mm/yr
 !!    precipday    |mm H2O        |precipitation for the day in HRU
 !!    urblu(:)     |none          |urban land type identification number from
 !!                                |urban database
@@ -45,17 +45,16 @@ real*8 function regres(k) result (r_regres)
 !!    btp(:,:)     |none          |regression coefficients for calculating
 !!                                |total phosphorus in urban runoff
 !!    ii           |none          |precipitation category
-!!    j            |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-   use parm, only: fimp, hru_km, hru_sub, ihru, ireg, precipday, urblu
+   use parm, only: fimp, hru_km, hru_sub, ireg, precipday, urblu
    implicit none
 
-   integer, intent (in) :: k
+   integer, intent (in) :: k, j
    real*8, dimension (5,3) :: beta
-   integer :: j, ii
+   integer :: ii
    real*8, dimension(5,3) :: bcod =&
    &reshape ((/407.0, 0.626, 0.710, 0.379, 1.518,&
    &151.0, 0.823, 0.726, 0.564, 1.451,&
@@ -72,8 +71,6 @@ real*8 function regres(k) result (r_regres)
    &reshape ((/1.725, 0.884, 0.826, 0.467, 2.130,&
    &0.697, 1.008, 0.628, 0.469, 1.790,&
    &1.618, 0.954, 0.789, 0.289, 2.247/), (/5,3/))
-
-   j = ihru
 
    ii = ireg(hru_sub(j))
 

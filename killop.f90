@@ -1,26 +1,30 @@
-subroutine killop
+!> @file killop.f90
+!> file containing the subroutine killop
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the kill operation
+!> this subroutine performs the kill operation
+!> @param[in] j HRU number
+subroutine killop(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j            |none          |HRU number
 !!    bio_ms(:)    |kg/ha         |land cover/crop biomass (dry weight)
 !!    curyr        |none          |current year of simulation
-!!    hrupest(:)  |none           |pesticide use flag:
+!!    hrupest(:)   |none          |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
 !!    icr(:)       |none          |sequence number of crop grown within the
 !!                                |current year
-!!    ihru         |none          |HRU number
 !!    ncrops(:,:,:)|
-!!    npmx        |none           |number of different pesticides used in
+!!    npmx         |none          |number of different pesticides used in
 !!                                |the simulation
 !!    nro(:)       |none          |sequence number for year in rotation
 !!    nyskip       |none          |number of years to skip output printing/
 !!                                |summarization
-!!    plt_pst(:,:)|kg/ha          |pesticide on plant foliage
+!!    plt_pst(:,:) |kg/ha         |pesticide on plant foliage
 !!    sol_fon(:,:) |kg N/ha       |amount of nitrogen stored in the fresh
 !!                                |organic (residue) pool
 !!    sol_fop(:,:) |kg P/ha       |amount of phosphorus stored in the fresh
@@ -61,33 +65,39 @@ subroutine killop
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    BLG3
+!!    BLG1
+!!    BLG2
+!!    CLG
 !!    k           |none          |counter
-!!    resnew      |
+!!    l           |none          |counter
+!!    LMF
+!!    LSF
+!!    resnew
+!!    resnew_n
+!!    resnew_ne
+!!    RLN
+!!    RLR
+!!    rtresnew
+!!    sf
+!!    sol_min_n
+!!    XX
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
+!!    Intrinsic: Max, Log, Exp, Min
+!!    SWAT: rootfr
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, k, l
-   real*8 :: resnew, RLN, RLR, rtresnew, XX
-
-   !!by zhang
-   !!====================
-   real*8 :: BLG1, BLG2, CLG, sf
-   real*8 :: sol_min_n, resnew_n, resnew_ne
-   real*8 :: LMF, LSF
+   integer, intent(in) :: j
    real*8, parameter :: BLG3 = 0.10
-   !!by zhang
-   !!====================
-
-
-   j = ihru
+   real*8 :: BLG1, BLG2, CLG, LMF, LSF, resnew, resnew_n, resnew_ne, RLN, RLR,&
+      &rtresnew, sf, sol_min_n, XX
+   integer :: k, l
 
 !      if (curyr > nyskip) then
 !       ncrops(icr(j),j) = ncrops(icr(j),j) + 1
@@ -96,7 +106,7 @@ subroutine killop
    !! 22 January 2008
    resnew = bio_ms(j) * (1. - rwt(j))
    rtresnew = bio_ms(j) * rwt(j)
-   call rootfr
+   call rootfr(j)
 
    !! update residue, N, P on soil surface
    sol_rsd(1,j) = resnew + sol_rsd(1,j)
@@ -112,8 +122,8 @@ subroutine killop
       !!all the lignin from STD is assigned to LSL,
       !!add STDL calculation
       !!
-      !sol_LSL(k,ihru) = sol_STDL(k,ihru)
-      !CLG=BLG(3,JJK)*HUI(JJK)/(HUI(JJK)+EXP(BLG(1,JJK)-BLG(2,JJK)*&HUI(JJK))
+      !sol_LSL(k,j) = sol_STDL(k,j)
+      !CLG=BLG(3,JJK)*HUI(JJK)/(HUI(JJK)+Exp(BLG(1,JJK)-BLG(2,JJK)*&HUI(JJK))
       ! 52  BLG1 = LIGNIN FRACTION IN PLANT AT .5 MATURITY
       ! 53  BLG2 = LIGNIN FRACTION IN PLANT AT MATURITY
       !CROPCOM.dat BLG1 = 0.01 BLG2 = 0.10
@@ -130,10 +140,10 @@ subroutine killop
 
       BLG1 = 0.01/0.10
       BLG2 = 0.99
-      XX = log(0.5/BLG1-0.5)
-      BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
+      XX = Log(0.5/BLG1-0.5)
+      BLG2 = (XX -Log(1./BLG2-1.))/(1.-0.5)
       BLG1 = XX + 0.5*BLG2
-      CLG=BLG3*phuacc(j)/(phuacc(j)+EXP(BLG1-BLG2*phuacc(j)))
+      CLG=BLG3*phuacc(j)/(phuacc(j)+Exp(BLG1-BLG2*phuacc(j)))
 
 
       !if (k == 1) then
@@ -151,7 +161,7 @@ subroutine killop
       !Not sure 1000 should be here or not!
       !RLN = 1000*(resnew * CLG/(resnew_n+1.E-5))
       RLN = (resnew * CLG/(resnew_n+1.E-5))
-      RLR = MIN(.8, resnew * CLG/(resnew+1.E-5))
+      RLR = Min(.8, resnew * CLG/(resnew+1.E-5))
 
       LMF = 0.85 - 0.018 * RLN
       if (LMF <0.01) then
@@ -183,7 +193,7 @@ subroutine killop
       sol_LSLC(1,j) = sol_LSLC(1,j) + RLR*0.42*LSF * resnew
       sol_LSLNC(1,j) = sol_LSC(1,j) - sol_LSLC(1,j)
 
-      !X3 = MIN(X6,0.42*LSF * resnew/150)
+      !X3 = Min(X6,0.42*LSF * resnew/150)
 
       if (resnew_n >= (0.42 * LSF * resnew /150)) then
          sol_LSN(1,j) = sol_LSN(1,j) + 0.42 * LSF * resnew / 150
@@ -218,8 +228,8 @@ subroutine killop
          !!all the lignin from STD is assigned to LSL,
          !!add STDL calculation
          !!
-         !sol_LSL(k,ihru) = sol_STDL(k,ihru)
-         !CLG=BLG(3,JJK)*HUI(JJK)/(HUI(JJK)+EXP(BLG(1,JJK)-BLG(2,JJK)*&HUI(JJK))
+         !sol_LSL(k,j) = sol_STDL(k,j)
+         !CLG=BLG(3,JJK)*HUI(JJK)/(HUI(JJK)+Exp(BLG(1,JJK)-BLG(2,JJK)*&HUI(JJK))
          ! 52  BLG1 = LIGNIN FRACTION IN PLANT AT .5 MATURITY
          ! 53  BLG2 = LIGNIN FRACTION IN PLANT AT MATURITY
          !CROPCOM.dat BLG1 = 0.01 BLG2 = 0.10
@@ -236,10 +246,10 @@ subroutine killop
 
          BLG1 = 0.01/0.10
          BLG2 = 0.99
-         XX = log(0.5/BLG1-0.5)
-         BLG2 = (XX -log(1./BLG2-1.))/(1.-0.5)
+         XX = Log(0.5/BLG1-0.5)
+         BLG2 = (XX -Log(1./BLG2-1.))/(1.-0.5)
          BLG1 = XX + 0.5*BLG2
-         CLG=BLG3*phuacc(j)/(phuacc(j)+EXP(BLG1-BLG2*phuacc(j)))
+         CLG=BLG3*phuacc(j)/(phuacc(j)+Exp(BLG1-BLG2*phuacc(j)))
 
 
          if (l == 1) then
@@ -257,7 +267,7 @@ subroutine killop
          !Not sure 1000 should be here or not!
          !RLN = 1000*(resnew * CLG/(resnew_n+1.E-5))
          RLN = (resnew * CLG/(resnew_n+1.E-5))
-         RLR = MIN(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
+         RLR = Min(.8, resnew * CLG/1000/(resnew/1000+1.E-5))
 
          LMF = 0.85 - 0.018 * RLN
          if (LMF <0.01) then
@@ -290,7 +300,7 @@ subroutine killop
          sol_LSLC(l,j) = sol_LSLC(l,j) + RLR*0.42*resnew
          sol_LSLNC(l,j) = sol_LSC(l,j) - sol_LSLC(l,j)
 
-         !X3 = MIN(X6,0.42*LSF * resnew/150)
+         !X3 = Min(X6,0.42*LSF * resnew/150)
 
          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
             sol_LSN(l,j) = sol_LSN(l,j) + 0.42 * LSF * resnew / 150

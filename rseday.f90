@@ -1,7 +1,10 @@
-subroutine rseday
+!> @file rseday.f90
+!> file containing the subroutine rseday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes the daily reach output to the .sed file
+subroutine rseday
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
@@ -31,7 +34,7 @@ subroutine rseday
 
    do j = 1, subtot
       write (84,5000) j, subgis(j), iida, rch_dakm(j),&
-      &rchdy(5,j), rchdy(6,j),(rchdy(ii,j),ii=43,59)
+         &rchdy(5,j), rchdy(6,j), (rchdy(ii,j),ii=43,59)
    end do
 
    return

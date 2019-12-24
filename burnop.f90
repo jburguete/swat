@@ -1,29 +1,35 @@
-subroutine burnop
+!> @file burnop.f90
+!> file containing the subroutine burnop
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs all management operations
+!> this subroutine performs burning
+!> @param[in] j HRU number
+subroutine burnop(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ibrn        |none          |counter in readmgt
-!!    iburn(:     |julian date   |date of burning
+!!    j           |none          |HRU number
 !!    burn_frlb   |none          |fraction of biomass and residue that burn(input in
 !!                               |management file) range (0 - 1.0)
 !!    nro         |none          |sequence number of year in rotation
-!!    phub        |              |heat units to schedule burning
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
+!!    name        |units         |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    pburn       |              |amount of phosphorus that burns - removed from plant
-!!                               |phosphorus and added to soil organic phosphorus
+!!    xx          |              |auxiliar variable
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: pburn, xx
-
-   j = ihru
 
    xx = burn_frlb
    bio_ms(j) = bio_ms(j) * xx
@@ -36,8 +42,6 @@ subroutine burnop
    sol_aorgn(1,j) = sol_aorgn(1,j) * xx
    sol_orgn(1,j) = sol_orgn(1,j) * xx
 
-   !!insert new biomss by zhang
-   !!=================================
    if (cswat == 2) then
       sol_LM(1,j) = sol_LM(1,j) * xx
       sol_LS(1,j) = sol_LS(1,j) * xx
@@ -47,11 +51,10 @@ subroutine burnop
       sol_LMN(1,j) = sol_LMN(1,j) * xx
       sol_LSL(1,j) = sol_LSL(1,j) * xx
 
-      emitc_d(j) = emitc_d(j) + bio_ms(j) * (1.-xx)
-      emitc_d(j) = emitc_d(j) + sol_rsd(1,j) * (1.-xx)
+      xx = 1. - xx
+      emitc_d(j) = emitc_d(j) + bio_ms(j) * xx
+      emitc_d(j) = emitc_d(j) + sol_rsd(1,j) * xx
    end if
-   !!insert new biomss by zhang
-   !!=================================
 
    return
 end

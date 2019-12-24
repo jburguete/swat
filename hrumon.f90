@@ -1,7 +1,10 @@
-subroutine hrumon
+!> @file hrumon.f90
+!> file containing the subroutine hrumon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes monthly HRU output to the output.hru file
+!> this subroutine writes monthly HRU output to the output.hru file
+subroutine hrumon
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -142,7 +145,10 @@ subroutine hrumon
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    days        |none          |number of days in month
 !!    dmt         |metric tons/ha|land cover/crop biomass (dry weight)
+!!    idplant
+!!    iflags
 !!    ii          |none          |counter
+!!    ix
 !!    j           |none          |HRU number
 !!    pdvas(:)    |varies        |array to hold HRU output values
 !!    pdvs(:)     |varies        |array to hold selected HRU output values
@@ -156,12 +162,10 @@ subroutine hrumon
    use parm
    implicit none
 
-   integer :: j, sb, ii, days, iflag, idplant, ix
-   real*8 :: dmt, yldt
    real*8, dimension (mhruo) :: pdvas, pdvs
+   real*8 :: dmt, yldt
+   integer :: days, idplant, iflag, ii, ix, j, sb
    character (len=4) :: cropname
-
-   days = 0
 
    select case(mo_chk)
     case (9, 4, 6, 11)
@@ -173,7 +177,6 @@ subroutine hrumon
    end select
 
    do j = 1, nhru
-      sb = 0
       sb = hru_sub(j)
 
       iflag = 0
@@ -183,11 +186,6 @@ subroutine hrumon
 
       if (iflag == 1) then
 
-         pdvas = 0.
-         pdvs = 0.
-
-         dmt = 0.
-         yldt = 0.
          dmt = bio_ms(j) / 1000.
          yldt = (1. - rwt(j)) * dmt * hvstiadj(j)
 
@@ -306,28 +304,15 @@ subroutine hrumon
                select case (isproj)
                 case (0)
                   write (28,1000) cropname, j, subnum(j), hruno(j), sb,&
-                  &nmgt(j), mo_chk, hru_km(j), (pdvs(ii), ii = 1, ix)
+                     &nmgt(j), mo_chk, hru_km(j), (pdvs(ii), ii = 1, ix)
                 case (1)
                   write (21,1000) cropname, j, subnum(j), hruno(j),&
-                  &sb, nmgt(j), mo_chk, hru_km(j), (pdvs(ii), ii = 1, ix)
+                     &sb, nmgt(j), mo_chk, hru_km(j), (pdvs(ii), ii = 1, ix)
                 case (2)
                   write (28,2000) cropname, j, subnum(j), hruno(j), sb,&
-                  &nmgt(j), mo_chk, hru_km(j),(pdvs(ii), ii = 1, ix), iyr
+                     &nmgt(j), mo_chk, hru_km(j),(pdvs(ii), ii = 1, ix), iyr
                end select
             end if
-!     else
-!! write with different format for hrus greater than 9999
-!        select case (isproj)
-!            case (0)
-!            write (28,1001) cropname, j, subnum(j), hruno(j), sb,       &
-!     &         nmgt(j), mo_chk, hru_km(j), (pdvs(ii), ii = 1, ix)
-!            case (1)
-!            write (21,1001) cropname, j, subnum(j), hruno(j),           &
-!     &         sb, nmgt(j), mo_chk, hru_km(j), (pdvs(ii), ii = 1, ix)
-!            case(2)
-!            write (28,1001) cropname, j, subnum(j), hruno(j), sb,       &
-!     &         nmgt(j), mo_chk, hru_km(j),(pdvs(ii), ii = 1, ix), iyr
-!         end select
          end if
 
       end if
@@ -338,6 +323,4 @@ subroutine hrumon
    &e10.5,1x,e10.5,8e10.3,3f10.3)
 2000 format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i4,e10.5,66f10.3,1x,&
    &e10.5,1x,e10.5,5e10.3,6f10.3,1x,i4)
-!1001 format (a4,i7,1x,a5,a4,i5,1x,i4,1x,i4,e10.5,66f10.3,1x,&
-!   &e10.5,1x,e10.5,3e10.3,3f10.3,1x,i4)
 end

@@ -1,5 +1,5 @@
 !> @file ee.f90
-!> file containing the subroutine ee
+!> file containing the function ee
 !> @author
 !> modified by Javier Burguete
 

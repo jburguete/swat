@@ -265,7 +265,7 @@ subroutine subbasin(i)
          !! remove biomass from grazing and apply manure
          if (igrz(j) == 1) then
             ndeat(j) = ndeat(j) + 1
-            call graze
+            call graze(j)
          end if
 
          !! compute crop growth

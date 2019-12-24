@@ -43,7 +43,7 @@ subroutine rootfr(j)
    ! Parameters of Normalized Root Density Function from Dwyer et al 19xx
    real*8, parameter :: a = 1.15, b = 11.7, c = 0.022, d = 0.12029 ! Integral of Normalized Root Distribution Function
    ! from 0 to 1 (normalized depth) = 0.12029
-   real*8 :: sol_thick(sol_nly(ihru))
+   real*8 :: sol_thick(sol_nly(j))
    real*8 :: cum_d, cum_rd, cum_rf, x1, x2, xx, xx1, xx2
    integer :: k, l
 
