@@ -1,3 +1,8 @@
+!> @file sched_mgt.f90
+!> file containing the subroutine sched_mgt
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine performs all management operations
 !> @param[in] j HRU number
 subroutine sched_mgt(j)
