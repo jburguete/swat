@@ -240,21 +240,21 @@ subroutine subbasin(i)
             sci(j) = sci(j) + pet_day*Exp(-cncoef_sub(hru_sub(j))*sci(j)/&
                &smx(j)) - precipday + qday + qtile + latq(j) + sepbtm(j)
          else if (icn == 2) then
-            sci(j) = sci(j) + pet_day*exp(-cncoef_sub(hru_sub(j))*sci(j)/&
+            sci(j) = sci(j) + pet_day*Exp(-cncoef_sub(hru_sub(j))*sci(j)/&
                &smx(j)) - precipday + qday + latq(j) + sepbtm(j) + qtile
-            sci(j) = dmin1(sci(j),smxco * smx(j))
+            sci(j) = Dmin1(sci(j),smxco * smx(j))
          end if
 
          !! apply fertilizer/manure in continuous fert operation
          if (icfrt(j) == 1) then
             ndcfrt(j) = ndcfrt(j) + 1
-            call confert
+            call confert(j)
          end if
 
          !! apply pesticide in continuous pest operation
          if (icpst(j) == 1) then
             ndcpst(j) = ndcpst(j) + 1
-            call conapply
+            call conapply(j)
          end if
 
          !! remove biomass from grazing and apply manure
@@ -278,21 +278,14 @@ subroutine subbasin(i)
 !12112  format (2i4,12f8.2)
 
          !! compute nitrogen and phosphorus mineralization
-
-         if (cswat == 0) then
+         select case (cswat)
+          case (0)
             call nminrl
-         end if
-         if (cswat == 1) then
+          case (1)
             call carbon
-         end if
-
-         !! Add by zhang
-         !!=================
-         if (cswat == 2) then
+          case (2)
             call carbon_zhang2
-         end if
-         !! Add by zhang
-         !!=================
+         end select
 
          call nitvol
          if (sol_P_model == 1) then

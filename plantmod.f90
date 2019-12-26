@@ -38,7 +38,7 @@ subroutine plantmod(j)
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
-!!    SWAT: operatn, swu, grow
+!!    SWAT: swu, grow
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -47,17 +47,9 @@ subroutine plantmod(j)
 
    integer, intent(in) :: j
 
-!$ $$$$$       !! update base zero total heat units
-!$ $$$$$       if (tmpav(j) > 0. .and. phutot(hru_sub(j)) > 0.01) then
-!$ $$$$$          phubase(j) = phubase(j) + tmpav(j) / phutot(hru_sub(j))
-!$ $$$$$       end if
-
    !! calculate residue on soil surface for current day
    sol_cov(j) = .8 * bio_ms(j) + sol_rsd(1,j)
    sol_cov(j) = Max(sol_cov(j),0.)
-
-   !! perform management operations
-   !     call operatn
 
    !! compute plant water use and water stress
    !! compute actual plant transpiration

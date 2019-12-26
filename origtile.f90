@@ -1,11 +1,18 @@
-subroutine origtile(d, j)
+!> @file origtile.f90
+!> file containing the subroutine origtile
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes tile drainage using basic tile equations developed by Saleh et al.(2005)
+!> this subroutine computes tile drainage using basic tile equations developed
+!> by Saleh et al.(2005)
+!> @param[in] d
+!> @param[in] j HRU number
+subroutine origtile(d, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    d
 !!    j           |none          |HRU number
 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -45,9 +52,6 @@ subroutine origtile(d, j)
    if (sol_sw(j) > sol_sumfc(j)) then
       sw_excess = (dmod_m / wt_shall) * (sol_sw(j) - sol_sumfc(j))
       qtile = sw_excess * (1. - Exp(-24. / tdrain(j)))
-      !if (qtile > 30.) then
-         !xyz = 0. !not used
-      !end if
       qtile = dmin1(qtile, drain_co_bsn)
    else
       qtile = 0.

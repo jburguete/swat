@@ -1,7 +1,11 @@
-subroutine tstr(j)
+!> @file tstr.f90
+!> file containing the subroutine tstr
+!> @author
+!> modified by Javier Burguete
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     computes temperature stress for crop growth - strstmp
+!> computes temperature stress for crop growth - strstmp
+!> @param[in] j HRU number
+subroutine tstr(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -42,7 +46,7 @@ subroutine tstr(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: tgx, rto
+   real*8 :: rto, tgx
 
    tgx = tmpav(j) - t_base(idplt(j))
 

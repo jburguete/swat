@@ -272,8 +272,12 @@ module parm
    real*8 :: wshd_yldn
 !> amount of phosphorus removed from soil in watershed in the yield (kg P/ha)
    real*8 :: wshd_yldp
+!> average annual amount of nitrogen added to plant biomass via fixation
+!> (kg N/ha)
    real*8 :: wshd_fixn
-   real*8 :: wshd_pup, wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
+!> average annual amount of plant uptake of phosphorus (kg P/ha)
+   real*8 :: wshd_pup
+   real*8 :: wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
    real*8 :: wshd_astrs
 !> initial soil water content expressed as a fraction of field capacity
    real*8 :: ffcb
@@ -340,13 +344,15 @@ module parm
 !> zero, the snow pack's temperature will be less influenced by the current
 !> day's air temperature
    real*8 :: timp
-   real*8 :: wtabelo, tilep, wt_shall
+!> shallow water table depth above the impervious layer (mm H2O)
+   real*8 :: wt_shall
+   real*8 :: wtabelo, tilep
    real*8 :: sq_rto
    real*8 :: qtile !< drainage tile flow in HRU soil layer for the day (mm H2O)
 !> amount of precipitation that infiltrates into soil (enters soil) (mm H2O)
    real*8 :: inflpcp
    real*8 :: crk !< percolation due to crack flow (mm H2O)
-!> amount of nitrogen added to plant biomass via fixation on the day in HRU
+!> amount of nitrogen added to the plant biomass via fixation on the day in HRU
 !> (kg N/ha)
    real*8 :: fixn
 !> amount of water in lateral flow in layer in HRU for the day (mm H2O)
@@ -361,11 +367,11 @@ module parm
    real*8 :: pndloss, wetloss,potloss, lpndloss, lwetloss
 !> biomass generated on current day in HRU (kg)
    real*8 :: bioday
-!> amount of nitrogen added to soil in continuous fertilizer operation on day
-!> (kg N/ha)
+!> total amount of nitrogen applied to soil during continuous fertilizer
+!> operation in HRU on day (kg N/ha)
    real*8 :: cfertn
-!> amount of phosphorus added to soil in continuous fertilizer operation on day
-!> (kg P/ha)
+!> amount of phosphorus applied to soil during continuous fertilizer operation
+!> in HRU on day (kg P/ha)
    real*8 :: cfertp
 !> total amount of nitrogen applied to soil in HRU on day (kg N/ha)
    real*8 :: fertn
@@ -522,7 +528,9 @@ module parm
 !> amount of water in snow lost through sublimation on current day in HRU
 !> (mm H2O)
    real*8 :: snoev
-   real*8 :: sno3up, reactw
+!> amount of nitrate moving upward in the soil profile in watershed (kg N/ha)
+   real*8 :: sno3up
+   real*8 :: reactw
 !> actual amount of evaporation (soil et) that occurs on day in HRU (mm H2O)
    real*8 :: es_day
    real*8 :: sdiegropq, sdiegrolpq, sdiegrops, sdiegrolps
@@ -739,18 +747,16 @@ module parm
    real*8 :: gdrain_bsn
    real*8 :: rch_san, rch_sil, rch_cla, rch_sag, rch_lag, rch_gra
 
-
-!!    declare mike van liew variables
    real*8 :: hlife_ngw_bsn !< Half-life of nitrogen in groundwater? (days) 
    real*8 :: ch_opco_bsn, ch_onco_bsn
    real*8 :: decr_min !< Minimum daily residue decay
    real*8 :: rcn_sub_bsn !< Concentration of nitrogen in the rainfall (mg/kg)
    real*8 :: bc1_bsn, bc2_bsn, bc3_bsn, bc4_bsn
    real*8 :: anion_excl_bsn
-!!    delcare mike van liew variables
 
-!    Drainmod tile equations  01/2006
-   real*8, dimension (:), allocatable :: wat_tbl,sol_swpwt
+!> water table based on depth from soil surface (mm)
+   real*8, dimension (:), allocatable :: wat_tbl
+   real*8, dimension (:), allocatable :: sol_swpwt
    real*8, dimension (:,:), allocatable :: vwt
    real*8 :: re_bsn !< Effective radius of drains (range 3.0 - 40.0) (mm)
 !> Distance bewtween two drain or tile tubes (range 7600.0 - 30000.0) (mm)
@@ -855,9 +861,11 @@ module parm
 !> 1 simulate wt_shall using subroutine new water table depth routine\n
 !> 0 simulate wt_shall using subroutine original water table depth routine
    integer :: iwtdn
-!> maximum depressional storage selection flag/code\n
-!> 0 = static depressional storage\n
-!> 1 = dynamic storage based on tillage and cumulative rainfall
+!> maximum depressional storage selection flag/code (none)\n
+!> 0 = static depressional storage (stmaxd) read from .bsn for the global value
+!> or .sdr for specific HRUs\n
+!> 1 = dynamic storage (stmaxd) based on random roughness, tillage and
+!> cumulative rainfall intensity by depstor.f90
    integer :: ismax
 !> not being implemented in this version drainmod tile equations
    integer :: iroutunit
@@ -2384,7 +2392,7 @@ module parm
    real*8, dimension (:), allocatable :: ch_k1
 !> effective hydraulic conductivity of main channel alluvium (mm/hr)
    real*8, dimension (:), allocatable :: ch_k2
-!> elevation at the center of the band (m)
+!> elevation at the center of the band in subbasin (m)
    real*8, dimension (:,:), allocatable :: elevb
 !> fraction of subbasin area within elevation band (the same fractions should be
 !> listed for all HRUs within the subbasin) (none)
@@ -2501,7 +2509,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_ul
 !> bulk density of the soil layer in HRU (Mg/m^3)
    real*8, dimension (:,:), allocatable :: sol_bd
-!> depth to bottom of each profile layer in a given HRU (mm)
+!> depth to bottom of each soil profile layer in a given HRU (mm)
    real*8, dimension (:,:), allocatable :: sol_z
 !> amount of water stored in the soil layer on any given day (less wilting point
 !> water) (mm H2O)
@@ -2534,9 +2542,9 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_hum
 !> water content of soil at -1.5 MPa (wilting point) (mm H20)
    real*8, dimension (:,:), allocatable :: sol_wpmm
-!> amount of nitrogen stored in the nitrate pool. This variable is read in as a
-!> concentration and converted to kg/ha (this value is read from the .sol file
-!> in units of mg/kg) (kg N/ha)
+!> amount of nitrogen stored in the nitrate pool in the soil layer. This
+!> variable is read in as a concentration and converted to kg/ha (this value is
+!> read from the .sol file in units of mg/kg) (kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_no3
 !> percent organic carbon in soil layer (%)
    real*8, dimension (:,:), allocatable :: sol_cbn
@@ -2821,7 +2829,6 @@ module parm
    real*8, dimension (:), allocatable :: rsr1
 !> root to shoot ratio at the end of the growing season
    real*8, dimension (:), allocatable :: rsr2
-!     real*8, dimension (:), allocatable :: air_str
 !> nitrogen uptake parameter #1: normal fraction of N in crop biomass at
 !> emergence (kg N/kg biomass)
    real*8, dimension (:), allocatable :: pltnfr1
@@ -2840,7 +2847,7 @@ module parm
 !> phosphorus uptake parameter #3: normal fraction of P in crop biomass at
 !> maturity (kg P/kg biomass)
    real*8, dimension (:), allocatable :: pltpfr3
-!> crop/landcover category:\n
+!> crop/landcover category (none):\n
 !> 1 warm season annual legume\n
 !> 2 cold season annual legume\n
 !> 3 perennial legume\n
@@ -2870,7 +2877,7 @@ module parm
 !> (kg minP/kg fert)
    real*8, dimension (:), allocatable :: fminp
 !> fraction of mineral N in fertilizer that is NH3-N in fertilizer/manure
-!> (kgNH3-N/kgminN)
+!> (kg NH3-N/kg minN)
    real*8, dimension (:), allocatable :: fnh3n
    character(len=8), dimension (200) :: fertnm !< name of fertilizer
 !> curb length density in HRU (km/ha)
@@ -3192,7 +3199,9 @@ module parm
    real*8, dimension (:), allocatable :: pnd_nsed
 !> sediment concentration in pond water (UNIT CHANGE!) (mg/kg or kg/kg)
    real*8, dimension (:), allocatable :: pnd_sed
-   real*8, dimension (:), allocatable :: strsa,dep_imp
+!> depth to impervious layer (mm)
+   real*8, dimension (:), allocatable :: dep_imp
+   real*8, dimension (:), allocatable :: strsa
    real*8, dimension (:), allocatable :: evpnd, evwet
 !> fraction of HRU/subbasin area that drains into wetlands (none)
    real*8, dimension (:), allocatable :: wet_fr
@@ -3319,9 +3328,9 @@ module parm
    real*8, dimension (:), allocatable :: irr_mx
 !> water stress factor which triggers auto irrigation (none or mm)
    real*8, dimension (:), allocatable :: auto_wstr
-!> fertilizer/manure id number from database (none)
+!> fertilizer/manure identification number from database (fert.dat) (none)
    real*8, dimension (:), allocatable :: cfrt_id
-!> amount of fertilzier applied to HRU on a given day (kg/ha)
+!> amount of fertilzier/manure applied to HRU on a given day ((kg/ha)/day)
    real*8, dimension (:), allocatable :: cfrt_kg
    real*8, dimension (:), allocatable :: cpst_id
    real*8, dimension (:), allocatable :: cpst_kg
@@ -3338,13 +3347,17 @@ module parm
    real*8, dimension (:), allocatable :: bio_trmp
 !> number of days between applications (days)
    integer, dimension (:), allocatable :: ipst_freq
-   integer, dimension (:), allocatable :: ifrt_freq,irr_noa
+!> number of days between applications in continuous fertlizer operation (days)
+   integer, dimension (:), allocatable :: ifrt_freq
+   integer, dimension (:), allocatable :: irr_noa
    integer, dimension (:), allocatable :: irr_sc,irr_no
 !> release/impound action code (none):\n
 !> 0 begin impounding water\n
 !> 1 release impounded water
    integer, dimension (:), allocatable :: imp_trig
-   integer, dimension (:), allocatable :: fert_days,irr_sca
+!> number of days continuous fertilization will be simulated (none)
+   integer, dimension (:), allocatable :: fert_days
+   integer, dimension (:), allocatable :: irr_sca
 !> land cover/crop identification code for first crop grown in HRU (the only
 !> crop if there is no rotation) (from crop.dat) (none)
    integer, dimension (:), allocatable :: idplt
@@ -3432,6 +3445,7 @@ module parm
    real*8, dimension (:), allocatable :: gwqmn
 !> temperature of snow pack in HRU (deg C)
    real*8, dimension (:), allocatable :: snotmp
+!> plant uptake of phosphorus in HRU for the day (kg P/ha)
    real*8, dimension (:), allocatable :: pplnt
 !> drain tile lag time: the amount of time between the transfer of water from
 !> the soil to the drain tile and the release of the water from the drain tile
@@ -3476,17 +3490,28 @@ module parm
    real*8, dimension (:), allocatable :: tfertn,tfertp,tgrazn,tgrazp
 !> total lateral flow in soil profile for the day in HRU (mm H2O)
    real*8, dimension (:), allocatable :: latq
-   real*8, dimension (:), allocatable :: latno3,minpgw,no3gw,nplnt
+!> plant uptake of nitrogen in HRU for the day (kg N/ha)
+   real*8, dimension (:), allocatable :: nplnt
+   real*8, dimension (:), allocatable :: latno3,minpgw,no3gw
    real*8, dimension (:), allocatable :: tileq, tileno3
    real*8, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
 !> soil loss caused by water erosion for day in HRU (metric tons)
    real*8, dimension (:), allocatable :: sedyld
 !> percolation from bottom of soil profile for the day in HRU (mm H2O)
    real*8, dimension (:), allocatable :: sepbtm
-   real*8, dimension (:), allocatable :: sedorgp,strsn
+!> fraction of potential plant growth achieved on the day where the reduction is
+!> caused by nitrogen stress (none)
+   real*8, dimension (:), allocatable :: strsn
+   real*8, dimension (:), allocatable :: sedorgp
 !> surface runoff generated in HRU on the current day (mm H2O)
    real*8, dimension (:), allocatable :: surfq
-   real*8, dimension (:), allocatable :: strsp,strstmp,surqno3
+!> fraction of potential plant growth achieved on the day in HRU where the
+!> reduction is caused by temperature stress (none)
+   real*8, dimension (:), allocatable :: strstmp
+!> fraction of potential plant growth achieved on the day where the reduction is
+!> caused by phosphorus stress (none)
+   real*8, dimension (:), allocatable :: strsp
+   real*8, dimension (:), allocatable :: surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
 !> fraction of total watershed area contained in HRU (km2/km2)
    real*8, dimension (:), allocatable :: hru_dafr
@@ -3521,7 +3546,7 @@ module parm
    real*8, dimension (:), allocatable :: wet_psed
 !> average annual biomass (dry weight) in the HRU (metric tons)
    real*8, dimension (:), allocatable :: bio_aams
-!> amount of phosphorus in plant biomass (kg P/ha)
+!> amount of phosphorus stored in plant biomass (kg P/ha)
    real*8, dimension (:), allocatable :: plantp
 !> potential ET simulated during life of plant (mm H2O)
    real*8, dimension (:), allocatable :: plt_pet
@@ -3815,13 +3840,18 @@ module parm
 !> 1  urban sections in HRU, simulate using USGS regression equations\n
 !> 2  urban sections in HRU, simulate using build up/wash off algorithm
    integer, dimension (:), allocatable :: iurban
-   integer, dimension (:), allocatable :: iday_fert,icfrt
+!> continuous fertilizer flag for HRU (none):\n
+!> 0 HRU currently not continuously fertilized\n
+!> 1 HRU currently continuously fertilized
+   integer, dimension (:), allocatable :: icfrt
+   integer, dimension (:), allocatable :: iday_fert
 !> number of HRU (in subbasin) that is a floodplain (none)
    integer, dimension (:), allocatable :: ifld
 !> number of HRU (in subbasin) that is a riparian zone (none)
    integer, dimension (:), allocatable :: irip
 !> GIS code printed to output files (output.hru, .rch) (none)
    integer, dimension (:), allocatable :: hrugis
+!> number of days HRU has been continuously fertilized (days)
    integer, dimension (:), allocatable :: ndcfrt
 !> irrigation source code (none):\n
 !> 1 divert water from reach\n
@@ -4048,17 +4078,13 @@ module parm
 !> = 1 C-FARM one carbon pool model\n
 !> = 2 Century model
    integer :: cswat
-!! sj, june 07 end
 
-!! sj, dec 07 dynamic bulk density
    real*8, dimension (:,:), allocatable :: sol_bdp
-!! sj dec 07 end
 
-!! Armen Jan 08
    real*8, dimension (:,:), allocatable :: tillagef
    real*8, dimension (:), allocatable :: rtfr
+!> storing last soil root depth for use in harvestkillop/killop (mm)
    real*8, dimension (:), allocatable :: stsol_rd
-!! Armen Jan 08 end
    integer:: urban_flag, dorm_flag
    real*8 :: bf_flg, iabstr
    real*8, dimension (:), allocatable :: ubnrunoff,ubntss
@@ -4067,7 +4093,6 @@ module parm
    real*8, dimension (:,:), allocatable :: hhsurf_bs1
    real*8, dimension (:,:), allocatable :: hhsurf_bs2
 
-!! subdaily erosion modeling by Jaehak Jeong
 !> unit hydrograph method: 1=triangular UH; 2=gamma funtion UH;
    integer:: iuh
 !> channel routing for HOURLY; 0=Bagnold; 2=Brownlie; 3=Yang;

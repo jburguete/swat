@@ -1,11 +1,16 @@
-subroutine confert
+!> @file confert.f90
+!> file containing the subroutine confert
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine simulates a continuous fertilizer operation
+!> this subroutine simulates a continuous fertilizer operation
+!> @param[in] j HRU number
+subroutine confert(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j            |none          |HRU number
 !!    bactkddb(:)  |none          |bacteria partition coefficient:
 !!                                |1: all bacteria in solution
 !!                                |0: all bacteria sorbed to soil particles
@@ -43,7 +48,6 @@ subroutine confert
 !!                                |0 HRU currently not continuously fertilized
 !!                                |1 HRU currently continuously fertilized
 !!    iida         |julian date   |day being simulated (current julian day
-!!    ihru         |none          |HRU number
 !!    laiday(:)    |m**2/m**2     |leaf area index
 !!    ncf(:)       |none          |sequence number of continuous fertilizer
 !!                                |operation within the year
@@ -73,9 +77,9 @@ subroutine confert
 !!                                |watershed
 !!    wshd_fno3    |kg N/ha       |average annual amount of NO3-N applied in
 !!                                |watershed
-!!    wshd_orgn    |kg N/ha       |average annual amount of organic N applied
+!!    wshd_forgn   |kg N/ha       |average annual amount of organic N applied
 !!                                |in watershed
-!!    wshd_orgp    |kg P/ha       |average annual amount of organic P applied
+!!    wshd_forgp   |kg P/ha       |average annual amount of organic P applied
 !!                                |in watershed
 !!    wshd_ftotn   |kg N/ha       |average annual amount of N (mineral &
 !!                                |organic) applied in watershed
@@ -123,9 +127,9 @@ subroutine confert
 !!                               |watershed
 !!    wshd_fno3   |kg N/ha       |average annual amount of NO3-N applied in
 !!                               |watershed
-!!    wshd_orgn   |kg N/ha       |average annual amount of organic N applied
+!!    wshd_forgn  |kg N/ha       |average annual amount of organic N applied
 !!                               |in watershed
-!!    wshd_orgp   |kg P/ha       |average annual amount of organic P applied
+!!    wshd_forgp  |kg P/ha       |average annual amount of organic P applied
 !!                               |in watershed
 !!    wshd_ftotn  |kg N/ha       |average annual amount of N (mineral &
 !!                               |organic) applied in watershed
@@ -140,10 +144,17 @@ subroutine confert
 !!    gc          |
 !!    gc1         |
 !!    it          |none          |manure/fertilizer id number from fert.dat
-!!    j           |none          |HRU number
 !!    l           |none          |number of soil layer that manure is applied
-!!    swf         |
-!!    xx          |
+!!    orgc_f
+!!    RLN
+!!    X1
+!!    X8
+!!    X10
+!!    XXX
+!!    XZ
+!!    YY
+!!    YZ
+!!    ZZ
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -154,11 +165,10 @@ subroutine confert
    use parm
    implicit none
 
-   integer :: j, l, it
-   real*8 :: gc, gc1, frt_t, RLN, X1, X10, X8, XXX, XZ, YY, YZ, ZZ
+   integer, intent(in) :: j
    real*8, parameter :: orgc_f = 0.35
-
-   j = ihru
+   real*8 :: frt_t, gc, gc1, RLN, X1, X8, X10, XXX, XZ, YY, YZ, ZZ
+   integer :: it, l
 
 !! if continuous fertilization not currently on, check to see if it is time
 !! to initialize continuous fertilization
@@ -170,28 +180,26 @@ subroutine confert
          l = 1
          if (cswat == 0 .or. cswat == 1) then
             sol_no3(l,j) = sol_no3(l,j) + cfrt_kg(j) *&
-            &(1. - fnh3n(it)) * fminn(it)
+               &(1. - fnh3n(it)) * fminn(it)
             sol_fon(l,j) = sol_fon(l,j) + cfrt_kg(j) *&
-            &forgn(it)
+               &forgn(it)
             sol_nh3(l,j) = sol_nh3(l,j) + cfrt_kg(j) *&
-            &fnh3n(it) * fminn(it)
+               &fnh3n(it) * fminn(it)
             sol_solp(l,j) = sol_solp(l,j) + cfrt_kg(j) *&
-            &fminp(it)
+               &fminp(it)
             sol_fop(l,j) = sol_fop(l,j) + cfrt_kg(j) *&
-            &forgp(it)
+               &forgp(it)
          end if
 
-         !!Add by zhang
-         !!========================
          if (cswat == 2) then
             sol_fop(l,j) = sol_fop(l,j) + cfrt_kg(j) *&
-            &forgp(it)
+               &forgp(it)
             sol_no3(l,j) = sol_no3(l,j) + cfrt_kg(j) *&
-            &(1. - fnh3n(it)) * fminn(it)
+               &(1. - fnh3n(it)) * fminn(it)
             sol_nh3(l,j) = sol_nh3(l,j) + cfrt_kg(j) *&
-            &fnh3n(it) * fminn(it)
+               &fnh3n(it) * fminn(it)
             sol_solp(l,j) = sol_solp(l,j) + cfrt_kg(j) *&
-            &fminp(it)
+               &fminp(it)
 
             !X1 fertilizer attributed to fresh carbon & nitrogen pool
             X1 = cfrt_kg(j)
@@ -212,7 +220,7 @@ subroutine confert
             ZZ = X1 *forgn(it) * X10
             sol_LMN(l,j) = sol_LMN(l,j) + ZZ
             sol_LSN(l,j) = sol_LSN(l,j) + X1&
-            &*forgn(it) -ZZ
+               &*forgn(it) -ZZ
             XZ = X1 *orgc_f-XXX
             sol_LSC(l,j) = sol_LSC(l,j) + XZ
             sol_LSLC(l,j) = sol_LSLC(l,j) + XZ * .175
@@ -224,8 +232,6 @@ subroutine confert
             sol_fon(l,j) = sol_LMN(l,j) + sol_LSN(l,j)
 
          end if
-         !!Add by zhang
-         !!========================
 
 !! add bacteria - (cells/t*t/ha + 10t/m^3*mm*cells/t)/(t/ha + 10t/m^3*mm)
 !! calculate ground cover
@@ -237,9 +243,9 @@ subroutine confert
          frt_t = bact_swf * cfrt_kg(j) / 1000.
 
          bactp_plt(j) = gc * bactpdb(it) * frt_t * 100. +&
-         &bactp_plt(j)
+            &bactp_plt(j)
          bactlp_plt(j) = gc * bactlpdb(it) * frt_t * 100. +&
-         &bactlp_plt(j)
+            &bactlp_plt(j)
 
          bactpq(j) = gc1 * bactpdb(it)  * frt_t * 100. + bactpq(j)
          bactpq(j) = bactkddb(it) * bactpq(j)
@@ -260,34 +266,34 @@ subroutine confert
 
       !! summary calculations
       cfertn = cfertn + cfrt_kg(j) *&
-      &(fminn(it) + forgn(it))
+         &(fminn(it) + forgn(it))
       cfertp = cfertp + cfrt_kg(j) *&
-      &(fminp(it) + forgp(it))
+         &(fminp(it) + forgp(it))
       tcfrtn(j) = tcfrtn(j) + cfertn
       tcfrtp(j) = tcfrtp(j) + cfertp
 
       if (curyr > nyskip) then
          wshd_ftotn = wshd_ftotn + cfrt_kg(j) *&
-         &hru_dafr(j) * (fminn(it) + forgn(it))
+            &hru_dafr(j) * (fminn(it) + forgn(it))
          wshd_forgn = wshd_forgn + cfrt_kg(j) *&
-         &hru_dafr(j) * forgn(it)
+            &hru_dafr(j) * forgn(it)
          wshd_fno3 = wshd_fno3 + cfrt_kg(j) *&
-         &hru_dafr(j) * fminn(it) * (1. - fnh3n(it))
+            &hru_dafr(j) * fminn(it) * (1. - fnh3n(it))
          wshd_fnh3 = wshd_fnh3 + cfrt_kg(j) * hru_dafr(j)&
-         &* fminn(it) * fnh3n(it)
+            &* fminn(it) * fnh3n(it)
          wshd_ftotp = wshd_ftotp + cfrt_kg(j) *&
-         &hru_dafr(j) * (fminp(it) + forgp(it))
+            &hru_dafr(j) * (fminp(it) + forgp(it))
          wshd_fminp = wshd_fminp + cfrt_kg(j) *&
-         &hru_dafr(j) * fminp(it)
+            &hru_dafr(j) * fminp(it)
          wshd_forgp = wshd_forgp + cfrt_kg(j) *&
-         &hru_dafr(j) * forgp(it)
+            &hru_dafr(j) * forgp(it)
       end if
 
       if (imgt ==1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ",&
-         &"CONT FERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j), cfrt_kg(j)
+            &hru_km(j), "         ",&
+            &"CONT FERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j), cfrt_kg(j)
       end if
 
    else

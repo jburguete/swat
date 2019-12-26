@@ -132,22 +132,25 @@ subroutine grow(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    beadj       |(kg/ha)/(MJ/m**2)|radiation-use efficiency for a given CO2
 !!                                  |concentration
+!!    biomxyr
 !!    delg        |
 !!    deltalai    |
 !!    f           |none             |fraction of plant's maximum leaf area index
 !!                                  |corresponding to a given fraction of
 !!                                  |potential heat units for plant
 !!    ff          |
+!!    idp
 !!    laimax      |none             |maximum leaf area index
 !!    par         |MJ/m^2           |photosynthetically active radiation
 !!    reg         |none             |stress factor that most limits plant growth
 !!                                  |on current day
+!!    rto
 !!    ruedecl     |none             |decline in radiation use efficiency for the
 !!                                  |plant
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max, Min, Sqrt
+!!    Intrinsic: Exp, Max, Min, Float, Sqrt
 !!    SWAT: tstr, nup, npup, anfert
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -156,9 +159,9 @@ subroutine grow(j)
    implicit none
 
    integer, intent(in) :: j
+   real*8 :: beadj, biomxyr, delg, deltalai, f, ff, laimax, par, reg, rto,&
+      &ruedecl
    integer :: idp
-   real*8 :: delg, par, ruedecl, beadj, reg, f, ff, deltalai
-   real*8 :: laimax, rto, biomxyr
 
    rto = 1.
 
@@ -185,12 +188,12 @@ subroutine grow(j)
 
       !! calculate photosynthetically active radiation
       par = .5 * hru_ra(j) * (1. - Exp(-ext_coef(idp) *&
-      &(laiday(j) + .05)))
+         &(laiday(j) + .05)))
 
       !! adjust radiation-use efficiency for CO2
       if (co2(hru_sub(j)) > 330.) then
          beadj = 100. * co2(hru_sub(j)) / (co2(hru_sub(j)) +&
-         &Exp(wac21(idp) - co2(hru_sub(j)) * wac22(idp)))
+            &Exp(wac21(idp) - co2(hru_sub(j)) * wac22(idp)))
       else
          beadj = bio_e(idp)
       end if
@@ -212,8 +215,8 @@ subroutine grow(j)
       if (reg < 0.) reg = 0.
 
       if (reg > 0.) then
-         call nup
-         call npup
+         call nup(j)
+         call npup(j)
       else
          strsn(j) = 1.
          strsp(j) = 1.
@@ -222,7 +225,7 @@ subroutine grow(j)
       !! auto fertilization-nitrogen demand (non-legumes only)
       select case (idc(idp))
        case (4, 5, 6, 7)
-         if (auto_nstrs(j) > 0.) call anfert
+         if (auto_nstrs(j) > 0.) call anfert(j)
       end select
 
       !! reduce predicted biomass due to stress on plant
@@ -232,14 +235,14 @@ subroutine grow(j)
 
       if (bio_targ(j) > 1.e-2) then
          bioday = bioday * (bio_targ(j) - bio_ms(j)) /&
-         &bio_targ(j)
+            &bio_targ(j)
          reg = 1.
       end if
 
       bio_ms(j) = bio_ms(j) + bioday * reg
       if (idc(idp) == 7 .and. igrotree(j) == 0) then
          if (mat_yrs(idp) > 0) then
-            rto = float(curyr_mat(j)) / float(mat_yrs(idp))
+            rto = Float(curyr_mat(j)) / Float(mat_yrs(idp))
             biomxyr = rto * bmx_trees(idp)
             bio_ms(j) = Min (bio_ms(j), biomxyr)
          end if
@@ -247,19 +250,15 @@ subroutine grow(j)
 
       bio_ms(j) = Max(bio_ms(j),0.)
 
-      !!add by zhang
-      !!============
       if (cswat == 2) then
          NPPC_d(j) = NPPC_d(j) + bioday * reg* 0.42
       end if
-      !!add by zhang
-      !!============
 
       !! calculate fraction of total biomass that is in the roots
       rwt(j) = rsr1(idp) -(rsr1(idp) - rsr2(idp)) * phuacc(j)
 
       f = phuacc(j) / (phuacc(j) + Exp(leaf1(idp)&
-      &- leaf2(idp) * phuacc(j)))
+         &- leaf2(idp) * phuacc(j)))
       ff = f - laimxfr(j)
       laimxfr(j) = f
 
@@ -280,14 +279,14 @@ subroutine grow(j)
 
          if (laiday(j) > laimax) laiday(j) = laimax
          deltalai = ff * laimax * (1.0 - Exp(5.0 * (laiday(j) -&
-         &laimax))) * Sqrt(reg)
+            &laimax))) * Sqrt(reg)
          laiday(j) = laiday(j) + deltalai
          if (laiday(j) > laimax) laiday(j) = laimax
          olai(j) = laiday(j)
          if (laiday(j) > lai_yrmx(j)) lai_yrmx(j) = laiday(j)
       else
          laiday(j) = olai(j) * (1. - phuacc(j)) /&
-         &(1. - dlai(idp))
+            &(1. - dlai(idp))
       end if
       if (laiday(j) < alai_min(idplt(j))) then   !Sue White dormancy
          laiday(j) = alai_min(idplt(j))
@@ -300,9 +299,8 @@ subroutine grow(j)
       end if
 
       hvstiadj(j) = hvsti(idp) * 100. * phuacc(j)&
-      &/ (100. * phuacc(j) + Exp(11.1 - 10. * phuacc(j)))
+         &/ (100. * phuacc(j) + Exp(11.1 - 10. * phuacc(j)))
 
-!!  added per JGA for Srini by gsm 9/8/2011
       strsw_sum(j) = strsw_sum(j) + (1. - strsw(j))
       strstmp_sum(j) = strstmp_sum(j) + (1. - strstmp(j))
       strsn_sum(j) = strsn_sum(j) + (1. - strsn(j))
@@ -317,14 +315,13 @@ subroutine grow(j)
          wshd_pstrs = wshd_pstrs + (1.-strsp(j)) * hru_dafr(j)
          wshd_astrs = wshd_astrs + (1.-strsa(j)) * hru_dafr(j)
       end if
-   else                                                                      !! Modified by Cibin to include DLAI>1
       if (dlai(idp) > 1.) then
          if (phuacc(j) > dlai(idp)) then
-            laiday(j) = olai(j) * (1. - (phuacc(j) - dlai(idp)) /&                 !! Modified by Cibin to include DLAI>1
-            &(1.2 - dlai(idp)))                           !! Modified by Cibin to include DLAI>1
+            laiday(j) = olai(j) * (1. - (phuacc(j) - dlai(idp)) /&
+               &(1.2 - dlai(idp)))
          endif
       endif
-      if (laiday(j) < 0.) laiday(j) = 0.                                      !! Modified by Cibin to include DLAI>1
+      if (laiday(j) < 0.) laiday(j) = 0.
    endif
 
    return

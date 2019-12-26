@@ -1,9 +1,13 @@
-subroutine swu(j)
+!> @file swu.f90
+!> file containing the subroutine swu
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine distributes potential plant evaporation through
-!!    the root zone and calculates actual plant water use based on soil
-!!    water availability. Also estimates water stress factor.
+!> this subroutine distributes potential plant evaporation through
+!> the root zone and calculates actual plant water use based on soil
+!> water availability. Also estimates water stress factor
+!> @param[in] j HRU number
+subroutine swu(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -78,12 +82,15 @@ subroutine swu(j)
 !!    gx          |
 !!    ir          |
 !!    k           |none          |counter (soil layer)
+!!    pl_aerfac
 !!    reduc       |none          |fraction of water uptake by plants achieved
 !!                               |where the reduction is caused by low water
 !!                               |content
-!!    sum1         |
+!!    satco
+!!    scparm
+!!    sum1        |
 !!    sump        |
-!!    wuse(:)     |mm H2O        |water uptake by plants in each soil layer
+!!    wuse        |mm H2O        |water uptake by plants in each soil layer
 !!    xx          |mm H2O        |water uptake by plants from all layers
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -96,10 +103,9 @@ subroutine swu(j)
    implicit none
 
    integer, intent(in) :: j
-   integer :: k, ir
-   real*8, dimension(mlyr) :: wuse
-   real*8 :: sum1, xx, gx, reduc, sump, satco, scparm
    real*8, parameter :: pl_aerfac = .85
+   real*8 :: gx, reduc, satco, scparm, sum1, sump, wuse, xx
+   integer :: ir, k
 
    select case (idc(idplt(j)))
     case (1, 2, 4, 5)
@@ -115,12 +121,6 @@ subroutine swu(j)
    if (ep_max <= 0.01) then
       strsw(j) = 1.
    else
-      !! initialize variables
-      gx = 0.
-      ir = 0
-      sump = 0.
-      wuse = 0.
-      xx = 0.
 
 !!  compute aeration stress
       if (sol_sw(j) > sol_sumfc(j)) then
@@ -133,6 +133,10 @@ subroutine swu(j)
          end if
       end if
 
+      !! initialize variables
+      ir = 0
+      sump = 0.
+      xx = 0.
       do k = 1, sol_nly(j)
          if (ir > 0) exit
 
@@ -149,35 +153,8 @@ subroutine swu(j)
             sum1 = ep_max * (1. - Exp(-ubw * gx / sol_rd)) / uobw
          end if
 
-         !! don't allow compensation for aeration stress
-!          if (strsa(j) > .99) then
-!           yy = 0.
-!          else
-!            yy= sump - xx
-!          end if
-         !wuse(k) = sum1 - sump + 1. * epco(j) ! ovrewritten in the following line
-         wuse(k) = sum1 - sump + (sump - xx) * epco(j)
+         wuse = sum1 - sump + (sump - xx) * epco(j)
          sump = sum1
-
-!!! commented aeration stress out !!!
-         !! adjust uptake if sw is greater than 90% of plant available water
-         !! aeration stress
-!         yy = air_str(idplt(j))
-!         satco = 100. * (sol_st(k,j) / sol_ul(k,j) - yy) / (1. - yy)
-!         if (satco > 0.) then
-!           strsa(j) = 1. - (1. - (satco / (satco + Exp(5.1 - .082 *
-!    &                                                      satco))))
-!         else
-!           strsa(j) = 1.
-!         end if
-!         wuse(k) = strsa(j) * wuse(k)
-!         if (iwatable(j) > 0) then
-!           yy = sol_sumfc(j) + .08 * (sol_sumul(j) - sol_sumfc(j))
-!           yy = sol_fc(k,j) + .01 * (sol_ul(k,j) - sol_fc(k,j))
-!           if (sol_sw(j) > yy) then
-!             wuse(k) = 0.
-!           endif
-!         endif
 
          !! adjust uptake if sw is less than 25% of plant available water
          if (sol_st(k,j) < sol_fc(k,j)/4.) then
@@ -185,14 +162,14 @@ subroutine swu(j)
          else
             reduc = 1.
          endif
-         wuse(k) = wuse(k) * reduc
+         wuse = wuse * reduc
 
-         if (sol_st(k,j) < wuse(k)) then
-            wuse(k) = sol_st(k,j)
+         if (sol_st(k,j) < wuse) then
+            wuse = sol_st(k,j)
          end if
 
-         sol_st(k,j) = Max(1.e-6, sol_st(k,j) - wuse(k))
-         xx = xx + wuse(k)
+         sol_st(k,j) = Max(1.e-6, sol_st(k,j) - wuse)
+         xx = xx + wuse
       end do
 
       !! update total soil water in profile

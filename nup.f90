@@ -1,11 +1,16 @@
-subroutine nup
+!> @file nup.f90
+!> file containing the subroutine nup
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine calculates plant nitrogen uptake
+!> this subroutine calculates plant nitrogen uptake
+!> @param[in] j HRU number
+subroutine nup(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none           |HRU number
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
 !!    bio_n1(:)   |none           |1st shape parameter for plant N uptake
 !!                                |equation
@@ -25,7 +30,6 @@ subroutine nup
 !!                                |6 perennial
 !!                                |7 trees
 !!    idplt(:)    |none           |land cover code from crop.dat
-!!    ihru        |none           |HRU number
 !!    nro(:)      |none           |sequence number of year in rotation
 !!    phuacc(:)   |none           |fraction of plant heat units accumulated
 !!    plantn(:)   |kg N/ha        |amount of nitrogen in plant biomass
@@ -78,16 +82,17 @@ subroutine nup
 !!                               |may be removed
 !!    icrop       |none          |land cover code
 !!    ir          |none          |flag to denote bottom of root zone reached
-!!    j           |none          |HRU number
 !!    l           |none          |counter (soil layer)
 !!    un2         |kg N/ha       |ideal plant nitrogen content
 !!    unmx        |kg N/ha       |maximum amount of nitrogen that can be
 !!                               |removed from soil layer
 !!    uno3l       |kg N/ha       |amount of nitrogen removed from soil layer
+!!    tno3
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Min
+!!    Intrinsic: Exp, Min, Dmax1, Dmin1
 !!    SWAT: nfix, nuts
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -95,22 +100,20 @@ subroutine nup
    use parm
    implicit none
 
-   integer :: j, icrop, l, ir
-   real*8 :: un2, unmx, uno3l, gx, tno3, xx
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: gx, un2, unmx, uno3l, tno3, xx
+   integer :: icrop, ir, l
 
    tno3 = 0.
    do l = 1, sol_nly(j)
       tno3 = tno3 + sol_no3(l,j)
    end do
    tno3 = tno3 / n_reduc(j)
-   !up_reduc = tno3 / (tno3 + Exp(1.56 - 4.5 * tno3)) !not used
 
    icrop = idplt(j)
    pltfr_n(j) = (pltnfr1(icrop) - pltnfr3(icrop)) * (1. - phuacc(j)&
-   &/ (phuacc(j) + Exp(bio_n1(icrop) - bio_n2(icrop) *&
-   &phuacc(j)))) + pltnfr3(icrop)
+      &/ (phuacc(j) + Exp(bio_n1(icrop) - bio_n2(icrop) *&
+      &phuacc(j)))) + pltnfr3(icrop)
 
    un2 = pltfr_n(j) * bio_ms(j)
    if (un2 < plantn(j)) un2 = plantn(j)
@@ -133,7 +136,6 @@ subroutine nup
 
       unmx = uno3d * (1. - Exp(-n_updis * gx / sol_rd)) / uobn
       uno3l = Min(unmx - nplnt(j), sol_no3(l,j))
-      !uno3l = up_reduc * uno3l
       nplnt(j) = nplnt(j) + uno3l
       sol_no3(l,j) = sol_no3(l,j) - uno3l
    end do
@@ -142,7 +144,7 @@ subroutine nup
 !! if crop is a legume, call nitrogen fixation routine
    select case (idc(idplt(j)))
     case (1,2,3)
-      call nfix
+      call nfix(j)
    end select
 
    nplnt(j) = nplnt(j) + fixn
@@ -153,14 +155,14 @@ subroutine nup
     case (1,2,3)
       strsn(j) = 1.
     case default
-      call nuts(plantn(j),un2,strsn(j))
+      call nuts(plantn(j), un2, strsn(j))
       if (uno3d > 1.e-5) then
          xx = nplnt(j) / uno3d
       else
          xx = 1.
       end if
-      strsn(j) = dmax1(strsn(j), xx)
-      strsn(j) = dmin1(strsn(j), 1.)
+      strsn(j) = Dmax1(strsn(j), xx)
+      strsn(j) = Dmin1(strsn(j), 1.)
    end select
 
    return

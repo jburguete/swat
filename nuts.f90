@@ -1,8 +1,16 @@
-subroutine nuts(u1,u2,uu)
+!> @file nuts.f90
+!> file containing the subroutine nuts
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this function calculates the plant stress factor caused by limited
-!!    supply of nitrogen or phosphorus
+!> this function calculates the plant stress factor caused by limited
+!> supply of nitrogen or phosphorus
+!> @param[in] u1 actual amount of element in plant (kg/ha)
+!> @param[in] u2 optimal amount of element in plant (kg/ha)
+!> @param[out] uu
+!> fraction of optimal plant growth achieved where reduction is caused by plant
+!> element deficiency (none)
+subroutine nuts(u1, u2, uu)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

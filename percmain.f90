@@ -1,22 +1,21 @@
-subroutine percmain(j)
+!> @file percmain.f90
+!> file containing the subroutine percmain
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine is the master soil percolation component.
+!> this subroutine is the master soil percolation component
+!> @param[in] j HRU number
+subroutine percmain(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    drainmod tile equations   08/2006
 !!    dep_imp(:)  |mm            |depth to impervious layer
-!!    drainmod tile equations   08/2006
-
 !!    icrk        |none          |crack flow code
 !!                               |1 simulate crack flow in watershed
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
-!!    ihru        |none          |HRU number
-!!    drainmod tile equations   01/2006
 !!    itdrn       |none          |tile drainage equations flag/code
 !!                               |1 simulate tile flow using subroutine drains(wt_shall)
 !!                               |0 simulate tile flow using subroutine origtile(wt_shall,d)
@@ -27,7 +26,6 @@ subroutine percmain(j)
 !!                               |1 dynamic stmaxd computed as a function of random roughness and rain intensity
 !!                               |by depstor.f
 !!                               |0 static stmaxd read from .bsn for the global value or .sdr for specific hrus
-!!    drainmod tile equations   01/2006
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc - wp)
 !!    sol_nly(:)  |none          |number of layers in soil profile
@@ -43,7 +41,6 @@ subroutine percmain(j)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    new water table depth  equations   01/2009
 !!    c           |none          |a factor used to convert airvol to wtd
 !!    deep_p      |mm            |total thickness of soil profile in HRU
 !!    dg          |mm            |soil layer thickness in HRU
@@ -53,10 +50,8 @@ subroutine percmain(j)
 !!    latq(:)     |mm H2O        |total lateral flow in soil profile for the
 !!                               |day in HRU
 !!    lyrtile     |mm H2O        |drainage tile flow in soil layer for day
-!!    new water table depth  equations   01/2009
 !!    ne_p        |mm/hr         |effective porosity in HRU for all soil profile layers
 !!    ne_w        |mm/hr         |effective porosity in HRU for soil layers above wtd
-!!    new water table depth  equations   01/2009
 !!    qtile       |mm H2O        |drainage tile flow in soil profile for the day
 !!    sepday      |mm H2O        |micropore percolation from soil layer
 !!    sepbtm(:)   |mm H2O        |percolation from bottom of soil profile for
@@ -68,9 +63,7 @@ subroutine percmain(j)
 !!                               |on current day
 !!    sw_excess   |mm H2O        |amount of water in excess of field capacity
 !!                               |stored in soil layer on the current day
-!!    new water table depth  equations   01/2009
 !!    wat         |mm H2O        |shallow water table depth below the soil surface to up to impervious layer
-!!    new water table depth  equations   01/2009
 !!    wt_shall    |mm H2O        |shallow water table depth above the impervious layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -83,6 +76,7 @@ subroutine percmain(j)
 !!    isp
 !!    j1          |none          |counter
 !!    lid_cuminf_total
+!!    por_air
 !!    qvol
 !!    sb
 !!    sumqtile
@@ -124,11 +118,6 @@ subroutine percmain(j)
    sepday = inflpcp + aird(j) + pot_seep(j)
    pot_seep(j) = 0.
 
-!! if unlimted, or groundwater source reset aird here (otherwise in virtual)
-!!  change per JGA 10/12/11 irrigation problem with reach
-!! if (irrsc(j) > 2)  aird(j) = 0.
-!!      aird(j) = 0.
-
    !! calculate crack flow
    if (icrk == 1) then
       call percmacro(j)
@@ -141,7 +130,6 @@ subroutine percmain(j)
 
       !! add percolated soil water from amended soil layers of the LIDs (rain garden and porous pavement) to the first soil layer of the corresponding HRU
       if (j1 == 1.and.urblu(j) > 0) then
-!          lid_cuminf_total = 0.
          do ii = 1, 4
             if (ii == 2) then  ! 2: rain garden, 3: cistern and 4: porous pavement
                lid_cuminf_total = lid_cuminf_total +&
@@ -197,8 +185,6 @@ subroutine percmain(j)
 
          !! redistribute soil water if above field capacity (high water table)
          call sat_excess(j1)
-!         sol_st(j1,j) = sol_st(j1,j) - lyrtilex
-!         sol_st(j1,j) = Max(1.e-6,sol_st(j1,j))
       end if
 
       !! summary calculations
@@ -245,41 +231,29 @@ subroutine percmain(j)
             xx = (sol_sw(j) - sol_sumfc(j)) / (yy - sol_sumfc(j))
             if (xx > 1.) xx = 1.
             wt_shall = xx * dep_imp(j)
-            !wat = dep_imp(j) - wt_shall !not used
-            !if(wat > dep_imp(j)) wat = dep_imp(j) !not used
          end if
       else
          !compute water table depth using Daniel's modifications
          !       Updated water table depth D.Moriasi 4/8/2014
          swst_del = 0.
-         !sw_del = 0. !not used
-         !wt_del = 0. !not used
          wtst_del = 0.
          do j1 = 1, sol_nly(j)
-!            if (wat_tbl(j) < sol_z(j1,j)) then
             swst_del = sol_stpwt(j1,j) - sol_st(j1,j)
-            !sw_del = sol_swpwt(j) - sol_sw(j) !not used
-            !wt_del = sw_del * vwt(j1,j) !not used
             wtst_del = swst_del * vwt(j1,j)
-            !            wat_tbl(j) = wat_tbl(j) + wt_del
             wat_tbl(j) = wat_tbl(j) + wtst_del
             if(wat_tbl(j) < 0.0) wat_tbl(j) = 0.0
             if(wat_tbl(j) > dep_imp(j)) wat_tbl(j) = dep_imp(j)
             wt_shall = dep_imp(j) - wat_tbl(j)
             sol_swpwt(j) = sol_sw(j)
             sol_stpwt(j1,j) = sol_st(j1,j)
-!         exit
-!       end if
-!       Updated water table depth D.Moriasi 4/8/2014
          end do
       end if
       !! drainmod wt_shall equations   10/23/2006
 
       if (ddrain(j) > 0.) then
          if (wt_shall <= d) then
-            qtile = 0.
+            ! qtile = 0. !redundant
          else
-            !! Start Daniel's tile equations modifications  01/2006
             if (itdrn == 1) then
                call drains(j)  ! compute tile flow using drainmod tile equations
                !! drainmod tile equations   01/2006
@@ -290,7 +264,6 @@ subroutine percmain(j)
          end if
       end if
    end if
-   !! End Daniel's tile equations modifications  01/2006
 
    if (qtile > 0.) then
       !! update soil profile water after tile drainage

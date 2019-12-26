@@ -1,14 +1,19 @@
-subroutine nfix
+!> @file nfix.f90
+!> file containing the subroutine nfix
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine estimates nitrogen fixation by legumes
+!> this subroutine estimates nitrogen fixation by legumes
+!> @param[in] j HRU number
+subroutine nfix(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    curyr       |none          |current year of simulation
+!!    fixco       |none          |nitrogen fixation coefficient
 !!    hru_dafr(:) |km**2/km**2   |fraction of watershed area in HRU
-!!    ihru        |none          |HRU number
 !!    nplnt(:)    |kg N/ha       |plant uptake of nitrogen in HRU for the day
 !!    nyskip      |none          |number of years to skip output printing/
 !!                               |summarization
@@ -35,29 +40,26 @@ subroutine nfix
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fixco       |none          |nitrogen fixation coefficient
 !!    fxg         |
 !!    fxn         |
 !!    fxr         |
 !!    fxw         |
-!!    j           |none          |HRU number
 !!    l           |none          |counter (soil layer)
 !!    sumn        |kg N/ha       |total amount of nitrate stored in soil profile
 !!    uno3l       |kg N/ha       |plant nitrogen demand
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max, Min
+!!    Intrinsic: Min, Max
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, l
-   real*8 :: uno3l, fxw, sumn, fxn, fxg, fxr
-
-   j = ihru
+   integer, intent(in) :: j
+   integer :: l
+   real*8 :: fxg, fxn, fxr, fxw, sumn, uno3l
 
 !! compute the difference between supply and demand
    if (uno3d > nplnt(j)) then

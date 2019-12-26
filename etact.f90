@@ -1,11 +1,13 @@
+!> @file etact.f90
+!> file containing the subroutine etact
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine calculates potential plant transpiration for Priestley-
+!> Taylor and Hargreaves ET methods, and potential and actual soil
+!> evaporation. NO3 movement into surface soil layer due to evaporation
+!> is also calculated.
 subroutine etact(j)
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates potential plant transpiration for Priestley-
-!!    Taylor and Hargreaves ET methods, and potential and actual soil
-!!    evaporation. NO3 movement into surface soil layer due to evaporation
-!!    is also calculated.
-
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -110,17 +112,12 @@ subroutine etact(j)
 
    real*8 Expo
    integer, intent(in) :: j
+   real*8, parameter :: effnup = 0., esd = 500., etco = 0.801
+   real*8 :: cej, dep, eaj, eos1, eosl, es_max, esleft, evz, evzp, no3up, pet,&
+      &sev, sumsnoeb, xx
    integer :: ib, ly
-!!    real*8, parameter :: esd = 500., etco = 0.80, effnup = 0.1
-   real*8 :: esd, etco, effnup
-   real*8 :: no3up, es_max, eos1, xx, cej, eaj, pet, esleft
-   real*8 :: sumsnoeb, evzp, eosl, dep, evz, sev
 
    pet = pet_day
-!!    added statements for test of real statement above
-   esd = 500.
-   etco = 0.80
-   effnup = 0.1
 
 !! evaporate canopy storage first
 !! canopy storage is calculated by the model only if the Green & Ampt
@@ -163,19 +160,16 @@ subroutine etact(j)
       eos1 = es_max * eos1
       es_max = Min(es_max, eos1)
       es_max = Max(es_max, 0.)
-!        if (pot_vol(j) > 1.e-4) es_max = 0.
 
       !! make sure maximum plant and soil ET doesn't exceed potential ET
-      !!if (pet_day < es_max + ep_max) then
-      !!es_max = pet_day - ep_max
       if (pet < es_max + ep_max) then
-         es_max = pet * es_max / (es_max + ep_max)
-         ep_max = pet * ep_max / (es_max + ep_max)
+         xx = pet / (es_max + ep_max)
+         es_max = xx * es_max
+         ep_max = xx * ep_max
       end if
       if (pet < es_max + ep_max) then
          es_max = pet - ep_max - 1.0e-6
       end if
-      !!end if
 
       !! initialize soil evaporation variables
       esleft = es_max
@@ -205,7 +199,7 @@ subroutine etact(j)
             if (elevb_fr(ib,hru_sub(j)) <= 0.) exit
             if (tavband(ib,j) > 0.) then
                sumsnoeb = sumsnoeb +&
-               &snoeb(ib,j) * elevb_fr(ib,hru_sub(j))
+                  &snoeb(ib,j) * elevb_fr(ib,hru_sub(j))
             end if
          end do
 
@@ -215,9 +209,9 @@ subroutine etact(j)
                if (elevb_fr(ib,hru_sub(j)) <= 0.) exit
                if (tavband(ib,j) > 0.) then
                   snoev = snoev + snoeb(ib,j) * (esleft / sumsnoeb) *&
-                  &elevb_fr(ib,hru_sub(j))
+                     &elevb_fr(ib,hru_sub(j))
                   snoeb(ib,j) = snoeb(ib,j) - snoeb(ib,j) * (esleft /&
-                  &sumsnoeb)
+                     &sumsnoeb)
                end if
             end do
          else
@@ -249,10 +243,9 @@ subroutine etact(j)
          if (dep < esd) then
             !! calculate evaporation from soil layer
             evz = eosl * sol_z(ly,j) / (sol_z(ly,j) + Exp(2.374 -&
-            &.00713 * sol_z(ly,j)))
+               &.00713 * sol_z(ly,j)))
             sev = evz - evzp * esco(j)
             evzp = evz
-            xx = 0.
             if (sol_st(ly,j) < sol_fc(ly,j)) then
                xx = 2.5 * (sol_st(ly,j) - sol_fc(ly,j)) / sol_fc(ly,j)
                sev = sev * Expo(xx)

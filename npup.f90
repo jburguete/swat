@@ -1,11 +1,16 @@
-subroutine npup
+!> @file npup.f90
+!> file containing the subroutine npup
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates plant phosphorus uptake
+!> this subroutine calculates plant phosphorus uptake
+!> @param[in] j HRU number
+subroutine npup(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    curyr       |none           |current year of simulation
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
 !!    bio_p1(:)   |none           |1st shape parameter for plant P uptake
@@ -17,7 +22,6 @@ subroutine npup
 !!    icr(:)      |none           |sequence number of crop grown within the
 !!                                |current year
 !!    idplt(:)    |none           |land cover code from crop.dat
-!!    ihru        |none           |HRU number
 !!    nro(:)      |none           |sequence number of year in rotation
 !!    nyskip      |none           |number of years to skip output summarization/
 !!                                |printing
@@ -73,7 +77,6 @@ subroutine npup
 !!                               |may be removed
 !!    icrop       |none          |land cover code
 !!    ir          |none          |flag for bottom of root zone
-!!    j           |none          |HRU number
 !!    l           |none          |counter (soil layers)
 !!    uapd        |kg P/ha       |plant demand of phosphorus
 !!    uapl        |kg P/ha       |amount of phosphorus removed from layer
@@ -91,26 +94,24 @@ subroutine npup
    use parm
    implicit none
 
-   integer :: j, icrop, l, ir
-   real*8 :: up2, uapd, upmx, uapl, gx
-
-   j = ihru
+   integer, intent(in) :: j
+   integer :: icrop, ir, l
+   real*8 :: gx, uapd, uapl, up2, upmx
 
    icrop = idplt(j)
    pltfr_p(j) = (pltpfr1(icrop) - pltpfr3(icrop)) * (1. - phuacc(j)&
-   &/ (phuacc(j) + Exp(bio_p1(icrop) - bio_p2(icrop) * phuacc(j))))&
-   &+ pltpfr3(icrop)
+      &/ (phuacc(j) + Exp(bio_p1(icrop) - bio_p2(icrop) * phuacc(j))))&
+      &+ pltpfr3(icrop)
 
    up2 = pltfr_p(j) * bio_ms(j)
    if (up2 < plantp(j)) up2 = plantp(j)
    uapd = up2 - plantp(j)
-   !uapd = Min(4. * pltpfr3(icrop) * bioday, uapd)
    uapd = 1.5 * uapd                         !! luxury p uptake
 
    strsp(j) = 1.
-   ir = 0.
    if (uapd < 1.e-6) return
 
+   ir = 0
    do l = 1, sol_nly(j)
       if (ir > 0) exit
 

@@ -1,4 +1,4 @@
-subroutine anfert
+subroutine anfert(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine automatically applies Nitrogen and Phosphorus when
@@ -7,16 +7,7 @@ subroutine anfert
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    fminn(:)    |kg minN/kg frt|fraction of fertilizer which is mineral
-!!                               |nitrogen (NO3 + NH3)
-!!    fminp(:)    |kg minP/kg frt|fraction of fertilizer which is mineral
-!!                               |phosphorus
-!!    fnh3n(:)    |kg NH3-N/kg N |fraction of mineral N content of
-!!                               |fertilizer which is NH3
-!!    forgn(:)    |kg orgN/kg frt|fraction of fertilizer which is organic
-!!                               |nitrogen
-!!    forgp(:)    |kg orgP/kg frt|fraction of fertilizer which is organic
-!!                               |phosphorus
+!!    j           |none          |HRU number
 !!    afrt_surface(:) |none      |fraction of fertilizer which is applied
 !!                               |to top 10 mm of soil (the remaining
 !!                               |fraction is applied to first soil
@@ -44,10 +35,19 @@ subroutine anfert
 !!    bactpq(:)   |# colonies/ha |persistent bacteria in soil solution
 !!    bactps(:)   |# colonies/ha |persistent bacteria attached to soil particles
 !!    curyr       |none          |current year of simulation
+!!    fminn(:)    |kg minN/kg frt|fraction of fertilizer which is mineral
+!!                               |nitrogen (NO3 + NH3)
+!!    fminp(:)    |kg minP/kg frt|fraction of fertilizer which is mineral
+!!                               |phosphorus
+!!    fnh3n(:)    |kg NH3-N/kg N |fraction of mineral N content of
+!!                               |fertilizer which is NH3
+!!    forgn(:)    |kg orgN/kg frt|fraction of fertilizer which is organic
+!!                               |nitrogen
+!!    forgp(:)    |kg orgP/kg frt|fraction of fertilizer which is organic
+!!                               |phosphorus
 !!    hru_dafr(:) |km**2/km**2   |fraction of watershed area in HRU
 !!    icr(:)      |none          |sequence number of crop grown within the
 !!                               |current year
-!!    ihru        |none          |HRU number
 !!    nro(:)      |none          |sequence number of year in rotation
 !!    nyskip      |none          |number of years of output summarization
 !!                               |and printing to skip
@@ -145,7 +145,6 @@ subroutine anfert
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    dwfert      |kg fert/ha    |amount of fertilizer to be applied to meet
 !!                               |nitrogen requirement
-!!    j           |none          |HRU number
 !!    ly          |none          |counter (soil layers)
 !!    nstress     |none          |code for approach used to determine amount
 !!                               |of nitrogen to HRU
@@ -168,14 +167,13 @@ subroutine anfert
    use parm
    implicit none
 
+   integer, intent(in) :: j
             !orgc_f is the fraction of organic carbon in fertilizer
             !for most fertilziers this value is set to 0.
    real*8, parameter :: rtoaf = 0.50, orgc_f = 0.0
-   integer :: j, ly, ifrt
+   integer :: ly, ifrt
    real*8 :: tsno3, tpno3, dwfert, xx, targn, tfp, RLN, X1, X10, X8, XXX, XZ,&
      &YY, YZ, ZZ
-
-   j = ihru
 
    ifrt = iafrttyp(j)
 
