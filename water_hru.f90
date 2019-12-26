@@ -4,6 +4,7 @@
 !> modified by Javier Burguete
 
 !> this subroutine compute pet and et using Priestly-Taylor and a coefficient
+!> @param[in] j HRU number
 subroutine water_hru(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -11,15 +12,27 @@ subroutine water_hru(j)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    d
+!!    gma         |kPa/deg C     |psychrometric constant
+!!    ho          |              |net radiation
+!!    pet_alpha   |none          |alpha factor in Priestley-Taylor ET
+!!                               |equation
+!!    tmpk        |deg K         |average temperature for the day in the HRU
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    INTRINSIC: Exp
+
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm

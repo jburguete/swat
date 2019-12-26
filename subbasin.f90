@@ -158,8 +158,6 @@ subroutine subbasin(i)
       j = ihru
 
 
-      !!by zhang DSSAT tillage
-      !!======================
       !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
       !jj is hru number
       if (cswat == 2) then
@@ -174,8 +172,6 @@ subroutine subbasin(i)
             !tillage_switch(j) = .TRUE.
          end if
       end if
-      !!by zhang DSSAT tillage
-      !!======================
 
 
 
@@ -204,7 +200,7 @@ subroutine subbasin(i)
          call schedule_ops(j)
 
          !! calculate albedo for day
-         call albedo
+         call albedo(j)
 
          !! calculate soil temperature for soil layers
          call solt(j)
@@ -227,7 +223,7 @@ subroutine subbasin(i)
          !! perform management operations
          if (yr_skip(j) == 0) call operatn(j)
 
-         if (auto_wstr(j) > 1.e-6 .and. irrsc(j) > 2) call autoirr
+         if (auto_wstr(j) > 1.e-6 .and. irrsc(j) > 2) call autoirr(j)
 
          !! perform soil water routing
          call percmain(j)

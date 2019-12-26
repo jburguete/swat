@@ -4,12 +4,13 @@
 !> modified by Javier Burguete
 
 !> this subroutine calculates albedo in the HRU for the day
-subroutine albedo
+!> @param[in] j HRU number
+subroutine albedo(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
+!!    j           |none          |HRU number
 !!    laiday(:)   |m**2/m**2     |leaf area index
 !!    sno_hru(:)  |mm H2O        |amount of water in snow in HRU on current day
 !!    sol_alb(:)  |none          |albedo when soil is moist
@@ -27,7 +28,6 @@ subroutine albedo
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cej         |none          |constant
 !!    eaj         |none          |soil cover index
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -39,11 +39,9 @@ subroutine albedo
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8, parameter :: cej = -5.e-5
    real*8 :: eaj
-   integer :: j
-
-   j = ihru
 
 !! calculate albedo
    eaj = Exp(cej * (sol_cov(j) + .1))   !! equation 2.2.16 in SWAT manual

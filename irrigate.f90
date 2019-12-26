@@ -6,7 +6,7 @@
 !> this subroutine applies irrigation water to HRU
 !> @param[in] j HRU number (none)
 !> @param[in] volmm depth irrigation water applied to HRU (mm H2O)
-subroutine irrigate(j,volmm)
+subroutine irrigate(j, volmm)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

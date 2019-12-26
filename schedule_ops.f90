@@ -44,7 +44,7 @@ subroutine schedule_ops(j)
 
    do while (iida == iopday(iops,j).and.iyr == iopyr(iops,j))
 
-      select case(mgt_ops(iops,j))
+      select case (mgt_ops(iops,j))
 
        case (0)
 

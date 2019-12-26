@@ -111,13 +111,10 @@ subroutine sub_subbasin(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    d           |
-!!    gma         |kPa/deg C     |psychrometric constant
-!!    ho          |              |net radiation
-!!    j           |none          |HRU number
-!!    pet_alpha   |none          |alpha factor in Priestley-Taylor ET
-!!                               |equation
-!!    tmpk        |deg K         |average temperature for the day in the HRU
+!!    hvol
+!!    ii          |none          |counter
+!!    kk          |none          |counter
+!!    sb          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~

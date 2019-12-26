@@ -1,4 +1,4 @@
-subroutine autoirr
+subroutine autoirr(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs the auto-irrigation operation
@@ -6,6 +6,7 @@ subroutine autoirr
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j              |none          |HRU number
 !!    aird(:)        |mm H2O        |amount of water applied to HRU on current
 !!                                  |day
 !!    auto_wstr(:)   |none or mm    |water stress threshold that triggers irrigation
@@ -14,7 +15,6 @@ subroutine autoirr
 !!    wstrs_id(:)    |none          |water stress identifier:
 !!                                  |1 plant water demand
 !!                                  |2 soil water deficit
-!!    ihru           |none          |HRU number
 !!    irrno(:)       |none          |irrigation source location
 !!                                  |if IRR=1, IRRNO is the number of the
 !!                                  |          reach
@@ -58,7 +58,6 @@ subroutine autoirr
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    vmm         |mm H2O        |maximum amount of water to be applied
 !!    vmma        |mm H2O        |amount of water in source
@@ -78,18 +77,15 @@ subroutine autoirr
    use parm
    implicit none
 
-   integer :: j, k
-   real*8 :: vmma, vmm, cnv, vol, vmms, vmmd
+   integer, intent(in) :: j
+   real*8 :: cnv, vmm, vmma, vmmd, vmms, vol
+   integer :: k
 
-   j = ihru
-
-!!!! Srin's irrigation source by each application changes
    irrsc(j) = irr_sca(j)
    irrno(j) = irr_noa(j)
-!!!! Srin's irrigation source by each application changes
 
    if ((wstrs_id(j) == 1 .and. strsw(j) < auto_wstr(j) .or.&
-   &(wstrs_id(j)==2.and.sol_sumfc(j)-sol_sw(j)>auto_wstr(j)))) then
+      &(wstrs_id(j)==2.and.sol_sumfc(j)-sol_sw(j)>auto_wstr(j)))) then
    !! determine available amount of water in source
    !! ie upper limit on water removal on day
       vmma = 0.
@@ -100,13 +96,11 @@ subroutine autoirr
        case (3)   !! shallow aquifer source
          do k = 1, nhru
             if (hru_sub(k) == irrno(j)) then
-               cnv = 0.
                cnv = hru_ha(k) * 10.
                vmma = vmma + shallst(k) * cnv
             end if
          end do
          vmms = vmma
-         cnv = 0.
          cnv = hru_ha(j) * 10.
          vmma = vmma / cnv
          vmm = Min(sol_sumfc(j), vmma)
@@ -114,13 +108,11 @@ subroutine autoirr
        case (4)   !! deep aquifer source
          do k = 1, nhru
             if (hru_sub(k) == irrno(j)) then
-               cnv = 0.
                cnv = hru_ha(k) * 10.
                vmma = vmma + deepst(k) * cnv
             end if
          end do
          vmmd = vmma
-         cnv = 0.
          cnv = hru_ha(j) * 10.
          vmma = vmma / cnv
          vmm = Min(sol_sumfc(j), vmma)
@@ -137,15 +129,12 @@ subroutine autoirr
          call irrigate(j,vmm)
 
          !! subtract irrigation from shallow or deep aquifer
-         vol = 0.
-         cnv = 0.
          cnv = hru_ha(j) * 10.
          vol = aird(j) * cnv
          select case (irrsc(j))
           case (3)   !! shallow aquifer source
             do k = 1, nhru
                if (hru_sub(k) == irrno(j)) then
-                  cnv = 0.
                   vmma = 0.
                   cnv = hru_ha(k) * 10.
                   if (vmms > 1.e-4) then
@@ -165,7 +154,6 @@ subroutine autoirr
           case (4)   !! deep aquifer source
             do k = 1, nhru
                if (hru_sub(k) == irrno(j)) then
-                  cnv = 0.
                   vmma = 0.
                   cnv = hru_ha(k) * 10.
                   if (vmmd>1.e-4) vmma = vol * (deepst(k) * cnv / vmmd)
@@ -183,10 +171,10 @@ subroutine autoirr
 
          if (imgt == 1) then
             write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-            &hru_km(j), "         ",  " AUTOIRR", phubase(j), phuacc(j)&
-            &, sol_sw(j),bio_ms(j), sol_rsd(1,j),sol_sumno3(j)&
-            &,sol_sumsolp(j), aird(j)&
-            &,irrsc(j), irrno(j)
+               &hru_km(j), "         ",  " AUTOIRR", phubase(j), phuacc(j)&
+               &, sol_sw(j),bio_ms(j), sol_rsd(1,j),sol_sumno3(j)&
+               &,sol_sumsolp(j), aird(j)&
+               &,irrsc(j), irrno(j)
          end if
 
       endif
