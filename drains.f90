@@ -1,8 +1,12 @@
-subroutine drains(j)
+!> @file drains.f90
+!> file containing the subroutine drains
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine finds the effective lateral hydraulic conductivity
-!!    and computes drainage or subirrigation flux
+!> this subroutine finds the effective lateral hydraulic conductivity
+!> and computes drainage or subirrigation flux
+!> @param[in] j HRU number
+subroutine drains(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition

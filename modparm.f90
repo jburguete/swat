@@ -2501,7 +2501,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_ul
 !> bulk density of the soil layer in HRU (Mg/m^3)
    real*8, dimension (:,:), allocatable :: sol_bd
-!> depth to bottom of soil layer (mm)
+!> depth to bottom of each profile layer in a given HRU (mm)
    real*8, dimension (:,:), allocatable :: sol_z
 !> amount of water stored in the soil layer on any given day (less wilting point
 !> water) (mm H2O)
@@ -2559,6 +2559,9 @@ module parm
    real*8, dimension (:,:), allocatable :: orig_solaorgn,orig_solst
    real*8, dimension (:,:), allocatable :: orig_solactp,orig_solstap
    real*8, dimension (:,:), allocatable :: orig_volcr
+!> lateral saturated hydraulic conductivity for each profile layer in a give
+!> HRU. For example (conk(2,1) is conductivity of layer from sol_z(1,1)
+!> to sol_z(2,1) in HRU1 (mm/hr)
    real*8, dimension (:,:), allocatable :: conk
 !> sol_pst(:,:,1) initial amount of pesticide in first layer read in from .chm
 !> file (mg/kg)\n
@@ -3072,7 +3075,7 @@ module parm
    real*8, dimension (:), allocatable :: epco
 !> soil evaporation compensation factor (0-1) (none)
    real*8, dimension (:), allocatable :: esco
-!> average slope steepness (m/m)
+!> average slope steepness in HRU (m/m)
    real*8, dimension (:), allocatable :: hru_slp
 !> average slope length for subbasin (m)
    real*8, dimension (:), allocatable :: slsubbsn
@@ -3434,7 +3437,7 @@ module parm
 !> the soil to the drain tile and the release of the water from the drain tile
 !> to the reach (hours)
    real*8, dimension (:), allocatable :: gdrain
-!> depth to the sub-surface drain (mm)
+!> depth of drain tube from the soil surface (mm)
    real*8, dimension (:), allocatable :: ddrain
 !> crack volume potential of soil (none)
    real*8, dimension (:), allocatable :: sol_crk
