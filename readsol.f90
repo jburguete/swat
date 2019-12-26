@@ -5,13 +5,14 @@
 
 !> this subroutine reads data from the HRU/subbasin soil properties file
 !> (.sol). This file contains data related to soil physical properties and
-!> general chemical properties.
-subroutine readsol
+!> general chemical properties
+!> @param[in] k HRU number
+subroutine readsol(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru          |none          |HRU number
+!!    k             |none          |HRU number
 !!    mlyr          |none          |maximum number of soil layers
 !!    idplt(:)      |none          |land cover/crop identification code for
 !!                                 |first crop grown in HRU (the only crop if
@@ -67,7 +68,6 @@ subroutine readsol
 !!    dep_new
 !!    eof
 !!    j           |none          |counter
-!!    k           |none          |counter
 !!    nly         |none          |number of soil layers
 !!    nota
 !!    plt_zmx     |mm            |rooting depth of plant
@@ -83,16 +83,16 @@ subroutine readsol
    use parm
    implicit none
 
+   integer, intent(in) :: k
    real*8, parameter :: a = 50.0, b = 20.0, c = 5.0, d = 2.0
    integer, parameter :: nota = 10
    character (len=80) :: titldum
    real*8 :: dep_new, plt_zmx
-   integer :: eof, j, k, nly
+   integer :: eof, j, nly
 
 !!    initialize local variables
    nly = 0
    plt_zmx = 0.
-   k = ihru
 
    read (107,5500) titldum
    read (107,5100) snam(k)
@@ -208,11 +208,6 @@ subroutine readsol
       sol_zmx(k) = Max(sol_zmx(k),plt_zmx)
    end if
 
-!! create a layer boundary at maximum rooting depth (sol_zmx)
-   !if (sol_zmx(i) > 0.001.and.sol_zmx(k)/=sol_z(nly,k)) then
-   !   call layersplit (sol_zmx(k))
-   !end if
-
 !! create a bizone layer in septic HRUs
    if (isep_opt(k) /= 0) then
       if (bz_z(k)+bz_thk(k) > sol_z(nly,k)) then
@@ -224,9 +219,9 @@ subroutine readsol
          endif
       endif
       if (bz_z(k) > 0.) then
-         call layersplit (bz_z(k))
+         call layersplit (bz_z(k), k)
          dep_new = bz_z(k) + bz_thk(k)
-         call layersplit (dep_new)
+         call layersplit (dep_new, k)
          i_sep(k) = iseptic
       endif
    endif

@@ -97,7 +97,7 @@ subroutine soil_phys(ii)
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp, Sqrt
-!!    SWAT: Curno
+!!    SWAT: curno
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 

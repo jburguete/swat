@@ -12,11 +12,13 @@
 !> hru area and adjusted channel length\n
 !> iwave = 1 subbasin # for subbasin MUSLE is computed for entire subbasin using
 !> hru weighted KLSCP
-subroutine alph(iwave)
+!> @param[in] j HRU number
+subroutine alph(iwave, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none        |HRU number
 !!    ab          |mm H2O      |lowest value al5 can have
 !!    amp_r(:,:)  |none        |alpha factor for rain(mo max 0.5h rain)
 !!    idg(:)      |none        |array location of random number seed
@@ -28,7 +30,6 @@ subroutine alph(iwave)
 !!                             |1 sub-daily rainfall/Green&Ampt/hourly
 !!                             |  routing
 !!                             |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    ihru        |none        |HRU number
 !!    iwave       |none        |flag to differentiate calculation of HRU and
 !!                             |subbasin sediment calculation
 !!                             |iwave = 0 for HRU
@@ -63,7 +64,6 @@ subroutine alph(iwave)
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ajp         |mm H2O      |highest value al5 can have
-!!    j           |none        |HRU number
 !!    jj          |none        |counter
 !!    k           |none        |number of time steps equivalent to 30 minutes
 !!    kk          |none        |counter
@@ -80,11 +80,10 @@ subroutine alph(iwave)
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j, jj, k, kk
+   real*8 Expo, Atri
+   integer, intent (in) :: iwave, j
+   integer :: jj, k, kk
    real*8 :: ajp, preceff, rainsum
-
-   j = ihru
 
    select case (ievent)
     case(0)                !! daily rainfall, estimate al5

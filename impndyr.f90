@@ -1,8 +1,11 @@
-subroutine impndyr
+!> @file impndyr.f90
+!> file containing the subroutine impndyr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes annual HRU impondment output to the output.wtr
-!!    file
+!> this subroutine writes annual HRU impondment output to the output.wtr
+!> file
+subroutine impndyr
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -21,7 +24,6 @@ subroutine impndyr
 !!    icr(:)        |none          |sequence number of crop grown within the
 !!                                 |current year
 !!    idplt(:,:,:)  |none          |land cover code from crop.dat
-!!    ihru          |none          |HRU number
 !!    ipot(:)       |none          |number of HRU (in subbasin) that is ponding
 !!                                 |water--the HRU that the surface runoff from
 !!                                 |current HRU drains into. This variable is
@@ -116,18 +118,19 @@ subroutine impndyr
 !!    ano3_ppw    |mg N/L        |nitrate concentration in wetland
 !!    chla_ppm    |mg chla/L     |chlorophyll-a concentration in pond
 !!    chla_ppw    |mg chla/L     |chlorophyll-a concentration in wetland
+!!    cropname
 !!    iflag       |none          |flag to denote presence of impoundment in
 !!                               |HRU
 !!    ii          |none          |counter
 !!    j           |none          |HRU number
 !!    minp_ppm    |mg P/L        |mineral P concentration in pond
-!!    minp_ppw    |mg P/L        |mineral P concentration in wetland
 !!    orgn_ppm    |mg N/L        |organic N concentration in pond
 !!    orgn_ppw    |mg N/L        |organic N concentration in wetland
 !!    orgp_ppm    |mg P/L        |organic P concentration in pond
 !!    orgp_ppw    |mg P/L        |organic P concentration in wetland
 !!    pdvas(:)    |varies        |array to hold HRU output values
 !!    sb          |none          |subbasin number
+!!    solp_ppw
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -135,14 +138,13 @@ subroutine impndyr
    use parm
    implicit none
 
-   integer :: j, sb, ii, iflag
-   real*8 :: orgn_ppm, orgp_ppm, ano3_ppm, minp_ppm, chla_ppm
-   real*8 :: orgn_ppw, orgp_ppw, ano3_ppw, solp_ppw, chla_ppw
    real*8, dimension (40) :: pdvas
+   real*8 :: ano3_ppm, ano3_ppw, chla_ppm, chla_ppw, minp_ppm, orgn_ppm,&
+      &orgn_ppw, orgp_ppm, orgp_ppw, solp_ppw
+   integer :: iflag, ii, j, sb
    character*4 cropname
 
    do j = 1, nhru
-      sb = 0
       sb = hru_sub(j)
 
       iflag = 0
@@ -154,36 +156,36 @@ subroutine impndyr
       if (iflag == 1) then
 
 !! calculate nutrient concentrations
-         orgn_ppm = 0.
-         orgp_ppm = 0.
-         ano3_ppm = 0.
-         minp_ppm = 0.
-         chla_ppm = 0.
-         orgn_ppw = 0.
-         orgp_ppw = 0.
-         ano3_ppw = 0.
-         solp_ppw = 0.
-         chla_ppw = 0.
          if (pnd_vol(j) > 1.) then
             orgn_ppm = 1000. * pnd_orgn(j) / pnd_vol(j)
             orgp_ppm = 1000. * pnd_orgp(j) / pnd_vol(j)
             ano3_ppm = 1000. * (pnd_no3(j) + pnd_no3s(j) + pnd_no3g(j)) /&
-            &pnd_vol(j)
+               &pnd_vol(j)
             minp_ppm = 1000. * (pnd_solp(j) + pnd_psed(j) + pnd_solpg(j)) /&
-            &pnd_vol(j)
+               &pnd_vol(j)
             chla_ppm = 1000. * pnd_chla(j) / pnd_vol(j)
+         else
+            orgn_ppm = 0.
+            orgp_ppm = 0.
+            ano3_ppm = 0.
+            minp_ppm = 0.
+            chla_ppm = 0.
          endif
          if (wet_vol(j) > 1.) then
             orgn_ppw = 1000. * wet_orgn(j) / wet_vol(j)
             orgp_ppw = 1000. * wet_orgp(j) / wet_vol(j)
             ano3_ppw = 1000. * (wet_no3(j) + wet_no3s(j) + wet_no3g(j)) /&
-            &wet_vol(j)
+               &wet_vol(j)
             solp_ppw = 1000. * (wet_solp(j) + wet_solpg(j) + wet_psed(j)) /&
-            &wet_vol(j)
+               &wet_vol(j)
             chla_ppw = 1000. * wet_chla(j) / wet_vol(j)
+         else
+            orgn_ppw = 0.
+            orgp_ppw = 0.
+            ano3_ppw = 0.
+            solp_ppw = 0.
+            chla_ppw = 0.
          end if
-
-         pdvas = 0.
 
          pdvas(1) = wtryr(3,j)
          pdvas(2) = wtryr(4,j)
@@ -234,7 +236,7 @@ subroutine impndyr
 
          if (iwtr == 1) then
             write (29,1000) cropname, j, subnum(j), hruno(j), sb,&
-            &nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, 40)
+               &nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, 40)
          end if
       end if
    end do

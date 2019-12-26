@@ -73,6 +73,7 @@ subroutine pgenhr(jj)
    use parm
    implicit none
 
+   real*8 Atri, Expo
    integer, intent (in) :: jj
    real*8, parameter :: blm = 0.05, qmn = 0.25, uplm = 0.95
    real*8 :: ajp, altc, dur, pkrain, pkrr, rtp, rx, sumrain, vv, xk1, xk2,&

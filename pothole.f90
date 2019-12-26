@@ -1,4 +1,4 @@
-subroutine pothole(i)
+subroutine pothole(i, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine simulates depressional areas that do not drain to the
@@ -8,6 +8,7 @@ subroutine pothole(i)
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i              |julian date   |current day in simulation--loop counter
+!!    j              |none          |HRU number
 !!    curyr          |none          |current year of simulation
 !!    evlai          |none          |leaf area index at which no evaporation
 !!                                  |occurs from the water surface. This
@@ -21,7 +22,6 @@ subroutine pothole(i)
 !!    hru_ha(:)      |ha            |area of HRU in hectares
 !!    hru_slp(:)     |m/m           |average slope steepness
 !!    iida           |julian date   |day being simulated (current julian date)
-!!    ihru           |none          |HRU number
 !!    ipot(:)        |none          |number of HRU (in subbasin) that is ponding
 !!                                  |water--the HRU that the surface runoff from
 !!                                  |current HRU drains into. This variable is
@@ -135,7 +135,6 @@ subroutine pothole(i)
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
 !!    excess      |mm H2O        |amount of water moving into soil that exceeds
 !!                               |storage of layer
-!!    j           |none          |HRU number
 !!    ly          |none          |counter (soil layers)
 !!    no3loss     |kg N          |amount of nitrate lost from water body
 !!    pi          |none          |pi
@@ -162,17 +161,15 @@ subroutine pothole(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
+   integer, intent(in) :: i, j
    real*8, parameter :: pi = 3.1416
-   integer :: j, ly
+   integer :: ly
    real*8 :: potsep, sumo, potev, cnv, potpcp, no3in, qdayi
    real*8 :: sedloss, no3loss, yy
    real*8 :: sanloss, silloss, claloss, sagloss, lagloss
    real*8 :: potmm, minpsloss, minpaloss, solploss, orgnloss, orgploss
    real*8 :: qin, potvol_m3, drcla, drsil, drtot, pot_depth, potmpao, potmpso, potno3o, potorgno, potorgpo, potsa_ini,&
      potsolpo, potvol_ini, potvol_sep, potvol_tile, solp_tileo, spillo, tileo, xx
-
-   j = ihru
 
 !! initialize variables
    tileo = 0.

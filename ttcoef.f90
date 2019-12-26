@@ -77,6 +77,7 @@ subroutine ttcoef(k)
    use parm
    implicit none
 
+   real*8 Qman
    integer, intent (in) :: k
    real*8, parameter :: aa = 1., fps = 4.
    real*8 :: a, b, chsslope, d, p, qq1, rh, tt1, tt2

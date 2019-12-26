@@ -1,11 +1,16 @@
-subroutine rchaa(years)
+!> @file rchaa.f90
+!> file containing the subroutine rchaa
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the average annual reach output to the .rch file
+!> this subroutine writes the average annual reach output to the .rch file
+!> @param[in] years length of simulation (years)
+subroutine rchaa(years)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    years        |years        |length of simulation
 !!    ilog         |none         |streamflow print code
 !!                               |0 print streamflow in reach
 !!                               |1 print Log10 streamflow in reach
@@ -96,11 +101,10 @@ subroutine rchaa(years)
 !!                               |during simulation
 !!    rchaao(41,:) |kg bact      |less persistent bacteria transported out of
 !!                               |reach during simulation
-!!    rchdy(37,:)  |mg pst       |amount of pesticide stored in river bed
-!!                               |sediments
 !!    rchaao(43,:) |kg           |Total N (org N + no3 + no2 + nh4 outs)
 !!    rchaao(44,:) |kg           |Total P (org P + sol p outs)
-
+!!    rchdy(37,:)  |mg pst       |amount of pesticide stored in river bed
+!!                               |sediments
 !!    subgis(:)    |none         |GIS code printed to output files(output.sub,.rch)
 !!    subtot       |none         |number of subbasins in watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -113,7 +117,6 @@ subroutine rchaa(years)
 !!    pdvar(:)    |varies        |array of default reach output values
 !!    pdvr(:)     |varies        |array of custom reach output values
 !!    srch_av(:)  |varies        |annual reach inflow/outflow
-!!    years       |years         |length of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -125,14 +128,13 @@ subroutine rchaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   integer :: j, ii
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
+   integer :: ii, j
 
    do j = 1, subtot
 
       !! take log10 of annual inflow/outflow for graphing
-      srch_av = 0.
       srch_av(1) = rchaao(1,j)
       srch_av(2) = rchaao(2,j)
       if (ilog > 0) then
@@ -149,7 +151,6 @@ subroutine rchaa(years)
       end if
 
       pdvar = 0.
-      pdvr = 0.
 
       !! assign average annual values
       pdvar(1) = srch_av(1)        !!flow in (m^3/s)
@@ -208,25 +209,25 @@ subroutine rchaa(years)
          end do
          if (iscen == 1 .and. isproj == 0) then
             write (7,5000) j, subgis(j), years, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr)
+               &(pdvr(ii), ii = 1, itotr)
          else if (isproj == 1) then
             write (20,5000) j, subgis(j), years, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr)
+               &(pdvr(ii), ii = 1, itotr)
          else if (iscen == 1 .and. isproj == 2) then
             write (7,6000) j, subgis(j), years, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr), iyr
+               &(pdvr(ii), ii = 1, itotr), iyr
          endif
       else
 !!  increase to 44 in loops below from 42 gsm 10/17/2011
          if (iscen == 1 .and. isproj == 0) then
             write (7,5000) j, subgis(j), years, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44)
+               &(pdvar(ii), ii = 1, 44)
          else if (isproj == 1) then
             write (20,5000) j, subgis(j), years, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44)
+               &(pdvar(ii), ii = 1, 44)
          else if (iscen == 1 .and. isproj == 2) then
             write (7,6000) j, subgis(j), years, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44), iyr
+               &(pdvar(ii), ii = 1, 44), iyr
          endif
       end if
    end do

@@ -50,13 +50,14 @@ subroutine rhgen(j)
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Exp
-!!    SWAT: Atri, Ee
+!!    SWAT: Ee, Atri
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   real*8 EE, Atri
    integer, intent (in) :: j
 
    real*8 :: blm, rhm, rhmo, tmpmean, uplm, vv, yy

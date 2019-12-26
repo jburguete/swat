@@ -11,10 +11,10 @@ subroutine pgen(j)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    idist       |none          |rainfall distribution code
 !!                               |  0 for skewed distribution
 !!                               |  1 for mixed exponential distribution
-!!    j           |none          |HRU number
 !!    i_mo        |none          |month being simulated
 !!    npcp(:)     |none          |prior day category
 !!                               |1 dry day
@@ -69,6 +69,7 @@ subroutine pgen(j)
    use parm
    implicit none
 
+   real*8 Aunif, Dstn1
    integer, intent (in) :: j
 
    real*8 :: pcpgen, r6, v8, vv, xlv, xx

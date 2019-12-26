@@ -6,11 +6,13 @@
 !> this subroutine calculates potential evapotranspiration using one
 !> of three methods. If Penman-Monteith is being used, potential plant
 !> transpiration is also calculated.
-subroutine etpot
+!> @param[in] j HRU number
+subroutine etpot(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j          |none           |HRU number
 !!    albday     |none           |albedo for the day in HRU
 !!    cht(:)     |m              |canopy height
 !!    co2(:)     |ppmv           |CO2 concentration
@@ -24,7 +26,6 @@ subroutine etpot
 !!    igro(:)    |none           |land cover status code
 !!                               |0 no land cover currently growing
 !!                               |1 land cover growing
-!!    ihru       |none           |HRU number
 !!    ipet       |none           |code for potential ET method
 !!                               |0 Priestley-Taylor method
 !!                               |1 Penman/Monteith method
@@ -68,7 +69,6 @@ subroutine etpot
 !!                               |threshold value
 !!    gma         |kPa/deg C     |psychrometric constant
 !!    gsi_adj
-!!    j           |none          |HRU number
 !!    pb          |kPa           |mean atmospheric pressure
 !!    pet_alpha   |none          |alpha factor in Priestley-Taylor PET equation
 !!    ralb        |MJ/m2         |net incoming radiation for PET
@@ -101,15 +101,14 @@ subroutine etpot
    use parm
    implicit none
 
+   real*8 Ee
+   integer, intent(in) :: j
    real*8, parameter :: pet_alpha = 1.28
    real*8 :: chz, d, dlt, ea, ed, fvpd, gma, gsi_adj, pb, ralb, ralb1, ramm,&
       &rbo, rc, rho, rn, rn_pet, rout, rto, rv, tk, uzz, xl, xx, zom, zov, zz
-   integer :: j
 
 
    !! initialize local variables
-   j = ihru
-
    tk = tmpav(j) + 273.15
 
    !! calculate mean barometric pressure

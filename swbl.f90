@@ -1,12 +1,19 @@
-subroutine swbl(snow,irrg)
+!> @file swbl.f90
+!> file containing the subroutine swbl
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine checks the soil water balance at the end of the
-!!    simulation
+!> this subroutine checks the soil water balance at the end of the
+!> simulation
+!> @param[in] snow snow in watershed at end of simulation
+!> @param[in] irrg irrigation water applied to watershed
+subroutine swbl(snow, irrg)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    snow        |mm H2O        |snow in watershed at end of simulation
+!!    irrg        |mm H2O        |irrigation water applied to watershed
 !!    wshd_sw     |mm H2O        |water in soil at beginning of simulation
 !!    wshdaao(1)  |mm H2O        |precipitation in watershed
 !!    wshdaao(3)  |mm H2O        |surface runoff loading to main
@@ -33,8 +40,6 @@ subroutine swbl(snow,irrg)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    irrg        |mm H2O        |irrigation water applied to watershed
-!!    snow        |mm H2O        |snow in watershed at end of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -49,7 +54,7 @@ subroutine swbl(snow,irrg)
    real*8, intent (in) :: snow, irrg
 
    wshd_sw = wshd_sw  + wshd_snob - snow + wshdaao(1) - wshdaao(3) -&
-   wshdaao(4) - wshdaao(7) - wshdaao(5) - wshddayo(35) + wshdaao(38) + irrg
+      &wshdaao(4) - wshdaao(7) - wshdaao(5) - wshddayo(35) + wshdaao(38) + irrg
 
    return
 end

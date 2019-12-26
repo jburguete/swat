@@ -5,13 +5,15 @@
 
 !> this subroutine reads the parameters from the HRU/subbasin groundwater
 !> input file (.gw)
-!> @param[in] i HRU number
-subroutine readgw(i)
+!> @param[in] i subbasin number (none)
+!> @param[in] j HRU number (none)
+subroutine readgw(i, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |subbasin number
+!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -67,14 +69,13 @@ subroutine readgw(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
+   integer, intent(in) :: i, j
    character (len=80) :: titldum
    real*8 :: hlife_ngw
-   integer :: eof, j
+   integer :: eof
 
    eof = 0
    hlife_ngw = 0.0
-   j = ihru
 
    do
       read (110,5000) titldum

@@ -47,9 +47,10 @@ real*8 function atri(at1,at2,at3,at4i) result (r_atri)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-   use parm, only: Aunif
+   use parm
    implicit none
 
+   real*8 Aunif
    real*8, intent (in) :: at1, at2, at3
    integer, intent (inout) :: at4i
    real*8 :: amn, b1, b2, rn, u3, x1, xx, y, yy

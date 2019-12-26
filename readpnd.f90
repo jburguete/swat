@@ -6,7 +6,7 @@
 !> This subroutine reads data from the HRU/subbasin pond input file (.pnd).
 !> This file contains data related to ponds and wetlands in the
 !> HRUs/subbasins.
-!> @param[in] i HRU/subbasin number (none)
+!> @param[in] i subbasin number (none)
 subroutine readpnd(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
@@ -14,7 +14,7 @@ subroutine readpnd(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hrutot(:)   |none          |number of HRUs in subbasin
 !!    ihru        |none          |HRU number
-!!    i          |none          |subbasin number
+!!    i           |none          |subbasin number
 !!    nhru        |none          |number of last HRU in previous subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -170,6 +170,9 @@ subroutine readpnd(i)
 !!    velsetlpnd
 !!    wetevcoeff
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    SWAT: bmpinit, lidinit
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 

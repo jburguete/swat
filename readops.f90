@@ -6,11 +6,13 @@
 !> this subroutine reads data from the HRU/subbasin management input file
 !> (.mgt). This file contains data related to management practices used in
 !> the HRU/subbasin.
-subroutine readops
+!> @param[in] k HRU number (none)
+subroutine readops(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k          |none             |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -27,7 +29,6 @@ subroutine readops
 !!    eof         |none          |end of file flag (=-1 if eof, else = 0)
 !!    iyear
 !!    j
-!!    k
 !!    l
 !!    mgt_op      |none          |operation code number
 !!                               |0 end of rotation year
@@ -47,9 +48,10 @@ subroutine readops
    use parm
    implicit none
 
+   integer, intent(in) :: k
    real*8, dimension(23) :: mgt
    character (len=80) :: titldum
-   integer :: day, eof, iyear, j, k, l, mgt_op, mon
+   integer :: day, eof, iyear, j, l, mgt_op, mon
    integer :: Jdt
 
    read (111,5000,end=999) titldum
@@ -57,7 +59,6 @@ subroutine readops
 !!      read scheduled operations
 
    j = 0
-   k = ihru
 
    do
       mon = 0

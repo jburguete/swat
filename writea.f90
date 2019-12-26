@@ -1,7 +1,11 @@
-subroutine writea(i)
+!> @file writea.f90
+!> file containing the subroutine writea
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes annual output
+!> this subroutine writes annual output
+!> @param[in] i current day of simulation (julian date)
+subroutine writea(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -9,8 +13,8 @@ subroutine writea(i)
 !!    i           |julian date   |current day of simulation
 !!    bio_yrms(:) |metric tons/ha|annual biomass (dry weight) in the HRU
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_s2(:)   |m/m           |average slope of main channel
-!!    ch_w2(:)   |m             |average width of main channel
+!!    ch_s2(:)    |m/m           |average slope of main channel
+!!    ch_w2(:)    |m             |average width of main channel
 !!    curyr       |none          |current year of simulation (consecutive)
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
@@ -61,48 +65,48 @@ subroutine writea(i)
 !!                               |volatilization during year
 !!    resouty(9,:)|mg pst        |pesticide moving from water to sediment
 !!                               |through settling during year
-!!    resouty(10,:)|mg pst        |pesticide moving from sediment to water
+!!    resouty(10,:)|mg pst       |pesticide moving from sediment to water
 !!                               |through resuspension during year
-!!    resouty(11,:)|mg pst        |pesticide moving from water to sediment
+!!    resouty(11,:)|mg pst       |pesticide moving from water to sediment
 !!                               |through diffusion during year
-!!    resouty(12,:)|mg pst        |pesticide lost from reservoir sediment layer
+!!    resouty(12,:)|mg pst       |pesticide lost from reservoir sediment layer
 !!                               |through reactions during year
-!!    resouty(13,:)|mg pst        |pesticide lost from reservoir sediment layer
+!!    resouty(13,:)|mg pst       |pesticide lost from reservoir sediment layer
 !!                               |through burial during year
-!!    resouty(14,:)|mg pst        |pesticide transported out of reservoir during
+!!    resouty(14,:)|mg pst       |pesticide transported out of reservoir during
 !!                               |year
-!!    resouty(15,:)|mg pst/m^3    |pesticide concentration in reservoir water
+!!    resouty(15,:)|mg pst/m^3   |pesticide concentration in reservoir water
 !!                               |during year
-!!    resouty(16,:)|mg pst/m^3    |pesticide concentration in reservoir sediment
+!!    resouty(16,:)|mg pst/m^3   |pesticide concentration in reservoir sediment
 !!                               |layer during year
-!!    resouty(17,:)|m^3 H2O       |evaporation from reservoir during year
-!!    resouty(18,:)|m^3 H2O       |seepage from reservoir during year
-!!    resouty(19,:)|m^3 H2O       |precipitation on reservoir during year
-!!    resouty(22,:)|kg N          |organic N entering reservoir during year
-!!    resouty(23,:)|kg N          |organic N leaving reservoir during year
-!!    resouty(24,:)|kg P          |organic P entering reservoir during year
-!!    resouty(25,:)|kg P          |organic P leaving reservoir during year
-!!    resouty(26,:)|kg N          |nitrate entering reservoir during year
-!!    resouty(27,:)|kg N          |nitrate leaving reservoir during year
-!!    resouty(28,:)|kg N          |nitrite entering reservoir during year
-!!    resouty(29,:)|kg N          |nitrite leaving reservoir during year
-!!    resouty(30,:)|kg N          |ammonia entering reservoir during year
-!!    resouty(31,:)|kg N          |ammonia leaving reservoir during year
-!!    resouty(32,:)|kg P          |mineral P entering reservoir during year
-!!    resouty(33,:)|kg P          |mineral P leaving reservoir during year
-!!    resouty(34,:)|kg chla       |chlorophyll-a entering reservoir during year
-!!    resouty(35,:)|kg chla       |chlorophyll-a leaving reservoir during year
-!!    resouty(36,:)|mg P/L        |organic P concentration in reservoir water
+!!    resouty(17,:)|m^3 H2O      |evaporation from reservoir during year
+!!    resouty(18,:)|m^3 H2O      |seepage from reservoir during year
+!!    resouty(19,:)|m^3 H2O      |precipitation on reservoir during year
+!!    resouty(22,:)|kg N         |organic N entering reservoir during year
+!!    resouty(23,:)|kg N         |organic N leaving reservoir during year
+!!    resouty(24,:)|kg P         |organic P entering reservoir during year
+!!    resouty(25,:)|kg P         |organic P leaving reservoir during year
+!!    resouty(26,:)|kg N         |nitrate entering reservoir during year
+!!    resouty(27,:)|kg N         |nitrate leaving reservoir during year
+!!    resouty(28,:)|kg N         |nitrite entering reservoir during year
+!!    resouty(29,:)|kg N         |nitrite leaving reservoir during year
+!!    resouty(30,:)|kg N         |ammonia entering reservoir during year
+!!    resouty(31,:)|kg N         |ammonia leaving reservoir during year
+!!    resouty(32,:)|kg P         |mineral P entering reservoir during year
+!!    resouty(33,:)|kg P         |mineral P leaving reservoir during year
+!!    resouty(34,:)|kg chla      |chlorophyll-a entering reservoir during year
+!!    resouty(35,:)|kg chla      |chlorophyll-a leaving reservoir during year
+!!    resouty(36,:)|mg P/L       |organic P concentration in reservoir water
 !!                               |during year
-!!    resouty(37,:)|mg P/L        |mineral P concentration in reservoir water
+!!    resouty(37,:)|mg P/L       |mineral P concentration in reservoir water
 !!                               |during year
-!!    resouty(38,:)|mg N/L        |organic N concentration in reservoir water
+!!    resouty(38,:)|mg N/L       |organic N concentration in reservoir water
 !!                               |during year
-!!    resouty(39,:)|mg N/L        |nitrate concentration in reservoir water
+!!    resouty(39,:)|mg N/L       |nitrate concentration in reservoir water
 !!                               |during year
-!!    resouty(40,:)|mg N/L        |nitrite concentration in reservoir water
+!!    resouty(40,:)|mg N/L       |nitrite concentration in reservoir water
 !!                               |during year
-!!    resouty(41,:)|mg N/L        |ammonia concentration in reservoir water
+!!    resouty(41,:)|mg N/L       |ammonia concentration in reservoir water
 !!                               |during year
 !!    subtot      |none          |number of subbasins in watershed
 !!    subyro(:,:) |varies        |subbasin annual output array
@@ -174,15 +178,14 @@ subroutine writea(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    idlast      |none          |number of days simulated in year
 !!    j           |none          |counter
 !!    k           |none          |counter
-!!    sum         |mg pst        |total pesticide loading for year
+!!    sum1        |mg pst        |total pesticide loading for year
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Real
-!!    SWAT: hruyr, impndyr, subyr, rchyr
+!!    Intrinsic: Dfloat
+!!    SWAT: hruyr, impndyr, subyr, rchyr, rsedyr
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -190,8 +193,8 @@ subroutine writea(i)
    implicit none
 
    integer, intent(in) :: i
+   real*8 :: sum1
    integer :: j, k
-   real*8 :: sum
 
    if (i_mo <= mo_chk .or. (curyr == nbyr .and. i == idal)) then
       !! calculate average annual max and min temperature
@@ -201,16 +204,16 @@ subroutine writea(i)
       !! annual write-output.std
       if (iscen == 1) then
          write (26,6300) iyr, wshdyro(1), wshdyro(3), wshdyro(4),&
-         &wshdyro(104), wshdyro(5), wshdyro(109), wshddayo(35),&
-         &wshdyro(7), wshdyro(108), wshdyro(6), wshdyro(12),&
-         &wshdyro(42), wshdyro(45), wshdyro(46), wshdyro(44),&
-         &wshdyro(40), wshdyro(43), wshdyro(41), wshdyro(111)
+            &wshdyro(104), wshdyro(5), wshdyro(109), wshddayo(35),&
+            &wshdyro(7), wshdyro(108), wshdyro(6), wshdyro(12),&
+            &wshdyro(42), wshdyro(45), wshdyro(46), wshdyro(44),&
+            &wshdyro(40), wshdyro(43), wshdyro(41), wshdyro(111)
       else if (isproj == 1) then
          write (19,6300) iyr, wshdyro(1), wshdyro(3), wshdyro(4),&
-         &wshdyro(104), wshdyro(5), wshdyro(109), wshddayo(35),&
-         &wshdyro(7), wshdyro(108), wshdyro(6), wshdyro(12),&
-         &wshdyro(42), wshdyro(45), wshdyro(46), wshdyro(44),&
-         &wshdyro(40), wshdyro(43), wshdyro(41), wshdyro(111)
+            &wshdyro(104), wshdyro(5), wshdyro(109), wshddayo(35),&
+            &wshdyro(7), wshdyro(108), wshdyro(6), wshdyro(12),&
+            &wshdyro(42), wshdyro(45), wshdyro(46), wshdyro(44),&
+            &wshdyro(40), wshdyro(43), wshdyro(41), wshdyro(111)
       endif
 
       !!write channel degradation data (chan.deg)
@@ -225,13 +228,13 @@ subroutine writea(i)
          !! annual write--pesticide output (output.pst) for HRUs
          do j = 1, nhru
             if (hrupest(j) == 1) then
-               sum = 0.
+               sum1 = 0.
                do k = 1, npmx
-                  sum = sum + hrupsty(k,1,j) + hrupsty(k,2,j)
+                  sum1 = sum1 + hrupsty(k,1,j) + hrupsty(k,2,j)
                end do
-               if (sum > 0. .and. iprp == 1) then
+               if (sum1 > 0. .and. iprp == 1) then
                   write (30,5100) subnum(j), hruno(j), iyr,&
-                  &(hrupsty(k,1,j), hrupsty(k,2,j), k = 1, npmx)
+                     &(hrupsty(k,1,j), hrupsty(k,2,j), k = 1, npmx)
                end if
             end if
          end do
@@ -265,43 +268,43 @@ subroutine writea(i)
             if (iyr >= iyres(j)) then
                if (iscen == 1 .and. isproj == 0) then
                   write (8,5800) j, iyr, res_vol(j), resouty(1,j),&
-                  &resouty(2,j), resouty(19,j), resouty(17,j),&
-                  &resouty(18,j), resouty(3,j), resouty(4,j),&
-                  &resouty(5,j),&
-                  &(resouty(k,j), k = 22, 23), resouty(38,j),&
-                  &(resouty(k,j), k = 24, 25), resouty(36,j),&
-                  &(resouty(k,j), k = 26, 27), resouty(39,j),&
-                  &(resouty(k,j), k = 28, 29), resouty(40,j),&
-                  &(resouty(k,j), k = 30, 31), resouty(41,j),&
-                  &(resouty(k,j), k = 32, 33), resouty(37,j),&
-                  &(resouty(k,j), k = 34, 35), res_seci(j),&
-                  &(resouty(k,j), k = 6, 16)
+                     &resouty(2,j), resouty(19,j), resouty(17,j),&
+                     &resouty(18,j), resouty(3,j), resouty(4,j),&
+                     &resouty(5,j),&
+                     &(resouty(k,j), k = 22, 23), resouty(38,j),&
+                     &(resouty(k,j), k = 24, 25), resouty(36,j),&
+                     &(resouty(k,j), k = 26, 27), resouty(39,j),&
+                     &(resouty(k,j), k = 28, 29), resouty(40,j),&
+                     &(resouty(k,j), k = 30, 31), resouty(41,j),&
+                     &(resouty(k,j), k = 32, 33), resouty(37,j),&
+                     &(resouty(k,j), k = 34, 35), res_seci(j),&
+                     &(resouty(k,j), k = 6, 16)
                else if (isproj == 1) then
                   write (22,5800) j, iyr, res_vol(j), resouty(1,j),&
-                  &resouty(2,j), resouty(19,j), resouty(17,j),&
-                  &resouty(18,j), resouty(3,j), resouty(4,j),&
-                  &resouty(5,j),&
-                  &(resouty(k,j), k = 22, 23), resouty(38,j),&
-                  &(resouty(k,j), k = 24, 25), resouty(36,j),&
-                  &(resouty(k,j), k = 26, 27), resouty(39,j),&
-                  &(resouty(k,j), k = 28, 29), resouty(40,j),&
-                  &(resouty(k,j), k = 30, 31), resouty(41,j),&
-                  &(resouty(k,j), k = 32, 33), resouty(37,j),&
-                  &(resouty(k,j), k = 34, 35), res_seci(j),&
-                  &(resouty(k,j), k = 6, 16)
+                     &resouty(2,j), resouty(19,j), resouty(17,j),&
+                     &resouty(18,j), resouty(3,j), resouty(4,j),&
+                     &resouty(5,j),&
+                     &(resouty(k,j), k = 22, 23), resouty(38,j),&
+                     &(resouty(k,j), k = 24, 25), resouty(36,j),&
+                     &(resouty(k,j), k = 26, 27), resouty(39,j),&
+                     &(resouty(k,j), k = 28, 29), resouty(40,j),&
+                     &(resouty(k,j), k = 30, 31), resouty(41,j),&
+                     &(resouty(k,j), k = 32, 33), resouty(37,j),&
+                     &(resouty(k,j), k = 34, 35), res_seci(j),&
+                     &(resouty(k,j), k = 6, 16)
                else if (iscen == 1 .and. isproj == 2) then
                   write (8,6800) j, iyr, res_vol(j), resouty(1,j),&
-                  &resouty(2,j), resouty(19,j), resouty(17,j),&
-                  &resouty(18,j), resouty(3,j), resouty(4,j),&
-                  &resouty(5,j),&
-                  &(resouty(k,j), k = 22, 23), resouty(38,j),&
-                  &(resouty(k,j), k = 24, 25), resouty(36,j),&
-                  &(resouty(k,j), k = 26, 27), resouty(39,j),&
-                  &(resouty(k,j), k = 28, 29), resouty(40,j),&
-                  &(resouty(k,j), k = 30, 31), resouty(41,j),&
-                  &(resouty(k,j), k = 32, 33), resouty(37,j),&
-                  &(resouty(k,j), k = 34, 35), res_seci(j),&
-                  &(resouty(k,j), k = 6, 16), iyr
+                     &resouty(2,j), resouty(19,j), resouty(17,j),&
+                     &resouty(18,j), resouty(3,j), resouty(4,j),&
+                     &resouty(5,j),&
+                     &(resouty(k,j), k = 22, 23), resouty(38,j),&
+                     &(resouty(k,j), k = 24, 25), resouty(36,j),&
+                     &(resouty(k,j), k = 26, 27), resouty(39,j),&
+                     &(resouty(k,j), k = 28, 29), resouty(40,j),&
+                     &(resouty(k,j), k = 30, 31), resouty(41,j),&
+                     &(resouty(k,j), k = 32, 33), resouty(37,j),&
+                     &(resouty(k,j), k = 34, 35), res_seci(j),&
+                     &(resouty(k,j), k = 6, 16), iyr
 
                endif
             end if

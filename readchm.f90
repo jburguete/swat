@@ -7,12 +7,13 @@
 !> file (.chm). This file contains initial amounts of pesticides/nutrients
 !> in the first soil layer. (Specifics about the first soil layer are given
 !> in the .sol file.) All data in the .chm file is optional input.
-subroutine readchm
+!> @param[in] l HRU number (none)
+subroutine readchm(l)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
+!!    l           |none          |HRU number
 !!    mlyr        |none          |maximum number of soil layers
 !!    mpst        |none          |maximum number of pesticides used in
 !!                               |watershed
@@ -49,7 +50,6 @@ subroutine readchm
 !!    eof         |none          |end of file flag
 !!    j           |none          |counter
 !!    k           |none          |counter
-!!    l           |none          |HRU number
 !!    newpest     |none          |new pesticide flag
 !!    pltpst      |kg/ha         |pesticide on plant foliage
 !!    pstenr      |none          |pesticide enrichment ratio
@@ -64,13 +64,12 @@ subroutine readchm
    use parm
    implicit none
 
+   integer, intent(in) :: l
    character (len=80) :: titldum
    real*8 :: pltpst, pstenr, solpst
-   integer :: eof, j, k, l, newpest, pstnum
+   integer :: eof, j, k, newpest, pstnum
 
    eof = 0
-   l = ihru
-
 
    do
       read (106,5000,iostat=eof) titldum

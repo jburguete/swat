@@ -59,6 +59,7 @@ subroutine weatgn(j)
    use parm
    implicit none
 
+   real*8 Aunif, Dstn1
    integer, intent (in) :: j
    integer, dimension (2), parameter :: zshape = (/3, 3/)
    real*8, dimension (3,3) :: a, b

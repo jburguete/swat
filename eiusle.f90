@@ -4,16 +4,16 @@
 !> modified by Javier Burguete
 
 !> this subroutine computes the USLE erosion index (EI)
-subroutine eiusle
+subroutine eiusle(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none        |HRU number
 !!    ab          |mm H2O      |lowest value xa can have
 !!    amp_r(:,:)  |none        |alpha factor for rain (mo max 0.5h rain)
 !!    idg(:)      |none        |array location of random number seed
 !!                             |used for a given process
-!!    ihru        |none        |HRU number
 !!    i_mo        |none        |month being simulated
 !!    ovrlnd(:)   |mm H2O      |overland flow onto HRU from upstream
 !!                             |routing unit
@@ -33,7 +33,6 @@ subroutine eiusle
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ajp         |mm H2O      |highest value xa can have
-!!    j           |none        |HRU number
 !!    pkrf        |none        |intermediate calculation
 !!    pkrf30      |mm/hr       |maximum 30-min. storm intensity
 !!    preceff     |mm H2O      |amount of rainfall impacting ground surface
@@ -52,10 +51,9 @@ subroutine eiusle
    use parm
    implicit none
 
+   real*8 Expo, Atri
+   integer, intent(in) :: j
    real*8 :: ajp, pkrf, pkrf30, preceff, xa, xb
-   integer :: j
-
-   j = ihru
 
    preceff = precipday   !- snomlt - ovrlnd(j)
    if (preceff > 1.e-4) then

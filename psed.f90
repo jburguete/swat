@@ -1,4 +1,4 @@
-subroutine psed(iwave)
+subroutine psed(iwave, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates the amount of organic and mineral phosphorus
@@ -7,12 +7,12 @@ subroutine psed(iwave)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j             |none         |HRU number
 !!    da_ha         |ha           |area of watershed in hectares
 !!    enratio       |none         |enrichment ratio calculated for day in HRU
 !!    erorgp(:)     |none         |organic P enrichment ratio, if left blank
 !!                                |the model will calculate for every event
 !!    hru_dafr(:)   |none         |fraction of watershed area in HRU
-!!    ihru          |none         |HRU number
 !!    inum1         |none         |subbasin number
 !!    iwave         |none         |flag to differentiate calculation of HRU and
 !!                                |subbasin sediment calculation
@@ -63,7 +63,6 @@ subroutine psed(iwave)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    conc        |              |concentration of P in soil
 !!    er          |none          |enrichment ratio
-!!    j           |none          |HRU number
 !!    porgg       |kg P/ha       |total amount of P in organic pools prior to
 !!                               |sediment removal
 !!    psedd       |kg P/ha       |total amount of P in mineral sediment pools
@@ -83,11 +82,9 @@ subroutine psed(iwave)
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j, sb
+   integer, intent (in) :: iwave, j
+   integer :: sb
    real*8 :: xx, wt1, er, conc, xxo, sedp, psedd, porgg, xxa, xxs
-
-   j = ihru
 
    sb = inum1
 

@@ -109,6 +109,7 @@ subroutine rtmusk(i)
    use parm
    implicit none
 
+   real*8 Qman
    integer, intent(in) :: i
    integer :: jrch,nn,ii
    real*8 :: xkm, det, yy, c1, c2, c3, wtrin, p, vol, c, rh

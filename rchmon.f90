@@ -1,11 +1,16 @@
-subroutine rchmon(mdays)
+!> @file rchmon.f90
+!> file containing the subroutine rchmon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the monthly reach output to the .rch file
+!> this subroutine writes the monthly reach output to the .rch file
+!> @param[in] mdays number of days simulated in month
+subroutine rchmon(mdays)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    mdays        |none         |number of days simulated in month
 !!    ilog         |none         |streamflow print code
 !!                               |0 print streamflow in reach
 !!                               |1 print Log10 streamflow in reach
@@ -98,7 +103,6 @@ subroutine rchmon(mdays)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
 !!    j           |none          |counter (reach number)
-!!    mdays       |none          |number of days simulated in month
 !!    pdvar(:)    |varies        |array of default reach output values
 !!    pdvr(:)     |varies        |array of custom reach output values
 !!    srch_av(:)  |varies        |array storing average monthly values for
@@ -106,7 +110,7 @@ subroutine rchmon(mdays)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: real*8, Log10
+!!    Intrinsic: dfloat, Log10
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -114,9 +118,9 @@ subroutine rchmon(mdays)
    implicit none
 
    integer, intent (in) :: mdays
-   integer :: j, ii
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (11) :: srch_av
+   integer :: ii, j
 
    do j = 1, subtot
 
@@ -142,7 +146,6 @@ subroutine rchmon(mdays)
       srch_av(11) = rchmono(11,j) / dfloat(mdays)
 
       pdvar = 0.
-      pdvr = 0.
 
       !! assign monthly values
       pdvar(1) = srch_av(1)      !!flow in (m^3/s)
@@ -201,25 +204,25 @@ subroutine rchmon(mdays)
 
          if (iscen == 1 .and. isproj == 0) then
             write (7,5000) j, subgis(j), mo_chk, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr)
+               &(pdvr(ii), ii = 1, itotr)
          else if (isproj == 1) then
             write (20,5000) j, subgis(j), mo_chk, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr)
+               &(pdvr(ii), ii = 1, itotr)
          else if (iscen == 1 .and. isproj == 2) then
             write (7,6000) j, subgis(j), mo_chk, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr),iyr
+               &(pdvr(ii), ii = 1, itotr),iyr
          endif
       else
          !  increase to 44 in loops below from 42 gsm 10/17/2011
          if (iscen == 1 .and. isproj == 0) then
             write (7,5000) j, subgis(j), mo_chk, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44)
+               &(pdvar(ii), ii = 1, 44)
          else if (isproj == 1) then
             write (20,5000) j, subgis(j), mo_chk, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44)
+               &(pdvar(ii), ii = 1, 44)
          else if (iscen == 1 .and. isproj == 2) then
             write (7,6000) j, subgis(j), mo_chk, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44), iyr
+               &(pdvar(ii), ii = 1, 44), iyr
 
          endif
       end if

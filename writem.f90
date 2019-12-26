@@ -1,7 +1,11 @@
-subroutine writem(i)
+!> @file writem.f90
+!> file containing the subroutine writem
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes monthly output
+!> this subroutine writes monthly output
+!> @param[in] i current day of simulation (julian date)
+subroutine writem(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -193,7 +197,7 @@ subroutine writem(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: hrumon, impndmon, submon, rchmon, resedmon, writea
+!!    SWAT: hrumon, impndmon, submon, rchmon, rsedmon, writea
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 

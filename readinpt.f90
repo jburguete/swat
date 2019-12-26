@@ -42,7 +42,7 @@ subroutine readinpt
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    SWAT: soil_chem, soil_phys, rteinit, h2omgt_init, hydroinit,
-!!    impnd_init
+!!          impnd_init
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 

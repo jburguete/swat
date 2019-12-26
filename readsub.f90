@@ -277,12 +277,12 @@ subroutine readsub(i)
          call caps (septfile)
          open (172,file=septfile, status='old')
          isep_hru(ihru) = 1
-         call readsepticbz
+         call readsepticbz(ihru)
       end if
       if (sdrfile /= '             ') then
          call caps(sdrfile)
          open (112,file=sdrfile)
-         call readsdr
+         call readsdr(ihru)
          if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn   !! todd campbell 06/07/18
       else
          if (re(ihru) <= 0.) re(ihru) = re_bsn
@@ -299,15 +299,15 @@ subroutine readsub(i)
       open (108,file=hrufile)
       open (109,file=mgtfile)
       open (110,file=gwfile)
-      call readhru(i)
-      call readchm
-      call readmgt
-      call readsol
-      call readgw(i)
+      call readhru(i, ihru)
+      call readchm(ihru)
+      call readmgt(ihru)
+      call readsol(ihru)
+      call readgw(i, ihru)
       if (opsfile /= '             ') then
          call caps(opsfile)
          open (111,file=opsfile)
-         call readops
+         call readops(ihru)
       end if
 
       ! set up variables for landscape routing

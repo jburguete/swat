@@ -126,17 +126,17 @@ subroutine surface(i,j)
    call surfst_h2o(j)
 
    !! calculate half-hour rainfall
-   if (precipday > 0.01) call alph(0)
+   if (precipday > 0.01) call alph(0, j)
 
    if (qday > 0.0001) then
       !! compute peak rate - peakr in m3/s
-      call pkq(0)
+      call pkq(0, j)
    end if
 
    if (qday > 0.0001 .and. peakr > 0.) then
       !! compute transmission losses for non-HUMUS datasets
       call tran(j)
-      call eiusle
+      call eiusle(j)
 
       !! calculate sediment erosion by rainfall and overland flow
       call ovr_sed

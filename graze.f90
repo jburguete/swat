@@ -175,7 +175,6 @@ subroutine graze(j)
 !!    RLR
 !!    sf
 !!    sol_min_n
-!!    swf         |
 !!    X1
 !!    X10
 !!    xx          |
@@ -196,7 +195,7 @@ subroutine graze(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8, parameter :: BLG3 = 0.10, orgc_f = 0.35, swf = .15
+   real*8, parameter :: BLG3 = 0.10, orgc_f = 0.35
    real*8 :: BLG1, BLG2, CLG, dmi, dmii, frt_t, gc, gc1, LMF, LSF, resnew,&
       &resnew_n, resnew_ne, RLN, RLR, sf, sol_min_n, X1, X10, X8, xx, XXX, XZ,&
       &YY, YZ, ZZ

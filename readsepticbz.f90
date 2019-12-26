@@ -7,12 +7,13 @@
 !> this subroutine reads data from the septic input file (.sep).  This file
 !> contains information related to septic tanks modeled or defined at the
 !> watershed level
-subroutine readsepticbz
+!> @param[in] j HRU number (none)
+subroutine readsepticbz(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru             |none          |HRU number
+!!    j                |none          |HRU number
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name             |units         |definition
@@ -39,7 +40,6 @@ subroutine readsepticbz
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof              |none          |end of file flag (=-1 if eof, else =0)
-!!    j                |none          |HRU number
 !!    titldum          |NA            |title line of file (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -49,12 +49,12 @@ subroutine readsepticbz
    use parm
    implicit none
 
+   integer, intent(in) :: j
    character (len=80) :: titldum
-   integer :: j, eof
+   integer :: eof
 
 !!    initialize variables
    eof = 0
-   j = ihru
 
 
 !! read septic parameters

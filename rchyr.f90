@@ -1,7 +1,11 @@
-subroutine rchyr(i)
+!> @file rchyr.f90
+!> file containing the subroutine rchyr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the annual reach output to the .rch file
+!> this subroutine writes the annual reach output to the .rch file
+!> @param[in] current day of simulation (julian date)
+subroutine rchyr(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
@@ -94,7 +98,6 @@ subroutine rchyr(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    idlast      |none          |number of days simulated in year
 !!    ii          |none          |counter
 !!    j           |none          |(counter) reach number
 !!    pdvar(:)    |varies        |array of default reach output values
@@ -103,7 +106,7 @@ subroutine rchyr(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: real*8, Log10
+!!    Intrinsic: Dfloat, Log10
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -111,9 +114,9 @@ subroutine rchyr(i)
    implicit none
 
    integer, intent(in) :: i
-   integer :: j, ii
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
+   integer :: ii, j
 
    idlast = i - (id1 - 1)
 
@@ -128,7 +131,6 @@ subroutine rchyr(i)
       rchyro(11,j) = rchyro(11,j) / dfloat(idlast)
 
       !! take log10 of annual inflow/outflow for graphing
-      srch_av = 0.
       srch_av(1) = rchyro(1,j)
       srch_av(2) = rchyro(2,j)
       if (ilog > 0) then
@@ -143,9 +145,6 @@ subroutine rchyr(i)
             srch_av(2) = 0.
          end if
       end if
-
-      pdvar = 0.
-      pdvr = 0.
 
       !! assign yearly values
       pdvar(1) = srch_av(1)        !!flow in (m^3/s)
@@ -202,25 +201,25 @@ subroutine rchyr(i)
          end do
          if (iscen == 1 .and. isproj == 0) then
             write (7,5000) j, subgis(j), iyr, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr)
+               &(pdvr(ii), ii = 1, itotr)
          else if (isproj == 1) then
             write (20,5000) j, subgis(j), iyr, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr)
+               &(pdvr(ii), ii = 1, itotr)
          else if (iscen == 1 .and. isproj == 2) then
             write (7,6000) j, subgis(j), iyr, rch_dakm(j),&
-            &(pdvr(ii), ii = 1, itotr), iyr
+               &(pdvr(ii), ii = 1, itotr), iyr
          endif
       else
          !!  increase to 44 in loops below from 42 gsm 10/17/2011
          if (iscen == 1 .and. isproj == 0) then
             write (7,5000) j, subgis(j), iyr, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44)
+               &(pdvar(ii), ii = 1, 44)
          else if (isproj == 1) then
             write (20,5000) j, subgis(j), iyr, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44)
+               &(pdvar(ii), ii = 1, 44)
          else if (iscen == 1 .and. isproj == 2) then
             write (7,6000) j, subgis(j), iyr, rch_dakm(j),&
-            &(pdvar(ii), ii = 1, 44), iyr
+               &(pdvar(ii), ii = 1, 44), iyr
 
          endif
       end if

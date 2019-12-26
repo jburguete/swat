@@ -1,4 +1,4 @@
-subroutine pminrl2
+subroutine pminrl2(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes p flux between the labile, active mineral
@@ -9,9 +9,9 @@ subroutine pminrl2
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j            |none          |HRU number
 !!    curyr        |none          |current year of simulation
 !!    hru_dafr(:)  |km**2/km**2   |fraction of watershed area in HRU
-!!    ihru         |none          |HRU number
 !!    nyskip       |none          |number of years to skip output summarization
 !!                                |and printing
 !!    psp          |none          |Phosphorus availability index. The fraction
@@ -74,7 +74,6 @@ subroutine pminrl2
 !!    varb                       |Intermediate Variable
 !!    varc                       |Intermediate Variable
 !!    arate                      |Intermediate Variable
-!!    j           |none          |HRU number
 !!    l           |none          |counter (soil layer)
 !!    rmn1        |kg P/ha       |amount of phosphorus moving from the solution
 !!                               |mineral to the active mineral pool in the
@@ -92,11 +91,10 @@ subroutine pminrl2
 
    use parm
    implicit none
-   integer :: j, l
+   integer, intent(in) :: j
+   integer :: l
    real*8 :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff, arate, ssp, xx
    real*8  solp(mlyr),actp(mlyr),stap(mlyr) !! locals for concentation based data
-
-   j = ihru
 
    do l = 1, sol_nly(j) !! loop through soil layers in this HRU
       !! make sure that no zero or negative pool values come in

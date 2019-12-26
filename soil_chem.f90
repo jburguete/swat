@@ -114,6 +114,8 @@ subroutine soil_chem(ii)
 !!    zdst        |none          |variable to hold value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Exp, Log
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -124,12 +126,12 @@ subroutine soil_chem(ii)
          !FBM = 0.0
          !IF(FBM<1.E-10)FBM=.04
          !FHP = 0.0
-         !IF(FHP<1.E-10)FHP=.7-.4*EXP(-.0277*100)
+         !IF(FHP<1.E-10)FHP=.7-.4*Exp(-.0277*100)
          !From DSSAT
          !FBM = 0.02
          !FHP = 0.44
    integer, intent(in) :: ii
-   real*8, parameter :: FBM =.04, FHP = .7 - .4 * EXP(-.0277 * 100)
+   real*8, parameter :: FBM =.04, FHP = .7 - .4 * Exp(-.0277 * 100)
    real*8 :: actp, dg, RTO, sol_cmass, sol_mass, sol_min_n,&
       &sol_thick, soldepth, solp, solpst, SSP, summinp, sumno3, sumorgn,&
       &sumorgp, wt1, xx, X1, zdst
@@ -238,9 +240,9 @@ subroutine soil_chem(ii)
          !! Allow Dynamic PSP Ratio
          !! convert to concentration
          solp = sol_solp(j,ii) / conv_wt(j,ii) * 1000000.
-         !! PSP = -0.045*log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
+         !! PSP = -0.045*Log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
          if (sol_clay(j,ii) > 0.) then
-            psp(ii) = -0.045 * log(sol_clay(j,ii))+ (0.001 * solp)
+            psp(ii) = -0.045 * Log(sol_clay(j,ii))+ (0.001 * solp)
             psp(ii) = psp(ii) - (0.035  * sol_cbn(j,ii)) + 0.43
          else
             psp(ii) = 0.4

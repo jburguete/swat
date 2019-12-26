@@ -295,22 +295,22 @@ subroutine writeaa
 !!    sumno3      |kg N/ha       |total nitrate in HRU soil profile
 !!    sumorgn     |kg N/ha       |total organic N in HRU soil profile
 !!    sumorgp     |kg P/ha       |total organic P in HRU soil profile
-!!    yrs         |years         |length of simulation
 !!    xmm         |months        |number of months simulated
 !!    xx          |none          |days in year
+!!    yrs         |years         |length of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: real*8
-!!    SWAT: hruaa, impndaa, rchaa, subaa, stdaa
+!!    Intrinsic: Dfloat
+!!    SWAT: rchaa, rsedaa, hruaa, impndaa, subaa, stdaa
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   real*8 :: yrs, xx, xmm, sumno3, sumorgn, summinp, sumorgp
-   integer :: j, nicr, k, ly, ic, ii, idmm
+   real*8 :: summinp, sumno3, sumorgn, sumorgp, xmm, xx, yrs
+   integer :: ic, ii, j, k, ly, nicr
 
 !! calculate number of years simulated
    yrs = 0.
@@ -330,7 +330,7 @@ subroutine writeaa
 
    if (da_ha < 1.e-9) then
       rchaao = rchaao / yrs
-      if (iprint /=1) then
+      if (iprint /= 1) then
          call rchaa(yrs)
          call rsedaa(yrs)
       end if
@@ -460,22 +460,18 @@ subroutine writeaa
          sumno3 = sumno3 + sol_no3(ly,j)
          if (cswat == 0) then
             sumorgn = sumorgn + sol_aorgn(ly,j) + sol_orgn(ly,j) +&
-            &sol_fon(ly,j)
+               &sol_fon(ly,j)
             sumorgp = sumorgp + sol_fop(ly,j) + sol_orgp(ly,j)
          end if
          if (cswat == 1) then
             sumorgn = sumorgn + sol_orgn(ly,j) + sol_fon(ly,j) + sol_mn(ly,j)
             sumorgp = sumorgp + sol_fop(ly,j) + sol_orgp(ly,j) + sol_mp(ly,j)
          end if
-         !!add by zhang
-         !!=======================
          if (cswat == 2) then
             sumorgn = sumorgn + sol_LMN(ly,j) + sol_LSN(ly,j) +&
-            &sol_HPN(ly,j) + sol_BMN(ly,j) + sol_HSN(ly,j)
+               &sol_HPN(ly,j) + sol_BMN(ly,j) + sol_HSN(ly,j)
             sumorgp = sumorgp + sol_fop(ly,j) + sol_orgp(ly,j)
          end if
-         !!add by zhang
-         !!=======================
 
          summinp = summinp + sol_solp(ly,j) + sol_actp(ly,j) + sol_stap(ly,j)
       end do
@@ -519,18 +515,18 @@ subroutine writeaa
       do j = 1, nhru
          if (hrupest(j) == 1) then
             write (30,5600) subnum(j), hruno(j), yrs,&
-            &(hrupsta(k,1,j), hrupsta(k,2,j), k = 1, npmx)
+               &(hrupsta(k,1,j), hrupsta(k,2,j), k = 1, npmx)
          end if
       end do
    end if
 
 !! write to hydrograph output file
-   do idmm = 1, mhyd
-      ic = ihouts(idmm)
+   do j = 1, mhyd
+      ic = ihouts(j)
       if (ic > 0) then
-         write(11123,9400) icodes(idmm), ic, inum1s(idmm), inum2s(idmm),&
-         &inum3s(idmm),subed(ic),recmonps(ic),reccnstps(ic),&
-         &(shyd(ii,ic), ii = 1, 8)
+         write(11123,9400) icodes(j), ic, inum1s(j), inum2s(j),&
+            &inum3s(j), subed(ic), recmonps(ic), reccnstps(ic),&
+            &(shyd(ii,ic), ii = 1, 8)
       end if
    end do
 
@@ -571,7 +567,5 @@ subroutine writeaa
    return
 5500 format ("Average Annual Loadings")
 5600 format (1x,a5,a4,1x,f4.0,4x,1x,250(e16.4,1x))
-!!! changed the format for hyd.out for Bill Komar
-!9400 format (6i8,2(5x,a),8e12.4)
 9400 format (6(i8,1x),2(a10,1x),8e12.4)
 end

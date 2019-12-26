@@ -1,11 +1,10 @@
-subroutine grass_wway
+subroutine grass_wway(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine controls the grass waterways
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru            |none          |HRU number
 !!    surfq(:)        |mm H2O        |amount of water in surface runoff generated
 !!    grwat_n(:)      |none          |Mannings's n for grassed waterway
 !!    grwat_i(:)      |none          |On/off Flag for waterway simulation
@@ -68,25 +67,23 @@ subroutine grass_wway
 !!    Sedout      |mg            | Sediment out of waterway channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-
+!!    SWAT: Qman
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
    use parm
    implicit none
-   integer :: j, k
+   real*8 Qman
+   integer, intent(in) :: j
+   integer :: k
    real*8 :: chflow_m3, sf_area, surq_remove, sf_sed ,sed_remove,vc,&
    &chflow_day, rh, cych, cyin, depnet, p, sed_frac, sedin, sedint, sedout,&
    &sedtrap, sf_depth, surq_frac, xrem
-
-!! set variables
-   j = ihru
-
 
 !! do this only if there is surface runoff this day
    if (surfq(j) > 0.001) then
 
 !!        compute channel peak rate using SCS triangular unit hydrograph
 !!  Calculate average flow based on 3 hours of runoff
-      chflow_day = 1000. * surfq(j) * hru_km(ihru)
+      chflow_day = 1000. * surfq(j) * hru_km(j)
       chflow_m3 = chflow_day/10800
       peakr = 2. * chflow_m3 / (1.5 * tc_gwat(j))
 
@@ -112,7 +109,7 @@ subroutine grass_wway
 
 !!        Sediment yield (kg) from fraction of area drained by waterway
 
-      sedin = sedyld(ihru)
+      sedin = sedyld(j)
 !! Calculate sediment losses in sheetflow at waterway sides
 
 !! calculate area of sheeflow in m^2 assumne *:1 side slope 8.06 = (8^2+1^2)^.5
@@ -124,7 +121,7 @@ subroutine grass_wway
       if (sf_area > 1.e-6) then
          sf_area = sf_area * 0.20
 !! calculate runoff depth over sheetflow area in mm
-         sf_depth=surfq(j)  * hru_km(ihru) * 1000000/sf_area
+         sf_depth=surfq(j)  * hru_km(j) * 1000000/sf_area
 !! Calculate sediment load on sheetflow area kg/ha
          sf_sed = sedin * 1000 / sf_area
 !! Calculate runoff and sediment losses taken from mostly from filter.f

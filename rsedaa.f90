@@ -1,7 +1,11 @@
-subroutine rsedaa(years)
+!> @file rsedaa.f90
+!> file containing the subroutine rsedaa
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the annual reach output to the .sed file
+!> this subroutine writes the annual reach output to the .sed file
+!> @param years length of simulation (years)
+subroutine rsedaa(years)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
@@ -24,15 +28,15 @@ subroutine rsedaa(years)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-   use parm, only: rch_dakm, rchaao, subgis, subtot
+   use parm
    implicit none
 
    real*8, intent (in) :: years
-   integer :: j, ii
+   integer :: ii, j
 
    do j = 1, subtot
       write (84,5000) j, subgis(j), years, rch_dakm(j),&
-      &rchaao(3,j), rchaao(4,j),(rchaao(ii,j),ii=42,58)
+         &rchaao(3,j), rchaao(4,j), (rchaao(ii,j), ii = 42, 58)
    end do
 
    return

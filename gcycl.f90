@@ -60,7 +60,8 @@ subroutine gcycl
    use parm
    implicit none
 
-   real*8 :: xx, rn
+   real*8 Aunif
+   real*8 :: rn, xx
    integer :: ii, j, k, rndseed10
 
 !!    initialize random number array locator

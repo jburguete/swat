@@ -71,6 +71,7 @@ subroutine rtday
    use parm
    implicit none
 
+   real*8 Qman
    integer :: jrch
    real*8 :: wtrin, scoef, p, topw, vol, c, rh
    real*8 :: volrt, maxrt, adddep, addp, addarea, vc, aaa

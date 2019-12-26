@@ -58,6 +58,7 @@ subroutine hmeas
    use parm
    implicit none
 
+   real*8 Ee
    real*8, dimension (mrg) :: rhmeas
    real*8 :: rhdbsb, tmpmean
    integer :: idap, ih, inum3sprev, iyp, k, l

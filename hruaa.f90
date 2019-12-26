@@ -1,10 +1,16 @@
+!> @file hruaa.f90
+!> file containing the subroutine hruaa
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine writes average annual HRU output to the output.hru file
+!> @param[in] years length of simulation (years)
 subroutine hruaa(years)
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes average annual HRU output to the output.hru file
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    years         |years         |length of simulation
 !!    bio_aams(:)   |metric tons/ha|average annual biomass (dry weight) in HRU
 !!    cpnm(:)       |NA            |four character code to represent crop name
 !!    deepst(:)     |mm H2O        |depth of water in deep aquifer
@@ -150,7 +156,6 @@ subroutine hruaa(years)
 !!    pdvs(:)     |varies        |array to hold selected HRU output values
 !!                               |when user doesn't want to print all
 !!    sb          |none          |subbasin number
-!!    years       |years         |length of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -159,8 +164,8 @@ subroutine hruaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   integer :: j, sb, ii, iflag, idplant
    real*8, dimension (mhruo) :: pdvas, pdvs
+   integer :: j, sb, ii, iflag, idplant
    character (len=4) :: cropname
 
    do j = 1, nhru
@@ -173,8 +178,6 @@ subroutine hruaa(years)
 
 
       if (iflag == 1) then
-         pdvas = 0.
-         pdvs = 0.
 
          pdvas(1) = hruaao(1,j)
          pdvas(2) = hruaao(2,j)
@@ -284,24 +287,24 @@ subroutine hruaa(years)
 
             if (iscen == 1 .and. isproj == 0) then
                write (28,1000) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), years, hru_km(j), (pdvs(ii), ii = 1, itots)
+                  &nmgt(j), years, hru_km(j), (pdvs(ii), ii = 1, itots)
             else if (isproj == 1) then
                write (21,1000) cropname, j, subnum(j), hruno(j),&
-               &sb, nmgt(j), years, hru_km(j), (pdvs(ii), ii = 1, itots)
+                  &sb, nmgt(j), years, hru_km(j), (pdvs(ii), ii = 1, itots)
             else if (iscen == 1 .and. isproj == 2) then
                write (28,2000) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), years, hru_km(j), (pdvs(ii), ii = 1, itots), iyr
+                  &nmgt(j), years, hru_km(j), (pdvs(ii), ii = 1, itots), iyr
             endif
          else
             if (iscen == 1 .and. isproj == 0) then
                write (28,1001) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+                  &nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, mhruo)
             else if (isproj == 1) then
                write (21,1001) cropname, j, subnum(j), hruno(j),&
-               &sb, nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+                  &sb, nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, mhruo)
             else if (iscen == 1 .and. isproj == 2) then
                write (28,1001) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, mhruo), iyr
+                  &nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, mhruo), iyr
             endif
          end if
       end if

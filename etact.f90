@@ -1,4 +1,4 @@
-subroutine etact
+subroutine etact(j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates potential plant transpiration for Priestley-
@@ -10,6 +10,7 @@ subroutine etact
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j            |none          |HRU number
 !!    canstor(:)   |mm H2O        |amount of water held in canopy storage
 !!    elevb(:,:)   |m             |elevation at center of band in subbasin
 !!    elevb_fr(:,:)|none          |fraction of subbasin area within elevation
@@ -17,7 +18,6 @@ subroutine etact
 !!    ep_max       |mm H2O        |maximum amount of transpiration (plant et)
 !!                                |that can occur on current day in HRU
 !!    esco(:)      |none          |soil evaporation compensation factor
-!!    ihru         |none          |HRU number
 !!    ipet         |none          |code for potential ET method
 !!                                |0 Priestley-Taylor method
 !!                                |1 Penman/Monteith method
@@ -88,7 +88,6 @@ subroutine etact
 !!    evz          |
 !!    evzp         |
 !!    ib           |none          |counter
-!!    j            |none          |HRU number
 !!    ly           |none          |counter
 !!    no3up        |kg N/ha       |amount of nitrate moving upward in profile
 !!    pet          |mm H2O        |amount of PET remaining after water stored
@@ -109,13 +108,14 @@ subroutine etact
    use parm
    implicit none
 
-   integer :: j, ib, ly
+   real*8 Expo
+   integer, intent(in) :: j
+   integer :: ib, ly
 !!    real*8, parameter :: esd = 500., etco = 0.80, effnup = 0.1
    real*8 :: esd, etco, effnup
    real*8 :: no3up, es_max, eos1, xx, cej, eaj, pet, esleft
    real*8 :: sumsnoeb, evzp, eosl, dep, evz, sev
 
-   j = ihru
    pet = pet_day
 !!    added statements for test of real statement above
    esd = 500.

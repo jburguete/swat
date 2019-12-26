@@ -11,11 +11,10 @@ subroutine readsno(i)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |subbasin number
-!!    ihru        |none          |HRU number
-!!                               |watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
+!!    hrupest(:)   |none          |pesticide use flag:
 !!    name         |units         |definition
 !!    sub_sftmp    |deg C         |Snowfall temperature
 !!                                |Mean air temperature at which precipitation
@@ -33,8 +32,6 @@ subroutine readsno(i)
 !!                                |Mean air temperature at which snow melt will
 !!                                |occur.
 !!    sub_timp     |none          |snow pack temperature lag factor (0-1)
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hrupest(:)   |none          |pesticide use flag:
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~

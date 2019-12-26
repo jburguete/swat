@@ -7,13 +7,13 @@
 !> (.wus). The water use file extracts water from the subbasin and it is
 !> considered to be lost from the watershed. These variables should be used
 !> to remove water transported outside the watershed.
-!> @param[in] i HRU number
+!> @param[in] i subbasin number
 subroutine readwus(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i           |none          |HRU number
+!!    i           |none          |subbasin number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~

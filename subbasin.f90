@@ -233,16 +233,15 @@ subroutine subbasin(i)
          call percmain(j)
 
          !! compute evapotranspiration
-         call etpot
-!        if (pot_vol(j) < 1.e-6) call etact
-         call etact
+         call etpot(j)
+         call etact(j)
 
          !! compute water table depth using climate drivers
          call wattable(j)
 
          !! new CN method
          if (icn == 1) then
-            sci(j) = sci(j) + pet_day*exp(-cncoef_sub(hru_sub(j))*sci(j)/&
+            sci(j) = sci(j) + pet_day*Exp(-cncoef_sub(hru_sub(j))*sci(j)/&
                &smx(j)) - precipday + qday + qtile + latq(j) + sepbtm(j)
          else if (icn == 2) then
             sci(j) = sci(j) + pet_day*exp(-cncoef_sub(hru_sub(j))*sci(j)/&
@@ -301,9 +300,9 @@ subroutine subbasin(i)
 
          call nitvol
          if (sol_P_model == 1) then
-            call pminrl
+            call pminrl(j)
          else
-            call pminrl2
+            call pminrl2(j)
          end if
 
 !!    compute biozone processes in septic HRUs
@@ -342,7 +341,7 @@ subroutine subbasin(i)
                   call orgncswat2(0)
                end if
 
-               call psed(0)
+               call psed(0, j)
             end if
          end if
 
@@ -366,16 +365,6 @@ subroutine subbasin(i)
                call urbanhr(j) ! subdaily simulation J.Jeong 4/20/2009
             endif
          endif
-
-!! Srini Pothole
-         !! compute undrained depression/impounded area (eg rice) processes
-!        if (pot_fr(j) > 0.) then
-!           if (ievent == 0) then
-!          call pothole
-!           else
-!              call potholehr
-!           endif
-!        endif
 
          !! compute sediment loading in lateral flow and add to sedyld
          call latsed
@@ -406,14 +395,8 @@ subroutine subbasin(i)
 
          !! compute reduction in pollutants due to in field grass waterway
          if (grwat_i(j) == 1) then
-            call grass_wway
+            call grass_wway(j)
          end if
-
-         !! compute reduction in pollutants due to in fixed BMP eff
-         !  if (bmp_flag(j) == 1) then
-         !   call bmpfixed
-         ! end if
-
 
          !! compute water yield for HRU
          qdr(j) = qday + latq(j) + gw_q(j) + qtile + gw_qdeep(j)
@@ -435,7 +418,7 @@ subroutine subbasin(i)
          endif
 
 !       Srini pothole
-         if (pot_fr(j) > 0.) call pothole(i)
+         if (pot_fr(j) > 0.) call pothole(i, j)
 
          xx = sed_con(j)+soln_con(j)+solp_con(j)+orgn_con(j)+orgp_con(j)
          if (xx > 1.e-6) then

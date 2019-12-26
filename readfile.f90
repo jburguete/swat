@@ -125,6 +125,7 @@ subroutine readfile
    use parm
    implicit none
 
+   real*8 Aunif
    character (len=80) :: titldum
    character (len=13) :: bsnfile, fcstfile, fertdb, figfile, pestdb, plantdb,&
       &tilldb, urbandb

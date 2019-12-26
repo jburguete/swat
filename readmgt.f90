@@ -6,11 +6,13 @@
 !> this subroutine reads data from the HRU/subbasin management input file
 !> (.mgt). This file contains data related to management practices used in
 !> the HRU/subbasin.
-subroutine readmgt
+!> @param[in] k HRU number (none)
+subroutine readmgt(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name       |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k          |none             |HRU number
 !!    bactkddb(:)|none             |bacteria partition coefficient:
 !!                                 |1: all bacteria in solution
 !!                                 |0: all bacteria sorbed to soil particles
@@ -41,7 +43,6 @@ subroutine readmgt
 !!    forgp(:)   |kg orgP/kg fert  |fraction of organic P
 !!    hvsti(:)   |(kg/ha)/(kg/ha)  |harvest index: crop yield/aboveground
 !!                                 |biomass
-!!    ihru       |none             |HRU number
 !!    irr_asq    |                 |surface runoff ratio
 !!    irr_mx     |mm               |maximum irrigation amount per auto application
 !!    irr_sq     |frac             |surface runoff ratio (0-1) .1 is 10% surface runoff
@@ -223,7 +224,6 @@ subroutine readmgt
 !!                               |at maturity
 !!    iop
 !!    j           |none          |counter
-!!    k           |none          |counter
 !!    mgt_op      |none          |operation code number
 !!                               |0 end of rotation year
 !!                               |1 plant/beginning of growing season
@@ -286,16 +286,16 @@ subroutine readmgt
    use parm
    implicit none
 
+   integer Jdt
+   integer, intent(in) :: k
    character (len=80) :: titldum
    real*8 :: disc, husc, mgt4, mgt5, mgt6, mgt7, mgt8, mgt9, xx
-   integer :: day, eof, iop, j, k, mgt_op, mgt_opprev, mgt1i, mgt2i, mgt3i,&
+   integer :: day, eof, iop, j, mgt_op, mgt_opprev, mgt1i, mgt2i, mgt3i,&
       &mgt10i, mon, ncrp, newpest, uu
-   integer :: Jdt
 
    eof = 0
    iop = 0
    ncrp = 0
-   k = ihru
 
 !!    read general management parameters
    read (109,5000) titldum

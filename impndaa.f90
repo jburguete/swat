@@ -162,7 +162,6 @@ subroutine impndaa(years)
       iflag = 0
       if (pnd_fr(j) >= 0.01) iflag = 1
       if (wet_fr(j) >= 0.01) iflag = 1
-      !!      if (ipot(j) == j) iflag = 1
       if (pot_fr(j) > 0.) iflag = 1
 
       if (iflag == 1) then
@@ -181,23 +180,21 @@ subroutine impndaa(years)
             orgn_ppm = 1000. * pnd_orgn(j) / pnd_vol(j)
             orgp_ppm = 1000. * pnd_orgp(j) / pnd_vol(j)
             ano3_ppm = 1000. * (pnd_no3(j) + pnd_no3s(j) + pnd_no3g(j))&
-            &/ pnd_vol(j)
+               &/ pnd_vol(j)
             minp_ppm = 1000. * (pnd_solp(j)+pnd_psed(j)+pnd_solpg(j)) /&
-            &pnd_vol(j)
+               &pnd_vol(j)
             chla_ppm = 1000. * pnd_chla(j) / pnd_vol(j)
          endif
          if (wet_vol(j) > 1.) then
             orgn_ppw = 1000. * wet_orgn(j) / wet_vol(j)
             orgp_ppw = 1000. * wet_orgp(j) / wet_vol(j)
             ano3_ppw = 1000. * (wet_no3(j) + wet_no3s(j) + wet_no3g(j))&
-            &/ wet_vol(j)
+               &/ wet_vol(j)
             solp_ppw = 1000. * (wet_solp(j)+wet_solpg(j)+wet_psed(j)) /&
-            &wet_vol(j)
+               &wet_vol(j)
             chla_ppw = 1000. * wet_chla(j) / wet_vol(j)
          end if
 
-
-         pdvas = 0.
 
          pdvas(1) = wtraa(3,j)
          pdvas(2) = wtraa(4,j)
@@ -248,7 +245,7 @@ subroutine impndaa(years)
 
          if (iwtr == 1) then
             write (29,1000) cropname, j, subnum(j), hruno(j), sb,&
-            &nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, 40)
+               &nmgt(j), years, hru_km(j), (pdvas(ii), ii = 1, 40)
          endif
       end if
    end do

@@ -5,18 +5,18 @@
 
 !> this subroutine reads the HRU weather generator parameters from the
 !> .wgn file
-!> @param[in] ii HRU number (none)
+!> @param[in] ii subbasin number (none)
 subroutine readwgn(ii)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ii          |none          |subbasin number
 !!    adj_pkr     |none          |peak rate adjustment factor in the subbasin
 !!                               |Used in the MUSLE equation to account for
 !!                               |impact of peak flow on erosion
 !!    ffcb        |none          |initial soil water content expressed as a
 !!                               |fraction of field capacity
-!!    ii          |none          |HRU number
 !!    idaf        |julian date   |beginning day of simulation
 !!    idist       |none          |rainfall distribution code
 !!                               |  0 for skewed normal dist
@@ -111,7 +111,7 @@ subroutine readwgn(ii)
 !!    rndm1       |none          |random number between 0.0 and 1.0
 !!    rnm2        |none          |random number between 0.0 and 1.0
 !!    sffc
-!!    sum         |none          |variable to hold summation results
+!!    sum1        |none          |variable to hold summation results
 !!    summm_p     |mm            |sum of precipitation over year
 !!    summn_t     |deg C         |sum of mimimum temp values over year
 !!    summx_t     |deg C         |sum of maximum temp values over year
@@ -129,7 +129,7 @@ subroutine readwgn(ii)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Sin, Cos, Tan, abs, Acos, Log, Exp, MaxVal
+!!    Intrinsic: Sin, Cos, Tan, Abs, Acos, Log, Exp, MaxVal
 !!    SWAT: Aunif, Dstn1
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -137,10 +137,11 @@ subroutine readwgn(ii)
    use parm
    implicit none
 
+   real*8 Aunif, Dstn1
    integer, intent(in) :: ii
    real*8, dimension (12) :: pcpd, pcpmm, rain_hhsm, rainhhmx
    character (len=80) :: titldum
-   real*8 :: dl, lattan, pcp, r6, rain_yrs, rndm1, rnm2, sffc, sum, summm_p,&
+   real*8 :: dl, lattan, pcp, r6, rain_yrs, rndm1, rnm2, sffc, sum1, summm_p,&
       &summn_t, summx_t, tav, tmpsoil, x1, x2, x3, xlv, xx
    integer :: j, k, m1, mdays, mon, nda, xrnd
 
@@ -191,19 +192,19 @@ subroutine readwgn(ii)
 !!                      values to northern hemisphere
 !!       the angular velocity of the earth's rotation, omega, = 15 deg/hr or
 !!                      0.2618 rad/hr and 2/0.2618 = 7.6394
-   x1 = .4348 * abs(lattan)
+   x1 = .4348 * Abs(lattan)
    if (x1 < 1.) x2 = Acos(x1)
    !!x1 will be >= 1. if sub_lat > 66.5 or < -66.5
    daylmn(ii) = 7.6394 * x2
 
 !! calculate day length threshold for dormancy
    if (dorm_hr < -1.e-6) then
-      if (abs(sub_lat(ii)) > 40.) then
+      if (Abs(sub_lat(ii)) > 40.) then
          dl = 1.
-      else if (abs(sub_lat(ii)) < 20.) then
+      else if (Abs(sub_lat(ii)) < 20.) then
          dl = -1.
       else
-         dl = (abs(sub_lat(ii)) - 20.) / 20.
+         dl = (Abs(sub_lat(ii)) - 20.) / 20.
       end if
    else
       dl = dorm_hr
@@ -247,7 +248,7 @@ subroutine readwgn(ii)
          !! if pr_w values good, use calculated pcpd based on these values
          !! using first order Markov chain
          pcpd(mon) = mdays * pr_w1(mon,ii) /&
-         &(1. - pr_w2(mon,ii) + pr_w1(mon,ii))
+            &(1. - pr_w2(mon,ii) + pr_w1(mon,ii))
 
       end if
 
@@ -282,7 +283,7 @@ subroutine readwgn(ii)
          rnm2 = 0.
          xlv = 0.
          pcp = 0.
-         sum = 0.
+         sum1 = 0.
          r6 = pcp_stat(mon,3,ii) / 6.
          do j = 1, 1000
             rnm2 = Aunif(xrnd)
@@ -291,10 +292,10 @@ subroutine readwgn(ii)
             xlv = (xlv**3 - 1.) * 2 / pcp_stat(mon,3,ii)
             pcp = xlv * pcp_stat(mon,2,ii) + pcp_stat(mon,1,ii)
             if (pcp < 0.01) pcp = 0.01
-            sum = sum + pcp
+            sum1 = sum1 + pcp
          end do
-         if (sum > 0.) then
-            pcf(mon,ii) = 1000. * pcp_stat(mon,1,ii) / sum
+         if (sum1 > 0.) then
+            pcf(mon,ii) = 1000. * pcp_stat(mon,1,ii) / sum1
          else
             pcf(mon,ii) = 1.
          end if

@@ -1,7 +1,10 @@
-subroutine finalbal
+!> @file finalbal.f90
+!> file containing the subroutine finalbal
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates final water balance for watershed
+!> this subroutine calculates final water balance for watershed
+subroutine finalbal
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -24,11 +27,11 @@ subroutine finalbal
 !!    res_vol(:)  |m^3 H2O       |reservoir volume
 !!    resouta(3,:)|metric tons   |sediment entering reservoir during simulation
 !!    resouta(4,:)|metric tons   |sediment leaving reservoir during simulation
-!!    resouta(17,:)|m^3 H2O       |evaporation from reservoir during simulation
-!!    resouta(18,:)|m^3 H2O       |seepage from reservoir during simulation
-!!    resouta(19,:)|m^3 H2O       |precipitation on reservoir during simulation
-!!    resouta(20,:)|m^3 H2O       |water entering reservoir during simulation
-!!    resouta(21,:)|m^3 H2O       |water leaving reservoir during simulation
+!!    resouta(17,:)|m^3 H2O      |evaporation from reservoir during simulation
+!!    resouta(18,:)|m^3 H2O      |seepage from reservoir during simulation
+!!    resouta(19,:)|m^3 H2O      |precipitation on reservoir during simulation
+!!    resouta(20,:)|m^3 H2O      |water entering reservoir during simulation
+!!    resouta(21,:)|m^3 H2O      |water leaving reservoir during simulation
 !!    sno_hru(:)  |mm H2O        |amount of water stored as snow
 !!    wshd_pndha  |ha            |watershed area in hectares which drains into
 !!                               |ponds
@@ -98,9 +101,9 @@ subroutine finalbal
    use parm
    implicit none
 
+   real*8 :: res3, res4, res17, res18, res19, res20, res21, sedout, tir,&
+      &volout, wshd_snoe
    integer :: j
-   real*8 :: tir, wshd_snoe, volout, sedout, res3, res4, res17
-   real*8 :: res18, res19, res20, res21
 
 !! compute amount of irrigation water applied in watershed
    tir = 0.
@@ -117,7 +120,7 @@ subroutine finalbal
    end do
 
 !! check final soil water balance
-   call swbl(wshd_snoe,tir)
+   call swbl(wshd_snoe, tir)
 
 !! check pond water and sediment balance
    if (wshd_pndha > 1.e-4) then
@@ -127,9 +130,9 @@ subroutine finalbal
          volout = volout + pnd_vol(j)
          sedout = sedout + pnd_vol(j) * pnd_sed(j)
       end do
-      call vbl(wshdaao(19),wshdaao(20),wshdaao(21),wshdaao(22),&
-      &wshdaao(23),wshd_pndv,wshd_pndsed,wshdaao(13),&
-      &wshdaao(14),wshdaao(15),volout,sedout,wshd_pndha)
+      call vbl(wshdaao(19), wshdaao(20), wshdaao(21), wshdaao(22),&
+         &wshdaao(23), wshd_pndv, wshd_pndsed, wshdaao(13),&
+         &wshdaao(14), wshdaao(15), volout,sedout, wshd_pndha)
    end if
 
 !! check reservoir water and sediment balance
@@ -154,8 +157,8 @@ subroutine finalbal
          volout = volout + res_vol(j)
          sedout = sedout + res_vol(j) * res_sed(j)
       end do
-      call vbl(res17,res18,res19,res20,res21,wshd_resv,wshd_ressed,&
-      &res3,res4,0.0D+00,volout,sedout,wshd_resha)
+      call vbl(res17, res18, res19, res20, res21, wshd_resv, wshd_ressed,&
+         &res3, res4, 0.0D+00, volout, sedout, wshd_resha)
    end if
 
    return

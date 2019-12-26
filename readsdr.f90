@@ -6,12 +6,13 @@
 !> this subroutine reads data from the HRU/subbasin management input file
 !> (.mgt). This file contains data related to management practices used in
 !> the HRU/subbasin.
-subroutine readsdr
+!> @param[in] j HRU number (none)
+subroutine readsdr(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name      |units            |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!                                  |urban.dat
+!!    j         |none             |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -28,7 +29,6 @@ subroutine readsdr
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    eof         |none          |end of file flag (=-1 if eof, else = 0)
-!!    j           |none          |HRU number
 !!    titldum     |NA            |title line from input dataset
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -40,7 +40,6 @@ subroutine readsdr
    character (len=80) :: titldum
    integer :: j, eof
 
-   j = ihru
    do
       read (112,5000,iostat=eof) titldum
       if (eof < 0) exit

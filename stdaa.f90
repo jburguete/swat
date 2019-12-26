@@ -345,14 +345,14 @@ subroutine stdaa
       if (iscen == 1) then
          if (mcrhru(j) > 0) then
             write (26,1600) j, hru_sub(j), (cpnm(idplrot(nicr,j)),&
-            &yldn(nicr,j), bio_aahv(nicr,j),nicr = 1, mcrhru(j))
+               &yldn(nicr,j), bio_aahv(nicr,j),nicr = 1, mcrhru(j))
          else
             write (26,1601) j, ' BARE'
          end if
       else if (isproj == 1) then
          if (mcrhru(j) > 0) then
             write (19,1602) j, (cpnm(idplrot(nicr,j)),&
-            &yldn(nicr,j), bio_aahv(nicr,j),nicr = 1, mcrhru(j))
+               &yldn(nicr,j), bio_aahv(nicr,j),nicr = 1, mcrhru(j))
          else
             write (26,1601) j, ' BARE'
          end if
@@ -371,11 +371,11 @@ subroutine stdaa
             cropname = 'BARE'
          end if
          write (26,1900) j, hru_sub(j),&
-         &snam(j), hru_km(j), cn2(j), sol_sumfc(j), usle_ls(j),&
-         &hruaao(22,j), hruaao(28,j), hruaao(29,j), sumix(j),&
-         &hruaao(1,j), hruaao(19,j), hruaao(5,j) + hruaao(6,j),&
-         &hruaao(12,j), hruaao(14,j), hruaao(37,j) + hruaao(38,j),&
-         &hruaao(35,j), bio_aams(j), yldaa(j), hruaao(4,j)
+            &snam(j), hru_km(j), cn2(j), sol_sumfc(j), usle_ls(j),&
+            &hruaao(22,j), hruaao(28,j), hruaao(29,j), sumix(j),&
+            &hruaao(1,j), hruaao(19,j), hruaao(5,j) + hruaao(6,j),&
+            &hruaao(12,j), hruaao(14,j), hruaao(37,j) + hruaao(38,j),&
+            &hruaao(35,j), bio_aams(j), yldaa(j), hruaao(4,j)
       end do
    else if (isproj == 1) then
       write (19,1700)
@@ -387,11 +387,11 @@ subroutine stdaa
             cropname = 'BARE'
          end if
          write (19,1900) j, hru_sub(j), cropname,&
-         &snam(j), hru_km(j), cn2(j), sol_sumfc(j), usle_ls(j),&
-         &hruaao(22,j), hruaao(28,j), hruaao(29,j), sumix(j),&
-         &hruaao(1,j), hruaao(19,j), hruaao(5,j) + hruaao(6,j),&
-         &hruaao(12,j), hruaao(14,j), hruaao(37,j) + hruaao(38,j),&
-         &hruaao(35,j), bio_aams(j), yldaa(j), hruaao(4,j)
+            &snam(j), hru_km(j), cn2(j), sol_sumfc(j), usle_ls(j),&
+            &hruaao(22,j), hruaao(28,j), hruaao(29,j), sumix(j),&
+            &hruaao(1,j), hruaao(19,j), hruaao(5,j) + hruaao(6,j),&
+            &hruaao(12,j), hruaao(14,j), hruaao(37,j) + hruaao(38,j),&
+            &hruaao(35,j), bio_aams(j), yldaa(j), hruaao(4,j)
       end do
    endif
 
@@ -411,10 +411,10 @@ subroutine stdaa
 !! write average annual stress values
    if (iscen == 1) then
       write (26,2200) wshd_wstrs, wshd_tstrs, wshd_nstrs, wshd_pstrs,&
-      &wshd_astrs
+         &wshd_astrs
    else if (isproj == 1) then
       write (19,2200) wshd_wstrs, wshd_tstrs, wshd_nstrs, wshd_pstrs,&
-      &wshd_astrs
+         &wshd_astrs
    endif
 
 !! watershed summary water balance table
@@ -422,10 +422,10 @@ subroutine stdaa
       write (26,1000) prog
       write (26,1100) title
       write (26,2300) wshdaao(1), wshdaao(39), wshdaao(36), wshdaao(37),&
-      &wshdaao(3), wshdaao(4),wshdaao(109),wshdaao(104),wshdaao(113),&
-      &wshdaao(105), wshdaao(106), wshdaao(107), wshdaao(6),&
-      &wshdaao(5), wshdaao(7), wshdaao(108), wshdaao(38),&
-      &wshd_sepmm,  wshdaao(12)
+         &wshdaao(3), wshdaao(4),wshdaao(109),wshdaao(104),wshdaao(113),&
+         &wshdaao(105), wshdaao(106), wshdaao(107), wshdaao(6),&
+         &wshdaao(5), wshdaao(7), wshdaao(108), wshdaao(38),&
+         &wshd_sepmm,  wshdaao(12)
       !    &    wshd_sepmm,  wshdaao(12), (wshdaao(k),k = 19,22), wshdaao(13),&
       !    &    wshdaao(23), wshdaao(14), (resdata(k),k = 1,7)
 
@@ -434,10 +434,10 @@ subroutine stdaa
       write (19,1000) prog
       write (19,1100) title
       write (19,2300) wshdaao(1), wshdaao(39), wshdaao(36), wshdaao(37),&
-      &wshdaao(3), wshdaao(4),wshdaao(109),wshdaao(104),wshdaao(113),&
-      &wshdaao(105), wshdaao(106), wshdaao(107), wshdaao(6),&
-      &wshdaao(5), wshdaao(7), wshdaao(108), wshdaao(38),&
-      &wshdaao(12)
+         &wshdaao(3), wshdaao(4),wshdaao(109),wshdaao(104),wshdaao(113),&
+         &wshdaao(105), wshdaao(106), wshdaao(107), wshdaao(6),&
+         &wshdaao(5), wshdaao(7), wshdaao(108), wshdaao(38),&
+         &wshdaao(12)
       !    &    wshdaao(12), (wshdaao(k),k = 19,22), wshdaao(13),             &
       !    &    wshdaao(23), wshdaao(14), (resdata(k),k = 1,7)
       !     write (19,2400) wshdaao(33), wshdaao(15), wshdaao(34), wshdaao(11)
@@ -460,46 +460,46 @@ subroutine stdaa
       write (26,1100) title
       write (26,2600)
       write (26,2700)wshdaao(40), wshdaao(41), wshdaao(42), wshdaao(45),&
-      &wshdaao(111), wshd_ptile, wshd_pinlet,&
-      &wshdaao(43), wshdaao(46), wshd_plch, wshdaao(44), wshd_pup,&
-      &wshdaao(110)
+         &wshdaao(111), wshd_ptile, wshd_pinlet,&
+         &wshdaao(43), wshdaao(46), wshd_plch, wshdaao(44), wshd_pup,&
+         &wshdaao(110)
       write (26,2800) wshd_pal, wshd_pas, wshd_ftotn, wshd_ftotp,&
-      &wshd_fixn, wshd_dnit
+         &wshd_fixn, wshd_dnit
       write (26,2900) wshd_hmn, wshd_rwn, wshd_hmp, wshd_rmn, wshd_rmp
       write (26,3000) wshd_raino3, basno3i, basno3f, basorgni, basorgnf,&
-      &basminpi, basminpf, basorgpi, basorgpf, wshd_fno3,&
-      &wshd_fnh3, wshd_forgn, wshd_fminp, wshd_forgp, wshd_yldn,&
-      &wshd_yldp, wshd_voln, wshd_nitn, sno3up
+         &basminpi, basminpf, basorgpi, basorgpf, wshd_fno3,&
+         &wshd_fnh3, wshd_forgn, wshd_fminp, wshd_forgp, wshd_yldn,&
+         &wshd_yldp, wshd_voln, wshd_nitn, sno3up
    else if (isproj == 1) then
       write (19,1000) prog
       write (19,1100) title
       write (19,2600)
       write (19,2700) wshdaao(40), wshdaao(41), wshdaao(42),&
-      &wshdaao(45), wshdaao(43), solpyldjga, tile_solpo(j),&
-      &wshdaao(46), wshd_plch, wshdaao(44),&
-      &wshd_pup, wshdaao(110)
+         &wshdaao(45), wshdaao(43), solpyldjga, tile_solpo(j),&
+         &wshdaao(46), wshd_plch, wshdaao(44),&
+         &wshd_pup, wshdaao(110)
       write (19,2800) wshd_pal, wshd_pas, wshd_ftotn, wshd_ftotp,&
-      &wshd_fixn, wshd_dnit
+         &wshd_fixn, wshd_dnit
       write (19,2900) wshd_hmn, wshd_rwn, wshd_hmp, wshd_rmn, wshd_rmp
       write (19,3000) wshd_raino3, basno3i, basno3f, basorgni, basorgnf,&
-      &basminpi, basminpf, basorgpi, basorgpf, wshd_fno3,&
-      &wshd_fnh3, wshd_forgn, wshd_fminp, wshd_forgp, wshd_yldn,&
-      &wshd_yldp, wshd_voln, wshd_nitn, sno3up
+         &basminpi, basminpf, basorgpi, basorgpf, wshd_fno3,&
+         &wshd_fnh3, wshd_forgn, wshd_fminp, wshd_forgp, wshd_yldn,&
+         &wshd_yldp, wshd_voln, wshd_nitn, sno3up
    endif
 
 !! watershed bacteria summary table
    if (iscen == 1) then
       write (26,3100) sdiegropq,sdiegrolpq,sdiegrops,sdiegrolps,&
-      &sbactrop,sbactrolp,sbactsedp,sbactsedlp,sbactlchp,sbactlchlp
+         &sbactrop,sbactrolp,sbactsedp,sbactsedlp,sbactlchp,sbactlchlp
    else if (isproj == 1) then
       write (19,3100) sdiegropq,sdiegrolpq,sdiegrops,sdiegrolps,&
-      &sbactrop,sbactrolp,sbactsedp,sbactsedlp,sbactlchp,sbactlchlp
+         &sbactrop,sbactrolp,sbactsedp,sbactsedlp,sbactlchp,sbactlchlp
    endif
 
 !! septic variables to output.std
    write (26,3101) wshd_sepno3, wshd_sepnh3, wshd_seporgn,&
-   &wshd_sepfon, wshd_seporgp, wshd_sepfop, wshd_sepsolp,&
-   &wshd_sepbod
+      &wshd_sepfon, wshd_seporgp, wshd_sepfop, wshd_sepsolp,&
+      &wshd_sepbod
 
 3101 format (t20,'NITRATE SEPTIC = ',f12.2,' (kg/ha)',/,t20,&
    &'AMMONIA SEPTIC = ',f12.2,' (kg/ha)',/,t20,&

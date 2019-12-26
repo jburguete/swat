@@ -83,7 +83,8 @@ subroutine hydroinit
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: Ttcoef
+!!    INTRINSIC: Dmin1, Sqrt, Exp, Ceiling, Dfloat, Int, Float, Max
+!!    SWAT: ttcoef
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -116,7 +117,7 @@ subroutine hydroinit
 
 !!    compute delivery ratio
       xx = tconc(j) / sub_tc(hru_sub(j))
-      dr_sub(j) = dmin1(.95,Sqrt(xx))
+      dr_sub(j) = Dmin1(.95, Sqrt(xx))
 
 
 !!    compute fraction of surface runoff that is reaching the main channel
@@ -174,17 +175,17 @@ subroutine hydroinit
          tp = .375 * tb      ! time to peak flow
 
          !! convert to time step (from hr), J.Jeong March 2009
-         tb = ceiling(tb * 60./ dfloat(idt))
-         tp = int(tp * 60./ dfloat(idt))
+         tb = Ceiling(tb * 60./ Dfloat(idt))
+         tp = Int(tp * 60./ Dfloat(idt))
 
          if(tp==0) tp = 1
          if(tb==tp) tb = tb + 1
-         itb(isb) = int(tb)
+         itb(isb) = Int(tb)
 
          ! Triangular Unit Hydrograph
          if (iuh==1) then
             do l = 1, itb(isb)
-               xx = float(l)
+               xx = Float(l)
                if (xx < tp) then           !! rising limb of hydrograph
                   q = xx / tp
                else                        !! falling limb of hydrograph
@@ -204,8 +205,8 @@ subroutine hydroinit
          elseif (iuh==2) then
             l = 1; q=1.
             do while (q>0.0001)
-               xx = float(l) / tp
-               q = xx ** uhalpha * exp((1. - xx) * uhalpha)
+               xx = Float(l) / tp
+               q = xx ** uhalpha * Exp((1. - xx) * uhalpha)
                q = Max(0.,q)
                uh(isb,l) = (q + ql) / 2.
                ql = q
@@ -224,13 +225,14 @@ subroutine hydroinit
          c = phi(13,isb) / dthy
          do j = 1, nhru
             a = sub_tc(hru_sub(j)) / dthy !# of timesteps
-            NHY(isb) = max(4*nstep,ceiling(a),ceiling(b), ceiling(c),NHY(isb))
+            NHY(isb) = Max(4 * nstep, Ceiling(a), Ceiling(b), Ceiling(c),&
+               &NHY(isb))
          end do
          RCSS(isb) = .5 * (ch_w2(isb) - phi(6,isb)) / ch_d(isb)
-         RCHX(isb) = SQRT(ch_s2(isb)) / ch_n2(isb)
+         RCHX(isb) = Sqrt(ch_s2(isb)) / ch_n2(isb)
          CHXA(isb) = phi(7,isb) * (phi(6,isb) + phi(7,isb) * RCSS(isb))
          CHXP(isb) = phi(6,isb) + 2. * phi(7,isb) *&
-            &SQRT(RCSS(isb) * RCSS(isb) + 1.)
+            &Sqrt(RCSS(isb) * RCSS(isb) + 1.)
          QCAP(isb) = CHXA(isb) * RCHX(isb) * (CHXA(isb) / CHXP(isb))**.66667 !bankfull flow, m3/s
       end do
    end if

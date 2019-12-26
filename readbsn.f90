@@ -224,7 +224,6 @@ subroutine readbsn
 !!                               |rain.
 !!    sdrain_bsn  |mm            |Distance bewtween two drain or tile tubes (range 7600.0 - 30000.0)
 !!    sstmaxd(:)  |mm            |static maximum depressional storage; read from .sdr
-!----------------------------retention parameter adjustment factor D. Moriasi 4/8/2014
 !!    r2adj_bsn   |none          |basinwide retention parameter adjustment factor (greater than 1)! D. Moriasi 4/8/2014
 !!    smfmn       |mm/deg C/day  |Minimum melt rate for snow during year (Dec.
 !!                               |21) where deg C refers to the air temperature.
@@ -368,6 +367,7 @@ subroutine readbsn
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Index, Len_trim, Exp
 !!    SWAT: caps, ascrv
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -537,10 +537,10 @@ subroutine readbsn
       if (eof < 0) exit
       read (103,*,iostat=eof) titldum
       read (103,'(a)') tlu
-      pos = index(tlu, ",")
-      if(pos>0.and.len_trim(tlu)>0) then
+      pos = Index(tlu, ",")
+      if(pos>0.and.Len_trim(tlu)>0) then
          numlu = 1
-         do ii=pos+1,len_trim(tlu)
+         do ii=pos+1,Len_trim(tlu)
             if (tlu(ii:ii).eq.',') then
                numlu = numlu + 1
             end if
@@ -550,7 +550,7 @@ subroutine readbsn
          end if
       end if
 
-      if (len_trim(tlu).le.3) numlu = 0
+      if (Len_trim(tlu).le.3) numlu = 0
       backspace(103)
       read (103,*) (lu_nodrain(ii), ii=1,numlu)
 
@@ -694,7 +694,7 @@ subroutine readbsn
    endif
    if(sed_ch>2) then
       write(*,*) 'Error in choosing channel erosion model:&
-      & 0-Bagnold, 1-Brownlie, 2-Yang'
+         & 0-Bagnold, 1-Brownlie, 2-Yang'
       write(*,*) 'Check *.bsn file to correct the error'
       !  stop
    endif
@@ -711,9 +711,9 @@ subroutine readbsn
    ubw = 10.0       !! the uptake distribution for water is hardwired
    !! users are not allowed to modify the water
    !! water uptake distribution
-   uobw = 1. - exp(-ubw)
-   uobn = 1. - exp(-n_updis)
-   uobp = 1. - exp(-p_updis)
+   uobw = 1. - Exp(-ubw)
+   uobn = 1. - Exp(-n_updis)
+   uobp = 1. - Exp(-p_updis)
 
 !!    determine the shape parameters for the equation which describes area of
 !!    snow cover as a function of amount of snow
@@ -737,34 +737,30 @@ subroutine readbsn
    if (cswat == 1) then
       open (100,file="cswat_profile.txt",recl=280)
       write (100,*) 'year',';','day',';','hru',';','cmass',';','sol_rsd',&
-      &';','mancmass'
+         &';','mancmass'
    end if
 
-   !!add by zhang
-   !!=====================
    if (cswat == 2) then
       open (98,file="cswat_profile.txt",recl=356)
       write (98,5102) 'year','day','lay','hru',&
-      &'sol_mass','sol_cmass','sol_nmass','sol_LS',&
-      &'sol_LM','sol_LSC','sol_LMC','sol_HSC',&
-      &'sol_HPC','sol_BMC','sol_LSN','sol_LMN',&
-      &'sol_HPN','sol_HSN','sol_BMN','sol_no3',&
-      &'sol_fop','sol_orgp','sol_actp','sol_stap',&
-      &'sol_solp'
+         &'sol_mass','sol_cmass','sol_nmass','sol_LS',&
+         &'sol_LM','sol_LSC','sol_LMC','sol_HSC',&
+         &'sol_HPC','sol_BMC','sol_LSN','sol_LMN',&
+         &'sol_HPN','sol_HSN','sol_BMN','sol_no3',&
+         &'sol_fop','sol_orgp','sol_actp','sol_stap',&
+         &'sol_solp'
 
       open (1001,file="cswat_daily.txt",recl=786)
       write (1001,5104) 'year','day','hru','rsdc','sedc',&
-      &'percc','latc','emitc','grainc','surfq_c',&
-      &'stoverc','NPPC','foc','rspc','tot_mass','tot_cmass','tot_nmass',&
-      &'tot_LSC','tot_LMC','tot_HSC','tot_HPC','tot_BMC','Biom_C','rwtf',&
-      &'tot_no3_nh3','wdntl',&
-      &'ET','Tillfactor','SW1','SW2','SW3','SW4','SW5','SW6','SW7','SW8',&
-      &'SW9','SW10','SW11',&
-      &'WFSC1','WFSC2','WFSC3','WFSC4','WFSC5','WFSC6','WFSC7','WFSC8',&
-      &'WFSC9','WFSC10','WFSC11'
+         &'percc','latc','emitc','grainc','surfq_c',&
+         &'stoverc','NPPC','foc','rspc','tot_mass','tot_cmass','tot_nmass',&
+         &'tot_LSC','tot_LMC','tot_HSC','tot_HPC','tot_BMC','Biom_C','rwtf',&
+         &'tot_no3_nh3','wdntl',&
+         &'ET','Tillfactor','SW1','SW2','SW3','SW4','SW5','SW6','SW7','SW8',&
+         &'SW9','SW10','SW11',&
+         &'WFSC1','WFSC2','WFSC3','WFSC4','WFSC5','WFSC6','WFSC7','WFSC8',&
+         &'WFSC9','WFSC10','WFSC11'
    endif
-   !!add by zhang
-   !!=====================
 
 ! open (111, file="final_n_balance.txt")
 ! open (112, file="final_yields.txt")

@@ -100,7 +100,7 @@ subroutine simulate
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Mod
 !!    SWAT: sim_inityr, std3, xmon, sim_initday, gcycl, clicon, resetlu, command
-!!    SWAT: operatn, writed, soil_write, writem, tillmix
+!!          operatn, writed, soil_write, writem, newtillmix
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -307,10 +307,9 @@ subroutine simulate
       end do
 
       do j = 1, nhru
-         !! compute biological mixing at the end of every year
 
-!          if (biomix(j) > .001) call tillmix (j,biomix(j))
-         if (biomix(j) > .001) call newtillmix (j,biomix(j))
+         !! compute biological mixing at the end of every year
+         if (biomix(j) > .001) call newtillmix (j, biomix(j))
 
          !! update sequence number for year in rotation to that of
          !! the next year and reset sequence numbers for operations

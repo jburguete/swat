@@ -1,7 +1,10 @@
-subroutine rsedyr
+!> @file rsedyr.f90
+!> file containing the subroutine rsedyr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the yearly reach output to the .sed file
+!> this subroutine writes the yearly reach output to the .sed file
+subroutine rsedyr
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
@@ -21,18 +24,19 @@ subroutine rsedyr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Dfloat
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, ii
+   integer :: ii, j
 
    do j = 1, subtot
-      rchyro(58,j) = rchyro(58,j)/dfloat(idlast)
+      rchyro(58,j) = rchyro(58,j) / Dfloat(idlast)
       write (84,5000) j, subgis(j), iyr, rch_dakm(j),&
-      &rchyro(3,j), rchyro(4,j),(rchyro(ii,j),ii=42,58)
+         &rchyro(3,j), rchyro(4,j), (rchyro(ii,j), ii = 42, 58)
    end do
 
    return

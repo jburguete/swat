@@ -12,19 +12,20 @@
 !> hru area and adjusted channel length\n
 !> iwave = 1 subbasin # for subbasin MUSLE is computed for entire subbasin using
 !> hru weighted KLSCP
-subroutine pkq(iwave)
+!> @param[in] j HRU number (none)
+subroutine pkq(iwave, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    al5          |none          |fraction of daily rainfall that occurs
-!!                                |during 0.5h highest intensity
-!!    hru_km(:)    |km^2          |area of HRU in square kilometers
-!!    ihru         |none          |HRU number
 !!    iwave        |none          |flag to differentiate calculation of HRU and
 !!                                |subbasin sediment calculation
 !!                                |iwave = 0 for HRU
 !!                                |iwave = subbasin # for subbasin
+!!    j            |none          |HRU number
+!!    al5          |none          |fraction of daily rainfall that occurs
+!!                                |during 0.5h highest intensity
+!!    hru_km(:)    |km^2          |area of HRU in square kilometers
 !!    qday         |mm H2O        |surface runoff that reaches main channel
 !!                                |during day in HRU
 !!    sub_km(:)    |km^2          |area of subbasin in square kilometers
@@ -45,22 +46,20 @@ subroutine pkq(iwave)
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    altc         |
-!!    j            |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Log, Expo
+!!    Intrinsic: Log
+!!    SWAT: Expo
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j
+   real*8 Expo
+   integer, intent (in) :: iwave, j
    real*8 :: altc
-
-   j = ihru
 
    if (iwave > 0) then
       !! subbasin sediment calculations

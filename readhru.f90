@@ -6,16 +6,17 @@
 !> this subroutine reads data from the HRU general input file (.hru).
 !> This file contains data related to general processes modeled
 !> at the HRU level.
-!> @param[in] i HRU number
-subroutine readhru(i)
+!> @param[in] i subbasin number (none)
+!> @param[in] j HRU number (none)
+subroutine readhru(i, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |subbasin number
+!!    j           |none          |HRU number
 !!    ifld(:)     |none          |number of HRU (in subbasin) that is a
 !!                               |floodplain
-!!    ihru        |none          |HRU number
 !!    ipot(:)     |none          |number of HRU (in subbasin) that is ponding
 !!                               |water--the HRU that the surface runoff from
 !!                               |current HRU drains into. This variable is
@@ -92,9 +93,6 @@ subroutine readhru(i)
 !!                               |surface runoff to allow the runoff to take
 !!                               |longer than 1 day to reach the subbasin outlet
 !!    usle_ls(:)  |none          |USLE equation length slope (LS) factor
-!!Modified parameter variable! D. Moriasi 4/8/2014
-
-!----------------------------------------------------------------------------------------------
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -103,7 +101,6 @@ subroutine readhru(i)
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    epcohru     |none          |plant water uptake compensation factor (0-1)
 !!    escohru     |none          |soil evaporation compensation factor (0-1)
-!!    j           |nonde         |counter
 !!    sin_sl      |none          |Sin(slope angle)
 !!    titldum     |NA            |title line of .sub file (not used)
 !!    xm          |none          |exponential in equation to calculate
@@ -120,17 +117,16 @@ subroutine readhru(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
+   integer, intent(in) :: i, j
    character (len=80) :: titldum
    real*8 :: epcohru, escohru, sin_sl, xm, xx
-   integer :: eof, j
+   integer :: eof
 
 
 
    eof = 0
    escohru = 0.
    epcohru = 0.
-   j = ihru
 
    do
       read (108,5100) titldum

@@ -1,7 +1,10 @@
-subroutine submon
+!> @file submon.f90
+!> file containing the subroutine submon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes monthly subbasin output to the output.sub file
+!> this subroutine writes monthly subbasin output to the output.sub file
+subroutine submon
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition

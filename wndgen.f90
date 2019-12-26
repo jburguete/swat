@@ -39,6 +39,7 @@ subroutine wndgen(j)
    use parm
    implicit none
 
+   real*8 Aunif
    integer, intent (in) :: j
 
    real*8 :: v6

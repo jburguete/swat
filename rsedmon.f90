@@ -1,7 +1,11 @@
-subroutine rsedmon(mdays)
+!> @file rsedmon.f90
+!> file containing the subroutine rsedmon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes the monthly reach output to the .sed file
+!> this subroutine writes the monthly reach output to the .sed file
+!> @param[in] mdays number of days simulated in month
+subroutine rsedmon(mdays)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
@@ -28,12 +32,12 @@ subroutine rsedmon(mdays)
    implicit none
 
    integer, intent(in) :: mdays
-   integer :: j, ii
+   integer :: ii, j
 
    do j = 1, subtot
       rchmono(58,j) = rchmono(58,j)/dfloat(mdays)
       write (84,5000) j, subgis(j), mo_chk, rch_dakm(j),&
-      &rchmono(3,j), rchmono(4,j),(rchmono(ii,j),ii=42,58)
+         &rchmono(3,j), rchmono(4,j), (rchmono(ii,j), ii=42, 58)
    end do
 
    return

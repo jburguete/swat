@@ -1,7 +1,10 @@
-subroutine hruyr
+!> @file hruyr.f90
+!> file containing the subroutine hruyr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes annual HRU output to the output.hru file
+!> this subroutine writes annual HRU output to the output.hru file
+subroutine hruyr
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -139,6 +142,9 @@ subroutine hruyr
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    cropname
+!!    idplant
+!!    iflag
 !!    ii          |none          |counter
 !!    j           |none          |HRU number
 !!    pdvas(:)    |varies        |array to hold HRU output values
@@ -152,8 +158,8 @@ subroutine hruyr
    use parm
    implicit none
 
-   integer :: j, sb, ii, iflag, idplant
    real*8, dimension (mhruo) :: pdvas, pdvs
+   integer :: idplant, iflag, ii, j, sb
    character (len=4) :: cropname
 
    do j = 1, nhru
@@ -165,9 +171,6 @@ subroutine hruyr
       end do
 
       if (iflag == 1) then
-
-         pdvas = 0.
-         pdvs = 0.
 
          pdvas(1) = hruyro(1,j)
          pdvas(2) = hruyro(2,j)
@@ -238,7 +241,6 @@ subroutine hruyr
          pdvas(67) = hruyro(63,j)
          pdvas(68) = hruyro(64,j)
          pdvas(69) = wtab(j)  !! based on 30 day antecedent climate(mm) (prec,et)
-!       pdvas(70) = wtabelo   !! based on depth from soil surface (mm)
          pdvas(70) = wat_tbl(j)   !! based on depth from soil surface (mm): Dmoriasi 4/08/2014
 !!      added current snow content in the hru (not summed)
          pdvas(71) = sno_hru(j)
@@ -275,24 +277,24 @@ subroutine hruyr
 
             if (iscen == 1 .and. isproj == 0) then
                write (28,1000) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), iyr, hru_km(j), (pdvs(ii), ii = 1, itots)
+                  &nmgt(j), iyr, hru_km(j), (pdvs(ii), ii = 1, itots)
             else if (isproj == 1) then
                write (21,1000) cropname, j, subnum(j), hruno(j),&
-               &sb, nmgt(j), iyr, hru_km(j), (pdvs(ii), ii = 1, itots)
+                  &sb, nmgt(j), iyr, hru_km(j), (pdvs(ii), ii = 1, itots)
             else if (iscen == 1 .and. isproj == 2) then
                write (28,2000) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), iyr, hru_km(j), (pdvs(ii), ii = 1, itots), iyr
+                  &nmgt(j), iyr, hru_km(j), (pdvs(ii), ii = 1, itots), iyr
             endif
          else
             if (iscen == 1 .and. isproj == 0) then
                write (28,1001) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+                  &nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, mhruo)
             else if (isproj == 1) then
                write (21,1001) cropname, j, subnum(j), hruno(j),&
-               &sb, nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+                  &sb, nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, mhruo)
             else if (iscen == 1 .and. isproj == 2) then
                write (28,1001) cropname, j, subnum(j), hruno(j), sb,&
-               &nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, mhruo), iyr
+                  &nmgt(j), iyr, hru_km(j), (pdvas(ii), ii = 1, mhruo), iyr
             endif
          end if
       end if

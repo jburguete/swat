@@ -1,43 +1,50 @@
-subroutine lidinit(i)
+!> @file lidinit.f90
+!> file containing the subroutine lidinit
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine sets default values for LID parameters
+!> this subroutine sets default values for LID parameters
+!> @param[in] i subbasin number
+subroutine lidinit(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~ ~ ~ ~ ~
 !!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i                |none          |subbasin number
 !!    msub             |none          |the number of subbasins
 !!    mudb             |none          |the number of urban land uses
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    name             |units         |definition
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    gr_farea         |none          |fractional area of a green roof to the HRU
+!!    gr_sol_fc        |mm/mm H2O     |amount of water held in the amended soil
+!!                                    |profile at the field capacity
 !!    gr_sol_k         |mm/hr         |saturated hydraulic conductivity of
 !!                                    |the amended soil layer
 !!    gr_sol_por       |none          |total porosity of the amended soil layer
 !!                                    |expressed as a fraction of the total volume
-!!    gr_sol_fc        |mm/mm H2O     |amount of water held in the amended soil
-!!                                    |profile at the field capacity
-!!    gr_sol_wp        |mm/mm H2O     |amount of water held in the amended soil
-!!                                    |profile at the wilting point
 !!    gr_sol_sw(:)     |mm/mm H2O     |amount of water stored in the amended soil profile
 !!    gr_sol_sw_last   |mm/mm H2O     |soil water content of the amended soil layer at the last time step in a day
+!!    gr_sol_wp        |mm/mm H2O     |amount of water held in the amended soil
+!!                                    |profile at the wilting point
 !!    vgcl             |none          |van Genuchten equation's coefficient, l
 !!    vgcm             |none          |van Genuchten equation's coefficient, m
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    kk               |none          |end of file flag
 
+!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
    integer, intent(in) :: i
    integer :: kk
-!      real*8 ::
 
 !!    Common Variables
 !!    van Genuchten equation's coefficients
@@ -151,7 +158,7 @@ subroutine lidinit(i)
 !!    Combine indices for the lids
    do kk = 1, mudb
       if (gr_onoff(i,kk)==1 .or. rg_onoff(i,kk)==1 .or.&
-      &cs_onoff(i,kk)==1 .or. pv_onoff(i,kk)==1) then
+         &cs_onoff(i,kk)==1 .or. pv_onoff(i,kk)==1) then
          lid_onoff(i,kk)=1
       end if
    end do

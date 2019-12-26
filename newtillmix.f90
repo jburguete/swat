@@ -16,7 +16,7 @@
 !> @param[in] j HRU number (none)
 !> @param[in] bmix biological mixing efficiency: this number is zero for tillage
 !> operations (none)
-subroutine newtillmix(j,bmix)
+subroutine newtillmix(j, bmix)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition

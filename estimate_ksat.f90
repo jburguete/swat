@@ -15,6 +15,17 @@
 !> @param[out] esti_ksat estimated ksat
 subroutine estimate_ksat(perc_clay,esti_ksat)
 
+!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
+!!    name        |units         |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    xc          |%             |100% - perc_clay
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Exp
+
+!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
    implicit none
 
 !  real*8, parameter :: exksat = 5.0
@@ -26,7 +37,7 @@ subroutine estimate_ksat(perc_clay,esti_ksat)
 ! read *,perc_clay
 
    xc = 100.0 - perc_clay
-   esti_ksat = 12.7 * xc / (xc + exp(11.45 - 0.097 * xc)) + 1.0
+   esti_ksat = 12.7 * xc / (xc + Exp(11.45 - 0.097 * xc)) + 1.0
 
 ! print *,"The estimated ksat value is ",min(esti_ksat,exksat)
 

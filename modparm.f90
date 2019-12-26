@@ -226,13 +226,21 @@ module parm
 !> average amount of water stored in snow at the beginning of the simulation for
 !> the entire watershed (mm H20)
    real*8 :: wshd_snob
-!> average amount of water stored in soil for the entire watershed (mm H2O)
+!> water in soil at beginning of simulation, or\
+!> average amount of water stored in soil for the entire watershed, or\
+!> difference between mass balance calculated from watershed averages and actual
+!> value for water in soil at end of simulation (goal is to have wshd_sw = 0.)
+!> (mm H2O)
    real*8 :: wshd_sw
 !> fraction of watershed area which drains into ponds (none)
    real*8 :: wshd_pndfr
-!> total amount of suspended sediment in ponds in the watershed (metric tons)
+!> total amount of suspended sediment in ponds in the watershed (metric tons),\n
+!> or mass balance discrepancy for pond sediment expressed as loading per unit
+!> hectare of drainage area (metric tons/ha)
    real*8 :: wshd_pndsed
-!> total volume of water in ponds in the watershed (m^3)
+!> total volume of water in ponds in the watershed (m^3),
+!> or mass balance discrepancy for pond water volume expressed as depth over
+!> drainage area (mm H2O)
    real*8 :: wshd_pndv
 !> pesticide percolation coefficient (0-1)\n
 !> 0: concentration of pesticide in surface runoff is zero\n
@@ -295,9 +303,13 @@ module parm
 !> die-off factor for less persistent bacteria in soil solution (1/day)
    real*8 :: wdlpq
 !> total amount of suspended sediment in reservoirs in the watershed
-!> (metric tons)
+!> (metric tons),\n
+!> or mass balance discrepancy for reservoir sediment expressed as loading per
+!> unit hectare of drainage area (metric tons/ha)
    real*8 :: wshd_ressed
-!> total volume of water in all reservoirs in the watershed (m^3)
+!> total volume of water in all reservoirs in the watershed (m^3),\n
+!> or mass balance discrepancy for reservoir water volume expressed as depth
+!> over drainage area (mm H2O)
    real*8 :: wshd_resv
 !> average amount of phosphorus initially in the mineral P pool in watershed
 !> soil (kg P/ha)
@@ -748,8 +760,8 @@ module parm
    real*8 :: latksatf_bsn
 !> Pump capacity (def val = 1.042 mm h-1 or 25 mm day-1) (mm h-1)
    real*8 :: pc_bsn
-!    Drainmod tile equations  01/2006
-   integer :: i_subhw, imgt, idlast, iwtr, ifrttyp, mo_atmo, mo_atmo1
+   integer :: idlast !< number of days simulated in month (none)
+   integer :: i_subhw, imgt, iwtr, ifrttyp, mo_atmo, mo_atmo1
    integer :: ifirstatmo, iyr_atmo, iyr_atmo1, matmo
    integer :: mch !< maximum number of channels
    integer :: mcr !< maximum number of crops grown per year
@@ -779,12 +791,14 @@ module parm
 !> 1 Muskingum method\n
    integer :: irte
    integer :: nrch !< number of reaches in watershed (none)
-   integer :: nres !< number of reservoirs in watershed (none)
+   integer :: nres !< total number of reservoirs in watershed (none)
 !> number of last HRU in previous subbasin or\n
 !> number of HRUs in watershed (none)
    integer :: nhru
-   integer :: i_mo !< current month being simulated (none)
-   integer :: mo, immo
+!> current month being simulated or month of next day of simulation (none)
+   integer :: i_mo
+   integer :: immo !< current cumulative month of simulation (none)
+   integer :: mo
 !> wind speed input code (noen)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
@@ -864,6 +878,7 @@ module parm
 !> 2 data simulated for each subbasin
    integer :: slrsim
 !> channel degredation code\n
+!> 0: do not compute channel degradation\n
 !> 1: compute channel degredation (downcutting and widening)
    integer :: ideg
 !> rainfall/runoff code (none)\n
@@ -911,7 +926,7 @@ module parm
 !> 1 print Log10 streamflow in reach
    integer :: ilog
    integer :: itotr !< number of output variables printed (output.rch)
-   integer :: iyr !< year being simulated (year)
+   integer :: iyr !< current year of simulation (year)
 !> stream water quality code\n
 !> 0 do not model stream water quality\n
 !> 1 model stream water quality (QUAL2E & pesticide transformations)
@@ -1141,9 +1156,8 @@ module parm
 !> wshddayo(7) actual evapotranspiration in watershed for day (mm H20)\n
 !> wshddayo(12) sediment yield from HRUs in watershed for day
 !> (metric tons or metric tons/ha)\n
-!> wshddayo(35) amount of water stored in soil profile in watershed for day
-!> (mm H20)\n
-!> wshddayo(40) organic N loading to stream in watershed for day (kg N/ha)\n
+!> wshddayo(35) amount of water stored in soil profile in watershed at end of
+!> day (mm H20)\n
 !> wshddayo(41) organic P loading to stream in watershed for day (kg P/ha)\n
 !> wshddayo(42) nitrate loading to stream in surface runoff in watershed for day
 !> (kg N/ha)\n
@@ -1160,19 +1174,214 @@ module parm
 !> (mm H20)
    real*8, dimension (mstdo) :: wshddayo
 !> watershed monthly output array (see definitions for wshddayo array elements)
-!> (varies)
+!> (varies)\n
+!> wshdmono(1) average amount of precipitation in watershed for the month
+!> (mm H2O)\n
+!> wshdmono(3) surface runoff in watershed for month (mm H2O)\n
+!> wshdmono(4) lateral flow contribution to streamflow in watershed for month
+!> (mm H2O)\n
+!> wshdmono(5) water percolation past bottom of soil profile in watershed for
+!> month (mm H2O)\n
+!> wshdmono(6) water yield to streamflow from HRUs in watershed for month
+!> (mm H2O)\n
+!> wshdmono(7) actual evapotranspiration in watershed for month (mm H2O)\n
+!> wshdmono(8) average maximum temperature in watershed for the month (deg C)\n
+!> wshdmono(9) average minimum temperature in watershed for the month (deg C)\n
+!> wshdmono(12) sediment yield from HRUs in watershed for the month
+!> (metric tons)\n
+!> wshdmono(39) freezing rain/snow fall in watershed for the month (mm H2O)\n
+!> wshdmono(40) organic N loading to stream in watershed for the month
+!> (kg N/ha)\n
+!> wshdmono(41) organic P loading to stream in watershed for the month
+!> (kg P/ha)\n
+!> wshdmono(42) nitrate loading to stream in surface runoff in watershed for the
+!> month (kg N/ha)\n
+!> wshdmono(43) soluble P loading to stream in watershed for the month
+!> (kg P/ha)\n
+!> wshdmono(44) plant uptake of N in watershed for the month (kg N/ha)\n
+!> wshdmono(45) nitrate loading to stream in lateral flow in watershed for the
+!> month (kg N/ha)\n
+!> wshdmono(46) nitrate percolation past bottom of soil profile in watershed
+!> for the month (kg N/ha)\n
+!> wshdmono(104) groundwater contribution to stream in watershed for the month
+!> (mm H2O)\n
+!> wshdmono(108) potential evapotranspiration in watershed for the month
+!> (mm H2O)\n
+!> wshdmono(109) drainage tile flow contribution to stream in watershed for the
+!> month (mm H2O)
    real*8, dimension (mstdo) :: wshdmono
+!> watershed annual output array (varies)\n
+!> wshdyro(1) average amount of precipitation in watershed for the year
+!> (mm H2O)\n
+!> wshdyro(3) surface runoff in watershed for year (mm H2O)\n
+!> wshdyro(4) lateral flow contribution to streamflow in watershed for year
+!> (mm H2O)\n
+!> wshdyro(5) water percolation past bottom of soil profile in watershed for
+!> year (mm H2O)\n
+!> wshdyro(6) water yield to streamflow from HRUs in watershed for year
+!> (mm H2O)\n
+!> wshdyro(7) actual evapotranspiration in watershed for year (mm H2O)\n
+!> wshdyro(8) average maximum temperature in watershed for the year (deg C)\n
+!> wshdyro(9) average minimum temperature in watershed for the year (deg C)\n
+!> wshdyro(12) sediment yield from HRUs in watershed for the year
+!> (metric tons)\n
+!> wshdyro(40) organic N loading to stream in watershed for the year (kg N/ha)\n
+!> wshdyro(41) organic P loading to stream in watershed for the year (kg P/ha)\n
+!> wshdyro(42) nitrate loading to stream in surface runoff in watershed for the
+!> year (kg N/ha)\n
+!> wshdyro(43) soluble P loading to stream in watershed for the year (kg P/ha)\n
+!> wshdyro(44) plant uptake of N in watershed for the year\n
+!> wshdyro(45) nitrate loading to stream in lateral flow in watershed for the
+!> year (kg N/ha)\n
+!> wshdyro(46) nitrate percolation past bottom of soil profile in watershed for
+!> the year (kg N/ha)\n
+!> wshdyro(104) groundwater contribution to stream in watershed for the year
+!> (mm H2O)\n
+!> wshdyro(108) potential evapotranspiration in watershed for the year
+!> (mm H2O)\n
+!> wshdyro(109) drainage tile flow contribution to stream in watershed for the
+!> year (mm H2O)
    real*8, dimension (mstdo) :: wshdyro
    real*8, dimension (16) :: fcstaao
+!> watershed average annual output array (varies)\n
+!> wshdaao(1) precipitation in watershed (mm H2O)\n
+!> wshdaao(3) surface runoff loading to main channel in watershed (mm H2O)\n
+!> wshdaao(4) lateral flow loading to main channel in watershed (mm H2O)\n
+!> wshdaao(5) percolation of water out of root zone in watershed (mm H2O)\n
+!> wshdaao(7) actual evapotranspiration in watershed (mm H2O)\n
+!> wshdaao(13) sediment loading to ponds in watershed (metric tons)\n
+!> wshdaao(14) sediment loading from ponds in watershed (metric tons)\n
+!> wshdaao(15) net change in sediment level in ponds in watershed (metric tons)\n
+!> wshdaao(19) evaporation from ponds in watershed (m^3 H2O)\n
+!> wshdaao(20) seepage from ponds in watershed (m^3 H2O)\n
+!> wshdaao(21) precipitation on ponds in watershed (m^3 H2O)\n
+!> wshdaao(22) volume of water entering ponds in watershed (m^3 H2O)\n
+!> wshdaao(23) volume of water leaving ponds in watershed (m^3 H2O)\n
+!> wshdaao(38) transmission losses in watershed (mm H2O)
    real*8, dimension (mstdo) :: wshdaao
    real*8, dimension (:,:), allocatable :: wpstdayo,wpstmono,wpstyro
 !> harvested biomass (dry weight) (kg/ha)
    real*8, dimension (:,:), allocatable :: bio_hv
 !> yield (dry weight) by crop type in the HRU (kg/ha)
    real*8, dimension (:,:), allocatable :: yldkg
-!> reach monthly output array (varies)
+!> reach monthly output array (varies)\n
+!> rchmono(1,:) flow into reach during month (m^3/s)\n
+!> rchmono(2,:) flow out of reach during month (m^3/s)\n
+!> rchmono(3,:) sediment transported into reach during month (metric tons)\n
+!> rchmono(4,:) sediment transported out of reach during month (metric tons)\n
+!> rchmono(5,:) sediment concentration in outflow during month (mg/L)\n
+!> rchmono(6,:) organic N transported into reach during month (kg N)\n
+!> rchmono(7,:) organic N transported out of reach during month (kg N)\n
+!> rchmono(8,:) organic P transported into reach during month (kg P)\n
+!> rchmono(9,:) organic P transported out of reach during month (kg P)\n
+!> rchmono(10,:) evaporation from reach during month (m^3/s)\n
+!> rchmono(11,:) transmission losses from reach during month (m^3/s)\n
+!> rchmono(12,:) conservative metal #1 transported out of reach during month
+!> (kg)\n
+!> rchmono(13,:) conservative metal #2 transported out of reach during month
+!> (kg)\n
+!> rchmono(14,:) conservative metal #3 transported out of reach during month
+!> (kg)\n
+!> rchmono(15,:) nitrate transported into reach during month (kg N)\n
+!> rchmono(16,:) nitrate transported out of reach during month (kg N)\n
+!> rchmono(17,:) soluble P transported into reach during month (kg P)\n
+!> rchmono(18,:) soluble P transported out of reach during month (kg P)\n
+!> rchmono(19,:) soluble pesticide transported into reach during month
+!> (mg pst)\n
+!> rchmono(20,:) soluble pesticide transported out of reach during month
+!> (mg pst)\n
+!> rchmono(21,:) sorbed pesticide transported into reach during month (mg pst)\n
+!> rchmono(22,:) sorbed pesticide transported out of reach during month
+!> (mg pst)\n
+!> rchmono(23,:) amount of pesticide lost through reactions in reach during
+!> month (mg pst)\n
+!> rchmono(24,:) amount of pesticide lost through volatilization from reach
+!> during month (mg pst)\n
+!> rchmono(25,:) amount of pesticide settling out of reach to bed sediment
+!> during month (mg pst)\n
+!> rchmono(26,:) amount of pesticide resuspended from bed sediment to reach
+!> during month (mg pst)\n
+!> rchmono(27,:) amount of pesticide diffusing from reach to bed sediment during
+!> month (mg pst)\n
+!> rchmono(28,:) amount of pesticide in sediment layer lost through reactions
+!> during month (mg pst)\n
+!> rchmono(29,:) amount of pesticide in sediment layer lost through burial
+!> during month (mg pst)\n
+!> rchmono(30,:) chlorophyll-a transported into reach during month (kg chla)\n
+!> rchmono(31,:) chlorophyll-a transported out of reach during month (kg chla)\n
+!> rchmono(32,:) ammonia transported into reach during month (kg N)\n
+!> rchmono(33,:) ammonia transported out of reach during month (kg N)\n
+!> rchmono(34,:) nitrite transported into reach during month (kg N)\n
+!> rchmono(35,:) nitrite transported out of reach during month (kg N)\n
+!> rchmono(36,:) CBOD transported into reach during month (kg O2)\n
+!> rchmono(37,:) CBOD transported out of reach during month (kg O2)\n
+!> rchmono(38,:) dissolved oxygen transported into reach during month (kg O2)\n
+!> rchmono(39,:) dissolved oxygen transported out of reach during month
+!> (kg O2)\n
+!> rchmono(40,:) persistent bacteria transported out of reach during month
+!> (kg bact)\n
+!> rchmono(41,:) less persistent bacteria transported out of reach during month
+!> (kg bact)\n
+!> rchmono(43,:) total N (org N + no3 + no2 + nh4 outs) (kg)\n
+!> rchmono(44,:) total P (org P + sol p outs) (kg)
    real*8, dimension (:,:), allocatable :: rchmono
-   real*8, dimension (:,:), allocatable :: wpstaao,rchyro
+!> reach annual output array (varies)\n
+!> rchyro(1,:) flow into reach during year (m^3/s)\n
+!> rchyro(2,:) flow out of reach during year (m^3/s)\n
+!> rchyro(3,:) sediment transported into reach during year (metric tons)\n
+!> rchyro(4,:) sediment transported out of reach during year (metric tons)\n
+!> rchyro(5,:) sediment concentration in outflow during year (mg/L)\n
+!> rchyro(6,:) organic N transported into reach during year (kg N)\n
+!> rchyro(7,:) organic N transported out of reach during year (kg N)\n
+!> rchyro(8,:) organic P transported into reach during year (kg P)\n
+!> rchyro(9,:) organic P transported out of reach during year (kg P)\n
+!> rchyro(10,:) evaporation from reach during year (m^3/s)\n
+!> rchyro(11,:) transmission losses from reach during year (m^3/s)\n
+!> rchyro(12,:) conservative metal #1 transported out of reach during year
+!> (kg)\n
+!> rchyro(13,:) conservative metal #2 transported out of reach during year
+!> (kg)\n
+!> rchyro(14,:) conservative metal #3 transported out of reach during year
+!> (kg)\n
+!> rchyro(15,:) nitrate transported into reach during year (kg N)\n
+!> rchyro(16,:) nitrate transported out of reach during year (kg N)\n
+!> rchyro(17,:) soluble P transported into reach during year (kg P)\n
+!> rchyro(18,:) soluble P transported out of reach during year (kg P)\n
+!> rchyro(19,:) soluble pesticide transported into reach during year (mg pst)\n
+!> rchyro(20,:) soluble pesticide transported out of reach during year
+!> (mg pst)\n
+!> rchyro(21,:) sorbed pesticide transported into reach during year (mg pst)\n
+!> rchyro(22,:) sorbed pesticide transported out of reach during year (mg pst)\n
+!> rchyro(23,:) amount of pesticide lost through reactions in reach during
+!> year!> (mg pst)\n
+!> rchyro(24,:) amount of pesticide lost through volatilization from reach
+!> during year (mg pst)\n
+!> rchyro(25,:) amount of pesticide settling out of reach to bed sediment during
+!> year (mg pst)\n
+!> rchyro(26,:) amount of pesticide resuspended from bed sediment to reach
+!> during year (mg pst)\n
+!> rchyro(27,:) amount of pesticide diffusing from reach to bed sediment during
+!> year (mg pst)\n
+!> rchyro(28,:) amount of pesticide in sediment layer lost through reactions
+!> during year (mg pst)\n
+!> rchyro(29,:) amount of pesticide in sediment layer lost through burial during
+!> year (mg pst)\n
+!> rchyro(30,:) chlorophyll-a transported into reach during year (kg chla)\n
+!> rchyro(31,:) chlorophyll-a transported out of reach during year (kg chla)\n
+!> rchyro(32,:) ammonia transported into reach during year (kg N)\n
+!> rchyro(33,:) ammonia transported out of reach during year (kg N)\n
+!> rchyro(34,:) nitrite transported into reach during year (kg N)\n
+!> rchyro(35,:) nitrite transported out of reach during year (kg N)\n
+!> rchyro(36,:) CBOD transported into reach during year (kg O2)\n
+!> rchyro(37,:) CBOD transported out of reach during year (kg O2)\n
+!> rchyro(38,:) dissolved oxygen transported into reach during year (kg O2)\n
+!> rchyro(39,:) dissolved oxygen transported out of reach during year (kg O2)\n
+!> rchyro(40,:) persistent bacteria transported out of reach during year
+!> (kg bact)\n
+!> rchyro(41,:) less persistent bacteria transported out of reach during year
+!> (kg bact)
+   real*8, dimension (:,:), allocatable :: rchyro
+   real*8, dimension (:,:), allocatable :: wpstaao
 !> HRU monthly output data array (varies)\n
 !> hrumono(1,:) precipitation in HRU during month (mm H2O)\n
 !> hrumono(2,:) amount of precipitation falling as freezing rain/snow in HRU
@@ -1330,13 +1539,433 @@ module parm
 !> rchdy(43,:) total N (org N + no3 + no2 + nh4 outs) (kg)\n
 !> rchdy(44,:) total P (org P + sol p outs) (kg)
    real*8, dimension (:,:), allocatable :: rchdy
-   real*8, dimension (:,:), allocatable :: rchaao,hruyro
-!> subbasin monthly output array (varies)
+!> HRU annual output array (varies)
+!> hruyro(1,:) precipitation in HRU during year (mm H2O)\n
+!> hruyro(2,:) amount of precipitation falling as freezing rain/snow in HRU
+!> during year (mm H2O)\n
+!> hruyro(3,:) amount of snow melt in HRU during year (mm H2O)\n
+!> hruyro(4,:) amount of surface runoff to main channel from HRU during year
+!> (ignores impact of transmission losses) (mm H2O)\n
+!> hruyro(5,:) amount of lateral flow contribution to main channel from HRU
+!> during year (mm H2O)\n
+!> hruyro(6,:) amount of groundwater flow contribution to main channel from HRU
+!> during year (mm H2O)\n
+!> hruyro(7,:) amount of water moving from shallow aquifer to plants or soil
+!> profile in HRU during year (mm H2O)\n
+!> hruyro(8,:) amount of water recharging deep aquifer in HRU during year
+!> (mm H2O)\n
+!> hruyro(9,:) total amount of water entering both aquifers from HRU during year
+!> (mm H2O)\n
+!> hruyro(10,:) water yield (total amount of water entering main channel) from
+!> HRU during year (mm H2O)\n
+!> hruyro(11,:) amount of water percolating out of the soil profile and into the
+!> vadose zone in HRU during year (mm H2O)\n
+!> hruyro(12,:) actual evapotranspiration in HRU during year (mm H2O)\n
+!> hruyro(13,:) amount of transmission losses from tributary channels in HRU for
+!> year (mm H2O)\n
+!> hruyro(14,:) sediment yield from HRU for year (metric tons/ha)\n
+!> hruyro(15,:) actual amount of transpiration that occurs during year in HRU
+!> (mm H2O)\n
+!> hruyro(16,:) actual amount of evaporation (from soil) that occurs during year
+!> in HRU (mm H2O)\n
+!> hruyro(17,:) amount of nitrogen applied in continuous fertilizer operation
+!> during year in HRU (kg N/ha)\n
+!> hruyro(18,:) amount of phosphorus applied in continuous fertilizer operation
+!> during year in HRU (kg P/ha)\n
+!> hruyro(23,:) amount of water removed from shallow aquifer in HRU for
+!> irrigation during year (mm H2O)\n
+!> hruyro(24,:) amount of water removed from deep aquifer in HRU for irrigation
+!> during year (mm H2O)\n
+!> hruyro(25,:) potential evapotranspiration in HRU during year (mm H2O)\n
+!> hruyro(26,:) annual amount of N (organic & mineral) applied in HRU during
+!> grazing (kg N/ha)\n
+!> hruyro(27,:) annual amount of P (organic & mineral) applied in HRU during
+!> grazing (kg P/ha)\n
+!> hruyro(28,:) annual amount of N (organic & mineral) auto-applied in HRU
+!> (kg N/ha)\n
+!> hruyro(29,:) annual amount of P (organic & mineral) auto-applied in HRU
+!> (kg P/ha)\n
+!> hruyro(31,:) water stress days in HRU during year (stress days)\n
+!> hruyro(32,:) temperature stress days in HRU during year (stress days)\n
+!> hruyro(33,:) nitrogen stress days in HRU during year (stress days)\n
+!> hruyro(34,:) phosphorus stress days in HRU during year (stress days)\n
+!> hruyro(35,:) organic nitrogen in surface runoff in HRU during year
+!> (kg N/ha)\n
+!> hruyro(36,:) organic phosphorus in surface runoff in HRU during year
+!> (kg P/ha)\n
+!> hruyro(37,:) nitrate in surface runoff in HRU during year (kg N/ha)\n
+!> hruyro(38,:) nitrate in lateral flow in HRU during year (kg N/ha)\n
+!> hruyro(39,:) soluble phosphorus in surface runoff in HRU during year
+!> (kg P/ha)\n
+!> hruyro(40,:) amount of nitrogen removed from soil by plant uptake in HRU
+!> during year (kg N/ha)\n
+!> hruyro(41,:) nitrate percolating past bottom of soil profile in HRU during
+!> year (kg N/ha)\n
+!> hruyro(42,:) amount of phosphorus removed from soil by plant uptake in HRU
+!> during year (kg P/ha)\n
+!> hruyro(43,:) amount of phosphorus moving from labile mineral to active
+!> mineral pool in HRU during year (kg P/ha)\n
+!> hruyro(44,:) amount of phosphorus moving from active mineral to stable
+!> mineral pool in HRU during year (kg P/ha)\n
+!> hruyro(45,:) amount of nitrogen applied to HRU in fertilizer and grazing
+!> operations during year (kg N/ha)\n
+!> hruyro(46,:) amount of phosphorus applied to HRU in fertilizer and grazing
+!> operations during year (kg P/ha)\n
+!> hruyro(47,:) amount of nitrogen added to soil by fixation in HRU during year
+!> (kg N/ha)\n
+!> hruyro(48,:) amount of nitrogen lost by denitrification in HRU during year
+!> (kg N/ha)\n
+!> hruyro(49,:) amount of nitrogen moving from active organic to nitrate pool in
+!> HRU during year (kg N/ha)\n
+!> hruyro(50,:) amount of nitrogen moving from active organic to stable organic
+!> pool in HRU during year (kg N/ha)\n
+!> hruyro(51,:) amount of phosphorus moving from organic to labile mineral pool
+!> in HRU during year (kg P/ha)\n
+!> hruyro(52,:) amount of nitrogen moving from fresh organic to nitrate and
+!> active organic pools in HRU during year (kg N/ha)\n
+!> hruyro(53,:) amount of phosphorus moving from fresh organic to the labile
+!> mineral and organic pools in HRU during year (kg P/ha)\n
+!> hruyro(54,:) amount of nitrogen added to soil in rain during year (kg N/ha)\n
+!> hruyro(61,:) daily soil loss predicted with USLE equation (metric tons/ha)\n
+!> hruyro(63,:) less persistent bacteria transported to main channel from HRU
+!> during year (# bacteria/ha)\n
+!> hruyro(64,:) persistent bacteria transported to main channel from HRU during
+!> year (# bacteria/ha)\n
+!> hruyro(65,:) nitrate loading from groundwater in HRU to main channel during
+!> year (kg N/ha)\n
+!> hruyro(66,:) soluble P loading from groundwater in HRU to main channel during
+!> year (kg P/ha)\n
+!> hruyro(67,:) loading of mineral P attached to sediment in HRU to main channel
+!> during year (kg P/ha)
+   real*8, dimension (:,:), allocatable :: hruyro
+!> reach average annual output array (varies)\n
+!> rchaao(1,:) flow into reach during simulation (m^3/s)\n
+!> rchaao(2,:) flow out of reach during simulation (m^3/s)\n
+!> rchaao(3,:) sediment transported into reach during simulation
+!> (metric tons)\n
+!> rchaao(4,:) sediment transported out of reach during simulation
+!> (metric tons)\n
+!> rchaao(5,:) sediment concentration in outflow during simulation (mg/L)\n
+!> rchaao(6,:) organic N transported into reach during simulation (kg N)\n
+!> rchaao(7,:) organic N transported out of reach during simulation (kg N)\n
+!> rchaao(8,:) organic P transported into reach during simulation (kg P)\n
+!> rchaao(9,:) organic P transported out of reach during simulation (kg P)\n
+!> rchaao(10,:) evaporation from reach during simulation (m^3/s)\n
+!> rchaao(11,:) transmission losses from reach during simulation (m^3/s)\n
+!> rchaao(12,:) conservative metal #1 transported out of reach during
+!> simulation (kg)\n
+!> rchaao(13,:) conservative metal #2 transported out of reach during
+!> simulation (kg)\n
+!> rchaao(14,:) conservative metal #3 transported out of reach during
+!> simulation (kg)\n
+!> rchaao(15,:) nitrate transported into reach during simulation (kg N)\n
+!> rchaao(16,:) nitrate transported out of reach during simulation (kg N)\n
+!> rchaao(17,:) soluble P transported into reach during simulation (kg P)\n
+!> rchaao(18,:) soluble P transported out of reach during simulation (kg P)\n
+!> rchaao(19,:) soluble pesticide transported into reach during simulation\n
+!> rchaao(20,:) soluble pesticide transported out of reach during simulation\n
+!> rchaao(21,:) sorbed pesticide transported into reach during simulation\n
+!> rchaao(22,:) sorbed pesticide transported out of reach during simulation\n
+!> rchaao(23,:) amount of pesticide lost through reactions in reach during
+!> simulation\n
+!> rchaao(24,:) amount of pesticide lost through volatilization from reach
+!> during simulation\n
+!> rchaao(25,:) amount of pesticide settling out of reach to bed sediment during
+!> simulation\n
+!> rchaao(26,:) amount of pesticide resuspended from bed sediment to reach
+!> during simulation\n
+!> rchaao(27,:) amount of pesticide diffusing from reach to bed sediment during
+!> simulation\n
+!> rchaao(28,:) amount of pesticide in sediment layer lost through reactions
+!> during simulation\n
+!> rchaao(29,:) amount of pesticide in sediment layer lost through burial during
+!> simulation\n
+!> rchaao(30,:) chlorophyll-a transported into reach during simulation
+!> (kg chla)\n
+!> rchaao(31,:) chlorophyll-a transported out of reach during simulation
+!> (kg chla)\n
+!> rchaao(32,:) ammonia transported into reach during simuation (kg N)\n
+!> rchaao(33,:) ammonia transported out of reach during simuation (kg N)\n
+!> rchaao(34,:) nitrite transported into reach during simuation (kg N)\n
+!> rchaao(35,:) nitrite transported out of reach during simuation (kg N)\n
+!> rchaao(36,:) CBOD transported into reach during simulation (kg O2)\n
+!> rchaao(37,:) CBOD transported out of reach during simuation (kg O2)\n
+!> rchaao(38,:) dissolved oxygen transported into reach during simuation
+!> (kg O2)\n
+!> rchaao(39,:) dissolved oxygen transported out of reach during simulation
+!> (kg O2)\n
+!> rchaao(40,:) persistent bacteria transported out of reach during simulation
+!> (kg bact)\n
+!> rchaao(41,:) less persistent bacteria transported out of reach during
+!> simulation (kg bact)\n
+!> rchaao(43,:) Total N (org N + no3 + no2 + nh4 outs) (kg)\n
+!> rchaao(44,:) Total P (org P + sol p outs) (kg)
+   real*8, dimension (:,:), allocatable :: rchaao
+!> subbasin monthly output array (varies)\n
+!> submono(1,:) precipitation in subbasin for month (mm H20)\n
+!> submono(2,:) snow melt in subbasin for month (mm H20)\n
+!> submono(3,:) surface runoff loading in subbasin for month (mm H20)\n
+!> submono(4,:) water yield from subbasin for month (mm H20)\n
+!> submono(5,:) potential evapotranspiration in subbasin for month (mm H20)\n
+!> submono(6,:) actual evapotranspiration in subbasin for month (mm H20)\n
+!> submono(7,:) sediment yield from subbasin for month (metric tons/ha)\n
+!> submono(8,:) organic N loading from subbasin for month (kg N/ha)\n
+!> submono(9,:) organic P loading from subbasin for month (kg P/ha)\n
+!> submono(10,:) NO3 loading from surface runoff in subbasin for month
+!> (kg N/ha)\n
+!> submono(11,:) soluble P loading from subbasin for month (kg P/ha)\n
+!> submono(12,:) groundwater loading from subbasin for month (mm H20)\n
+!> submono(13,:) percolation out of soil profile in subbasin for month
+!> (mm H20)\n
+!> submono(14,:) loading to reach of mineral P attached to sediment from
+!> subbasin for month (kg P/ha)
    real*8, dimension (:,:), allocatable :: submono
-   real*8, dimension (:,:), allocatable :: hruaao,subyro,subaao
-!> reservoir monthly output array (varies)
+!> subbasin annual output array (varies)\n
+!> subyro(1,:) precipitation in subbasin for year (mm H2O)\n
+!> subyro(2,:) snow melt in subbasin for year (mm H2O)\n
+!> subyro(3,:) surface runoff loading in subbasin for year (mm H2O)\n
+!> subyro(4,:) water yield from subbasin for year (mm H2O)\n
+!> subyro(5,:) potential evapotranspiration in subbasin for year (mm H2O)\n
+!> subyro(6,:) actual evapotranspiration in subbasin for year (mm H2O)\n
+!> subyro(7,:) sediment yield from subbasin for year (metric tons/ha)\n
+!> subyro(8,:) organic N loading from subbasin for year (kg N/ha)\n
+!> subyro(9,:) organic P loading from subbasin for year (kg P/ha)\n
+!> subyro(10,:) NO3 loading from surface runoff in subbasin for year (kg N/ha)\n
+!> subyro(11,:) soluble P loading from subbasin for year (kg P/ha)\n
+!> subyro(12,:) groundwater loading from subbasin for year (mm H2O)\n
+!> subyro(13,:) percolation out of soil profile in subbasin for year (mm H2O)\n
+!> subyro(14,:) loading to reach of mineral P attached to sediment from subbasin
+!> for year (kg P/ha)
+   real*8, dimension (:,:), allocatable :: subyro
+!> HRU average annual output array (varies)\n
+!> hruaao(1,:) precipitation in HRU during simulation (mm H2O)\n
+!> hruaao(2,:) amount of precipitation falling as freezing rain/snow in HRU
+!> during simulation (mm H2O)\n
+!> hruaao(3,:) amount of snow melt in HRU during simulation (mm H2O)\n
+!> hruaao(4,:) amount of surface runoff to main channel from HRU during
+!> simulation (ignores impact of transmission losses) (mm H2O)\n
+!> hruaao(5,:) amount of lateral flow contribution to main channel from HRU
+!> during simulation (mm H2O)\n
+!> hruaao(6,:) amount of groundwater flow contribution to main channel from HRU
+!> during simulation (mm H2O)\n
+!> hruaao(7,:) amount of water moving from shallow aquifer to plants or soil
+!> profile in HRU during simulation (mm H2O)\n
+!> hruaao(8,:) amount of water recharging deep aquifer in HRU during simulation
+!> (mm H2O)\n
+!> hruaao(9,:) total amount of water entering both aquifers from HRU during
+!> simulation (mm H2O)\n
+!> hruaao(10,:) water yield (total amount of water entering main channel) from
+!> HRU during simulation (mm H2O)\n
+!> hruaao(11,:) amount of water percolating out of the soil profile and into the
+!> vadose zone in HRU during simulation (mm H2O)\n
+!> hruaao(12,:) actual evapotranspiration in HRU during simulation\n
+!> hruaao(13,:) amount of transmission losses from tributary channels in HRU for
+!> simulation (mm H2O)\n
+!> hruaao(14,:) sediment yield from HRU for simulation (metric tons/ha)\n
+!> hruaao(17,:) amount of nitrogen applied in continuous fertilizer operation
+!> in HRU for simulation (kg N/ha)\n
+!> hruaao(18,:) amount of phosphorus applied in continuous fertilizer operation
+!> in HRU for simulation (kg P/ha)\n
+!> hruaao(23,:) amount of water removed from shallow aquifer in HRU for
+!> irrigation during simulation (mm H2O)\n
+!> hruaao(24,:) amount of water removed from deep aquifer in HRU for irrigation
+!> during simulation (mm H2O)\n
+!> hruaao(25,:) potential evapotranspiration in HRU during simulation (mm H2O)\n
+!> hruaao(26,:) annual amount of N (organic & mineral) applied in HRU during
+!> grazing (kg N/ha)\n
+!> hruaao(27,:) annual amount of P (organic & mineral) applied in HRU during
+!> grazing (kg P/ha)\n
+!> hruaao(28,:) average annual amount of N (organic & mineral) auto-applied in
+!> HRU (kg N/ha)\n
+!> hruaao(29,:) average annual amount of P (organic & mineral) auto-applied in
+!> HRU (kg P/ha)\n
+!> hruaao(31,:) water stress days in HRU during simulation (stress days)\n
+!> hruaao(32,:) temperature stress days in HRU during simulation (stress days)\n
+!> hruaao(33,:) nitrogen stress days in HRU during simulation (stress days)\n
+!> hruaao(34,:) phosphorus stress days in HRU during simulation (stress days)\n
+!> hruaao(35,:) organic nitrogen in surface runoff in HRU during simulation
+!> (kg N/ha)\n
+!> hruaao(36,:) organic phosphorus in surface runoff in HRU during simulation
+!> (kg P/ha)\n
+!> hruaao(37,:) nitrate in surface runoff in HRU during simulation (kg N/ha)\n
+!> hruaao(38,:) nitrate in lateral flow in HRU during simulation (kg N/ha)\n
+!> hruaao(39,:) soluble phosphorus in surface runoff in HRU during simulation
+!> (kg P/ha)\n
+!> hruaao(40,:) amount of nitrogen removed from soil by plant uptake in HRU
+!> during simulation (kg N/ha)\n
+!> hruaao(41,:) nitrate percolating past bottom of soil profile in HRU during
+!> simulation (kg N/ha)\n
+!> hruaao(42,:) amount of phosphorus removed from soil by plant uptake in HRU
+!> during simulation (kg P/ha)\n
+!> hruaao(43,:) amount of phosphorus moving from labile mineral to active
+!> mineral pool in HRU during simulation (kg P/ha)\n
+!> hruaao(44,:) amount of phosphorus moving from active mineral to stable
+!> mineral pool in HRU during simulation (kg P/ha)\n
+!> hruaao(45,:) amount of nitrogen applied to HRU in fertilizer and grazing
+!> operations during simulation (kg N/ha)\n
+!> hruaao(46,:) amount of phosphorus applied to HRU in fertilizer and grazing
+!> operations during simulation (kg P/ha)\n
+!> hruaao(47,:) amount of nitrogen added to soil by fixation in HRU during
+!> simulation (kg N/ha)\n
+!> hruaao(48,:) amount of nitrogen lost by denitrification in HRU during
+!> simulation (kg N/ha)\n
+!> hruaao(49,:) amount of nitrogen moving from active organic to nitrate pool
+!> in HRU during simulation (kg N/ha)\n
+!> hruaao(50,:) amount of nitrogen moving from active organic to stable organic
+!> pool in HRU during simulation (kg N/ha)\n
+!> hruaao(51,:) amount of phosphorus moving from organic to labile mineral pool
+!> in HRU during simulation (kg P/ha)\n
+!> hruaao(52,:) amount of nitrogen moving from fresh organic to nitrate and
+!> active organic pools in HRU during simulation (kg N/ha)\n
+!> hruaao(53,:) amount of phosphorus moving from fresh organic to the labile mineral and organic pools in HRU during simulation (kg P/ha)\n
+!> hruaao(54,:) amount of nitrogen added to soil in rain during simulation (kg N/ha)\n
+!> hruaao(61,:) daily soil loss predicted with USLE equation (metric tons/ha)\n
+!> hruaao(63,:) less persistent bacteria transported to main channel from HRU
+!> during simulation (# bacteria/ha)\n
+!> hruaao(64,:) persistent bacteria transported to main channel from HRU during
+!> simulation (# bacteria/ha)\n
+!> hruaao(65,:) nitrate loading from groundwater in HRU to main channel during
+!> simulation (kg N/ha)\n
+!> hruaao(66,:) soluble P loading from groundwater in HRU to main channel during
+!> simulation (kg P/ha)\n
+!> hruaao(67,:) loading of mineral P attached to sediment in HRU to main channel
+!> during simulation (kg P/ha)
+   real*8, dimension (:,:), allocatable :: hruaao
+!> subbasin average annual output array (varies)
+   real*8, dimension (:,:), allocatable :: subaao
+!> reservoir monthly output array (varies)\n
+!> resoutm(1,:) flow into reservoir during month (m^3/s)\n
+!> resoutm(2,:) flow out of reservoir during month (m^3/s)\n
+!> resoutm(3,:) sediment entering reservoir during month (metric tons)\n
+!> resoutm(4,:) sediment leaving reservoir during month (metric tons)\n
+!> resoutm(5,:) sediment concentration in reservoir during month (mg/L)\n
+!> resoutm(6,:) pesticide entering reservoir during month (mg pst)\n
+!> resoutm(7,:) pesticide lost from reservoir through reactions during month
+!> (mg pst)\n
+!> resoutm(8,:) pesticide lost from reservoir through volatilization during
+!> month (mg pst)\n
+!> resoutm(9,:) pesticide moving from water to sediment through settling during
+!> month (mg pst)\n
+!> resoutm(10,:) pesticide moving from sediment to water through resuspension
+!> during month (mg pst)\n
+!> resoutm(11,:) pesticide moving from water to sediment through diffusion
+!> during month (mg pst)\n
+!> resoutm(12,:) pesticide lost from reservoir sediment layer through reactions
+!> during month (mg pst)\n
+!> resoutm(13,:) pesticide lost from reservoir sediment layer through burial
+!> during month (mg pst)\n
+!> resoutm(14,:) pesticide transported out of reservoir during month (mg pst)\n
+!> resoutm(15,:) pesticide concentration in reservoir water during month
+!> (mg pst/m^3)\n
+!> resoutm(16,:) pesticide concentration in reservoir sediment layer during
+!> month (mg pst/m^3)\n
+!> resoutm(17,:) evaporation from reservoir during month (m^3 H2O)\n
+!> resoutm(18,:) seepage from reservoir during month (m^3 H2O)\n
+!> resoutm(19,:) precipitation on reservoir during month (m^3 H2O)\n
+!> resoutm(22,:) organic N entering reservoir during month (kg N)\n
+!> resoutm(23,:) organic N leaving reservoir during month (kg N)\n
+!> resoutm(24,:) organic P entering reservoir during month (kg P)\n
+!> resoutm(25,:) organic P leaving reservoir during month (kg P)\n
+!> resoutm(26,:) nitrate entering reservoir during month (kg N)\n
+!> resoutm(27,:) nitrate leaving reservoir during month (kg N)\n
+!> resoutm(28,:) nitrite entering reservoir during month (kg N)\n
+!> resoutm(29,:) nitrite leaving reservoir during month (kg N)\n
+!> resoutm(30,:) ammonia entering reservoir during month (kg N)\n
+!> resoutm(31,:) ammonia leaving reservoir during month (kg N)\n
+!> resoutm(32,:) mineral P entering reservoir during month (kg P)\n
+!> resoutm(33,:) mineral P leaving reservoir during month (kg P)\n
+!> resoutm(34,:) chlorophyll-a entering reservoir during month (kg chla)\n
+!> resoutm(35,:) chlorophyll-a leaving reservoir during month (kg chla)\n
+!> resoutm(36,:) organic P concentration in reservoir water during month
+!> (mg P/L)\n
+!> resoutm(37,:) mineral P concentration in reservoir water during month
+!> (mg P/L)\n
+!> resoutm(38,:) organic N concentration in reservoir water during month
+!> (mg N/L)\n
+!> resoutm(39,:) nitrate concentration in reservoir water during month
+!> (mg N/L)\n
+!> resoutm(40,:) nitrite concentration in reservoir water during month
+!> (mg N/L)\n
+!> resoutm(41,:) ammonia concentration in reservoir water during month (mg N/L)
    real*8, dimension (:,:), allocatable :: resoutm
-   real*8, dimension (:,:), allocatable :: resouty,resouta
+!> reservoir annual output array (varies)\n
+!> resouty(1,:) flow into reservoir during year (m^3/s)\n
+!> resouty(2,:) flow out of reservoir during year (m^3/s)\n
+!> resouty(3,:) sediment entering reservoir during year (metric tons)\n
+!> resouty(4,:) sediment leaving reservoir during year (metric tons)\n
+!> resouty(5,:) sediment concentration in reservoir during year (mg/L)\n
+!> resouty(6,:) pesticide entering reservoir during year (mg pst)\n
+!> resouty(7,:) pesticide lost from reservoir through reactions during year
+!> (mg pst)\n
+!> resouty(8,:) pesticide lost from reservoir through volatilization during year
+!> (mg pst)\n
+!> resouty(9,:) pesticide moving from water to sediment through settling during
+!> year (mg pst)\n
+!> resouty(10,:) pesticide moving from sediment to water through resuspension
+!> during year (mg pst)\n
+!> resouty(11,:) pesticide moving from water to sediment through diffusion
+!> during year (mg pst)\n
+!> resouty(12,:) pesticide lost from reservoir sediment layer through reactions
+!> during year (mg pst)\n
+!> resouty(13,:) pesticide lost from reservoir sediment layer through burial
+!>during year (mg pst)\n
+!> resouty(14,:) pesticide transported out of reservoir during year (mg pst)\n
+!> resouty(15,:) pesticide concentration in reservoir water during year
+!> (mg pst/m^3)\n
+!> resouty(16,:) pesticide concentration in reservoir sediment layer during year
+!> (mg pst/m^3)\n
+!> resouty(17,:) evaporation from reservoir during year (m^3 H2O)\n
+!> resouty(18,:) seepage from reservoir during year (m^3 H2O)\n
+!> resouty(19,:) precipitation on reservoir during year (m^3 H2O)\n
+!> resouty(22,:) organic N entering reservoir during year (kg N)\n
+!> resouty(23,:) organic N leaving reservoir during year (kg N)\n
+!> resouty(24,:) organic P entering reservoir during year (kg P)\n
+!> resouty(25,:) organic P leaving reservoir during year (kg P)\n
+!> resouty(26,:) nitrate entering reservoir during year (kg N)\n
+!> resouty(27,:) nitrate leaving reservoir during year (kg N)\n
+!> resouty(28,:) nitrite entering reservoir during year (kg N)\n
+!> resouty(29,:) nitrite leaving reservoir during year (kg N)\n
+!> resouty(30,:) ammonia entering reservoir during year (kg N)\n
+!> resouty(31,:) ammonia leaving reservoir during year (kg N)\n
+!> resouty(32,:) mineral P entering reservoir during year (kg P)\n
+!> resouty(33,:) mineral P leaving reservoir during year (kg P)\n
+!> resouty(34,:) chlorophyll-a entering reservoir during year (kg chla)\n
+!> resouty(35,:) chlorophyll-a leaving reservoir during year (kg chla)\n
+!> resouty(36,:) organic P concentration in reservoir water during year
+!> (mg P/L)\n
+!> resouty(37,:) mineral P concentration in reservoir water during year
+!> (mg P/L)\n
+!> resouty(38,:) organic N concentration in reservoir water during year
+!> (mg N/L)\n
+!> resouty(39,:) nitrate concentration in reservoir water during year (mg N/L)\n
+!> resouty(40,:) nitrite concentration in reservoir water during year (mg N/L)\n
+!> resouty(41,:) ammonia concentration in reservoir water during year (mg N/L)
+   real*8, dimension (:,:), allocatable :: resouty
+!> reservoir average annual output array (varies)\n
+!> resouta(3,:) sediment entering reservoir during simulation (metric tons)\n
+!> resouta(4,:) sediment leaving reservoir during simulation (metric tons)\n
+!> resouta(17,:) evaporation from reservoir during simulation (m^3 H2O)\n
+!> resouta(18,:) seepage from reservoir during simulation (m^3 H2O)\n
+!> resouta(19,:) precipitation on reservoir during simulation (m^3 H2O)\n
+!> resouta(20,:) water entering reservoir during simulation (m^3 H2O)\n
+!> resouta(21,:) water leaving reservoir during simulation (m^3 H2O)
+   real*8, dimension (:,:), allocatable :: resouta
+!> wshd_aamon(:,1) average annual precipitation in watershed falling during
+!> month (mm H2O)\n
+!> wshd_aamon(:,2) average annual freezing rain in watershed falling during
+!> month (mm H2O)\n
+!> wshd_aamon(:,3) average annual surface runoff in watershed during month
+!> (mm H2O)\n
+!> wshd_aamon(:,4) average annual lateral flow in watershed during month
+!> (mm H2O)\n
+!> wshd_aamon(:,5) average annual water yield in watershed during month
+!> (mm H2O)\n
+!> wshd_aamon(:,6) average annual actual evapotranspiration in watershed during
+!> month (mm H2O)\n
+!> wshd_aamon(:,7) average annual sediment yield in watershed during month
+!> (metric tons)\n
+!> wshd_aamon(:,8) average annual potential evapotranspiration in watershed
+!> during month (mm H2O)
    real*8, dimension (12,8) :: wshd_aamon
 !> HRU monthly output data array for impoundments (varies)\n
 !> wtrmon(1,:) evaporation from ponds in HRU for month (mm H2O)\n
@@ -1363,7 +1992,32 @@ module parm
 !> wtrmon(20,:) sediment entering potholes in HRU for month (metric tons/ha)\n
 !> wtrmon(21,:) sediment leaving potholes in HRU for month (metric tons/ha)
    real*8, dimension (:,:), allocatable :: wtrmon
-   real*8, dimension (:,:), allocatable :: wtryr,wtraa
+!> HRU impoundment annual output array (varies)\n
+!> wtryr(1,:) evaporation from ponds in HRU for year (mm H20)\n
+!> wtryr(2,:) seepage from ponds in HRU for year (mm H20)\n
+!> wtryr(3,:) precipitation on ponds in HRU for year (mm H20)\n
+!> wtryr(4,:) amount of water entering ponds in HRU for year (mm H20)\n
+!> wtryr(5,:)  sediment entering ponds in HRU for year (metric tons/ha)\n
+!> wtryr(6,:) amount of water leaving ponds in HRU for year (mm H20)\n
+!> wtryr(7,:)  sediment leaving ponds in HRU for year (metric tons/ha)\n
+!> wtryr(8,:) precipitation on wetlands in HRU for year (mm H20)\n
+!> wtryr(9,:) volume of water entering wetlands from HRU for year (mm H20)\n
+!> wtryr(10,:) sediment loading to wetlands for year from HRU (metric tons/ha)\n
+!> wtryr(11,:) evaporation from wetlands in HRU for year (mm H20)\n
+!> wtryr(12,:) seeepage from wetlands in HRU for year (mm H20)\n
+!> wtryr(13,:) volume of water leaving wetlands in HRU for year (mm H20)\n
+!> wtryr(14,:) sediment loading from wetlands in HRU to main channel during year
+!> (metric tons/ha)\n
+!> wtryr(15,:) precipitation on potholes in HRU during year (mm H20)\n
+!> wtryr(16,:) evaporation from potholes in HRU during year (mm H20)\n
+!> wtryr(17,:) seepage from potholes in HRU during year (mm H20)\n
+!> wtryr(18,:) water leaving potholes in HRU during year (mm H20)\n
+!> wtryr(19,:) water entering potholes in HRU during year (mm H20)\n
+!> wtryr(20,:) sediment entering potholes in HRU during year (metric tons/ha)\n
+!> wtryr(21,:) sediment leaving potholes in HRU during year (metric tons/ha)
+   real*8, dimension (:,:), allocatable :: wtryr
+!> HRU impoundment average annual output array (varies)
+   real*8, dimension (:,:), allocatable :: wtraa
 !> max melt rate for snow during year (June 21) for subbasin(:) where deg C
 !> refers to the air temperature. SUB_SMFMX and SMFMN allow the rate of snow
 !> melt to vary through the year. These parameters are accounting for the impact
@@ -1377,6 +2031,7 @@ module parm
 !> hrupstd(:,2,:) amount of pesticide type in surface runoff contribution to
 !> stream from HRU on day (sorbed to sediment) (mg pst)
    real*8, dimension (:,:,:), allocatable :: hrupstd
+!> hrupstm(:,:,:)HRU monthly pesticide output array (varies)\n
 !> hrupstm(:,1,:) amount of pesticide type in surface runoff contribution to
 !> stream from HRU during month (in solution) (mg pst)\n
 !> hrupstm(:,2,:) amount of pesticide type in surface runoff contribution to
@@ -1384,7 +2039,13 @@ module parm
 !> hrupstm(:,3,:) total pesticide loading to stream in surface runoff from HRU
 !> during month (mg pst)
    real*8, dimension (:,:,:), allocatable :: hrupstm
+!> HRU average annual pesticide output array (varies)
    real*8, dimension (:,:,:), allocatable :: hrupsta
+!> hrupsty(:,:,:) HRU annual pesticide output array (varies)\n
+!> hrupsty(:,1,:) amount of pesticide type in surface runoff contribution to
+!> stream from HRU during year (in solution) (mg pst)\n
+!> hrupsty(:,2,:) amount of pesticide type in surface runoff contribution to
+!> stream from HRU during year (sorbed to sediment) (mg pst)
    real*8, dimension (:,:,:), allocatable :: hrupsty
 !> temperature data search code (none)\n
 !> 0 first day of temperature data located in file\n
@@ -1619,7 +2280,9 @@ module parm
    real*8, dimension (:), allocatable :: dr_sub
 !> fraction of total watershed area contained in subbasin (km2/km2)
    real*8, dimension (:), allocatable :: sub_fr
-   real*8, dimension (:), allocatable :: wcklsp,sub_minp,sub_sw
+!> water in soil profile in subbasin (mm H2O)
+   real*8, dimension (:), allocatable :: sub_sw
+   real*8, dimension (:), allocatable :: wcklsp,sub_minp
    real*8, dimension (:), allocatable :: sub_sumfc,sub_gwno3,sub_gwsolp
    real*8, dimension (:), allocatable :: co2 !< CO2 concentration (ppmv)
 !> area of subbasin in square kilometers (km^2)
@@ -1971,7 +2634,9 @@ module parm
    real*8, dimension (:), allocatable :: res_orgp
 !> amount of soluble P in reservoir (kg P)
    real*8, dimension (:), allocatable :: res_solp
-   real*8, dimension (:), allocatable :: res_chla,res_seci
+!> secchi-disk depth (m)
+   real*8, dimension (:), allocatable :: res_seci
+   real*8, dimension (:), allocatable :: res_chla
 !> reservoir surface area when reservoir is filled to emergency spillway (ha)
    real*8, dimension (:), allocatable :: res_esa
 !> amount of ammonia in reservoir (kg N)
@@ -2514,7 +3179,7 @@ module parm
    real*8, dimension (:), allocatable :: pnd_evol
 !> volume of water in ponds (UNIT CHANGE!) (10^4 m^3 H2O or m^3 H2O)
    real*8, dimension (:), allocatable :: pnd_vol
-!> average annual yield in the HRU (metric tons)
+!> average annual yield (dry weight) in the HRU (metric tons)
    real*8, dimension (:), allocatable :: yldaa
 !> normal sediment concentration in pond water (UNIT CHANGE!) (mg/kg or kg/kg)
    real*8, dimension (:), allocatable :: pnd_nsed
@@ -2842,7 +3507,7 @@ module parm
 !> amount of mineral P attached to sediment originating from surface runoff in
 !> wetland at end of day (kg P)
    real*8, dimension (:), allocatable :: wet_psed
-!> average annual biomass in the HRU (metric tons)
+!> average annual biomass (dry weight) in the HRU (metric tons)
    real*8, dimension (:), allocatable :: bio_aams
 !> amount of phosphorus in plant biomass (kg P/ha)
    real*8, dimension (:), allocatable :: plantp
@@ -3540,7 +4205,7 @@ module parm
    real*8, dimension(:,:), allocatable :: dtp_addon
 !> discharge coeffieicne for weir/orifice flow (none)
    real*8, dimension(:,:), allocatable :: dtp_cdis
-!> depth of rectangular wier at different stages (m)
+!> depth of rectangular weir at different stages (m)
    real*8, dimension(:,:), allocatable :: dtp_depweir
 !> diameter of orifice hole at different stages (m)
    real*8, dimension(:,:), allocatable :: dtp_diaweir
@@ -3607,7 +4272,9 @@ module parm
 
    ! Green Roof
    integer, dimension(:,:), allocatable :: gr_onoff,gr_imo,gr_iyr
-   real*8, dimension(:,:), allocatable :: gr_farea,gr_solop,gr_etcoef,&
+!> fractional area of a green roof to the HRU (none)
+   real*8, dimension(:,:), allocatable :: gr_farea
+   real*8, dimension(:,:), allocatable :: gr_solop,gr_etcoef,&
       &gr_fc,gr_wp,gr_ksat,gr_por,gr_hydeff,gr_soldpt
 
    ! Rain Gerden
@@ -3737,34 +4404,9 @@ module parm
    ! but which must now return REAL*8 explicitly
    INTERFACE
 
-      real*8 function atri(at1,at2,at3,at4i) result (r_atri)
-         real*8, intent (in) :: at1, at2, at3
-         integer, intent (inout) :: at4i
-      end function
-
-      real*8 function aunif (x1) result (unif)
-         integer, intent (inout) :: x1
-      end function
-
-      real*8 function dstn1(rn1,rn2) result (r_dstn1)
-         real*8, intent (in) :: rn1, rn2
-      end function
-
-      real*8 function ee(tk) result (r_ee)
-         real*8, intent (in) :: tk
-      end
-
-      real*8 function expo (xx) result (r_expo)
-         real*8 :: xx
-      end function
-
       real*8 function fcgd(xx)
          real*8, intent (in) :: xx
       End function
-
-      real*8 function qman(x1,x2,x3,x4) result (r_qman)
-         real*8, intent (in) :: x1, x2, x3, x4
-      end function
 
       real*8 function regres(k,j) result (r_regres)
          integer, intent (in) :: k, j
@@ -3778,34 +4420,9 @@ module parm
          real*8, intent (in) :: r20, thk, tmp
       end
 
-      subroutine ascrv(x1,x2,x3,x4,x5,x6)
-         real*8, intent (in) :: x1, x2, x3, x4
-         real*8, intent (out) :: x5, x6
-      end subroutine
-
-      SUBROUTINE HQDAV(A,CBW,QQ,SSS,ZCH,ZX,CHW,FPW,jrch)
-         real*8, intent (inout) :: A, ZX, CHW, FPW
-         real*8, intent (in) :: CBW, QQ, SSS, ZCH
-         integer, intent (in) :: jrch
-      end subroutine
-
-      subroutine layersplit(dep_new)
-         real*8, intent(in):: dep_new
-      end subroutine
-
       subroutine ndenit(k,j,cdg,wdn,void)
          integer :: k,j
          real*8 :: cdg, wdn, void
-      end subroutine
-
-      subroutine rsedaa(years)
-         real*8, intent (in) :: years
-      end subroutine
-
-      subroutine vbl(evx,spx,pp,qin,ox,vx1,vy,yi,yo,ysx,vf,vyf,aha)
-         real*8, intent (in) :: evx, spx, pp, qin, ox, yi, yo, ysx
-         real*8, intent (in) :: vf, vyf, aha
-         real*8, intent (inout) :: vx1, vy
       end subroutine
 
    END INTERFACE
