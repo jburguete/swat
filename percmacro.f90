@@ -1,14 +1,18 @@
-subroutine percmacro
+!> @file percmacro.f90
+!> file containing the subroutine percmacro
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this surboutine computes percolation by crack flow
+!> this surboutine computes percolation by crack flow
+!> @param[in] j HRU number
+subroutine percmacro(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
-!!    ihru        |none          |HRU number
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc-wp)
 !!    sol_nly(:)  |none          |numer of layers in soil profile
@@ -25,6 +29,7 @@ subroutine percmacro
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    crk         |mm H2O        |percolation due to crack flow
+!!    sepcrk      |mm H2O        |water entering cracks in soil
 !!    sepbtm(:)   |mm H2O        |percolation from bottom of soil profile for
 !!                               |the day in HRU
 !!    sol_prk(:,:)|mm H2O        |percolation storage array
@@ -34,9 +39,7 @@ subroutine percmacro
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    crklch      |none          |
-!!    j           |none          |HRU number
 !!    ly          |none          |counter (soil layer)
-!!    sepcrk      |mm H2O        |water entering cracks in soil
 !!    xx          |mm H2O        |water deficiency in soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -48,11 +51,10 @@ subroutine percmacro
    use parm
    implicit none
 
-   integer :: j, ly
-   real*8 :: xx
+   integer, intent(in) :: j
    real*8, parameter :: crklch = 0.5
-
-   j = ihru
+   real*8 :: xx
+   integer :: ly
 
    sepcrk = Min(voltot, inflpcp)
    sepcrktot = sepcrk

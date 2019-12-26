@@ -1,7 +1,11 @@
-subroutine autoirr(j)
+!> @file autoirr.f90
+!> file containing the subroutine autoirr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the auto-irrigation operation
+!> this subroutine performs the auto-irrigation operation
+!> @param[in] j HRU number
+subroutine autoirr(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
@@ -12,9 +16,6 @@ subroutine autoirr(j)
 !!    auto_wstr(:)   |none or mm    |water stress threshold that triggers irrigation
 !!    deepst(:)      |mm H2O        |depth of water in deep aquifer
 !!    hru_sub(:)     |none          |subbasin in which HRU is located
-!!    wstrs_id(:)    |none          |water stress identifier:
-!!                                  |1 plant water demand
-!!                                  |2 soil water deficit
 !!    irrno(:)       |none          |irrigation source location
 !!                                  |if IRR=1, IRRNO is the number of the
 !!                                  |          reach
@@ -41,6 +42,9 @@ subroutine autoirr(j)
 !!    strsw(:)       |none          |fraction of potential plant growth achieved
 !!                                  |on the day where the reduction is caused by
 !!                                  |water stress
+!!    wstrs_id(:)    |none          |water stress identifier:
+!!                                  |1 plant water demand
+!!                                  |2 soil water deficit
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~

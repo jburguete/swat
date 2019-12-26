@@ -1,4 +1,4 @@
-subroutine origtile(d)
+subroutine origtile(d, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine computes tile drainage using basic tile equations developed by Saleh et al.(2005)
@@ -6,7 +6,7 @@ subroutine origtile(d)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
+!!    j           |none          |HRU number
 
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -23,7 +23,6 @@ subroutine origtile(d)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -36,10 +35,8 @@ subroutine origtile(d)
    implicit none
 
    real*8, intent(in) :: d
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: dmod_m
-
-   j = ihru
 
 !!    compute tile flow using the original tile equations
 

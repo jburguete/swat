@@ -77,14 +77,24 @@ subroutine percmain(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    d
+!!    hru_mm
+!!    ii
+!!    isp
 !!    j1          |none          |counter
-!!    w2          |mm            |
-!!    y1          |mm            |dummy variable for wat
+!!    lid_cuminf_total
+!!    qvol
+!!    sb
+!!    sumqtile
+!!    swst_del
+!!    wtst_del
+!!    xx
+!!    yy
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
-!!    SWAT: percmacro, percmicro, drains(wt_shall), origtile(wt_shall,d)
+!!    Intrinsic: Max, Dmax1
+!!    SWAT: percmacro, percmicro, sat_excess, drains, origtile
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -92,9 +102,10 @@ subroutine percmain(j)
    implicit none
 
    integer, intent(in) :: j
-   integer :: j1, sb, isp, ii
-   real*8 :: lid_cuminf_total, hru_mm, qvol, sumqtile, swst_del, wtst_del, xx, yy, d
    real*8, parameter :: por_air = 0.5
+   real*8 :: d, hru_mm, lid_cuminf_total, qvol, sumqtile, swst_del, wtst_del,&
+      &xx, yy
+   integer :: ii, isp, j1, sb
 
    lid_cuminf_total = 0.
 
@@ -120,7 +131,7 @@ subroutine percmain(j)
 
    !! calculate crack flow
    if (icrk == 1) then
-      call percmacro
+      call percmacro(j)
       sepday = sepday - sepcrktot
    endif
 
@@ -134,16 +145,16 @@ subroutine percmain(j)
          do ii = 1, 4
             if (ii == 2) then  ! 2: rain garden, 3: cistern and 4: porous pavement
                lid_cuminf_total = lid_cuminf_total +&
-               &lid_sw_add(j,ii) * lid_farea(j,ii) *&
-               &fcimp(urblu(j)) * rg_sarea(sb,urblu(j))
+                  &lid_sw_add(j,ii) * lid_farea(j,ii) *&
+                  &fcimp(urblu(j)) * rg_sarea(sb,urblu(j))
             else if (ii == 3) then
                lid_cuminf_total = lid_cuminf_total +&
-               &lid_sw_add(j,ii) * lid_farea(j,ii) *&
-               &fcimp(urblu(j))
+                  &lid_sw_add(j,ii) * lid_farea(j,ii) *&
+                  &fcimp(urblu(j))
             else if (ii == 4) then
                lid_cuminf_total = lid_cuminf_total +&
-               &lid_sw_add(j,ii) * lid_farea(j,ii) *&
-               &fcimp(urblu(j))
+                  &lid_sw_add(j,ii) * lid_farea(j,ii) *&
+                  &fcimp(urblu(j))
             end if
          end do
          sol_st(j1,j) = sol_st(j1,j) + lid_cuminf_total
@@ -151,13 +162,13 @@ subroutine percmain(j)
 
       !! septic tank inflow to biozone layer  J.Jeong
       ! STE added to the biozone layer if soil temp is above zero.
-      if(j1==i_sep(j).and.sol_tmp(j1,j) > 0. .and. isep_opt(j) /= 0) then
+      if (j1 == i_sep(j) .and. sol_tmp(j1,j) > 0. .and. isep_opt(j) /= 0) then
          hru_mm = qstemm(j) * bz_area(j) / hru_ha(j) / 10000. !in mm
          sol_st(j1,j) = sol_st(j1,j) + hru_mm  ! in mm
          qvol = qstemm(j) * hru_ha(j) * 10.
          xx = qvol / hru_ha(j) / 1000.
          sol_no3(j1,j) = sol_no3(j1,j) + xx *(sptno3concs(isp)&
-         &+ sptno2concs(isp))
+            &+ sptno2concs(isp))
          sol_nh3(j1,j) = sol_nh3(j1,j) + xx * sptnh4concs(isp)
          sol_orgn(j1,j) = sol_orgn(j1,j) + xx * sptorgnconcs(isp)*0.5
          sol_fon(j1,j) = sol_fon(j1,j) + xx * sptorgnconcs(isp) * 0.5
@@ -179,7 +190,7 @@ subroutine percmain(j)
       if (sw_excess > 1.e-5) then
          !! calculate tile flow (lyrtile), lateral flow (latlyr) and
          !! percolation (sepday)
-         call percmicro(j1)
+         call percmicro(j1,j)
 
          sol_st(j1,j) = sol_st(j1,j) - sepday - latlyr - lyrtile
          sol_st(j1,j) = Max(1.e-6,sol_st(j1,j))
@@ -270,10 +281,10 @@ subroutine percmain(j)
          else
             !! Start Daniel's tile equations modifications  01/2006
             if (itdrn == 1) then
-               call drains     ! compute tile flow using drainmod tile equations
+               call drains(j)  ! compute tile flow using drainmod tile equations
                !! drainmod tile equations   01/2006
             else !! compute tile flow using existing tile equations
-               call origtile(d)! existing tile equations
+               call origtile(d, j)! existing tile equations
                if(qtile < 0.) qtile=0.
             end if
          end if
@@ -298,7 +309,7 @@ subroutine percmain(j)
       end do
       if (sumqtile > 0.) then
          qtile = qtile - sumqtile
-         qtile = dmax1(0., qtile)
+         qtile = Dmax1(0., qtile)
       end if
    end if
 

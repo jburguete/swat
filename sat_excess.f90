@@ -1,7 +1,12 @@
-subroutine sat_excess(j1,j)
+!> @file sat_excess.f90
+!> file containing the subroutine sat_excess
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine is the master soil percolation component.
+!> this subroutine is the master soil percolation component
+!> @param[in] j1 counter
+!> @param[in] j HRU number
+subroutine sat_excess(j1, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -12,7 +17,6 @@ subroutine sat_excess(j1,j)
 !!                               |1 simulate crack flow in watershed
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
-!!    nn          |none          |number of soil layers
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc - wp)
 !!    sol_st(:,:) |mm H2O        |amount of water stored in the soil layer on
@@ -47,11 +51,18 @@ subroutine sat_excess(j1,j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ii
+!!    isp
+!!    ly
+!!    nn          |none          |number of soil layers
+!!    qlyr
+!!    qvol
+!!    ul_excess
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max
-!!    SWAT: percmacro, percmicro
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -60,10 +71,9 @@ subroutine sat_excess(j1,j)
 
    integer, intent(in) :: j1, j
    integer :: ii, isp, ly, nn
-   real*8 :: ul_excess, qlyr, rtof, qvol, xx
+   real*8 :: qlyr, qvol, ul_excess, xx
 
    isp = isep_typ(j)     !! J.Jeong 3/09/09
-   rtof = 0.5
 
 
    if (isep_opt(j)==2.and.j1==i_sep(j)) then
@@ -77,13 +87,13 @@ subroutine sat_excess(j1,j)
          ! distribute STE to soil layers above biozone layer
          if (sol_st(ii,j) > sol_ul(ii,j)) then
 
-            qlyr = max(sol_st(ii,j) - sol_ul(ii,j),0.)  ! excess water moving to upper layer
+            qlyr = Max(sol_st(ii,j) - sol_ul(ii,j),0.)  ! excess water moving to upper layer
             sol_st(ii,j) = sol_st(ii,j) - qlyr
 
             qvol = qlyr * hru_ha(j) * 10.         ! volume water m^3
             xx = qvol / hru_ha(j) / 1000.
             sol_no3(ii,j) = sol_no3(ii,j) - xx * (sptno3concs(isp)&
-            &+ sptno2concs(isp))
+               &+ sptno2concs(isp))
             sol_nh3(ii,j) = sol_nh3(ii,j) - xx * sptnh4concs(isp)
             sol_orgn(ii,j) = sol_orgn(ii,j) - xx * sptorgnconcs(isp)*0.5
             sol_fon(ii,j) = sol_fon(ii,j) - xx * sptorgnconcs(isp) * 0.5
@@ -94,7 +104,7 @@ subroutine sat_excess(j1,j)
             ! add soil moisture and nutrient to upper layer
             sol_st(ii-1,j) = sol_st(ii-1,j) + qlyr ! add excess water to upper layer
             sol_no3(ii-1,j) = sol_no3(ii-1,j) + xx * (sptno3concs(isp)&
-            &+ sptno2concs(isp))
+               &+ sptno2concs(isp))
             sol_nh3(ii-1,j) = sol_nh3(ii-1,j) + xx * sptnh4concs(isp)
             sol_orgn(ii-1,j) = sol_orgn(ii-1,j) + xx*sptorgnconcs(isp)*0.5
             sol_fon(ii-1,j) = sol_fon(ii-1,j) + xx * sptorgnconcs(isp)*0.5
@@ -117,13 +127,13 @@ subroutine sat_excess(j1,j)
                ! nutrients in surface runoff
                xx = qvol / hru_ha(j) / 1000.
                surqno3(j) = surqno3(j) + xx&
-               &* (sptno3concs(isp) + sptno2concs(isp))
+                  &* (sptno3concs(isp) + sptno2concs(isp))
                surqsolp(j) =  surqsolp(j) +  xx * sptminps(isp)
 
                !compute runoff lag for the ponded STE and add to already estimated qday
                surf_bs1(j) = Max(1.e-6, surf_bs1(j) + qlyr)
                cbodu(j) = (cbodu(j) * qday + sptbodconcs(isep_typ(j))&
-               &* qlyr * brt(j)) / (qday + qlyr * brt(j)) !add septic effluent cbod (mg/l) concentration
+                  &* qlyr * brt(j)) / (qday + qlyr * brt(j)) !add septic effluent cbod (mg/l) concentration
                qday = qday + qlyr * brt(j) !runoff that drains into the main channel for the day
                surf_bs1(j) = surf_bs1(j) - qday
 

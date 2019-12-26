@@ -373,7 +373,9 @@ module parm
    real*8 :: sepday
    real*8 :: sol_rd !< current rooting depth (mm)
    real*8 :: sedrch
-   real*8 :: sepcrk, sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
+!> water entering cracks in soil (mm H2O)
+   real*8 :: sepcrk
+   real*8 :: sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
    real*8 :: fertorgp
 !> growth factor for persistent bacteria adsorbed to soil particles (1/day)
    real*8 :: wgps
@@ -414,7 +416,8 @@ module parm
 !> weighting factor controling relative importance of inflow rate and outflow
 !> rate in determining storage on reach
    real*8 :: msk_x
-!> minimum crack volume allowed in any soil layer (mm)
+!> minimum crack volume allowed in any soil layer (mm), or\n
+!> minimum soil volume in profile (mm)
    real*8 :: volcrmin
 !> bacteria soil partitioning coefficient. Ratio of solution bacteria in surface
 !> layer to solution bacteria in runoff soluble and sorbed phase in surface
@@ -590,7 +593,7 @@ module parm
 !> water content is less than SNOCOVMX, then a certain percentage of the ground
 !> will be bare (mm H2O)
    real*8 :: snocovmx
-   real*8 :: lyrtile !< drainage tile flow in soil layer for day (mm H2O)
+   real*8 :: lyrtile !< drainage tile flow in soil layer for day in HRU (mm H2O)
    real*8 :: lyrtilex
 !> Fraction of SNOCOVMX that corresponds to 50% snow cover. SWAT assumes a
 !> nonlinear relationship between snow water and snow cover
@@ -2490,8 +2493,8 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_solp
 !> maximum or potential crack volume (mm)
    real*8, dimension (:,:), allocatable :: crdep
-!> amount of water available to plants in soil layer at field capacity (fc - wp)
-!> (mm H2O)
+!> amount of water available to plants in soil layer at field capacity (fc - wp
+!> water) (mm H2O)
    real*8, dimension (:,:), allocatable :: sol_fc
 !> amount of water held in the soil layer at saturation (sat - wp water)
 !> (mm H2O)
@@ -2500,12 +2503,12 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_bd
 !> depth to bottom of soil layer (mm)
    real*8, dimension (:,:), allocatable :: sol_z
-!> amount of water stored in the soil layer on any given day (less wp water)
-!> (mm H2O)
+!> amount of water stored in the soil layer on any given day (less wilting point
+!> water) (mm H2O)
    real*8, dimension (:,:), allocatable :: sol_st
 !> water content of soil at -0.033 MPa (field capacity) (mm H2O/mm soil)
    real*8, dimension (:,:), allocatable :: sol_up
-!> percent clay content in soil material (UNIT CHANGE!) (% or none)
+!> percent clay content in soil layer in HRU (UNIT CHANGE!) (% or none)
    real*8, dimension (:,:), allocatable :: sol_clay
 !> beta coefficent to calculate hydraulic conductivity (none)
    real*8, dimension (:,:), allocatable :: sol_hk
@@ -2902,6 +2905,7 @@ module parm
    real*8 :: pst_dep
    real*8 :: sweepeff
 
+!> random roughness for a given HRU (mm)
    real*8, dimension (:), allocatable :: ranrns_hru
    integer, dimension (:), allocatable :: itill
 !> depth of mixing caused by tillage operation (mm)
@@ -3341,7 +3345,11 @@ module parm
 !> land cover/crop identification code for first crop grown in HRU (the only
 !> crop if there is no rotation) (from crop.dat) (none)
    integer, dimension (:), allocatable :: idplt
-   integer, dimension (:), allocatable :: pest_days, wstrs_id
+!> water stress identifier (none):\n
+!> 1 plant water demand\n
+!> 2 soil water deficit
+   integer, dimension (:), allocatable :: wstrs_id
+   integer, dimension (:), allocatable :: pest_days
    real*8, dimension (:,:), allocatable :: bio_aahv
    real*8, dimension (:), allocatable :: cumei,cumeira
    real*8, dimension (:), allocatable :: cumrt, cumrai
@@ -3447,6 +3455,7 @@ module parm
    real*8, dimension (:), allocatable :: latksatf
 !> pump capacity (default pump capacity = 1.042mm/hr or 25mm/day) (mm/hr)
    real*8, dimension (:), allocatable :: pc
+!> maximum surface depressional storage for day in a given HRU (mm)
    real*8, dimension (:), allocatable :: stmaxd
 !> random number between 0.0 and 1.0 (none)
    real*8, dimension (:), allocatable :: rnd3
@@ -3821,7 +3830,11 @@ module parm
 !> sequence number of tillage operation within current year (none)
    integer, dimension (:), allocatable :: ntil
    integer, dimension (:), allocatable :: orig_igro
-   integer, dimension (:), allocatable :: iwatable,curyr_mat
+!> high water table code (none):\n
+!> 0 no high water table\n
+!> 1 high water table
+   integer, dimension (:), allocatable :: iwatable
+   integer, dimension (:), allocatable :: curyr_mat
 !> icpst = 0 do not apply\n
 !> icpst = 1 application period
    integer, dimension (:), allocatable :: icpst

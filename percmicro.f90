@@ -1,14 +1,20 @@
-subroutine percmicro(ly1)
+!> @file percmicro.f90
+!> file containing the subroutine percmicro
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes percolation and lateral subsurface flow
-!!    from a soil layer when field capacity is exceeded
+!> this subroutine computes percolation and lateral subsurface flow
+!> from a soil layer when field capacity is exceeded
+!> @param[in] ly1 soil layer number
+!> @param[in] j HRU number
+subroutine percmicro(ly1, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ly1          |none          |soil layer number
+!!    j            |none          |HRU number
 !!    hru_slp(:)   |m/m           |average slope steepness
-!!    ihru         |none          |HRU number
 !!    iwatable     |none          |high water table code:
 !!                                |0 no high water table
 !!                                |1 high water table
@@ -51,27 +57,23 @@ subroutine percmicro(ly1)
 !!    dg           |mm            |depth of soil layer
 !!    ho           |none          |variable to hold intermediate calculation
 !!                                |result
-!!    j            |none          |HRU number
-!!    ly1          |none          |soil layer number
 !!    ratio        |none          |ratio of seepage to (latq + sepday)
+!!    sol_k_sep
+!!    xx
 !!    yy           |mm            |depth to top of soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp
+!!    Intrinsic: Max, Min, Exp
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer, intent (in) :: ly1
-   integer :: j
-   real*8 :: adjf, yy, dg, ho, ratio, sol_k_sep, xx
-
-   j = ihru
-
-   adjf = 1.
+   integer, intent (in) :: ly1, j
+   real*8, parameter :: adjf = 1.
+   real*8 :: dg, ho, ratio, sol_k_sep, xx, yy
 
    !! if temperature of layer is 0 degrees C or below
    !! there is no water flow
@@ -104,8 +106,8 @@ subroutine percmicro(ly1)
    if (ly1 == i_sep(j)) then
       if (isep_opt(j) == 1) then !active system
          sol_k_sep = sol_k(ly1,j)*&
-         &(sol_st(ly1,j) - sol_fc(ly1,j))/&
-         &(sol_ul(ly1,j) - sol_fc(ly1,j))
+            &(sol_st(ly1,j) - sol_fc(ly1,j))/&
+            &(sol_ul(ly1,j) - sol_fc(ly1,j))
          sol_k_sep = Max(1.e-6, sol_k_sep)
          sol_k_sep = Min(sol_k(ly1,j), sol_k_sep)
 
@@ -124,7 +126,7 @@ subroutine percmicro(ly1)
 
    !! limit maximum seepage from biozone layer below potential perc amount
    if(ly1 == i_sep(j).and.isep_opt(j)==1) then
-      sepday = min(sepday,sol_k_sep *24.)
+      sepday = Min(sepday,sol_k_sep *24.)
       bz_perc(j) = sepday
    end if
 

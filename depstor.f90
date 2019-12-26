@@ -1,16 +1,19 @@
-subroutine depstor
+!> @file depstor.f90
+!> file containing the subroutine depstor
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes maximum surface depressional storage depth based on
-!!    random and oriented roughness and slope steepness
+!> this subroutine computes maximum surface depressional storage depth based on
+!> random and oriented roughness and slope steepness
+!> @param[in] j HRU number
+subroutine depstor(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    hru_slp(:)  |m/m           |average slope steepness in HRU
 !!    iida        |julian date   |day being simulated (current julian day)
-!!    iop(:,:,:)  |julian date   |date of tillage operation
-!!    mgt_op      |none          |operation code number
 !!    precipday   |mm H2O        |precipitation for the day in HRU
 !!    ranrns_hru(:)|mm           |random roughness for a given HRU
 !!    sol_bd(1,:) |Mg/m^3        |bulk density of top soil layer in HRU
@@ -42,25 +45,22 @@ subroutine depstor
 !!    sol_orgm    |%             |percent organic matter content in soil material
 !!    sol_rrr     |cm            |random roughness after a rain event
 !!    sol_orr     |cm            |oriented roughness (ridges) after a rain event
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic:exp
-!!    SWAT:eiusle
+!!    Intrinsic: Exp
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer ::j
+   integer, intent(in) :: j
    real*8 :: df, hru_slpp, sol_orgm, sol_rrr, ei, xx
-   j = ihru
 
 
 !! Calculate current cummulative erosivity and rainfall
-   ei = usle_ei*18.7633
+   ei = usle_ei * 18.7633
    if(itill(j) ==1)then
       cumeira(j) = cumeira(j) + ei
       cumei(j) = cumeira(j) - ei
@@ -69,33 +69,26 @@ subroutine depstor
    end if
 !! Calculate the decay factor df based on %clay and %organic matter or %organic carbon
 ! sol_orgm = (sol_rsd(1,j)*0.01)/(sol_z(1,j)*sol_bd(1,j))
-   sol_orgm = sol_cbn(1,j)/0.58
+   sol_orgm = sol_cbn(1,j) / 0.58
    xx = (0.943 - 0.07 * sol_clay(1,j) + 0.0011 * sol_clay(1,j)**2&
-   &- 0.67 * sol_orgm + 0.12 * sol_orgm**2)
+      &- 0.67 * sol_orgm + 0.12 * sol_orgm**2)
    if (xx > 1.) then
       df = 1.
    else
-      df = exp (xx)
+      df = Exp (xx)
    end if
 
 
 !! Determine the current random and oriented roughness using cumei and cumrt and initial
 !! random and oriented roughness values
 
-   sol_rrr = 0.1*ranrns_hru(j)&
-   &* exp(df*(-0.0009*cumei(j)-0.0007 * cumrt(j)))
-
-! sol_orr = 0.1*sol_ori(j)*                                                &
-!     & exp(df*(-0.025*(cumei(j)**0.31)-0.0085*(cumrt(j)**0.567)))
+   sol_rrr = 0.1 * ranrns_hru(j)&
+      &* Exp(df * (-0.0009 * cumei(j) - 0.0007 * cumrt(j)))
 
 !! Compute the current maximum depressional storage using percent slope steepness
 !! and current random and oriented roughness values determined above
    hru_slpp = hru_slp(j)*100
-! if(irk=0) then !irk=0 for random rough, and irk=1, for oriented roughness
    stmaxd(j)= 0.112*sol_rrr+0.031*sol_rrr**2-0.012*sol_rrr*hru_slpp
-! else
-! stmaxd(j)= 0.112*sol_orr+0.031*sol_orr**2-0.012*sol_orr*hru_slpp
-! endif
 
    return
 end
