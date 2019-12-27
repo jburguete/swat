@@ -1,4 +1,15 @@
-subroutine pesty(iwave)
+!> @file pesty.f90
+!> file containing the subroutine pesty
+!> @author
+!> modified by Javier Burguete
+
+!> @param[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU\n
+!> iwave = subbasin # for subbasin
+!> @param[in] j HRU number
+subroutine pesty(iwave, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine calculates pesticide transported with suspended sediment
@@ -6,15 +17,15 @@ subroutine pesty(iwave)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    enratio       |none         |enrichment ratio calculated for day in HRU
-!!    hrupest(:)    |none         |pesticide use flag:
-!!                                | 0: no pesticides used in HRU
-!!                                | 1: pesticides used in HRU
-!!    ihru          |none         |HRU number
 !!    iwave         |none         |flag to differentiate calculation of HRU and
 !!                                |subbasin sediment calculation
 !!                                |iwave = 0 for HRU
 !!                                |iwave = subbasin # for subbasin
+!!    j             |none         |HRU number
+!!    enratio       |none         |enrichment ratio calculated for day in HRU
+!!    hrupest(:)    |none         |pesticide use flag:
+!!                                | 0: no pesticides used in HRU
+!!                                | 1: pesticides used in HRU
 !!    npmx          |none         |number of different pesticides used in
 !!                                |the simulation
 !!    npno(:)       |none         |array of unique pesticides used in watershed
@@ -42,7 +53,6 @@ subroutine pesty(iwave)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    conc        |              |concentration of pesticide in soil
 !!    er          |none          |enrichment ratio for pesticides
-!!    j           |none          |HRU number
 !!    k           |none          |counter
 !!    kk          |none          |pesticide number from database
 !!    xx          |kg/ha         |amount of pesticide in soil
@@ -53,13 +63,10 @@ subroutine pesty(iwave)
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j, k, kk
-   real*8 :: xx, conc, er
+   integer, intent (in) :: iwave, j
+   real*8 :: conc, er, xx
+   integer :: k, kk
 
-   j = ihru
-
-   if (hrupest(j) == 0) return
    do k = 1, npmx
       kk = npno(k)
       if (kk > 0) then

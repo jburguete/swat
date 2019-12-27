@@ -1,3 +1,14 @@
+!> @file psed.f90
+!> file containing the subroutine psed
+!> @author
+!> modified by Javier Burguete
+
+!> @param[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU\n
+!> iwave = subbasin # for subbasin
+!> @param[in] j HRU number
 subroutine psed(iwave, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -7,6 +18,10 @@ subroutine psed(iwave, j)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    iwave         |none         |flag to differentiate calculation of HRU and
+!!                                |subbasin sediment calculation
+!!                                |iwave = 0 for HRU
+!!                                |iwave = subbasin # for subbasin
 !!    j             |none         |HRU number
 !!    da_ha         |ha           |area of watershed in hectares
 !!    enratio       |none         |enrichment ratio calculated for day in HRU
@@ -14,10 +29,6 @@ subroutine psed(iwave, j)
 !!                                |the model will calculate for every event
 !!    hru_dafr(:)   |none         |fraction of watershed area in HRU
 !!    inum1         |none         |subbasin number
-!!    iwave         |none         |flag to differentiate calculation of HRU and
-!!                                |subbasin sediment calculation
-!!                                |iwave = 0 for HRU
-!!                                |iwave = subbasin # for subbasin
 !!    sedyld(:)     |metric tons  |daily soil loss caused by water erosion in
 !!                                |HRU
 !!    sol_actp(:,:) |kg P/ha      |amount of phosphorus stored in the
@@ -83,8 +94,8 @@ subroutine psed(iwave, j)
    implicit none
 
    integer, intent (in) :: iwave, j
+   real*8 :: conc, er, porgg, psedd, sedp, wt1, xx, xxa, xxo, xxs
    integer :: sb
-   real*8 :: xx, wt1, er, conc, xxo, sedp, psedd, porgg, xxa, xxs
 
    sb = inum1
 
@@ -94,7 +105,7 @@ subroutine psed(iwave, j)
    if (iwave <= 0) then
       !! HRU sediment calculations
       xx = sol_orgp(1,j) + sol_fop(1,j) + sol_mp(1,j) +&
-      &sol_actp(1,j) + sol_stap(1,j)
+         &sol_actp(1,j) + sol_stap(1,j)
       if (xx > 1.e-3) then
          xxo = (sol_orgp(1,j) + sol_fop(1,j)+ sol_mp(1,j)) / xx
          xxa = sol_actp(1,j) / xx
@@ -102,7 +113,7 @@ subroutine psed(iwave, j)
       end if
       !! sum for subbasin sediment calculations
       sub_orgp(sb) = sub_orgp(sb) + (sol_orgp(1,j) + sol_fop(1,j)&
-      &+ sol_mp(1,j)) * hru_dafr(j)
+         &+ sol_mp(1,j)) * hru_dafr(j)
       sub_minpa(sb) = sub_minpa(sb) + sol_actp(1,j) * hru_fr(j)
       sub_minps(sb) = sub_minps(sb) + sol_stap(1,j) * hru_fr(j)
    else
@@ -138,19 +149,17 @@ subroutine psed(iwave, j)
 
    conc = xx * er / wt1
 
+   sedp = .001 * conc * sedyld(j)
    if (iwave <= 0) then
       !! HRU sediment calculations
-      sedp = .001 * conc * sedyld(j) / hru_ha(j)
-      sedorgp(j) = sedp * xxo
-      sedminpa(j) = sedp * xxa
-      sedminps(j) = sedp * xxs
+      sedp = sedp / hru_ha(j)
    else
       !! subbasin sediment calculations
-      sedp = .001 * conc * sedyld(j) / (da_ha * sub_fr(iwave))
-      sedorgp(j) = sedp * xxo
-      sedminpa(j) = sedp * xxa
-      sedminps(j) = sedp * xxs
+      sedp = sedp / (da_ha * sub_fr(iwave))
    end if
+   sedorgp(j) = sedp * xxo
+   sedminpa(j) = sedp * xxa
+   sedminps(j) = sedp * xxs
 
    !! bmp adjustments
    sedminpa(j) = sedminpa(j) * bmp_pp(j)

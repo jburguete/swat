@@ -1,12 +1,17 @@
-subroutine bacteria
+!> @file bacteria.f90
+!> file containing the subroutine bacteria
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates bacteria growth, transport with runoff and
-!!    loss due to percolation into soil
+!> this subroutine calculates bacteria growth, transport with runoff and
+!> loss due to percolation into soil
+!> @param[in] j HRU number (none)
+subroutine bacteria(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bactkdq     |none          |Bacteria partition coefficient.
 !!                               |Partition coefficient for bacteria between
 !!                               |soluble and sorbed phase in surface runoff.
@@ -18,7 +23,7 @@ subroutine bacteria
 !!                               |bacteria
 !!                               |when bacteria levels drop to this amount the
 !!                               |model considers bacteria in the soil to be
-!!                               |insignificant and sets the levesl to zero
+!!                               |insignificant and sets the levels to zero
 !!    bactminp    |# cfu/m^2     |Threshold detection level for persistent
 !!                               |bacteria
 !!                               |when bacteria levels drop to this amount the
@@ -35,7 +40,6 @@ subroutine bacteria
 !!                               |in HRU
 !!    filterw(:)  |m             |filter strip width for bacteria transport
 !!    hru_dafr(:) |none          |fraction of watershed area in HRU
-!!    ihru        |none          |HRU number
 !!    nyskip      |none          |number of years to skip output summarization
 !!                               |and printing
 !!    precipday   |mm H2O        |precipitation for the day in HRU
@@ -125,8 +129,6 @@ subroutine bacteria
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactmn      |
-!!    bactmx      |
 !!    blpq        |# cfu/m^2     |less persistent bacteria in soil solution at
 !!                               |beginning of day
 !!    blps        |# cfu/m^2     |less persistent bacteria attached to soil
@@ -136,13 +138,12 @@ subroutine bacteria
 !!    bps         |# cfu/m^2     |persistent bacteria attached to soil particles
 !!                               |at beginning of day
 !!    cbact       |
-!!    j           |none          |HRU number
 !!    wt1         |none          |conversion factor to convert kg/ha to g/t(ppm)
 !!    xx          |
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Min, Max
+!!    Intrinsic: Exp, Max, Min
 !!    SWAT: Theta
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -150,10 +151,8 @@ subroutine bacteria
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: bpq, blpq, bps, blps, wt1, cbact, xx
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: blpq, blps, bpq, bps, cbact, wt1, xx
 
    if (bactlps(j) < 1.e-6) bactlps(j) = 0.0
    if (bactlpq(j) < 1.e-6) bactlpq(j) = 0.0

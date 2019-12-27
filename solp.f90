@@ -1,14 +1,18 @@
-subroutine solp(j)
+!> @file solp.f90
+!> file containing the subroutine solp
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the amount of phosphorus lost from the soil
-!!    profile in runoff and the movement of soluble phosphorus from the first
-!!    to the second layer via percolation
+!> this subroutine calculates the amount of phosphorus lost from the soil
+!> profile in runoff and the movement of soluble phosphorus from the first
+!> to the second layer via percolation
+!> @param[in] j HRU number (none)
+subroutine solp(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    j             |none         |HRU number
 !!    conv_wt(:,:)  |none         |factor which converts kg/kg soil to kg/ha
 !!    curyr         |none         |current year of simulation
 !!    hru_dafr(:)   |none         |fraction of watershed area located in HRU
@@ -17,7 +21,7 @@ subroutine solp(j)
 !!    phoskd        |none         |Phosphorus soil partitioning coefficient
 !!                                |Ratio of phosphorus attached to sediment to
 !!                                |phosphorus dissolved in soil water
-!!    pperco        |none         |phosphorus percolation coefficient (0-1)
+!!    pperco_sub    |none         |phosphorus percolation coefficient (0-1)
 !!                                |0:concentration of soluble P in surface
 !!                                |  runoff is zero
 !!                                |1:percolate has same concentration of soluble
@@ -45,6 +49,7 @@ subroutine solp(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ii          |none          |counter
 !!    vap         |kg P/ha       |amount of P leached from soil layer
 !!    xx          |none          |variable to hold intermediate calculation
 !!                               |result
@@ -59,8 +64,8 @@ subroutine solp(j)
    implicit none
 
    integer, intent(in) :: j
+   real*8 :: vap, xx
    integer :: ii
-   real*8 :: xx, vap
 
    vap_tile = 0
 
@@ -82,7 +87,7 @@ subroutine solp(j)
 
 !! compute soluble P leaching
    vap = sol_solp(1,j) * sol_prk(1,j) / ((conv_wt(1,j) / 1000.)&
-   &* pperco_sub(1,j))
+      &* pperco_sub(1,j))
    vap = Min(vap, .5 * sol_solp(1,j))
    sol_solp(1,j) = sol_solp(1,j) - vap
 
@@ -105,18 +110,12 @@ subroutine solp(j)
       vap = 0.
       if (ii /= i_sep(j)) then
          vap = sol_solp(ii,j) * sol_prk(ii,j) / ((conv_wt(ii,j)&
-         &/ 1000.) * pperco_sub(ii,j))
+            &/ 1000.) * pperco_sub(ii,j))
          vap = Min(vap, .2 * sol_solp(ii,j))
          sol_solp(ii,j) = sol_solp(ii,j) - vap
          if (ii == sol_nly(j)) then
             sol_solp(ii+1,j) = sol_solp(ii+1,j) + vap
          end if
-!         if (ii == ldrain(j)) then
-!           vap = sol_solp(ii,j) * qtile / (conv_wt(ii,j) / 1000.
-!     *                                         * pperco_sub(ii,j))
-!           sol_solp(ii,j) = sol_solp(ii,j) - vap
-!           tilep = vap
-!         endif
       endif
    end do
    percp(j) = vap

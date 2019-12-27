@@ -168,7 +168,7 @@ module parm
 !> rate factor for humus mineralization on active organic N
    real*8, dimension (:), allocatable :: cmn
 !> phosphorus soil partitioning coefficient. Ratio of soluble phosphorus in
-!> surface layer to soluble phosphorus in runoff
+!> surface layer attached to sediment to phosphorus dissolved in soil water
    real*8, dimension (:), allocatable :: phoskd
 !> phosphorus availibility index. The fraction of fertilizer P remaining in
 !> labile pool after initial rapid phase of P sorption (none)
@@ -320,9 +320,14 @@ module parm
 !> average annual amount of phosphorus moving from active mineral to stable
 !> mineral pool in watershed (kg P/ha)
    real*8 :: wshd_pas
-!> wash off fraction for persistent bacteria on foliage during a rainfall event
+!> fraction of persistent bacteria on foliage that is washed off by a rainfall
+!> event (none)
    real*8 :: wof_p
-   real*8 :: wshd_plch, wshd_raino3, ressedc, basno3f, basorgnf
+!> average annual amount of NO3 added to soil by rainfall in watershed (kg N/ha)
+   real*8 :: wshd_raino3
+!> average annual amount of phosphorus leached into second soil layer (kg P/ha)
+   real*8 :: wshd_plch
+   real*8 :: ressedc, basno3f, basorgnf
    real*8 :: wshd_pinlet, wshd_ptile
    real*8 :: sftmp !< Snowfall temperature (deg C)
 !> Minimum melt rate for snow during year (Dec. 21) where deg C refers to the
@@ -474,7 +479,9 @@ module parm
    real*8 :: uno3d !< plant nitrogen deficiency for day in HRU (kg N/ha)
 !> daily soil loss predicted with USLE equation (metric tons/ha)
    real*8 :: usle
-   real*8 :: rcn, surlag_bsn
+!> concentration of nitrogen in the rainfall (mg/L)
+   real*8 :: rcn
+   real*8 :: surlag_bsn
    real*8 :: thbact !< temperature adjustment factor for bacteria die-off/growth
 !> overall rate change for less persistent bacteria in soil solution (1/day)
    real*8 :: wlpq20
@@ -499,7 +506,8 @@ module parm
 !> persistent bacteria removed from soil surface layer by percolation
 !> (# colonies/ha)
    real*8 :: bactlchp
-   real*8 :: enratio !< enrichment ratio calculated for day in HRU (none)
+!> enrichment ratio calculated for current day in HRU (none)
+   real*8 :: enratio
    real*8 :: pndpcp !< precipitation on pond during day (m^3 H2O)
    real*8 :: wetpcp !z precipitation on wetland for day (m^3 H2O)
    real*8 :: wetsep !< seepage from wetland bottom for day (m^3 H2O)
@@ -568,15 +576,32 @@ module parm
    real*8 :: reactw
 !> actual amount of evaporation (soil et) that occurs on day in HRU (mm H2O)
    real*8 :: es_day
-   real*8 :: sdiegropq, sdiegrolpq, sdiegrops, sdiegrolps
-!> wash off fraction for less persistent bacteria on foliage during a rainfall
-!> event
+!> average annual change in the number of less persistent bacteria colonies in
+!> soil solution in watershed (# cfu/m^2)
+   real*8 :: sdiegrolpq
+!> average annual change in the number of less persistent bacteria colonies on
+!> soil particles in watershed (# cfu/m^2)
+   real*8 :: sdiegrolps
+!> average annual change in the number of persistent bacteria colonies in soil
+!> solution in watershed (# cfu/m^2)
+   real*8 :: sdiegropq
+!> average annual change in the number of persistent bacteria colonies on soil
+!> particles in watershed (# cfu/m^2)
+   real*8 :: sdiegrops
+!> fraction for less persistent bacteria on foliage that is washed off by a
+!> rainfall event (none)
    real*8 :: wof_lp
 !> maximum amount of transpiration (plant et) that can occur on day in HRU
 !> (mm H2O)
    real*8 :: ep_max
    real*8 :: sbactrop, sbactrolp, sbactsedp, sbactsedlp
-   real*8 :: sbactlchp, sbactlchlp, psp_bsn, rchwtr, resuspst, setlpst
+!> average annual number of less persistent bacteria lost from soil surface
+!> layer by percolation (# cfu/m^2)
+   real*8 :: sbactlchlp
+!> average annual number of persistent bacteria lost from soil surface layer by
+!> percolation (# cfu/m^2)
+   real*8 :: sbactlchp
+   real*8 :: psp_bsn, rchwtr, resuspst, setlpst
 !> surface runoff lagged from prior day of simulation (mm H2O)
    real*8 :: bsprev
 !> lateral flow lagged from prior day of simulation (mm H2O)
@@ -2351,11 +2376,21 @@ module parm
    real*8, dimension (:), allocatable :: sub_pet
 !> elevation of weather station used to compile weather generator data (m)
    real*8, dimension (:), allocatable :: welev
-   real*8, dimension (:), allocatable :: sub_orgn,sub_orgp,sub_bd
+!> bulk density in subbasin first soil layer (Mg/m^3)
+   real*8, dimension (:), allocatable :: sub_bd
+!> amount of nitrogen stored in all organic pools (kg N/ha)
+   real*8, dimension (:), allocatable :: sub_orgn
+!> amount of phosphorus stored in all organic pools (kg P/ha)
+   real*8, dimension (:), allocatable :: sub_orgp
    real*8, dimension (:), allocatable :: sub_wtmp,sub_sedpa,sub_sedps
 !> shortest daylength occurring during the year (hour)
    real*8, dimension (:), allocatable :: daylmn
-   real*8, dimension (:), allocatable :: sub_minpa,sub_minps
+!> amount of phosphorus stored in active mineral pools sorbed to sediment
+!> (kg P/ha)
+   real*8, dimension (:), allocatable :: sub_minpa
+!> amount of phosphorus stored in stable mineral pools sorbed to sediment
+!> (kg P/ha)
+   real*8, dimension (:), allocatable :: sub_minps
    real*8, dimension (:), allocatable :: latcos !< \f$\cos(latitude)\f$ (none)
    real*8, dimension (:), allocatable :: latsin !< \f$\sin(latitude)\f$ (none)
 !> total potential heat units for year (used when no crop is growing)
@@ -2400,7 +2435,9 @@ module parm
    real*8, dimension (:), allocatable :: sub_solp,sub_subp,sub_etday
 !> average elevation of HRU (m)
    real*8, dimension (:), allocatable :: sub_elev
-   real*8, dimension (:), allocatable :: sub_wyld,sub_surfq
+!> surface runoff generated on day in subbasin (mm H2O)
+   real*8, dimension (:), allocatable :: sub_surfq
+   real*8, dimension (:), allocatable :: sub_wyld
    real*8, dimension (:), allocatable :: qird
    real*8, dimension (:), allocatable :: sub_gwq,sub_sep,sub_chl
    real*8, dimension (:), allocatable :: sub_cbod,sub_dox,sub_solpst
@@ -2413,11 +2450,12 @@ module parm
    real*8, dimension (:), allocatable :: sub_dsan, sub_dsil, sub_dcla
    real*8, dimension (:), allocatable :: sub_dsag, sub_dlag
 
-!!!!!! drains
    real*8 :: vap_tile
    real*8, dimension (:), allocatable :: wnan
    real*8, dimension (:,:), allocatable :: sol_stpwt
-   real*8, dimension (:,:), allocatable :: sub_pst,sub_hhqd,sub_hhwtmp
+!> amount of pesticide in layer in subbasin (kg/ha)
+   real*8, dimension (:,:), allocatable :: sub_pst
+   real*8, dimension (:,:), allocatable :: sub_hhqd,sub_hhwtmp
 !> monthly humidity adjustment. Daily values for relative humidity within the
 !> month are rasied or lowered by the specified amount (used in climate change
 !> studies) (none)
@@ -2530,7 +2568,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_awc
 !> crack volume for soil layer (mm)
    real*8, dimension (:,:), allocatable :: volcr
-!> percolation storage array (mm H2O)
+!> percolation storage from soil layer on current day (mm H2O)
    real*8, dimension (:,:), allocatable :: sol_prk
 !> subbasin phosphorus percolation coefficient. Ratio of soluble phosphorus in
 !> surface to soluble phosphorus in percolate
@@ -2567,7 +2605,7 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_clay
 !> beta coefficent to calculate hydraulic conductivity (none)
    real*8, dimension (:,:), allocatable :: sol_hk
-!> lateral flow storage array (mm H2O)
+!> lateral flow storage in soil layer on current day (mm H2O)
    real*8, dimension (:,:), allocatable :: flat
 !> amount of nitrogen stored in the ammonium pool in soil layer (kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_nh3
@@ -2621,11 +2659,11 @@ module parm
    real*8, dimension (:,:), allocatable :: conk
 !> sol_pst(:,:,1) initial amount of pesticide in first layer read in from .chm
 !> file (mg/kg)\n
-!> sol_pst(:,:,:) amount of pesticide in layer. NOTE UNIT CHANGE!
+!> sol_pst(:,:,:) amount of pesticide in soil layer. NOTE UNIT CHANGE!
 !> (kg/ha)
    real*8, dimension (:,:,:), allocatable :: sol_pst
 !> pesticide sorption coefficient, Kp; the ratio of the concentration in the
-!> solid phase to the concentration in solution ((mg/kg)/(mg/L))
+!> solid phase to the concentration in solution ((mg/kg)/(mg/L) or m^3/ton)
    real*8, dimension (:,:,:), allocatable :: sol_kp
    real*8, dimension (:,:,:), allocatable :: orig_solpst
    real*8, dimension (:), allocatable :: velsetlr, velsetlp
@@ -3426,7 +3464,8 @@ module parm
 !> amount of nitrate originating from lateral flow in wetland at end of day
 !> (kg N)
    real*8, dimension (:), allocatable :: wet_no3s
-!> soluble pesticide leached from bottom of soil profile (kg pst/ha)
+!> amount of soluble pesticide leached from bottom of soil profile on current
+!> day (kg pst/ha)
    real*8, dimension (:), allocatable :: pstsol
 !> amount of nitrate originating from groundwater in pond at end of day (kg N)
    real*8, dimension (:), allocatable :: pnd_no3g
@@ -3475,6 +3514,7 @@ module parm
    real*8, dimension (:), allocatable :: bio_min
 !> initial HRU soil water content expressed as fraction of field capacity (none)
    real*8, dimension (:), allocatable :: ffc
+!> amount of soluble phosphorus in surface runoff in HRU for the day (kg P/ha)
    real*8, dimension (:), allocatable :: surqsolp
 !> depth of water in deep aquifer (mm H2O)
    real*8, dimension (:), allocatable :: deepst
@@ -3537,7 +3577,9 @@ module parm
    real*8, dimension (:), allocatable :: rnd8
 !> random number between 0.0 and 1.0 (none)
    real*8, dimension (:), allocatable :: rnd9
-   real*8, dimension (:), allocatable :: percn,sol_sumwp
+!> amount of nitrate percolating past bottom of soil profile (kg N/ha)
+   real*8, dimension (:), allocatable :: percn
+   real*8, dimension (:), allocatable :: sol_sumwp
 !> total amount of water entering main channel for day from HRU (mm H2O)
    real*8, dimension (:), allocatable :: qdr
 !> amount of N applied in autofert operation in year (kg N/ha)
@@ -3550,9 +3592,18 @@ module parm
    real*8, dimension (:), allocatable :: latq
 !> plant uptake of nitrogen in HRU for the day (kg N/ha)
    real*8, dimension (:), allocatable :: nplnt
-   real*8, dimension (:), allocatable :: latno3,minpgw,no3gw
+!> amount of nitrate transported with lateral flow (kg N/ha)
+   real*8, dimension (:), allocatable :: latno3
+   real*8, dimension (:), allocatable :: minpgw,no3gw
    real*8, dimension (:), allocatable :: tileq, tileno3
-   real*8, dimension (:), allocatable :: sedminpa,sedminps,sedorgn
+!> amount of organic nitrogen in surface runoff in HRU for the day (kg N/ha)
+   real*8, dimension (:), allocatable :: sedorgn
+!> amount of active mineral phosphorus sorbed to sediment in surface runoff in
+!> HRU for day (kg P/ha)
+   real*8, dimension (:), allocatable :: sedminpa
+!> amount of stable mineral phosphorus sorbed to sediment in surface runoff in
+!> HRU for day (kg P/ha)
+   real*8, dimension (:), allocatable :: sedminps
 !> soil loss caused by water erosion for day in HRU (metric tons)
    real*8, dimension (:), allocatable :: sedyld
 !> percolation from bottom of soil profile for the day in HRU (mm H2O)
@@ -3560,6 +3611,7 @@ module parm
 !> fraction of potential plant growth achieved on the day where the reduction is
 !> caused by nitrogen stress (none)
    real*8, dimension (:), allocatable :: strsn
+!> amount of organic phosphorus in surface runoff in HRU for the day (kg P/ha)
    real*8, dimension (:), allocatable :: sedorgp
 !> surface runoff generated in HRU on the current day (mm H2O)
    real*8, dimension (:), allocatable :: surfq
@@ -3569,6 +3621,7 @@ module parm
 !> fraction of potential plant growth achieved on the day where the reduction is
 !> caused by phosphorus stress (none)
    real*8, dimension (:), allocatable :: strsp
+!> amount of nitrate transported with surface runoff (kg N/ha)
    real*8, dimension (:), allocatable :: surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
 !> fraction of total watershed area contained in HRU (km2/km2)
@@ -3697,13 +3750,17 @@ module parm
    real*8, dimension (:), allocatable :: wrt2
 !> pesticide enrichment ratio (none)
    real*8, dimension (:,:), allocatable :: pst_enr
-   real*8, dimension (:,:), allocatable :: zdb,pst_surq
+!> amount of pesticide type lost in surface runoff on current day in HRU (kg/ha)
+   real*8, dimension (:,:), allocatable :: pst_surq
+!> division term from net pesticide equation (mm)
+   real*8, dimension (:,:), allocatable :: zdb
 !> pesticide on plant foliage (kg/ha)
    real*8, dimension (:,:), allocatable :: plt_pst
 !> phosphorus settling rate for 1st season (m/day)
    real*8, dimension (:), allocatable :: psetlw1
 !> phosphorus settling rate for 2nd season (m/day)
    real*8, dimension (:), allocatable :: psetlw2
+!> pesticide loading from HRU sorbed onto sediment (kg/ha)
    real*8, dimension (:,:), allocatable :: pst_sed
 !> average daily water removal from the pond for the month (10^4 m^3/day)
    real*8, dimension (:,:), allocatable :: wupnd
@@ -3968,6 +4025,7 @@ module parm
    integer, dimension (:,:), allocatable :: iopday, iopyr, mgt_ops
 !> total amount of pesticide type applied in watershed during simulation (kg/ha)
    real*8, dimension (:), allocatable :: wshd_pstap
+!> amount of pesticide lost through degradation in watershed (kg pst/ha)
    real*8, dimension (:), allocatable :: wshd_pstdg
    integer, dimension (12) :: ndmo
 !> array of unique pesticides used in watershed (none)
@@ -4437,8 +4495,9 @@ module parm
    real*8, dimension(:,:), allocatable :: sol_percc
    real*8, dimension(:,:), allocatable :: sol_latc
 
-   !!Daily carbon change by different means (entire soil profile for each HRU)
-   real*8, dimension(:), allocatable :: sedc_d, surfqc_d, latc_d,&
+!> amount of C lost with sediment pools (kg C/ha)
+   real*8, dimension(:), allocatable :: sedc_d
+   real*8, dimension(:), allocatable :: surfqc_d, latc_d,&
       &percc_d, foc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d, soc_d,&
       &rspc_d, emitc_d
    !!emitc_d include biomass_c eaten by grazing, burnt

@@ -267,7 +267,7 @@ subroutine subbasin(i)
          call plantmod(j)
 
          !! check for dormancy
-         if (igro(j) == 1) call dormant
+         if (igro(j) == 1) call dormant(j)
          !! compute actual ET for day in HRU
          etday = ep_day + es_day + canev
 
@@ -304,47 +304,44 @@ subroutine subbasin(i)
          call gwmod(j)
          call gwmod_deep(j)
 
-         !! compute pesticide washoff
-         if (hrupest(j) /= 0 .and. precipday >= 2.54) call washp(j)
-
-         !! compute pesticide degradation
-         call decay
-
-         !! compute pesticide movement in soil
-         call pestlch
+         if (hrupest(j) /= 0) then
+            !! compute pesticide washoff
+            if (precipday >= 2.54) call washp(j)
+            !! compute pesticide degradation
+            call decay(j)
+            !! compute pesticide movement in soil
+            call pestlch(j)
+         end if
 
          if (surfq(j) > 0. .and. peakr > 1.e-6) then
             if (precipday > 0.) then
-               call enrsb(0)
-               if (sedyld(j) > 0.) call pesty(0)
+               call enrsb(0, j)
+               if (hrupest(j) /= 0 .and. sedyld(j) > 0.) call pesty(0, j)
 
-               if (cswat == 0) then
-                  call orgn(0)
-               end if
-               if (cswat == 1) then
-
-                  call orgncswat(0)
-               end if
-
-               if (cswat == 2) then
-                  call orgncswat2(0)
-               end if
+               select case (cswat)
+                case (0) 
+                  call orgn(0, j)
+                case (1)
+                  call orgncswat(0, j)
+                case (2)
+                  call orgncswat2(0, j)
+               end select
 
                call psed(0, j)
             end if
          end if
 
          !! add nitrate in rainfall to soil profile
-         call nrain
+         call nrain(j)
 
          !! compute nitrate movement leaching
-         call nlch
+         call nlch(j)
 
          !! compute phosphorus movement
          call solp(j)
 
          !! compute bacteria transport
-         call bacteria
+         call bacteria(j)
 
          !! compute loadings from urban areas
          if (urblu(j) > 0) then

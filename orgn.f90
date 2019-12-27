@@ -1,21 +1,30 @@
-subroutine orgn(iwave)
+!> @file orgn.f90
+!> file containing the subroutine orgn
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the amount of organic nitrogen removed in
-!!    surface runoff
+!> this subroutine calculates the amount of organic nitrogen removed in
+!> surface runoff
+!> @param[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU\n
+!> iwave = subbasin # for subbasin
+!> @param[in] j HRU number
+subroutine orgn(iwave, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    da_ha         |ha           |area of watershed in hectares
-!!    enratio       |none         |enrichment ratio calculated for day in HRU
-!!    erorgn(:)     |none         |organic N enrichment ratio, if left blank
-!!                                |the model will calculate for every event
-!!    ihru          |none         |HRU number
 !!    iwave         |none         |flag to differentiate calculation of HRU and
 !!                                |subbasin sediment calculation
 !!                                |iwave = 0 for HRU
 !!                                |iwave = subbasin # for subbasin
+!!    j             |none         |HRU number
+!!    da_ha         |ha           |area of watershed in hectares
+!!    enratio       |none         |enrichment ratio calculated for day in HRU
+!!    erorgn(:)     |none         |organic N enrichment ratio, if left blank
+!!                                |the model will calculate for every event
 !!    sedyld(:)     |metric tons  |daily soil loss caused by water erosion in
 !!                                |HRU
 !!    sol_aorgn(:,:)|kg N/ha      |amount of nitrogen stored in the active
@@ -50,7 +59,6 @@ subroutine orgn(iwave)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    conc        |              |concentration of organic N in soil
 !!    er          |none          |enrichment ratio
-!!    j           |none          |HRU number
 !!    wt1         |none          |conversion factor (mg/kg => kg/ha)
 !!    xx          |kg N/ha       |amount of organic N in first soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -60,11 +68,8 @@ subroutine orgn(iwave)
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j
-   real*8 :: xx, wt1, er, conc
-
-   j = ihru
+   integer, intent (in) :: iwave, j
+   real*8 :: conc, er, wt1, xx
 
    if (iwave <= 0) then
       !! HRU calculations

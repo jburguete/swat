@@ -1,15 +1,20 @@
-subroutine nrain
+!> @file nrain.f90
+!> file containing the subroutine nrain
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine adds nitrate from rainfall to the soil profile
+!> this subroutine adds nitrate from rainfall to the soil profile
+!> @param[in] j HRU number
+subroutine nrain(j)
+
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    curyr       |none          |current year of simulation
 !!    drydep_no3  |kg/ha/yr      |atmospheric dry deposition of nitrates
 !!    drydep_nh4  |kg/ha/yr      |atmospheric dry deposition of ammonia
 !!    hru_dafr(:) |none          |fraction of watershed in HRU
-!!    ihru        |none          |HRU number
 !!    nyskip      |none          |number of years to skip output summarization
 !!                               |and printing
 !!    precipday   |mm H2O        |precipitation for the day in HRU
@@ -33,7 +38,7 @@ subroutine nrain
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    nh3pcp
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -41,10 +46,8 @@ subroutine nrain
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: nh3pcp
-
-   j = ihru
 
    select case (iatmodep)
     case (0)  !! average annual
@@ -58,9 +61,9 @@ subroutine nrain
       nh3pcp = .01 * rammo_mo(mo_atmo,hru_sub(j)) * precipday
       no3pcp = .01 * rcn_mo(mo_atmo,hru_sub(j)) * precipday
       sol_nh3(1,j) = sol_nh3(1,j) + nh3pcp +&
-      &drydep_nh4_mo(mo_atmo,hru_sub(j)) / ndays(i_mo+1)   !!!!!nbs/mjw 051515
+         &drydep_nh4_mo(mo_atmo,hru_sub(j)) / ndays(i_mo+1)
       sol_no3(1,j) = sol_no3(1,j) + no3pcp +&
-      &drydep_no3_mo(mo_atmo,hru_sub(j)) / ndays(i_mo+1)   !!!!!nbs/mjw 050515
+         &drydep_no3_mo(mo_atmo,hru_sub(j)) / ndays(i_mo+1)
 
     case (2)  !! daily
       nh3pcp = .01 * rammo_d(hru_sub(j)) * precipday

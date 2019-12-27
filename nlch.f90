@@ -1,16 +1,20 @@
-subroutine nlch
+!> @file nlch.f90
+!> file containing the subroutine nlch
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine simulates the loss of nitrate via surface runoff,
-!!    lateral flow, tile flow, and percolation out of the profile
+!> this subroutine simulates the loss of nitrate via surface runoff,
+!> lateral flow, tile flow, and percolation out of the profile
+!> @param[in] j HRU number
+subroutine nlch(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    anion_excl(:)|none         |fraction of porosity from which anions
 !!                               |are excluded
 !!    flat(:,:)   |mm H2O        |lateral flow in soil layer on current day
-!!    ihru        |none          |HRU number
 !!    nperco      |none          |nitrate percolation coefficient (0-1)
 !!                               |0:concentration of nitrate in surface runoff
 !!                               |  is zero
@@ -43,29 +47,33 @@ subroutine nlch
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    co          |kg N/mm       |concentration of nitrate in solution
 !!    cosurf      |kg N/mm       |concentration of nitrate in surface runoff
-!!    j           |none          |HRU number
 !!    jj          |none          |counter (soil layers)
+!!    nloss
 !!    percnlyr    |kg N/ha       |nitrate leached to next lower layer with
 !!                               |percolation
 !!    sro         |mm H2O        |surface runoff
 !!    ssfnlyr     |kg N/ha       |nitrate transported in lateral flow from layer
+!!    tno3
+!!    tno3ln
 !!    vno3        |
+!!    vno3_c
 !!    vv          |mm H2O        |water mixing with nutrient in layer
+!!    ww
+!!    ww1
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max, Min
+!!    Intrinsic: Exp, Max, Min, Log, Dmax1, Dmin1
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, jj
-   real*8 :: sro, ssfnlyr, percnlyr, vv, vno3, co
-   real*8 :: cosurf, nloss, tno3, tno3ln, vno3_c, ww, ww1
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: co, cosurf, nloss, percnlyr, sro, ssfnlyr, tno3, tno3ln, vno3,&
+      &vno3_c, vv, ww, ww1
+   integer :: jj
 
    percnlyr = 0.
 
@@ -150,8 +158,8 @@ subroutine nlch
 
 
    nloss = (2.18 * dis_stream(j) - 8.63) / 100.
-   nloss = dmax1(0.,nloss)
-   nloss = dmin1(1.,nloss)
+   nloss = Dmax1(0.,nloss)
+   nloss = Dmin1(1.,nloss)
    latno3(j) = (1. - nloss) * latno3(j)
 
    return

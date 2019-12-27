@@ -1,21 +1,30 @@
-subroutine enrsb(iwave)
+!> @file enrsb.f90
+!> file containing the subroutine enrsb
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the enrichment ratio for nutrient and
-!!    pesticide transport with runoff
+!> this subroutine calculates the enrichment ratio for nutrient and
+!> pesticide transport with runoff
+!> @param[in] iwave
+!> flag to differentiate calculation of HRU and subbasin sediment calculation
+!> (none)\n
+!> iwave = 0 for HRU\n
+!> iwave = subbasin # for subbasin
+!> @param[in] j HRU number
+subroutine enrsb(iwave, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    da_ha       |ha            |area of watershed in hectares
-!!    ihru        |none          |HRU number
 !!    iwave       |none          |flag to differentiate calculation of HRU and
 !!                               |subbasin sediment calculation
 !!                               |iwave = 0 for HRU
 !!                               |iwave = subbasin # for subbasin
+!!    j           |none          |HRU number
+!!    da_ha       |ha            |area of watershed in hectares
 !!    sedyld(:)   |metric tons   |daily soil loss caused by water erosion in HRU
 !!    sub_fr(:)   |none          |fraction of watershed area in subbasin
-!!    sub_surfq(:)|nn H2O        |surface runoff generated on day in subbasin
+!!    sub_surfq(:)|mm H2O        |surface runoff generated on day in subbasin
 !!    surfq(:)    |mm H2O        |surface runoff generated on day in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -29,7 +38,6 @@ subroutine enrsb(iwave)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cy          |
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -37,11 +45,8 @@ subroutine enrsb(iwave)
    use parm
    implicit none
 
-   integer, intent (in) :: iwave
-   integer :: j
+   integer, intent (in) :: iwave, j
    real*8 :: cy
-
-   j = ihru
 
    if (sedyld(j) < 1.e-4) then
       sedyld(j) = 0.0
@@ -55,8 +60,7 @@ subroutine enrsb(iwave)
 !! CREAMS method for calculating enrichment ratio
    if (iwave > 0) then
       !! subbasin sediment calculations
-      cy = .1 * sedyld(j) / (da_ha * sub_fr(iwave) * sub_surfq(iwave)&
-      &+ 1.e-6)
+      cy = .1 * sedyld(j) / (da_ha * sub_fr(iwave) * sub_surfq(iwave) + 1.e-6)
    else
       !! HRU sediment calculations
       cy = .1 * sedyld(j) / (hru_ha(j) * surfq(j) + 1.e-6)
