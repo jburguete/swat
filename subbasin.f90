@@ -305,7 +305,7 @@ subroutine subbasin(i)
          call gwmod_deep(j)
 
          !! compute pesticide washoff
-         if (precipday >= 2.54) call washp(j)
+         if (hrupest(j) /= 0 .and. precipday >= 2.54) call washp(j)
 
          !! compute pesticide degradation
          call decay

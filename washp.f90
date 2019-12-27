@@ -1,13 +1,17 @@
-subroutine washp(j)
+!> @file modparm.f90
+!> file containing the module parm
+!> @author
+!> modified by Javier Burguete Tolosa
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the amount of pesticide washed off the plant
-!!    foliage and onto the soil
+!> this subroutine calculates the amount of pesticide washed off the plant
+!> foliage and onto the soil
+!> @param[in] j HRU number
+subroutine washp(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    j             |none          |HRU number
 !!    hrupest(:)    |none          |pesticide use flag:
 !!                                 | 0: no pesticides used in HRU
 !!                                 | 1: pesticides used in HRU
@@ -41,21 +45,16 @@ subroutine washp(j)
    implicit none
 
    integer, intent(in) :: j
-   integer :: k, kk
    real*8 :: xx
-
-   if (hrupest(j) == 0) return
+   integer :: k, kk
 
    do k = 1, npmx
       kk = npno(k)
-      if (plt_pst(k,j) >= 0.0001) then
-         if (kk > 0) then
-            xx = pst_wof(kk) * plt_pst(k,j)
-            if (xx > plt_pst(k,j)) xx = plt_pst(k,j)
-
-            sol_pst(k,j,1) = sol_pst(k,j,1) + xx
-            plt_pst(k,j) = plt_pst(k,j) - xx
-         end if
+      if (kk > 0 .and. plt_pst(k,j) >= 0.0001) then
+         xx = plt_pst(k,j)
+         if (plt_wof(kk) < 1.) xx = xx * pst_wof(kk)
+         sol_pst(k,j,1) = sol_pst(k,j,1) + xx
+         plt_pst(k,j) = plt_pst(k,j) - xx
       end if
    end do
 
