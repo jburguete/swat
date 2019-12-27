@@ -52,7 +52,7 @@ subroutine washp(j)
       kk = npno(k)
       if (kk > 0 .and. plt_pst(k,j) >= 0.0001) then
          xx = plt_pst(k,j)
-         if (plt_wof(kk) < 1.) xx = xx * pst_wof(kk)
+         if (pst_wof(kk) < 1.) xx = xx * pst_wof(kk)
          sol_pst(k,j,1) = sol_pst(k,j,1) + xx
          plt_pst(k,j) = plt_pst(k,j) - xx
       end if
