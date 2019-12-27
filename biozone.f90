@@ -1,18 +1,26 @@
-subroutine biozone()
+!> @file pkq.f90
+!> file containing the subroutine pkq
+!> @author
+!> J. Jeong,\n
+!> C. Santhi,\n
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    This subroutine conducts biophysical processes occuring
-!!    in the biozone layer of a septic HRU.
+!> this subroutine conducts biophysical processes occuring
+!> in the biozone layer of a septic HRU.
+!> Septic algorithm adapted from \cite Siegrist05
+!> @param j HRU number
+subroutine biozone(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j                |none          |HRU number
 !!    bio_bd(:)        |kg/m^3        |density of biomass
 !!    bio_bod(:)       |kg/ha         |BOD concentration in biozone
 !!    biom(:)          |kg/ha         |biomass of live bacteria in biozone
 !!    bz_thk(:)        |mm            |thickness of biozone
-!!    coeff_bod_dc(:)  |m^3/day       |BOD decay rate coefficient
 !!    coeff_bod_conv(:)|none          |BOD to live bacteria biomass conversion factor
+!!    coeff_bod_dc(:)  |m^3/day       |BOD decay rate coefficient
 !!    coeff_denitr(:)  |none          |Denitrification rate coefficient
 !!    coeff_fc1(:)     |none          |field capacity calibration parameter 1
 !!    coeff_fc2(:)     |none          |field capacity calibration parameter 2
@@ -25,14 +33,12 @@ subroutine biozone()
 !!    coeff_slg2(:)    |none          |slough-off calibration parameter
 !!    fcoli(:)         |cfu/100ml     |concentration of the fecal coliform in the biozone
 !!                     |              |septic tank effluent
-!!    ihru             |none          |HRU number
 !!    iida             |day           |day being simulated
 !!    i_sep(:)         |none          |soil layer where biozone exists
 !!    isep_typ(:)      |none          |Septic system type
 !!    isep_opt(:)      |none          |Septic system operation flag (1=active,2=failing,0=not operated)
 !!    plqm             |kg/ha         |plaque in biozone
 !!    rbiom(:)         |kg/ha         |daily change in biomass of live bacteria
-!!    rplqm            |kg/ha         |daily change in plaque
 !!    sepday           |mm H2O        |percolation from soil layer
 !!    sol_bd(:,:)      |Mg/m**3       |bulk density of the soil
 !!    sol_fc(:,:)      |mm H2O        |amount of water available to plants in soil
@@ -62,29 +68,29 @@ subroutine biozone()
 !!    sol_up(:,:)      |mm H2O/mm soil|water content of soil at -0.033 MPa (field
 !!                                    |capacity)
 !!    sol_z(:,:)       |mm            |depth to bottom of soil layer,Index:(layer,HRU)
-!!    sptqs(:)         |m3/d/cap      |Flow rate of the septic tank effluent
-!!                     |              |per capita
 !!    sptbodconcs(:)   |mg/l          |Biological Oxygen Demand of the septic
 !!                     |              |tank effluent
-!!    spttssconcs(:)   |mg/l          |Concentration of total suspended solid in the
+!!    sptfcolis(:)     |cfu/100ml     |concentration of the facel caliform in the
 !!                     |              |septic tank effluent
-!!    spttnconcs(:)    |mg/l          |Concentration of total nitrogen
-!!                     |              |in the septic tank effluent
+!!    sptminps(:)      |mg/l          |Concentration of mineral phosphorus in
+!!                     |              |the septic tank effluent
 !!    sptnh4concs(:)   |mg/l          |Concentration of total phosphorus
 !!                     |              |of the septic tank effluent
 !!    sptno3concs(:)   |mg/l          |Concentration of nitrate
 !!                     |              |in the septic tank effluent
 !!    sptno2concs(:)   |mg/l          |Concentration of nitrite
 !!                     |              |in the septic tank effluent
-!!    sptorgnconcs(:)  |mg/l          |Concentration of organic nitrogen in
-!!                     |              |the septic tank effluent
-!!    spttpconcs(:)    |mg/l          |Concentration of total phosphorus in
-!!                     |              |the septic tank effluent
-!!    sptminps(:)      |mg/l          |Concentration of mineral phosphorus in
-!!                     |              |the septic tank effluent
 !!    sptorgps(:)      |mg/l          |concentration of organic phosphorus in the
 !!                     |              |septic tank effluent
-!!    sptfcolis(:)     |cfu/100ml     |concentration of the facel caliform in the
+!!    sptorgnconcs(:)  |mg/l          |Concentration of organic nitrogen in
+!!                     |              |the septic tank effluent
+!!    sptqs(:)         |m3/d/cap      |Flow rate of the septic tank effluent
+!!                     |              |per capita
+!!    spttnconcs(:)    |mg/l          |Concentration of total nitrogen
+!!                     |              |in the septic tank effluent
+!!    spttpconcs(:)    |mg/l          |Concentration of total phosphorus in
+!!                     |              |the septic tank effluent
+!!    spttssconcs(:)   |mg/l          |Concentration of total suspended solid in the
 !!                     |              |septic tank effluent
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -99,50 +105,74 @@ subroutine biozone()
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    bod_rt           |1/day         |BOD reaction rate
+!!    bode
+!!    bodi
 !!    bz_lyr           |none          |soil layer where biozone exists
 !!    bz_vol           |m^3           |volume of biozone
+!!    bza
+!!    ctmp
 !!    dentr_rt         |1/day         |denitrification reaction rate
 !!    fcoli_rt         |1/day         |fecal coliform reaction rate
+!!    hvol
 !!    isp              |none          |type of septic system for current hru
+!!    nh3_begin
+!!    nh3_end
+!!    nh3_inflw_ste
+!!    nly
+!!    no3_begin
+!!    no3_end
+!!    no3_inflow_ste
+!!    nperc
 !!    ntr_rt           |1/day         |nitrification reaction rate
+!!    plch
+!!    qi
+!!    qin
+!!    qlyr
+!!    qout
 !!    rbod             |mg/l          |daily change in bod concentration
 !!    rdenit           |kg/ha         |denitrification during the day
 !!    rfcoli           |cfu/100ml     |daily change in fecal coliform
 !!    rmort            |kg/ha         |daily mortality of bacteria
 !!    rnit             |kg/ha         |nitrification during the day
+!!    rplqm            |kg/ha         |daily change in plaque
 !!    rrsp             |kg/ha         |daily resparation of bacteria
 !!    rslg             |kg/ha         |daily slough-off bacteria
 !!    rtof             |none          |weighting factor used to partition the
 !!                                    |organic N & P concentration of septic effluent
 !!                                    |between the fresh organic and the stable
 !!                                    |organic pools
+!!    rtrate
+!!    solp_begin
+!!    solp_end
+!!    solpconc
+!!    solpsorb
+!!    svolp
+!!    totalp
+!!    xx
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Max, Exp, Min
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-!!    Coded by J.Jeong and C.Santhi. BRC, Temple TX
-!!    Septic algorithm adapted from Siegrist et al., 2005
 
    use parm
    implicit none
 
-   integer bz_lyr, isp, j,nly
-   real*8 bz_vol, rtrate, qin, qout, rplqm
-   real*8 ntr_rt,dentr_rt, bod_rt, fcoli_rt,rtof,xx,bodi,bode
-   real*8 rnit, rdenit, rmort, rrsp, rslg, rbod, rfcoli
-   real*8 nh3_begin, nh3_end, nh3_inflw_ste, no3_begin, no3_end
-   real*8 no3_inflow_ste, bza,qi,nperc
-   real*8 hvol, solpconc, solpsorb, qlyr,qsrf
-   real*8 n2,n3,n5,n6,n7,n8,p2,p3,p4
-   real*8 solp_begin,solp_end,svolp,totalp,ctmp,plch
+   integer, intent(in) :: j
+   real*8 bod_rt, bode, bodi, bz_vol, bza, ctmp, dentr_rt, fcoli_rt, hvol,&
+      &nh3_begin, nh3_end, nh3_inflw_ste, no3_begin, no3_end, no3_inflow_ste,&
+      &nperc, ntr_rt, plch, qi, qin, qlyr, qout, rbod, rdenit, rfcoli, rmort,&
+      &rnit, rplqm, rrsp, rslg, rtof, rtrate, solp_begin, solp_end, solpconc,&
+      &solpsorb, svolp, totalp, xx
+   integer bz_lyr, isp, nly
 
-   j = ihru
    nly = sol_nly(j)
    isp = isep_typ(j)     !! J.Jeong 3/09/09
    bz_lyr = i_sep(j)
    bza = hru_ha(j)
    bz_vol = bz_thk(j) * bza * 10. !m^3
    qlyr = qstemm(j)
-   qsrf = 0
 
    !temperature correctioin factor for bacteria growth/dieoff (Eppley, 1972)
    ctmp = thbact ** (sol_tmp(bz_lyr,j) - 20.)
@@ -193,13 +223,13 @@ subroutine biozone()
 
    !! Field capacity in the biozone Eq. 4-6  !
    sol_fc(bz_lyr,j) = sol_fc(bz_lyr,j) + coeff_fc1(j) *&
-   &(sol_ul(bz_lyr,j) - sol_fc(bz_lyr,j)) ** coeff_fc2(j)&
-   &* rbiom(j) / (bio_bd(j) * 10)
+      &(sol_ul(bz_lyr,j) - sol_fc(bz_lyr,j)) ** coeff_fc2(j)&
+      &* rbiom(j) / (bio_bd(j) * 10)
 
    !! Saturated water content in the biozone - Eq. 4-7
    ! mm = mm - kg/ha / (kg/m^3 * 10)
    sol_ul(bz_lyr,j)=sol_por(bz_lyr,j)*bz_thk(j)-plqm(j)&
-   &/(bio_bd(j)*10.)
+      &/(bio_bd(j)*10.)
 
    if(sol_ul(bz_lyr,j).le.sol_fc(bz_lyr,j)) then
       sol_ul(bz_lyr,j) = sol_fc(bz_lyr,j)
@@ -220,8 +250,8 @@ subroutine biozone()
    !! Build up of plqm(kg/ha) Eq.4-5
    ! kg/ha (perday) = kg/ha + dimensionless * m^3/d * mg/l / (1000*ha)
    rplqm = (rmort - rslg) + coeff_plq(j) * qin *&
-   &spttssconcs(isp) / (1000. * bza)
-   rplqm = max(0.,rplqm)
+      &spttssconcs(isp) / (1000. * bza)
+   rplqm = Max(0.,rplqm)
 
    !! Add build up to plqm  ! kg/ha = kg/ha + kg/ha
    plqm(j) = plqm(j) + rplqm
@@ -236,38 +266,38 @@ subroutine biozone()
 
    !! Add STE f.coli concentration by volumetric averaging
    xx = 10.* sol_st(bz_lyr,j) * bza / (qin&
-   &+ 10.* sol_st(bz_lyr,j) * bza)
+      &+ 10.* sol_st(bz_lyr,j) * bza)
    fcoli(j) = fcoli(j) * xx + sptfcolis(isp) * (1.- xx)  ! J.Jeong 3/09/09
 
    !! nutrients reaction rate (Equation 4-13)
    rtrate =  biom(j) * bza / (bz_vol * sol_por(bz_lyr,j))
 
    !! BOD (kg/ha) 4-14 !
-   bod_rt = max(0.,coeff_bod_dc(j) * rtrate)  !bod
+   bod_rt = Max(0.,coeff_bod_dc(j) * rtrate)  !bod
    if (bod_rt>4) bod_rt=4
    rbod = bodi * (1.- Exp(-bod_rt))
    bode = bodi - rbod     !mg/l
    bio_bod(j) = bode * (sol_st(bz_lyr,j)*10)/1000. !kg/ha
 
    !! Fecal coliform(cfu/100ml) Eq 4-14, J.Jeong 3/09/09
-   fcoli_rt = max(0.,coeff_fecal(j) * rtrate)  !fecal coliform
+   fcoli_rt = Max(0.,coeff_fecal(j) * rtrate)  !fecal coliform
    rfcoli = fcoli(j) * (1.- exp(-fcoli_rt))
    fcoli(j) = fcoli(j) - rfcoli
 
    !! change in nh3 & no3 in soil pools due to nitrification(kg/ha) Eq.4-13, 4-14
-   ntr_rt = max(0.,coeff_nitr(j) * rtrate)   !nitrification
+   ntr_rt = Max(0.,coeff_nitr(j) * rtrate)   !nitrification
    rnit = sol_nh3(bz_lyr,j) * (1. - Exp(-ntr_rt)) !! J.Jeong 4/03/09
    sol_nh3(bz_lyr,j) = sol_nh3(bz_lyr,j) - rnit !J.Jeong 3/09/09
    sol_no3(bz_lyr,j) = sol_no3(bz_lyr,j) + rnit !J.Jeong 3/09/09
 
    !ammonium percolation
    nperc = 0.2 * qout / qi * sol_nh3(bz_lyr,j)
-   nperc = min(nperc,0.5*sol_nh3(bz_lyr,j))
+   nperc = Min(nperc,0.5*sol_nh3(bz_lyr,j))
    sol_nh3(bz_lyr,j) = sol_nh3(bz_lyr,j) - nperc
    sol_nh3(bz_lyr+1,j) = sol_nh3(bz_lyr+1,j) + nperc
 
    !! denitrification,(kg/ha) Eq 4-14
-   dentr_rt = max(0.,coeff_denitr(j) * rtrate)  !denitrification
+   dentr_rt = Max(0.,coeff_denitr(j) * rtrate)  !denitrification
    rdenit = sol_no3(bz_lyr,j) * (1. - Exp(-dentr_rt)) !J.Jeong 3/09/09
    sol_no3(bz_lyr,j) = sol_no3(bz_lyr,j) - rdenit  !J.Jeong 3/09/09
 
@@ -276,7 +306,7 @@ subroutine biozone()
 
    !max adsorption amnt: linear isotherm, McCray 2005
    solpconc = sol_solp(bz_lyr,j) * bza / qi * 1000. !mg/l
-   solpsorb = min(coeff_pdistrb(j) * solpconc,coeff_psorpmax(j)) !mgP/kgSoil
+   solpsorb = Min(coeff_pdistrb(j) * solpconc,coeff_psorpmax(j)) !mgP/kgSoil
    solpsorb = 1.6 * 1.e-3 * solpsorb * svolp  !kgP sorption potential
 
    !check if max. P sorption is reached
@@ -303,8 +333,8 @@ subroutine biozone()
    !! daily change in live bacteria biomass(kg/ha) Eq. 4-1
    ! kg/ha = m^3 * mg/L/(1000.*ha)6
    rbiom(j) = ctmp * coeff_bod_conv(j)*(qin*sptbodconcs(isp)-qout&
-   &* bode) / (1000. * bza) - (rrsp + rmort + rslg)
-   rbiom(j) = max(1.e-06,rbiom(j))
+      &* bode) / (1000. * bza) - (rrsp + rmort + rslg)
+   rbiom(j) = Max(1.e-06,rbiom(j))
 
    !! total live biomass in biozone(kg/ha)
    biom(j) = biom(j) + rbiom(j)
@@ -318,33 +348,23 @@ subroutine biozone()
 
    !! print out time seriese results. header is in "readfile.f"
    if(curyr>nyskip) then
-      n2=nh3_begin
-      n3=nh3_end
-      n5=no3_begin
-      n6=no3_end !*bza/hvol*1000
-      n7=rnit
-      n8=rdenit
-      p2=solp_begin
-      p3=solp_end
-      p4 = solpconc
-
-      write(173,1000) ihru,iyr,iida,precipday,bz_perc(j),sol_ul(bz_lyr,j),&
-      &sol_st(bz_lyr,j),sol_fc(bz_lyr,j),n2,n3,n5,n6,&
-      &n7,n8,p2,p3,p4
+      write(173,1000) j, iyr,iida, precipday, bz_perc(j), sol_ul(bz_lyr,j),&
+         &sol_st(bz_lyr,j), sol_fc(bz_lyr,j), nh3_begin, nh3_end, no3_begin,&
+         &no3_end, rnit, rdenit, solp_begin, solp_end, solpconc
    endif
 
 !! output.std variables added 03/01/2011 jga
    wshd_sepno3 = wshd_sepno3 + xx * (sptno3concs(isp) +&
-   &sptno2concs(isp)) * hru_dafr(j)
+      &sptno2concs(isp)) * hru_dafr(j)
    wshd_sepnh3 = wshd_sepnh3 + xx * sptnh4concs(isp) * hru_dafr(j)
    wshd_seporgn = wshd_seporgn + xx * sptorgnconcs(isp) *&
-   &rtof * hru_dafr(j)
+      &rtof * hru_dafr(j)
    wshd_sepfon = wshd_sepfon + xx * sptorgnconcs(isp)*&
-   &(1.-rtof) * hru_dafr(j)
+      &(1.-rtof) * hru_dafr(j)
    wshd_seporgp = wshd_seporgp + xx * sptorgps(isp) *&
-   &rtof * hru_dafr(j)
+      &rtof * hru_dafr(j)
    wshd_sepfop = wshd_sepfop + xx * sptorgps(isp) *&
-   &(1.-rtof) * hru_dafr(j)
+      &(1.-rtof) * hru_dafr(j)
    wshd_sepsolp = wshd_sepsolp + xx * sptminps(isp) * hru_dafr(j)
    wshd_sepbod = wshd_sepbod + xx * sptbodconcs(isp) * hru_dafr(j)
    wshd_sepmm = wshd_sepmm + qstemm(j) * hru_dafr(j)

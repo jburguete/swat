@@ -1,8 +1,12 @@
-subroutine pminrl(j)
+!> @file pminrl.f90
+!> file containing the subroutine pminrl
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes p flux between the labile, active mineral
-!!    and stable mineral p pools.
+!> this subroutine computes p flux between the labile, active mineral
+!> and stable mineral p pools.
+!> @param j HRU number
+subroutine pminrl(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -77,8 +81,8 @@ subroutine pminrl(j)
 
    integer, intent(in) :: j
    real*8, parameter :: bk = .0006
+   real*8 :: rmn1, roc, rto
    integer :: l
-   real*8 :: rto, rmn1, roc
 
    rto = psp(j) / (1.-psp(j))
 

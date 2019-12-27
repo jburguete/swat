@@ -5,7 +5,7 @@
 
 !> this subroutine computes the peak runoff rate for each HRU
 !> and the entire subbasin using a modification of the rational formula
-!> @parm[in] iwave
+!> @param[in] iwave
 !> flag to differentiate calculation of HRU and subbasin sediment calculation
 !> (none)\n
 !> iwave = 0 for HRU MUSLE(sedyld) each hru is calculated independently using

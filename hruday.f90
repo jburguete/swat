@@ -1,4 +1,4 @@
-subroutine hruday(i)
+subroutine hruday(i, j)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine writes daily HRU output to the output.hru file
@@ -7,6 +7,7 @@ subroutine hruday(i)
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i             |julian date   |current day in simulation--loop counter
+!!    j             |none          |HRU number
 !!    aird(:)       |mm H2O        |amount of water applied to HRU on current
 !!                                 |day
 !!    auton         |kg N/ha       |amount of nitrogen applied in auto-fert
@@ -63,7 +64,6 @@ subroutine hruday(i)
 !!                                 |current year
 !!    iida          |julian date   |current day of simulation
 !!    idplt(:)      |none          |land cover code from crop.dat
-!!    ihru          |none          |HRU number
 !!    ipdvas(:)     |none          |output variable codes for output.hru file
 !!    isproj        |none          |special project code:
 !!                                 |1 test rewind (run simulation twice)
@@ -172,7 +172,6 @@ subroutine hruday(i)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    j           |none          |HRU number
 !!    pdvas(:)    |varies        |array to hold HRU output values
 !!    pdvs(:)     |varies        |array to hold selected HRU output values
 !!                               |when user doesn't want to print all
@@ -184,8 +183,8 @@ subroutine hruday(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
-   integer :: j, sb, ii, iflag, idplant, k, icl
+   integer, intent(in) :: i, j
+   integer :: sb, ii, iflag, idplant, k, icl
    real*8 :: sol_mass, sol_cmass, sol_nmass, tot_mass, tot_cmass, tot_nmass,&
    &tot_LSC, tot_LMC, tot_HSC, tot_HPC, tot_BMC, tot_pmass, tot_solp,&
    &tot_no3_nh3
@@ -218,75 +217,75 @@ subroutine hruday(i)
          sum_depth(k) = 100. * (k -1)
       end do
 
-      wc = sol_st(1,ihru) + sol_wpmm(1,ihru)
-      sat = sol_ul(1,ihru) + sol_wpmm(1,ihru)
+      wc = sol_st(1,j) + sol_wpmm(1,j)
+      sat = sol_ul(1,j) + sol_wpmm(1,j)
       soilwater(1) = wc
-      wfsc(1) = sol_por(1,ihru) * (wc / sat)   ! fraction
+      wfsc(1) = sol_por(1,j) * (wc / sat)   ! fraction
 
-      if (sol_nly(ihru) .ge. 2) then
+      if (sol_nly(j) .ge. 2) then
          do k = 2, 11
             sumwater = 0.
             sumwfsc = 0.
             sumdepth = 0.
-            do ly = 2, sol_nly(ihru)
-               if (sol_z(ly-1,ihru) .ge. sum_depth(k-1) .and. sol_z(ly,ihru) .le. sum_depth(k)) then
+            do ly = 2, sol_nly(j)
+               if (sol_z(ly-1,j) .ge. sum_depth(k-1) .and. sol_z(ly,j) .le. sum_depth(k)) then
 
-                  dp = sol_z(ly,ihru) - sol_z(ly-1,ihru)
+                  dp = sol_z(ly,j) - sol_z(ly-1,j)
                   if (dp .gt. 0.) then
-                     wc = sol_st(ly,ihru) + sol_wpmm(ly,ihru)*(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
-                     sat = sol_ul(ly,ihru) + sol_wpmm(ly,ihru)*(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
+                     wc = sol_st(ly,j) + sol_wpmm(ly,j)*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
+                     sat = sol_ul(ly,j) + sol_wpmm(ly,j)*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
 
 
                      sumwater = sumwater + wc * dp
-                     sumwfsc = sumwfsc + sol_por(ly,ihru) * (wc / sat) * dp
+                     sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                      sumdepth = sumdepth + dp
                   end if
 
-               elseif ((sol_z(ly-1,ihru) .gt. sum_depth(k-1) .and. sol_z(ly,ihru) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,ihru) .ge. sum_depth(k-1) .and. sol_z(ly,ihru) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,ihru) .gt. sum_depth(k-1) .and. sol_z(ly,ihru) .ge. sum_depth(k))) &
+               elseif ((sol_z(ly-1,j) .gt. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
+                  .or. (sol_z(ly-1,j) .ge. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
+                  .or. (sol_z(ly-1,j) .gt. sum_depth(k-1) .and. sol_z(ly,j) .ge. sum_depth(k))) &
                   then
-                  if (sol_z(ly-1,ihru) .le. sum_depth(k)) then
-                     dp = sum_depth(k) - sol_z(ly-1,ihru)
+                  if (sol_z(ly-1,j) .le. sum_depth(k)) then
+                     dp = sum_depth(k) - sol_z(ly-1,j)
                      if (dp .gt. 0.) then
-                        wc = (sol_st(ly,ihru) + sol_wpmm(ly,ihru)) *(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
-                        sat = (sol_ul(ly,ihru) + sol_wpmm(ly,ihru)) *(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
+                        wc = (sol_st(ly,j) + sol_wpmm(ly,j)) *(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
+                        sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) *(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
 
 
                         sumwater = sumwater + wc * dp
-                        sumwfsc = sumwfsc + sol_por(ly,ihru) * (wc / sat) * dp
+                        sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                         sumdepth = sumdepth + dp
                      end if
                   end if
-               elseif ((sol_z(ly-1,ihru) .lt. sum_depth(k-1) .and. sol_z(ly,ihru) .lt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,ihru) .le. sum_depth(k-1) .and. sol_z(ly,ihru) .lt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,ihru) .lt. sum_depth(k-1) .and. sol_z(ly,ihru) .le. sum_depth(k))) &
+               elseif ((sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .lt. sum_depth(k)) &
+                  .or. (sol_z(ly-1,j) .le. sum_depth(k-1) .and. sol_z(ly,j) .lt. sum_depth(k)) &
+                  .or. (sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .le. sum_depth(k))) &
                   then
-                  if (sol_z(ly,ihru) .ge. sum_depth(k-1)) then
-                     dp = sol_z(ly,ihru) - sum_depth(k-1)
+                  if (sol_z(ly,j) .ge. sum_depth(k-1)) then
+                     dp = sol_z(ly,j) - sum_depth(k-1)
                      if (dp .gt. 0.) then
-                        wc = (sol_st(ly,ihru) + sol_wpmm(ly,ihru))*(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
-                        sat = (sol_ul(ly,ihru) + sol_wpmm(ly,ihru)) *(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
+                        wc = (sol_st(ly,j) + sol_wpmm(ly,j))*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
+                        sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) *(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
 
 
                         sumwater = sumwater + wc * dp
-                        sumwfsc = sumwfsc + sol_por(ly,ihru) * (wc / sat) * dp
+                        sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                         sumdepth = sumdepth + dp
                      end if
                   end if
 
-               elseif ((sol_z(ly-1,ihru) .lt. sum_depth(k-1) .and. sol_z(ly,ihru) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,ihru) .le. sum_depth(k-1) .and. sol_z(ly,ihru) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,ihru) .lt. sum_depth(k-1) .and. sol_z(ly,ihru) .ge. sum_depth(k))) &
+               elseif ((sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
+                  .or. (sol_z(ly-1,j) .le. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
+                  .or. (sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .ge. sum_depth(k))) &
                   then
                   dp = sum_depth(k) - sum_depth(k-1)
                   if (dp .gt. 0.) then
-                     wc = (sol_st(ly,ihru) + sol_wpmm(ly,ihru))*(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
-                     sat = (sol_ul(ly,ihru) + sol_wpmm(ly,ihru))*(dp/(sol_z(ly,ihru)-sol_z(ly-1,ihru)))
+                     wc = (sol_st(ly,j) + sol_wpmm(ly,j))*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
+                     sat = (sol_ul(ly,j) + sol_wpmm(ly,j))*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
 
 
                      sumwater = sumwater + wc * dp
-                     sumwfsc = sumwfsc + sol_por(ly,ihru) * (wc / sat) * dp
+                     sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                      sumdepth = sumdepth + dp
                   end if
                end if
@@ -306,7 +305,6 @@ subroutine hruday(i)
    !!===============================
 
 
-   j = ihru
    sb = hru_sub(j)
    iflag = 0
    do ii = 1, itoth

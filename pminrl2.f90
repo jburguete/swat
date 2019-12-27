@@ -1,9 +1,13 @@
-subroutine pminrl2(j)
+!> @file pminrl2.f90
+!> file containing the subroutine pminrl2
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes p flux between the labile, active mineral
-!!    and stable mineral p pools.
-!!    this is the alternate phosphorus model described in Vadas and White (2010)
+!> this subroutine computes p flux between the labile, active mineral
+!> and stable mineral p pools.
+!> this is the alternate phosphorus model described in \cite VadasWhite10
+!> @param j HRU number
+subroutine pminrl2(j)
 
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
@@ -67,12 +71,7 @@ subroutine pminrl2(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    solp(:)     |mg/kg         |Solution pool phosphorous content
-!!    actp(:)     |mg/kg         |Active pool phosphorous content
-!!    stap(:)     |mg/kg         |Stable pool phosphorous content
-!!    vara                       |Intermediate Variable
-!!    varb                       |Intermediate Variable
-!!    varc                       |Intermediate Variable
+!!    actp        |mg/kg         |Active pool phosphorous content
 !!    arate                      |Intermediate Variable
 !!    l           |none          |counter (soil layer)
 !!    rmn1        |kg P/ha       |amount of phosphorus moving from the solution
@@ -82,19 +81,24 @@ subroutine pminrl2(j)
 !!                               |mineral to the stable mineral pool in the
 !!                               |soil layer
 !!    rto         |
+!!    solp        |mg/kg         |Solution pool phosphorous content
+!!    stap        |mg/kg         |Stable pool phosphorous content
+!!    vara                       |Intermediate Variable
+!!    varb                       |Intermediate Variable
+!!    varc                       |Intermediate Variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Min
+!!    Intrinsic: Log, Max, Exp, Min
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
    integer, intent(in) :: j
+   real*8 :: actp, arate, as_p_coeff, base, rmn1, roc, rto, solp, ssp, stap,&
+      &vara, varb, varc, wetness, xx
    integer :: l
-   real*8 :: rto, rmn1, roc, wetness, base, vara, varb, varc, as_p_coeff, arate, ssp, xx
-   real*8  solp(mlyr),actp(mlyr),stap(mlyr) !! locals for concentation based data
 
    do l = 1, sol_nly(j) !! loop through soil layers in this HRU
       !! make sure that no zero or negative pool values come in
@@ -103,17 +107,17 @@ subroutine pminrl2(j)
       if (sol_stap(l,j) <= 1.e-6) sol_stap(l,j) = 1.e-6
 
 !! Convert kg/ha to ppm so that it is more meaningful to compare between soil layers
-      solp(l) = sol_solp(l,j) / conv_wt(l,j) * 1000000.
-      actp(l) = sol_actp(l,j) / conv_wt(l,j) * 1000000.
-      stap(l) = sol_stap(l,j)/ conv_wt(l,j) * 1000000.
+      solp = sol_solp(l,j) / conv_wt(l,j) * 1000000.
+      actp = sol_actp(l,j) / conv_wt(l,j) * 1000000.
+      stap = sol_stap(l,j)/ conv_wt(l,j) * 1000000.
 
 
 !! ***************Soluble - Active Transformations***************
 
       !! Dynamic PSP Ratio
-      !!PSP = -0.045*log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
+      !!PSP = -0.045*Log (% clay) + 0.001*(Solution P, mg kg-1) - 0.035*(% Organic C) + 0.43
       if (sol_clay(l,j) > 0.) then
-         psp(j) = -0.045 * log(sol_clay(l,j))+ (0.001 * solp(l))
+         psp(j) = -0.045 * Log(sol_clay(l,j))+ (0.001 * solp)
          psp(j) = psp(j) - (0.035  * sol_cbn(l,j)) + 0.43
       else
          psp(j) = 0.4
@@ -145,8 +149,8 @@ subroutine pminrl2(j)
       if (rmn1 >= 0.) then !! Net movement from soluble to active
          rmn1 = Max(rmn1, (-1 * sol_solp(l,j)))
          !! Calculate Dynamic Coefficant
-         vara = 0.918 * (exp(-4.603 * psp(j)))
-         varb = (-0.238 * LOG(vara)) - 1.126
+         vara = 0.918 * (Exp(-4.603 * psp(j)))
+         varb = (-0.238 * Log(vara)) - 1.126
          if (a_days(l,j) >0) then
             arate = vara * (a_days(l,j) ** varb)
          else
@@ -164,7 +168,7 @@ subroutine pminrl2(j)
          rmn1 = Min(rmn1, sol_actp(l,j))
          !! Calculate Dynamic Coefficant
          base = (-1.08 * PSP(j)) + 0.79
-         varc = base * (exp (-0.29))
+         varc = base * (Exp (-0.29))
          !! limit varc from 0.1 to 1
          if (varc > 1.0) varc  = 1.0
          if (varc < 0.1) varc  = 0.1
@@ -183,7 +187,7 @@ subroutine pminrl2(j)
       !! Estimate active/stable pool ratio
       !! Generated from sharpley 2003
 
-      xx = actp(l) + (actp(l) * rto)
+      xx = actp + (actp * rto)
       ssp = 0.7
       if (xx > 1.e-6) then
          ssp = 25.044 * xx ** (-0.3833)
@@ -212,7 +216,7 @@ subroutine pminrl2(j)
       roc  = roc  * wetness
 
 !! If total P is greater than 10,000 mg/kg do not allow transformations at all
-      If ((solp(l) + actp(l) + stap(l)) < 10000.) then
+      If ((solp + actp + stap) < 10000.) then
          !! Allow P Transformations
          sol_stap(l,j) = sol_stap(l,j) + roc
          if (sol_stap(l,j) < 0.) sol_stap(l,j) = 0.

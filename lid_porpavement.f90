@@ -19,7 +19,6 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
 !!    k                |none          |Subdaily time index
 !!    lid_prec         |mm            |Precipitation depth a LID receives in a simulation time interval
 !!    idt              |minutes       |Simulation time interval for sub-daily modeling
-!!    ihru             |none          |HRU number
 !!    lid_cuminf_last  |mm H2O        |Cumulative amount of water infiltrated into the amended soil layer at the last time step in a day
 !!    lid_cumr_last    |mm H2O        |Cumulative amount of rainfall at the last time step in a day
 !!    lid_f_last       |mm/mm H2O     |Potential infiltration rate of the amended soil layer at the last time step in a day

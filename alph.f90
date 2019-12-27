@@ -5,7 +5,7 @@
 
 !> this subroutine computes alpha, a dimensionless parameter that
 !> expresses the fraction of total rainfall that occurs during 0.5h
-!> @parm[in] iwave
+!> @param[in] iwave
 !> flag to differentiate calculation of HRU and subbasin sediment calculation
 !> (none)\n
 !> iwave = 0 for HRU MUSLE(sedyld) each hru is calculated independently using

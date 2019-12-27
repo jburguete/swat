@@ -9,7 +9,6 @@ subroutine distributed_bmps
 !!    hhqday(:)   |mm H2O        |surface runoff generated each hour of day
 !!                               |in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
-!!    ihru        |none          |HRU number
 !!    ubntss(:)    |metric tons    |TSS loading from urban impervious cover
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 

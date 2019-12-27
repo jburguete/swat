@@ -1,16 +1,20 @@
-subroutine gwmod
+!> @file gwmod.f90
+!> file containing the subroutine gwmod
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine estimates groundwater contribution to
-!!    streamflow
+!> this subroutine estimates groundwater contribution to
+!> streamflow
+!> @param j HRU number
+subroutine gwmod(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    alpha_bf(:) |1/days        |alpha factor for groundwater recession curve
 !!    alpha_bfe(:)|none          |Exp(-alpha_bf(:))
 !!    deepst(:)   |mm H2O        |depth of water in deep aquifer
-!!    ihru        |none          |HRU number
 !!    gw_delaye(:)|none          |Exp(-1./(delay(:)) where delay(:) is the
 !!                               |groundwater delay (time required for water
 !!                               |leaving the bottom of the root zone to reach
@@ -57,7 +61,6 @@ subroutine gwmod
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    rchrg1      |mm H2O        |amount of water entering shallow aquifer on
 !!                               |previous day
 !!    rchrg_karst |mm H2O        |amount of water from secondary channels,
@@ -73,10 +76,8 @@ subroutine gwmod
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
    real*8 :: rchrg1, rchrg_karst
-
-   j = ihru
 
    rchrg1 = rchrg(j) + rchrg_src(j)
 
@@ -87,9 +88,8 @@ subroutine gwmod
 
 !! compute shallow aquifer level for current day, assumes karst losses
 !! infiltrate at the same speed as what goes through the soil profile.
-   rchrg(j) = 0.
    rchrg(j) = (1.-gw_delaye(j)) * (sepbtm(j) + gwq_ru(j) +&
-   &rchrg_karst) + gw_delaye(j) * rchrg1
+      &rchrg_karst) + gw_delaye(j) * rchrg1
    if (rchrg(j) < 1.e-6) rchrg(j) = 0.
    gwq_ru(j) = 0.
 
@@ -99,13 +99,13 @@ subroutine gwmod
 
    shallst(j) = shallst(j) + (rchrg(j) - gwseep)
    gwht(j) = gwht(j) * alpha_bfe(j) + rchrg(j) * (1. - alpha_bfe(j))&
-   &/ (800. * gw_spyld(j) * alpha_bf(j) + 1.e-6)
+      &/ (800. * gw_spyld(j) * alpha_bf(j) + 1.e-6)
    gwht(j) = Max(1.e-6, gwht(j))
 
 !! compute groundwater contribution to streamflow for day
    if (shallst(j) > gwqmn(j)) then
       gw_q(j) = gw_q(j) * alpha_bfe(j) + (rchrg(j) - gwseep ) *&
-      &(1. - alpha_bfe(j))
+         &(1. - alpha_bfe(j))
    else
       gw_q(j) = 0.
    end if

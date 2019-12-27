@@ -1,8 +1,12 @@
-subroutine anfert(j)
+!> @file anfert.f90
+!> file containing the subroutine anfert
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine automatically applies Nitrogen and Phosphorus when
-!!    Nitrogen stress exceeds a user input threshhold.
+!> this subroutine automatically applies Nitrogen and Phosphorus when
+!> Nitrogen stress exceeds a user input threshhold
+!> @param[in] j HRU number
+subroutine anfert(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -49,6 +53,10 @@ subroutine anfert(j)
 !!    icr(:)      |none          |sequence number of crop grown within the
 !!                               |current year
 !!    nro(:)      |none          |sequence number of year in rotation
+!!    nstress     |none          |code for approach used to determine amount
+!!                               |of nitrogen to HRU
+!!                               |0 nitrogen target approach
+!!                               |1 annual max approach
 !!    nyskip      |none          |number of years of output summarization
 !!                               |and printing to skip
 !!    phuacc(:)   |none          |fraction of plant heat units accumulated
@@ -145,11 +153,10 @@ subroutine anfert(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    dwfert      |kg fert/ha    |amount of fertilizer to be applied to meet
 !!                               |nitrogen requirement
+!!    ifrt
 !!    ly          |none          |counter (soil layers)
-!!    nstress     |none          |code for approach used to determine amount
-!!                               |of nitrogen to HRU
-!!                               |0 nitrogen target approach
-!!                               |1 annual max approach
+!!    orgc_f
+!!    RLN
 !!    rtoaf       |none          |weighting factor used to partition the
 !!                               |organic N & P content of the fertilizer
 !!                               |between the fresh organic and the active
@@ -158,8 +165,16 @@ subroutine anfert(j)
 !!    tfp         |kg minP/kg frt|fraction of mineral P to be applied
 !!    tpno3       |
 !!    tsno3       |
+!!    X1
+!!    X8
+!!    X10
 !!    xx          |none          |fraction of total amount of fertilizer to
 !!                               |be applied to layer
+!!    XXX
+!!    XZ
+!!    YY
+!!    YZ
+!!    ZZ
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -170,10 +185,10 @@ subroutine anfert(j)
    integer, intent(in) :: j
             !orgc_f is the fraction of organic carbon in fertilizer
             !for most fertilziers this value is set to 0.
-   real*8, parameter :: rtoaf = 0.50, orgc_f = 0.0
-   integer :: ly, ifrt
-   real*8 :: tsno3, tpno3, dwfert, xx, targn, tfp, RLN, X1, X10, X8, XXX, XZ,&
+   real*8, parameter :: orgc_f = 0.0, rtoaf = 0.50
+   real*8 :: dwfert, RLN, targn, tfp, tpno3, tsno3, X1, X8, X10, xx, XXX, XZ,&
      &YY, YZ, ZZ
+   integer :: ifrt, ly
 
    ifrt = iafrttyp(j)
 
@@ -236,19 +251,19 @@ subroutine anfert(j)
          endif
 
          sol_no3(ly,j) = sol_no3(ly,j) + xx * dwfert * fminn(ifrt) *&
-         &(1. - fnh3n(ifrt))
+            &(1. - fnh3n(ifrt))
          sol_nh3(ly,j) = sol_nh3(ly,j) + xx * dwfert * fminn(ifrt) *&
-         &fnh3n(ifrt)
+            &fnh3n(ifrt)
 
          if (cswat == 0) then
             sol_fon(ly,j) = sol_fon(ly,j) + rtoaf * xx * dwfert&
-            &* forgn(ifrt)
+               &* forgn(ifrt)
             sol_aorgn(ly,j) = sol_aorgn(ly,j) + (1. - rtoaf) * xx&
-            &* dwfert * forgn(ifrt)
+               &* dwfert * forgn(ifrt)
             sol_fop(ly,j) = sol_fop(ly,j) + rtoaf * xx * dwfert&
-            &* forgp(ifrt)
+               &* forgp(ifrt)
             sol_orgp(ly,j) = sol_orgp(ly,j) + (1. - rtoaf) * xx *&
-            &dwfert* forgp(ifrt)
+               &dwfert* forgp(ifrt)
          end if
          if (cswat == 1) then
             sol_mc(ly,j) = sol_mc(ly,j) + xx * dwfert * forgn(ifrt)*10.
@@ -260,12 +275,12 @@ subroutine anfert(j)
          !!=================
          if (cswat == 2) then
             sol_fop(ly,j) = sol_fop(ly,j) + rtoaf * xx * dwfert&
-            &* forgp(ifrt)
+               &* forgp(ifrt)
             sol_orgp(ly,j) = sol_orgp(ly,j) + (1. - rtoaf) * xx *&
-            &dwfert* forgp(ifrt)
+               &dwfert* forgp(ifrt)
             !!Allocate organic fertilizer to Slow (SWAT_active) N pool;
             sol_HSN(ly,j) = sol_HSN(ly,j) + (1. - rtoaf) * xx&
-            &* dwfert * forgn(ifrt)
+               &* dwfert * forgn(ifrt)
             sol_aorgn(ly,j) = sol_HSN(ly,j)
 
 
@@ -291,7 +306,7 @@ subroutine anfert(j)
 
             sol_LMN(ly,j) = sol_LMN(ly,j) + ZZ
             sol_LSN(ly,j) = sol_LSN(ly,j) + X1&
-            &*forgn(ifrt) -ZZ
+               &*forgn(ifrt) -ZZ
             XZ = X1 *orgc_f-XXX
             sol_LSC(ly,j) = sol_LSC(ly,j) + XZ
             sol_LSLC(ly,j) = sol_LSLC(ly,j) + XZ * .175
@@ -338,22 +353,22 @@ subroutine anfert(j)
       tautop(j) = tautop(j) + autop
       if (curyr > nyskip) then
          wshd_ftotn = wshd_ftotn + dwfert * (fminn(ifrt) +&
-         &forgn(ifrt))* hru_dafr(j)
+            &forgn(ifrt))* hru_dafr(j)
          wshd_forgn = wshd_forgn + dwfert * forgn(ifrt) * hru_dafr(j)
          wshd_fno3 = wshd_fno3 + dwfert * fminn(ifrt) *&
-         &(1. - fnh3n(ifrt)) * hru_dafr(j)
+            &(1. - fnh3n(ifrt)) * hru_dafr(j)
          wshd_fnh3 = wshd_fnh3 + dwfert * fminn(ifrt) * fnh3n(ifrt) *&
-         &hru_dafr(j)
+            &hru_dafr(j)
          wshd_fminp = wshd_fminp + dwfert * tfp * hru_dafr(j)
          wshd_forgp = wshd_forgp + dwfert * forgp(ifrt) * hru_dafr(j)
       end if
 
       if (imgt == 1) then
          write (143, 1000) subnum(j), hruno(j), iyr, i_mo, iida,&
-         &hru_km(j), "         ",&
-         &"AUTOFERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
-         &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j), dwfert,&
-         &fertno3, fertnh3, fertorgn, fertsolp, fertorgp
+            &hru_km(j), "         ",&
+            &"AUTOFERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
+            &sol_rsd(1,j),sol_sumno3(j),sol_sumsolp(j), dwfert,&
+            &fertno3, fertnh3, fertorgn, fertsolp, fertorgp
       end if
 
    endif

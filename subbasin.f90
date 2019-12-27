@@ -280,14 +280,14 @@ subroutine subbasin(i)
          !! compute nitrogen and phosphorus mineralization
          select case (cswat)
           case (0)
-            call nminrl
+            call nminrl(j)
           case (1)
-            call carbon
+            call carbon(i, j)
           case (2)
-            call carbon_zhang2
+            call carbon_zhang2(j)
          end select
 
-         call nitvol
+         call nitvol(j)
          if (sol_P_model == 1) then
             call pminrl(j)
          else
@@ -296,13 +296,13 @@ subroutine subbasin(i)
 
 !!    compute biozone processes in septic HRUs
 !!    if 1)current is septic hru and 2)  soil temperature is above zero
-         if (isep_opt(j)/=0.and.iyr>=isep_iyr(j)) then
-            if (sol_tmp(i_sep(j),j) > 0.) call biozone
+         if (isep_opt(j) /= 0 .and. iyr >= isep_iyr(j)) then
+            if (sol_tmp(i_sep(j),j) > 0.) call biozone(j)
          endif
 
          !! compute ground water contribution
-         call gwmod
-         call gwmod_deep
+         call gwmod(j)
+         call gwmod_deep(j)
 
          !! compute pesticide washoff
          if (precipday >= 2.54) call washp(j)
@@ -367,10 +367,6 @@ subroutine subbasin(i)
 
          !! lag subsurface flow and nitrate in subsurface flow
          call substor(j)
-
-         !! add lateral flow that was routed across the landscape on the previous day
-         !!  latq(j) = latq(j) + latq_ru(j)
-         !!  latq_ru(j) = 0.
 
          !! compute reduction in pollutants due to edge-of-field filter strip
          if (vfsi(j) >0.)then

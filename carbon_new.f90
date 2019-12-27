@@ -1,13 +1,23 @@
-subroutine carbon(i)
-   !! This code simulates organic C, N, and P cycling in the soil
-   !! The code was developed by Armen R. Kemanian and Stefan Julich
-   !! It has been adapted from Kemanian and Stockle (2010) (European Journal of Agronomy 32:22-29)
-   !! and crafted to accomodate to SWAT conventions
-   !! Plant residues and manure residues are decomposed separately
-   !! For convenience, the denitrification subroutine is called from here
-   !! March 2009: testing has been minimal and further adjustments are expected
-   !! manuscript describing this subroutine to be submitted to Ecological Modelling (September, 2010)
-   !! use with caution and report anomalous results to akemanian@psu.edu, and jeff.arnold@ars.usda.edu, stefan.julich@tudor.lu
+!> @file carbon_new.f90
+!> file containing the subroutine carbon
+!> @author
+!> Armen R. Kemanian,\n
+!> Stefan Julich,\n
+!> modified by Javier Burguete
+
+!> This code simulates organic C, N, and P cycling in the soil.
+!> It has been adapted from \cite KemanianStockle10.
+!> and crafted to accomodate to SWAT conventions.
+!> Plant residues and manure residues are decomposed separately.
+!> For convenience, the denitrification subroutine is called from here.
+!> March 2009: testing has been minimal and further adjustments are expected.
+!> Manuscript describing this subroutine to be submitted to Ecological Modelling
+!> (September, 2010).
+!> Use with caution and report anomalous results to akemanian@psu.edu,
+!> jeff.arnold@ars.usda.edu and stefan.julich@tudor.lu
+!> @param i current day in simulation--loop counter (julian date)
+!> @param j HRU number
+subroutine carbon(i, j)
 
 
 !!!!!!!
@@ -26,49 +36,19 @@ subroutine carbon(i)
    !! resc_hum = humified carbon residue
    !! manc_hum = humified carbon manure
 
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Dmin1, Dmax1, Abs
+!!    SWAT: ndenit
+
+!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
    use parm
    implicit none
 
-   INTERFACE
+   !! local functions
+   real*8 :: fwf, fof, ftilf, fcx, fsol_cdec, fCNnew, fhc, fnetmin
 
-      real*8 Function fwf(fc,wc,pwp)
-         real*8, intent (in) :: fc, wc, pwp
-      end function
-
-      real*8 Function fof(void,por)
-         real*8, intent (in) :: void, por
-      end function
-
-      real*8 Function ftilf(tillage, wc, sat)
-         real*8, intent (inout) :: tillage
-         real*8, intent (in) :: wc, sat
-      End function
-
-      real*8 Function fcx(pclay)
-         real*8, intent (in) :: pclay
-      End function
-
-      real*8 Function fsol_cdec(pcarbon, cx, cfdec, tilf, csf, sol_cmass)
-         real*8, intent (in) :: pcarbon, cx, cfdec, tilf, csf, sol_cmass
-      End function
-
-      real*8 Function fCNnew(yy1,yy2,CNpool,yy5)
-         real*8, intent(in) :: yy1, yy2, CNpool
-         real*8, intent(in) :: yy5
-      End function
-
-      real*8 Function fhc(pclay, pcarbon, cx)
-         real*8, intent(in) :: pclay, pcarbon, cx
-      End function
-
-      real*8 Function fnetmin(poold, R1, R2, hc, dummy, poolm, xinorg, cc1)
-         real*8, intent(in) :: R1, R2, hc, poolm, xinorg, cc1
-         real*8, intent(inout) :: poold, dummy
-      End function
-
-   END INTERFACE
-
-   integer, intent (in) :: i
+   integer, intent (in) :: i, j
 
 !! private variables
    real*8 :: cx, rhc, mhc, sol_cdec, tilf
@@ -95,12 +75,11 @@ subroutine carbon(i)
    real*8 :: sol_cdec_pro, wdn_pro, net_N_pro, solN_net_min
    real*8 :: solN_net_min_pro
 
-   integer :: j, k, kk
+   integer :: k, kk
 
 
 
    wdn = 0
-   j = ihru
 
    !! initialize
    cmass_pro = 0.
@@ -177,16 +156,16 @@ subroutine carbon(i)
 
       !! soil carbon and nitrogen mass
       sol_mass = (sol_thick / 1000.) * 10000. * sol_bd(k,j)&
-      &* 1000. * (1- sol_rock(k,j) / 100.)
+         &* 1000. * (1- sol_rock(k,j) / 100.)
       sol_cmass = sol_mass * (sol_cbn(k,j) / 100.)
       sol_nmass = sol_mass * (sol_n(k,j) / 100.)
 
       !! sum initial C,N,P for mass balance
       sum_c_i = sol_cmass + 0.43 * sol_rsd (k,j) + sol_mc(k,j)
       sum_n_i = sol_nmass + sol_no3(k,j) + sol_nh3(k,j) + sol_fon(k,j)&
-      &+ sol_mn(k,j)
+         &+ sol_mn(k,j)
       sum_p_i = sol_orgp(k,j) + sol_solp(k,j) + sol_fop(k,j)&
-      &+ sol_mp(k,j)
+         &+ sol_mp(k,j)
 
       kk = k
       if (k == 1) kk = 2
@@ -230,7 +209,7 @@ subroutine carbon(i)
          cx = fcx(sol_clay(k,j))
          !! soil carbon decomposition
          sol_cdec=fsol_cdec(sol_cbn(k,j),cx,cfdec(j),&
-         &tilf,csf,sol_cmass)
+            &tilf,csf,sol_cmass)
 
          !! residue and manure decomposition and N and P mineralization
          CNsoil = sol_cbn(k,j) / sol_n(k,j)
@@ -239,7 +218,7 @@ subroutine carbon(i)
          else
             NPsoil = (sol_mass * sol_n(k,j) / 100.)/ sol_orgp(k,j)
          end if
-         sol_orgp(k,j) = dmin1(sol_orgp(k,j), 25.)
+         sol_orgp(k,j) = Dmin1(sol_orgp(k,j), 25.)
          CPsoil = CNsoil * NPsoil
 
          if (sol_rsd(k,j) > 0.00001) then
@@ -262,14 +241,14 @@ subroutine carbon(i)
             else
                CNres = 0.43 * sol_rsd(k,j) / sol_fon(k,j)
             end if
-            CNres = dmax1(CNres, 15.)
+            CNres = Dmax1(CNres, 15.)
 
             if (sol_fop(k,j) < .01) then
                CPres = 400.
             else
                CPres = 0.43 * sol_rsd(k,j) / sol_fop(k,j)
             end if
-            CPres = dmax1(CPres, 400.)
+            CPres = Dmax1(CPres, 400.)
 
             !! CN of new organic matter (humified residue)
             rCNnew = fCNnew(sol_no3(k,j),sol_mass,CNres, 1.1D+02)   ! 110.)
@@ -370,15 +349,15 @@ subroutine carbon(i)
          sol_cbn(k,j) = 100. * sol_cmass / sol_mass
 
          sol_nmass = sol_nmass - sol_cdec / CNsoil&
-         &+ resc_hum / rCNnew + manc_hum / mCNnew
+            &+ resc_hum / rCNnew + manc_hum / mCNnew
 
 !! april 2010 output net_min
          solN_net_min=-(- sol_cdec / CNsoil&
-         &+ resc_hum / rCNnew + manc_hum / mCNnew)
+            &+ resc_hum / rCNnew + manc_hum / mCNnew)
          sol_n(k,j) = 100. * sol_nmass / sol_mass
          sol_orgn(k,j) = sol_nmass ! for output
          sol_orgp(k,j) = sol_orgp(k,j) - sol_cdec / CPsoil&
-         &+ (resc_hum + manc_hum) / CPsoil
+            &+ (resc_hum + manc_hum) / CPsoil
 
          if (ffres > 1.) ffres = 1.
 
@@ -400,7 +379,7 @@ subroutine carbon(i)
          if (mnet_N>0.) sol_nh3(k,j) = sol_nh3(k,j) + mnet_N
 
          if (rnet_N<0.) then
-            if (abs(rnet_N) < sol_nh3(k,j)) then
+            if (Abs(rnet_N) < sol_nh3(k,j)) then
                sol_nh3(k,j) = sol_nh3(k,j) + rnet_N
             else
                xx4 = sol_nh3(k,j) + rnet_N
@@ -410,7 +389,7 @@ subroutine carbon(i)
          end if
 
          if (mnet_N<0.) then
-            if (abs(mnet_N) < sol_nh3(k,j)) then
+            if (Abs(mnet_N) < sol_nh3(k,j)) then
                sol_nh3(k,j) = sol_nh3(k,j) + mnet_N
             else
                xx4 = sol_nh3(k,j) + mnet_N
@@ -422,7 +401,7 @@ subroutine carbon(i)
          sol_nh3(k,j) = sol_nh3(k,j) + sol_cdec * (1. / CNsoil)
 
          sol_solp(k,j) = sol_solp(k,j) + net_P +&
-         &sol_cdec * (1. / CPsoil)
+            &sol_cdec * (1. / CPsoil)
 
          wshd_rmn = wshd_rmn + net_N * hru_dafr(j)
          wshd_rmp = wshd_rmp + net_P * hru_dafr(j)
@@ -439,11 +418,11 @@ subroutine carbon(i)
 
       !! balance file cswat_balance
       sum_c_f = sol_cmass + 0.43 * sol_rsd(k,j) + sol_cdec&
-      &+ (1. - rhc) * rdc * 0.43 + sol_mc(k,j) + (1. - mhc) * mdc
+         &+ (1. - rhc) * rdc * 0.43 + sol_mc(k,j) + (1. - mhc) * mdc
       sum_n_f = sol_nmass + sol_no3(k,j) + sol_nh3(k,j) + sol_fon(k,j)&
-      &+ sol_mn(k,j) + wdn
+         &+ sol_mn(k,j) + wdn
       sum_p_f = sol_orgp(k,j) + sol_solp(k,j) + sol_fop(k,j)&
-      &+ sol_mp(k,j)
+         &+ sol_mp(k,j)
 
       bal_c = sum_c_i - sum_c_f
       bal_n = sum_n_i - sum_n_f
@@ -501,7 +480,7 @@ end subroutine
 
 
  !! LOCAL FUNCTIONS
-real*8 Function fwf(fc,wc,pwp)
+real*8 Function fwf(fc, wc, pwp)
    implicit none
    real*8, intent (in) :: fc, wc, pwp
    real*8 :: xx2
@@ -513,11 +492,10 @@ real*8 Function fwf(fc,wc,pwp)
       xx2 = 1.
    end if
 
-   !!fwf = (1. + (1. - xx2) / (1. - 0.75)) * (xx2 / 1.) ** (1./ (1. - 0.75))
    fwf = (1. + (1. - xx2) / 0.25) * (xx2) ** 4.
 End function
 
-real*8 Function fof(void,por)
+real*8 Function fof(void, por)
    implicit none
    real*8, intent (in) :: void, por
    real*8 :: xx3
@@ -533,10 +511,10 @@ End function
 real*8 Function fcgd(xx)
    implicit none
    real*8, intent (in) :: xx
-   real*8 :: qq
    real*8, parameter :: tn = -5., top = 35., tx = 50.
+   real*8 :: qq
    qq = (tn - top)/(top - tx)
-   fcgd = ((xx-tn)**qq)*(tx-xx)/(((top-tn)**qq)*(tx-top))
+   fcgd = ((xx - tn)**qq) * (tx - xx) / (((top - tn)**qq) * (tx -top ))
    if (fcgd < 0.) fcgd = 0.
 End function
 
@@ -572,9 +550,9 @@ real*8 Function fsol_cdec(pcarbon, cx, cfdec, tilf, csf, sol_cmass)
 End function
 
 
-real*8 Function fCNnew(yy1,yy2,CNpool,yy5)
+real*8 Function fCNnew(yy1, yy2, CNpool, yy5)
    implicit none
-   real*8, intent(in) :: yy1,yy2,CNpool,yy5
+   real*8, intent(in) :: yy1, yy2, CNpool, yy5
    real*8 :: yy3, yy4
    !! CN ratio of newly formed organic matter
    !! based on CN or decomposing residue and nitrate in soil
@@ -634,7 +612,7 @@ real*8 Function fnetmin(poold, R1, R2, hc, dummy, poolm, xinorg, cc1)
 
    if (xx > 0.) then
       dummy = poold / poolm
-   else if (abs(xx)< xinorg) then
+   else if (Abs(xx)< xinorg) then
       !! net mineralization is positive or
       !! immobilization not consuming all mineral N or P
       dummy = poold / poolm

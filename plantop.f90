@@ -97,9 +97,9 @@ subroutine plantop(j)
 
    !! compare maximum rooting depth in soil to maximum rooting depth of plant
    nly = sol_nly(j)
-   sol_zmx(ihru) = sol_z(nly,j)
+   sol_zmx(j) = sol_z(nly,j)
    plt_zmx = 1000. * rdmx(idplt(j))
-   sol_zmx(ihru) = Min(sol_zmx(ihru),plt_zmx)
+   sol_zmx(j) = Min(sol_zmx(j),plt_zmx)
 
    !! reset curve number if given in .mgt file
    if (cnop > 0.) call curno(cnop,j)

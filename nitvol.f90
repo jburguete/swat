@@ -1,15 +1,19 @@
-subroutine nitvol
+!> @file nitvol.f90
+!> file containing the subroutine nitvol
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine estimates daily mineralization (NH3 to NO3)
-!!    and volatilization of NH3
+!> this subroutine estimates daily mineralization (NH3 to NO3)
+!> and volatilization of NH3
+!> @param j HRU number
+subroutine nitvol(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    curyr         |none          |current year of simulation
 !!    hru_dafr(:)   |km**2/km**2   |fraction of watershed area in HRU
-!!    ihru          |none          |HRU number
 !!    nyskip        |none          |number of years to skip output
 !!                                 |summarization and printing
 !!    sol_fc(:,:)   |mm H2O        |amount of water available to plants in soil
@@ -54,7 +58,6 @@ subroutine nitvol
 !!    cecf        |none          |volatilization CEC factor
 !!    dmidl       |
 !!    dpf         |
-!!    j           |none          |HRU number
 !!    k           |none          |counter (soil layer)
 !!    rnit        |kg N/ha       |amount of nitrogen moving from the NH3 to the
 !!                               |NO3 pool (nitrification) in the layer
@@ -75,12 +78,10 @@ subroutine nitvol
    use parm
    implicit none
 
-   integer :: j, k
-   real*8 :: sw25, swwp, swf, xx, dmidl, dpf, akn, akv, rnv, rnit, rvol
-   real*8 :: tf
-   real*8 :: cecf = 0.15
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8, parameter :: cecf = 0.15
+   real*8 :: akn, akv, dmidl, dpf, rnit, rnv, rvol, sw25, swf, swwp, tf, xx
+   integer :: k
 
    do k = 1, sol_nly(j)
       tf = .41 * (sol_tmp(k,j) - 5.) / 10.

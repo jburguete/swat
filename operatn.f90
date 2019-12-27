@@ -1,7 +1,11 @@
-subroutine operatn(j)
+!> @file operatn.f90
+!> file containing the subroutine operatn
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs all management operations
+!> this subroutine performs all management operations
+!> @param[in] j HRU number
+subroutine operatn(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -66,7 +70,7 @@ subroutine operatn(j)
 
 !! operations performed only when no land cover growing
 
-   do while(idop(n,j) > 0 .and. iida == idop(n,j))
+   do while (idop(n,j) > 0 .and. iida == idop(n,j))
       call sched_mgt(j)
       if (mgtop(n,j) == 17) then
          call sched_mgt(j)

@@ -1,4 +1,4 @@
-subroutine virtual(i,j,k)
+subroutine virtual(i, j, k)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine summarizes data for subbasins with multiple HRUs and
@@ -8,7 +8,7 @@ subroutine virtual(i,j,k)
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i             |julian date   |current day in simulation--loop counter
-!!    j           |none          |HRU number
+!!    j             |none          |HRU number
 !!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
 !!                                 |channel with surface runoff
 !!    bactrop       |# cfu/m^2     |persistent bacteria transported to main
@@ -271,7 +271,7 @@ subroutine virtual(i,j,k)
    cnv = hru_ha(j) * 10.
 
 !! write daily HRU output
-   if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call hruday(i)
+   if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call hruday(i, j)
    if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call impndday
 
 !! sum HRU results for subbasin

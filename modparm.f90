@@ -167,10 +167,10 @@ module parm
    real*8, dimension (:), allocatable :: co_p
 !> rate factor for humus mineralization on active organic N
    real*8, dimension (:), allocatable :: cmn
-!> Phosphorus soil partitioning coefficient. Ratio of soluble phosphorus in
+!> phosphorus soil partitioning coefficient. Ratio of soluble phosphorus in
 !> surface layer to soluble phosphorus in runoff
    real*8, dimension (:), allocatable :: phoskd
-!> Phosphorus availibility index. The fraction of fertilizer P remaining in
+!> phosphorus availibility index. The fraction of fertilizer P remaining in
 !> labile pool after initial rapid phase of P sorption (none)
    real*8, dimension (:), allocatable :: psp
 !> denitrification threshold: fraction of field capacity triggering
@@ -277,14 +277,49 @@ module parm
    real*8 :: wshd_fixn
 !> average annual amount of plant uptake of phosphorus (kg P/ha)
    real*8 :: wshd_pup
-   real*8 :: wshd_wstrs, wshd_nstrs, wshd_pstrs, wshd_tstrs
+!> average annual number of nitrogen stress units in watershed (stress units)
+   real*8 :: wshd_nstrs
+!> average annual number of phosphorus stress units in watershed (stress units)
+   real*8 :: wshd_pstrs
+!> average annual number of temperature stress units in watershed (stress units)
+   real*8 :: wshd_tstrs
+!> average annual number of water stress units in watershed (stress units)
+   real*8 :: wshd_wstrs
    real*8 :: wshd_astrs
 !> initial soil water content expressed as a fraction of field capacity
    real*8 :: ffcb
-   real*8 :: wshd_hmn, wshd_rwn, wshd_hmp, wshd_rmn, wshd_dnit
+!> average annual amount of nitrogen lost from nitrate pool due to
+!> denitrification in watershed (kg N/ha)
+   real*8 :: wshd_dnit
+!> average annual amount of nitrogen moving from active organic to nitrate pool
+!> in watershed (kg N/ha)
+   real*8 :: wshd_hmn
+!> average annual amount of phosphorus moving from organic to labile pool in
+!> watershed (kg P/ha)
+   real*8 :: wshd_hmp
+!> average annual amount of nitrogen moving from fresh organic (residue) to
+!> nitrate and active organic pools in watershed (kg N/ha)
+   real*8 :: wshd_rmn
+!> average annual amount of nitrogen moving from active organic to stable
+!> organic pool in watershed (kg N/ha)
+   real*8 :: wshd_rwn
 !> die-off factor for persistent bacteria in soil solution (1/day)
    real*8 :: wdpq
-   real*8 :: wshd_rmp, wshd_voln, wshd_nitn, wshd_pas, wshd_pal
+!> average annual amount of phosphorus moving from fresh organic (residue) to
+!> labile and organic pools in watershed (kg P/ha)
+   real*8 :: wshd_rmp
+!> average annual amount of nitrogen moving from the NH3 to the NO3 pool by
+!> nitrification in the watershe (kg N/ha)d
+   real*8 :: wshd_nitn
+!> average annual amount if nitrogen lost by ammonia volatilization in watershed
+!> (kg N/ha)
+   real*8 :: wshd_voln
+!> average annual amount of phosphorus moving from labile mineral to active
+!> mineral pool in watershed (kg P/ha)
+   real*8 :: wshd_pal
+!> average annual amount of phosphorus moving from active mineral to stable
+!> mineral pool in watershed (kg P/ha)
+   real*8 :: wshd_pas
 !> wash off fraction for persistent bacteria on foliage during a rainfall event
    real*8 :: wof_p
    real*8 :: wshd_plch, wshd_raino3, ressedc, basno3f, basorgnf
@@ -654,7 +689,7 @@ module parm
 !> amount of nitrogen moving from active organic to stable organic pool in soil
 !> profile on current day in HRU (kg N/ha)
    real*8 :: rwntl
-!> amount of water recharging deep aquifer on current day (mm H2O)
+!> amount of water recharging deep aquifer on current day in HRU (mm H2O)
    real*8 :: gwseep
 !> amount of water moving from the shallow aquifer into the soil profile or
 !> being taken up by plant roots in the shallow aquifer (mm H2O)
@@ -1074,18 +1109,28 @@ module parm
 !> concentration of the facel caliform in the septic tank effluent (cfu/100ml)
    real*8, dimension (:), allocatable :: sptfcolis
    real*8, dimension (:), allocatable :: failyr,qstemm
-!! septic changes added 1/28/09 gsm
-   real*8, dimension (:), allocatable :: bio_amn, bio_bod, biom,rbiom
-   real*8, dimension (:), allocatable :: fcoli, bio_ntr, bz_perc
+!> BOD concentration in biozone (kg/ha)
+   real*8, dimension (:), allocatable :: bio_bod
+!> biomass of live bacteria in biozone (kg/ha)
+   real*8, dimension (:), allocatable :: biom
+!> daily change in biomass of live bacteria (kg/ha)
+   real*8, dimension (:), allocatable :: rbiom
+   real*8, dimension (:), allocatable :: bio_amn
+!> concentration of the fecal coliform in the biozone septic tank effluent
+!> (cfu/100ml)
+   real*8, dimension (:), allocatable :: fcoli
+   real*8, dimension (:), allocatable :: bio_ntr, bz_perc
 !> number of permanent residents in the hourse (none)
    real*8, dimension (:), allocatable :: sep_cap
-   real*8, dimension (:), allocatable :: plqm,bz_area
-   real*8, dimension (:), allocatable :: bz_z !< Depth of biozone layer(mm)
+   real*8, dimension (:), allocatable :: plqm !< plaque in biozone (kg/ha)
+   real*8, dimension (:), allocatable :: bz_area
+   real*8, dimension (:), allocatable :: bz_z !< depth of biozone layer (mm)
    real*8, dimension (:), allocatable :: bz_thk !< thickness of biozone (mm)
    real*8, dimension (:), allocatable :: bio_bd !< density of biomass (kg/m^3)
-!! carbon outputs for .hru file
-   real*8, dimension (:), allocatable :: cmup_kgh, cmtot_kgh
-!! carbon outputs for .hru file
+!> current soil carbon for first soil layer (kg/ha)
+   real*8, dimension (:), allocatable :: cmup_kgh
+!> current soil carbon integrated - aggregating (kg/ha)
+   real*8, dimension (:), allocatable :: cmtot_kgh
 !> denitrification rate coefficient (none)
    real*8, dimension (:), allocatable :: coeff_denitr
 !> BOD decay rate coefficient (m^3/day)
@@ -1112,11 +1157,12 @@ module parm
    real*8, dimension (:), allocatable :: coeff_slg2
    real*8, dimension (:), allocatable :: coeff_pdistrb,coeff_solpslp
    real*8, dimension (:), allocatable :: coeff_solpintc,coeff_psorpmax
-!! Septic system by Jaehak Jeong
 !> septic system type (none)
    integer, dimension (:), allocatable :: isep_typ
+!> soil layer where biozone exists (none)
    integer, dimension (:), allocatable :: i_sep
-!> septic system operation flag (1=active, 2=failing, 3=not operated) (none)
+!> septic system operation flag (1=active, 2=failing, 3 or 0=not operated)
+!> (none)
    integer, dimension (:), allocatable :: isep_opt
    integer, dimension (:), allocatable :: sep_tsincefail
    integer, dimension (:), allocatable :: isep_tfail,isep_iyr
@@ -2471,10 +2517,11 @@ module parm
 !>        inputs < 1.0 (relative hum)
    integer, dimension (:), allocatable :: irelh
    integer, dimension (:), allocatable :: fcst_reg
-!> amount of nitrogen stored in the active organic (humic) nitrogen pool
-!> (kg N/ha)
+!> amount of nitrogen stored in the active organic (humic) nitrogen pool in soil
+!> layer (kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_aorgn
-!> amount of nitrogen stored in the fresh organic (residue) pool (kg N/ha)
+!> amount of nitrogen stored in the fresh organic (residue) pool in soil layer
+!> (kg N/ha)
    real*8, dimension (:,:), allocatable :: sol_fon
 !> average temperature of soil layer on previous day or\n
 !> daily average temperature of soil layer (deg C)
@@ -2496,8 +2543,8 @@ module parm
 !> amount of phosphorus stored in the active mineral phosphorus pool (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_actp
 !> soluble P concentration in top soil layer (mg P/kg soil) or\n
-!> amount of inorganic phosphorus stored in solution. NOTE UNIT CHANGE!
-!> (kg P/ha)
+!> amount of inorganic phosphorus stored in solution in soil layer. NOTE UNIT
+!> CHANGE! (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_solp
 !> maximum or potential crack volume (mm)
    real*8, dimension (:,:), allocatable :: crdep
@@ -2534,8 +2581,8 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_por
 !> water content of soil at -1.5 MPa (wilting point) (mm H20/mm soil)
    real*8, dimension (:,:), allocatable :: sol_wp
-!> amount of phosphorus stored in the organic P pool. NOTE UNIT CHANGE!
-!> (mg P/kg soil or kg P/ha)
+!> amount of phosphorus stored in the organic P pool in soil layer. NOTE UNIT
+!> CHANGE! (mg P/kg soil or kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_orgp
 !> amount of organic matter in the soil layer classified as humic substances
 !> (kg humus/ha)
@@ -2552,7 +2599,8 @@ module parm
    real*8, dimension (:,:), allocatable :: sol_k
 !> amount of organic matter in the soil layer classified as residue (kg/ha)
    real*8, dimension (:,:), allocatable :: sol_rsd
-!> amount of phosphorus stored in the fresh organic (residue) pool (kg P/ha)
+!> amount of phosphorus stored in the fresh organic (residue) pool in soil layer
+!> (kg P/ha)
    real*8, dimension (:,:), allocatable :: sol_fop
 !> percent of rock fragments in soil layer (%)
    real*8, dimension (:,:), allocatable :: sol_rock
@@ -2784,7 +2832,7 @@ module parm
 !> expected due to water stress ((kg/ha)/(kg/ha))
    real*8, dimension (:), allocatable :: wsyf
 !> biomass-energy ratio. The potential (unstressed) growth rate per unit of
-!> intercepted photosynthetically active radiation.((kg/ha)/(MJ/m**2))
+!> intercepted photosynthetically active radiation ((kg/ha)/(MJ/m**2))
    real*8, dimension (:), allocatable :: bio_e
 !> harvest index: crop yield/aboveground biomass ((kg/ha)/(kg/ha))
    real*8, dimension (:), allocatable :: hvsti
@@ -2859,11 +2907,12 @@ module parm
    integer, dimension (:), allocatable :: mat_yrs
 !> concentration of persistent bacteria in manure (fertilizer) (cfu/g manure)
    real*8, dimension (:), allocatable :: bactpdb
-!> fraction of fertilize/manure that is mineral N (NO3 + NH3) (kg minN/kg fert)
+!> fraction of fertilize/manure that is mineral nitrogen (NO3 + NH3)
+!> (kg minN/kg fert)
    real*8, dimension (:), allocatable :: fminn
-!> fraction of organic N in fertilizer/manure (kg orgN/kg fert)
+!> fraction of organic nitrogen in fertilizer/manure (kg orgN/kg fert)
    real*8, dimension (:), allocatable :: forgn
-!> fraction of fertilizer/manure that is organic P (kg orgP/kg fert)
+!> fraction of fertilizer/manure that is organic phosphorus (kg orgP/kg fert)
    real*8, dimension (:), allocatable :: forgp
 !> fraction of bacteria in solution (the remaining fraction is sorbed to soil
 !> particles) (none):\n
@@ -2873,10 +2922,10 @@ module parm
 !> concentration of less persistent bacteria in manure (fertilizer)
 !> (cfu/g manure)
    real*8, dimension (:), allocatable :: bactlpdb
-!> fraction of fertilizer that is mineral P in fertilizer/manure
+!> fraction of fertilizer that is mineral phosphorus in fertilizer/manure
 !> (kg minP/kg fert)
    real*8, dimension (:), allocatable :: fminp
-!> fraction of mineral N in fertilizer that is NH3-N in fertilizer/manure
+!> fraction of mineral N content that is NH3-N in fertilizer/manure
 !> (kg NH3-N/kg minN)
    real*8, dimension (:), allocatable :: fnh3n
    character(len=8), dimension (200) :: fertnm !< name of fertilizer
@@ -3401,8 +3450,12 @@ module parm
    real*8, dimension (:), allocatable :: alpha_bf_d
 !> \f$\exp(-alpha_bf_d)\f$ for deep aquifer (none)
    real*8, dimension (:), allocatable :: alpha_bfe_d
+!> groundwater contribution to streamflow from deep aquifer from HRU on current
+!> day (mm H2O)
    real*8, dimension (:), allocatable :: gw_qdeep
-!> \f$\exp(-1/delay)\f$ (none)
+!> \f$\exp(-1/delay)\f$ where delay(:) is the groundwater delay (time required
+!> for water leaving the bottom of the root zone to reach the shallow aquifer;
+!> units-days) (none)
    real*8, dimension (:), allocatable :: gw_delaye
 !> revap coeff: this variable controls the amount of water moving from the
 !> shallow aquifer to the root zone as a result of soil moisture depletion
@@ -3416,6 +3469,7 @@ module parm
 !> threshold depth of water in shallow aquifer required to allow revap to occur
 !> (mm H2O)
    real*8, dimension (:), allocatable :: revapmn
+!> amount of water recharging both aquifers on current day in HRU (mm H2O)
    real*8, dimension (:), allocatable :: rchrg
 !> minimum plant biomass for grazing (kg/ha)
    real*8, dimension (:), allocatable :: bio_min
@@ -3458,7 +3512,7 @@ module parm
 !> fraction of surface runoff within the subbasin which takes 1 day or less to
 !> reach the subbasin outlet (none)
    real*8, dimension (:), allocatable :: brt
-!> day length (hours)
+!> length of the current day (hours)
    real*8, dimension (:), allocatable :: dayl
 !> static maximum depressional storage; read from .sdr (mm)
    real*8, dimension (:), allocatable :: sstmaxd
@@ -3486,7 +3540,11 @@ module parm
    real*8, dimension (:), allocatable :: percn,sol_sumwp
 !> total amount of water entering main channel for day from HRU (mm H2O)
    real*8, dimension (:), allocatable :: qdr
-   real*8, dimension (:), allocatable :: tauton,tautop,cbodu,chl_a
+!> amount of N applied in autofert operation in year (kg N/ha)
+   real*8, dimension (:), allocatable :: tauton
+!> amount of P applied in autofert operation in year (kg N/ha)
+   real*8, dimension (:), allocatable :: tautop
+   real*8, dimension (:), allocatable :: cbodu,chl_a
    real*8, dimension (:), allocatable :: tfertn,tfertp,tgrazn,tgrazp
 !> total lateral flow in soil profile for the day in HRU (mm H2O)
    real*8, dimension (:), allocatable :: latq
@@ -3524,8 +3582,8 @@ module parm
    real*8, dimension (:), allocatable :: bio_yrms
 !> base zero total heat units (used when no land cover is growing) (heat units)
    real*8, dimension (:), allocatable :: phubase
-!> optimal harvest index for current time during growing season
-!> ((kg/ha)/(kg/ha))
+!> optimal harvest index adjusted for water stress for current time during
+!> growing season ((kg/ha)/(kg/ha))
    real*8, dimension (:), allocatable :: hvstiadj
 !> leaf area index for HRU (m^2/m^2)
    real*8, dimension (:), allocatable :: laiday
@@ -3593,11 +3651,14 @@ module parm
 !> fraction of fertilizer which is applied to top 10 mm of soil (the remaining
 !> fraction is applied to first soil layer) (none)
    real*8, dimension (:), allocatable :: afrt_surface
+!> estimated/target nitrogen content of yield used in autofertilization
+!> (kg N/kg yield)
    real*8, dimension (:), allocatable :: tnylda
 !> fraction of fertilizer which is applied to the top 10 mm of soil (the
 !> remaining fraction is applied to the first soil layer) (none)
    real*8 :: frt_surface
-!> maximum NO3-N content allowed to be applied in one year (kg NO3-N/ha)
+!> maximum NO3-N content allowed to be applied in one year by auto-fertilization
+!> (kg NO3-N/ha)
    real*8, dimension (:), allocatable :: auto_nyr
 !> maximum NO3-N content allowed in one fertilizer application (kg NO3-N/ha)
    real*8, dimension (:), allocatable :: auto_napp
@@ -3767,7 +3828,7 @@ module parm
    integer, dimension (:), allocatable :: nro
 !> land cover status code (none). This code informs the model whether or not a
 !> land cover is growing at the beginning of the simulation\n
-!> 0 no land cover growing\n
+!> 0 no land cover currently growing\n
 !> 1 land cover growing
    integer, dimension (:), allocatable :: igro
 !> beginning month of nutrient settling season (none)
@@ -3785,7 +3846,11 @@ module parm
    integer, dimension (:), allocatable :: ndtarg
 !> sequence number of irrigation application within the year (none)
    integer, dimension (:), allocatable :: nirr
-   integer, dimension (:), allocatable :: iafrttyp, nstress
+!> code for approach used to determine amount of nitrogen to HRU (none):\n
+!> 0 nitrogen target approach\n
+!> 1 annual max approach
+   integer, dimension (:), allocatable :: nstress
+   integer, dimension (:), allocatable :: iafrttyp
    integer, dimension (:), allocatable :: igrotree
 !> number of days grazing will be simulated (none)
    integer, dimension (:), allocatable :: grz_days
@@ -4339,25 +4404,31 @@ module parm
    ! LID general
    integer, dimension(:,:), allocatable :: lid_onoff
 
+!> mass of C present in slow humus (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_HSC
+!> mass of N present in slow humus (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_HSN
+!> mass of C present in passive humus (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_HPC
+!> mass of N present in passive humus (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_HPN
+!> mass of metabolic litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LM
+!> mass of C in metabolic litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LMC
+!> mass of N in metabolic litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LMN
+!> mass of structural litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LS
+!> mass of C in structural litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LSC
+!> mass of lignin in structural litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LSL
+!> mass of N in structural litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_LSN
 
-!! By Zhang for C/N cycling
-   !!SOM-residue C/N state variables -- currently included
-   real*8, dimension(:,:), allocatable :: sol_BMC, sol_BMN, sol_HSC,&
-      &sol_HSN, sol_HPC, sol_HPN, sol_LM,&
-      &sol_LMC, sol_LMN, sol_LS, sol_LSL, sol_LSC, sol_LSN , sol_RNMN,&
-      &sol_LSLC, sol_LSLNC, sol_RSPC, sol_WOC, sol_WON, sol_HP, sol_HS,&
-      &sol_BM
-   ! HSC mass of C present in slow humus (kg ha-1)
-   ! HSN mass of N present in slow humus (kg ha-1)
-   ! HPC mass of C present in passive humus (kg ha-1)
-   ! HPN mass of N present in passive humus (kg ha-1)
-   ! LM mass of metabolic litter (kg ha-1)
-   ! LMC mass of C in metabolic litter (kg ha-1)
-   ! LMN mass of N in metabolic litter (kg ha-1)
-   ! LS mass of structural litter (kg ha-1)
-   ! LSC mass of C in structural litter (kg ha-1)
-   ! LSL mass of lignin in structural litter (kg ha-1)
-   ! LSN mass of N in structural litter (kg ha-1)
+   real*8, dimension(:,:), allocatable :: sol_BMC, sol_BMN, sol_RNMN,&
+      &sol_LSLC, sol_LSLNC, sol_RSPC, sol_WOC, sol_WON, sol_HP, sol_HS, sol_BM
 
    !!SOM-residue C/N state variables -- may need to be included
    real*8, dimension(:,:), allocatable :: sol_CAC, sol_CEC
@@ -4460,11 +4531,6 @@ module parm
       real*8 function theta(r20,thk,tmp) result (r_theta)
          real*8, intent (in) :: r20, thk, tmp
       end
-
-      subroutine ndenit(k,j,cdg,wdn,void)
-         integer :: k,j
-         real*8 :: cdg, wdn, void
-      end subroutine
 
    END INTERFACE
 

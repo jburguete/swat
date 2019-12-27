@@ -1,13 +1,18 @@
-subroutine nminrl
+!> @file nminrl.f90
+!> file containing the subroutine nminrl
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine estimates daily nitrogen and phosphorus
-!!    mineralization and immobilization considering fresh organic
-!!    material (plant residue) and active and stable humus material
+!> this subroutine estimates daily nitrogen and phosphorus
+!> mineralization and immobilization considering fresh organic
+!> material (plant residue) and active and stable humus material
+!> @param[in] j HRU number
+subroutine nminrl(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j             |none          |HRU number
 !!    cmn           |none          |rate factor for humus mineralization on
 !!                                 |active organic N
 !!    curyr         |none          |current year of simulation
@@ -15,7 +20,6 @@ subroutine nminrl
 !!    icr(:)        |none          |sequence number of crop grown within the
 !!                                 |current year
 !!    idplt(:)      |none          |land cover code from crop.dat
-!!    ihru          |none          |HRU number
 !!    nactfr        |none          |nitrogen active pool fraction. The fraction
 !!                                 |of organic nitrogen in the active pool.
 !!    nro(:)        |none          |sequence number of year in rotation
@@ -139,7 +143,6 @@ subroutine nminrl
 !!                               |nitrogen pool to nitrate pool in layer
 !!    hmp         |kg P/ha       |amount of phosphorus moving from the organic
 !!                               |pool to the labile pool in layer
-!!    j           |none          |HRU number
 !!    k           |none          |counter (soil layer)
 !!    kk          |none          |soil layer used to compute soil water and
 !!                               |soil temperature factors
@@ -162,19 +165,17 @@ subroutine nminrl
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max, Exp, Sqrt, Min, abs
+!!    Intrinsic: Sqrt, Max, Exp, Min, Abs, Dmax1
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, k, kk
-   real*8 :: rmn1, rmp, xx, csf, rwn, hmn, hmp, r4, cnr, cnrf, cpr
-   real*8 :: cprf, ca, decr, rdc, wdn, cdg, sut
-
-   j = ihru
-
+   integer, intent(in) :: j
+   real*8 :: ca, cdg, cnr, cnrf, cpr, cprf, csf, decr, hmn, hmp, r4, rdc, rmn1,&
+      &rmp, rwn, sut, wdn, xx
+   integer :: k, kk
 
    do k = 1, sol_nly(j)
 
@@ -187,10 +188,8 @@ subroutine nminrl
       !! mineralization can occur only if temp above 0 deg
       if (sol_tmp(kk,j) > 0.) then
          !! compute soil water factor
-         !! change for domain error 1/29/09 gsm check with Jeff !!!
          if (sol_st(kk,j) < 0.) sol_st(kk,j) = .0000001
          sut = .1 + .9 * Sqrt(sol_st(kk,j) / sol_fc(kk,j))
-!          sut = Min(1., sut)
          sut = Max(.05, sut)
 
          !!compute soil temperature factor
@@ -209,7 +208,7 @@ subroutine nminrl
          if (rwn > 0.) then
             rwn = Min(rwn, sol_aorgn(k,j))
          else
-            rwn = -(Min(abs(rwn), sol_orgn(k,j)))
+            rwn = -(Min(Abs(rwn), sol_orgn(k,j)))
          endif
          sol_orgn(k,j) = Max(1.e-6, sol_orgn(k,j) + rwn)
          sol_aorgn(k,j) = Max(1.e-6, sol_aorgn(k,j) - rwn)
@@ -262,23 +261,22 @@ subroutine nminrl
             end if
             decr = Max(decr_min, decr)
             decr = Min(decr, 1.)
-            sol_rsd(k,j) = dmax1(1.e-6,sol_rsd(k,j))
+            sol_rsd(k,j) = Dmax1(1.e-6,sol_rsd(k,j))
             rdc = decr * sol_rsd(k,j)
             sol_rsd(k,j) = sol_rsd(k,j) - rdc
             if (sol_rsd(k,j) < 0.) sol_rsd(k,j) = 0.
             rmn1 = decr * sol_fon(k,j)
-            sol_fop(k,j) = dmax1(1.e-6,sol_fop(k,j))
+            sol_fop(k,j) = Dmax1(1.e-6,sol_fop(k,j))
             rmp = decr * sol_fop(k,j)
 
             sol_fop(k,j) = sol_fop(k,j) - rmp
-            sol_fon(k,j) = dmax1(1.e-6,sol_fon(k,j))
+            sol_fon(k,j) = Dmax1(1.e-6,sol_fon(k,j))
             sol_fon(k,j) = sol_fon(k,j) - rmn1
             sol_no3(k,j) = sol_no3(k,j) + .8 * rmn1
             sol_aorgn(k,j) = sol_aorgn(k,j) + .2 * rmn1
             sol_solp(k,j) = sol_solp(k,j) + .8 * rmp
             sol_orgp(k,j) = sol_orgp(k,j) + .2 * rmp
          end if
-!! septic changes 1/28/09 gsm
 !!  compute denitrification
          wdn = 0.
          if (i_sep(j) /= k .or. isep_opt(j) /= 1) then
@@ -289,10 +287,6 @@ subroutine nminrl
             endif
             sol_no3(k,j) = sol_no3(k,j) - wdn
          end if
-! septic changes 1/28/09 gsm
-
-!   call ndenit(k,j,cdg,wdn,0.05)
-         !! end if
 
          !! summary calculations
          if (curyr > nyskip) then

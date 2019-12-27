@@ -1,9 +1,13 @@
-subroutine grow(j)
+!> @file grow.f90
+!> file containing the subroutine grow
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine adjusts plant biomass, leaf area index, and canopy height
-!!    taking into account the effect of water, temperature and nutrient stresses
-!!    on the plant
+!> this subroutine adjusts plant biomass, leaf area index, and canopy height
+!> taking into account the effect of water, temperature and nutrient stresses
+!> on the plant
+!> @param[in] j HRU number
+subroutine grow(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units            |definition
@@ -113,8 +117,8 @@ subroutine grow(j)
 !!    phuacc(:)   |none          |fraction of plant heat units accumulated
 !!    plt_et(:)   |mm H2O        |actual ET simulated during life of plant
 !!    plt_pet(:)  |mm H2O        |potential ET simulated during life of plant
-!!    rsr1c(:)    |              |initial root to shoot ratio at beg of growing season
-!!    rsr2c(:)    |              |root to shoot ratio at end of growing season
+!!    rsr1(:)     |              |initial root to shoot ratio at beg of growing season
+!!    rsr2(:)     |              |root to shoot ratio at end of growing season
 !!    rwt(:)      |none          |fraction of total plant biomass that is
 !!                               |in roots
 !!    wshd_nstrs  |stress units  |average annual number of nitrogen stress

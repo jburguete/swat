@@ -1,10 +1,14 @@
-subroutine plantmod(j)
+!> @file plantmod.f90
+!> file containing the subroutine plantmod
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine predicts daily potential growth of total plant
-!!    biomass and roots and calculates leaf area index. Incorporates
-!!    residue for tillage functions and decays residue on ground
-!!    surface. Adjusts daily dry matter based on water stress.
+!> this subroutine predicts daily potential growth of total plant
+!> biomass and roots and calculates leaf area index. Incorporates
+!> residue for tillage functions and decays residue on ground
+!> surface. Adjusts daily dry matter based on water stress.
+!> @param[in] j HRU number
+subroutine plantmod(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
