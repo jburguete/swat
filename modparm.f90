@@ -2843,7 +2843,9 @@ module parm
 !> sequence number of pesticide in NPNO(:) (none)
    integer, dimension (:), allocatable :: nope
    integer, dimension (:), allocatable :: nop
-   integer, dimension (:), allocatable :: yr_skip, isweep
+!> date of street sweeping operation (julian date)
+   integer, dimension (:), allocatable :: isweep
+   integer, dimension (:), allocatable :: yr_skip
    integer, dimension (:), allocatable :: icrmx, nopmx
    integer, dimension (:,:), allocatable :: mgtop, idop
    integer, dimension (:,:), allocatable :: mgt1iop,mgt2iop,mgt3iop
@@ -2973,7 +2975,7 @@ module parm
 !> (kg/curb km)
    real*8, dimension (:), allocatable :: dirtmx
 !> fraction of HRU area that is impervious (both directly and indirectly
-!> connected)(fraction)
+!> connected) (fraction)
    real*8, dimension (:), allocatable :: fimp
 !> wash-off coefficient for removal of constituents from an impervious surface
 !> (1/mm)
@@ -3000,7 +3002,7 @@ module parm
    real*8 :: frt_kg !< amount of fertilizer applied to HRU (kg/ha)
 !> depth of pesticide in the soil (mm)
    real*8 :: pst_dep
-   real*8 :: sweepeff
+   real*8 :: sweepeff !< removal efficiency of sweeping operation (none)
 
 !> random roughness for a given HRU (mm)
    real*8, dimension (:), allocatable :: ranrns_hru
@@ -3572,7 +3574,9 @@ module parm
    real*8, dimension (:), allocatable :: rnd3
 !> random number between 0.0 and 1.0 (none)
    real*8, dimension (:), allocatable :: rnd2
-   real*8, dimension (:), allocatable :: twash,sol_cnsw,doxq
+!> time that solids have built-up on streets (days)
+   real*8, dimension (:), allocatable :: twash
+   real*8, dimension (:), allocatable :: sol_cnsw,doxq
 !> random number between 0.0 and 1.0 (none)
    real*8, dimension (:), allocatable :: rnd8
 !> random number between 0.0 and 1.0 (none)
@@ -3594,7 +3598,10 @@ module parm
    real*8, dimension (:), allocatable :: nplnt
 !> amount of nitrate transported with lateral flow (kg N/ha)
    real*8, dimension (:), allocatable :: latno3
-   real*8, dimension (:), allocatable :: minpgw,no3gw
+!> soluble P loading to reach in groundwater (kg P/ha)
+   real*8, dimension (:), allocatable :: minpgw
+!> nitrate loading to reach in groundwater (kg N/ha)
+   real*8, dimension (:), allocatable :: no3gw
    real*8, dimension (:), allocatable :: tileq, tileno3
 !> amount of organic nitrogen in surface runoff in HRU for the day (kg N/ha)
    real*8, dimension (:), allocatable :: sedorgn
@@ -3621,7 +3628,7 @@ module parm
 !> fraction of potential plant growth achieved on the day where the reduction is
 !> caused by phosphorus stress (none)
    real*8, dimension (:), allocatable :: strsp
-!> amount of nitrate transported with surface runoff (kg N/ha)
+!> amount of nitrate transported in surface runoff in HRU for the day (kg N/ha)
    real*8, dimension (:), allocatable :: surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
 !> fraction of total watershed area contained in HRU (km2/km2)
@@ -3948,7 +3955,7 @@ module parm
    integer, dimension (:), allocatable :: ndeat
 !> subbasin in which HRU is located (none)
    integer, dimension (:), allocatable :: hru_sub
-!> urban land type identification number from urban.dat (none)
+!> urban land type identification number from urban database (urban.dat) (none)
    integer, dimension (:), allocatable :: urblu
 !> soil layer where drainage tile is located (none)
    integer, dimension (:), allocatable :: ldrain
@@ -4210,7 +4217,9 @@ module parm
    real*8, dimension (:), allocatable :: stsol_rd
    integer:: urban_flag, dorm_flag
    real*8 :: bf_flg, iabstr
-   real*8, dimension (:), allocatable :: ubnrunoff,ubntss
+!> TSS loading from urban impervious cover (metric tons)
+   real*8, dimension (:), allocatable :: ubntss
+   real*8, dimension (:), allocatable :: ubnrunoff
    real*8, dimension (:,:), allocatable :: sub_ubnrunoff,sub_ubntss,&
       &ovrlnd_dt
    real*8, dimension (:,:), allocatable :: hhsurf_bs1
@@ -4578,10 +4587,6 @@ module parm
       real*8 function fcgd(xx)
          real*8, intent (in) :: xx
       End function
-
-      real*8 function regres(k,j) result (r_regres)
-         integer, intent (in) :: k, j
-      end
 
       real*8 function tair(hr,jj) result (r_tair)
          integer, intent (in) ::  hr, jj

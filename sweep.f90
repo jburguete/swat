@@ -1,12 +1,16 @@
-subroutine sweep(j)
+!> @file sweep.f90
+!> file containing the subroutine sweep
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    the subroutine performs the street sweeping operation
+!> the subroutine performs the street sweeping operation
+!> @param[in] j HRU number (none)
+subroutine sweep(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j            |none          |HRU number
+!!    j              |none          |HRU number
 !!    fr_curb        |none          |availability factor, the fraction of the
 !!                                  |curb length that is sweepable
 !!    dirtmx(:)      |kg/curb km    |maximum amount of solids allowed to

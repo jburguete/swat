@@ -1,19 +1,23 @@
-subroutine gwnutr
+!> @file gwnutr.f90
+!> file containing the subroutine gwnutr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the nitrate and soluble phosphorus loading
-!!    contributed by groundwater flow
+!> this subroutine calculates the nitrate and soluble phosphorus loading
+!> contributed by groundwater flow
+!> @param[in] j HRU number (none)
+subroutine gwnutr(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    gw_q(:)     |mm H2O        |groundwater contribution to streamflow from
 !!                               |HRU on current day
 !!    gwminp(:)   |mg P/L        |soluble P concentration in groundwater
 !!                               |loading to reach
 !!    gwno3(:)    |mg N/L        |nitrate-N concentration in groundwater
 !!                               |loading to reach
-!!    ihru        |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -26,7 +30,6 @@ subroutine gwnutr
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -34,11 +37,8 @@ subroutine gwnutr
    use parm
    implicit none
 
-   integer :: j
+   integer, intent(in) :: j
 
-   j = ihru
-
-!     no3gw(j) = gwno3(j) * gw_q(j) / 100.
    minpgw(j) = gwminp(j) * gw_q(j) / 100.
 
    !! bmp adjustment

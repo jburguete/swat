@@ -345,18 +345,18 @@ subroutine subbasin(i)
 
          !! compute loadings from urban areas
          if (urblu(j) > 0) then
-            if(ievent == 0) then
+            if (ievent == 0) then
                call urban(j) ! daily simulation
             else
-               call urbanhr(j) ! subdaily simulation J.Jeong 4/20/2009
+               call urbanhr(j) ! subdaily simulation
             endif
          endif
 
          !! compute sediment loading in lateral flow and add to sedyld
-         call latsed
+         call latsed(j)
 
          !! compute nutrient loading in groundwater flow
-         call gwnutr
+         call gwnutr(j)
          call gw_no3
 
          !! lag nutrients and sediment in surface runoff

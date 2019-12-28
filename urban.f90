@@ -1,13 +1,17 @@
-subroutine urban(j)
+!> @file urban.f90
+!> file containing the subroutine urban
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes loadings from urban areas using the
-!!    USGS regression equations or a build-up/wash-off algorithm
+!> this subroutine computes loadings from urban areas using the
+!> USGS regression equations or a build-up/wash-off algorithm
+!> @param[in] j HRU number (none)
+subroutine urban(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    j            |none           |HRU number
 !!    al5          |none           |fraction of daily rainfall that occurs
 !!                                 |during 0.5h highest intensity
 !!    curbden(:)   |km/ha          |curb length density in HRU
@@ -89,23 +93,26 @@ subroutine urban(j)
 !!                               |from urban area
 !!    tn          |kg            |total nitrogen in surface runoff from
 !!                               |urban area
+!!    tno3
 !!    tp          |kg            |total phosphorus in surface runoff from
 !!                               |urban area
 !!    turo        |
 !!    urbk        |1/hr          |
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Max, Log, Exp
-!!    SWAT: Regres, sweep
+!!    SWAT: Regres
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   real*8 Regres
    integer, intent(in) :: j
-   real*8 :: cod, sus_sol, tn, tp, urbk, turo, dirto, durf, rp1, dirt, tno3, xx
+   real*8 :: cod, dirt, dirto, durf, rp1, sus_sol, tn, tno3, tp, turo, urbk, xx
 
 
    select case (iurban(j))
@@ -118,25 +125,25 @@ subroutine urban(j)
          tp = Regres(4,j)
 
          sedyld(j) = (.001 * sus_sol) * fimp(urblu(j)) + sedyld(j)&
-         &* (1. - fimp(urblu(j)))
+            &* (1. - fimp(urblu(j)))
 
          !! The sediment loading from urban imprevious area is assumed
          !! to be all sitly particles
          silyld(j) = (.001 * sus_sol) * fimp(urblu(j))&
-         &+ silyld(j) * (1. - fimp(urblu(j)))
+            &+ silyld(j) * (1. - fimp(urblu(j)))
          sanyld(j) = sanyld(j) * (1. - fimp(urblu(j)))
          clayld(j) = clayld(j) * (1. - fimp(urblu(j)))
          sagyld(j) = sagyld(j) * (1. - fimp(urblu(j)))
          lagyld(j) = lagyld(j) * (1. - fimp(urblu(j)))
 
          sedorgn(j) = (.7 * tn / (hru_km(j) * 100.)) * fimp(urblu(j)) +&
-         &sedorgn(j) * (1. - fimp(urblu(j)))
+            &sedorgn(j) * (1. - fimp(urblu(j)))
          surqno3(j) = (.3 * tn / (hru_km(j) * 100.)) * fimp(urblu(j)) +&
-         &surqno3(j) * (1. - fimp(urblu(j)))
+            &surqno3(j) * (1. - fimp(urblu(j)))
          sedorgp(j) = (.75 * tp / (hru_km(j) * 100.)) * fimp(urblu(j))&
-         &+  sedorgp(j) * (1. - fimp(urblu(j)))
+            &+  sedorgp(j) * (1. - fimp(urblu(j)))
          surqsolp(j) = .25 * tp / (hru_km(j) * 100.) * fimp(urblu(j)) +&
-         &surqsolp(j) * (1. - fimp(urblu(j)))
+            &surqsolp(j) * (1. - fimp(urblu(j)))
       endif
 
     case (2)                         !! build-up/wash-off algorithm
@@ -171,25 +178,25 @@ subroutine urban(j)
          tno3 = tno3conc(urblu(j)) * sus_sol / 1.e6
 
          sedyld(j) = (.001 * sus_sol * hru_ha(j)) *&
-         &fimp(urblu(j)) + sedyld(j) * (1. - fimp(urblu(j)))
+            &fimp(urblu(j)) + sedyld(j) * (1. - fimp(urblu(j)))
 
          !! The sediment loading from urban imprevious area is assumed
          !! to be all sitly particles
          silyld(j) = (.001 * sus_sol * hru_ha(j)) *&
-         &fimp(urblu(j)) + silyld(j) * (1. - fimp(urblu(j)))
+            &fimp(urblu(j)) + silyld(j) * (1. - fimp(urblu(j)))
          sanyld(j) = sanyld(j) * (1. - fimp(urblu(j)))
          clayld(j) = clayld(j) * (1. - fimp(urblu(j)))
          sagyld(j) = sagyld(j) * (1. - fimp(urblu(j)))
          lagyld(j) = lagyld(j) * (1. - fimp(urblu(j)))
 
          surqno3(j) = tno3 * fimp(urblu(j)) + surqno3(j) *&
-         &(1. - fimp(urblu(j)))
+            &(1. - fimp(urblu(j)))
          sedorgn(j) = (tn - tno3) * fimp(urblu(j)) + sedorgn(j) *&
-         &(1. - fimp(urblu(j)))
+            &(1. - fimp(urblu(j)))
          sedorgp(j) = .75 * tp * fimp(urblu(j)) + sedorgp(j) *&
-         &(1. - fimp(urblu(j)))
+            &(1. - fimp(urblu(j)))
          surqsolp(j) = .25 * tp * fimp(urblu(j)) + surqsolp(j) *&
-         &(1. - fimp(urblu(j)))
+            &(1. - fimp(urblu(j)))
       else
          !! dry day
          twash(j) = twash(j) + 1.

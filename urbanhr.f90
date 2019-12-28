@@ -1,13 +1,17 @@
-subroutine urbanhr(j)
+!> @file urbanhr.f90
+!> file containing the subroutine urbanhr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes loadings from urban areas using the
-!!    a build-up/wash-off algorithm at subdaily time intervals
+!> this subroutine computes loadings from urban areas using the
+!> a build-up/wash-off algorithm at subdaily time intervals
+!> @param[in] j HRU number (none)
+subroutine urbanhr(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units          |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    j            |none           |HRU number
 !!    al5          |none           |fraction of daily rainfall that occurs
 !!                                 |during 0.5h highest intensity
 !!    curbden(:)   |km/ha          |curb length density in HRU
@@ -73,7 +77,7 @@ subroutine urbanhr(j)
 !!    surqsolp(:) |kg P/ha       |amount of soluble phosphorus in surface runoff
 !!                               |in HRU for the day
 !!    twash(:)    |
-!!    ubntss(:)    |metric tons    |TSS loading from urban impervious cover
+!!    ubntss(:)   |metric tons   |TSS loading from urban impervious cover
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -85,16 +89,19 @@ subroutine urbanhr(j)
 !!                               |surfaces at the beginning of time step
 !!    sus_sol     |kg            |suspended solid loading in surface runoff
 !!                               |from urban area
+!!    qdt
 !!    tn          |kg            |total nitrogen in surface runoff from
 !!                               |urban area
+!!    tno3
 !!    tp          |kg            |total phosphorus in surface runoff from
 !!                               |urban area
 !!    urbk        |1/hr          |
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max, Log
-!!    SWAT: Regres, sweep
+!!    Intrinsic: Exp, Max
+!!    SWAT: sweep
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -102,8 +109,7 @@ subroutine urbanhr(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: sus_sol, tn, tp, urbk, dirto, qdt
-   real*8 :: dirt, tno3
+   real*8 :: dirt, dirto, qdt, sus_sol, tn, tno3, tp, urbk, xx
    integer :: k
 
    do k = 1, nstep
@@ -135,14 +141,11 @@ subroutine urbanhr(j)
             tno3 = tno3conc(urblu(j)) * sus_sol / 1.e6
 
             ubntss(k) = (.001 * sus_sol * hru_ha(j)) * fimp(urblu(j))
-            surqno3(j) = tno3 * fimp(urblu(j)) + surqno3(j) *&
-            &(1. - fimp(urblu(j)))
-            sedorgn(j) = (tn - tno3) * fimp(urblu(j)) + sedorgn(j) *&
-            &(1. - fimp(urblu(j)))
-            sedorgp(j) = .75 * tp * fimp(urblu(j)) + sedorgp(j) *&
-            &(1. - fimp(urblu(j)))
-            surqsolp(j) = .25 * tp * fimp(urblu(j)) + surqsolp(j) *&
-            &(1. - fimp(urblu(j)))
+            xx = 1. - fimp(urblu(j))
+            surqno3(j) = tno3 * fimp(urblu(j)) + surqno3(j) * xx
+            sedorgn(j) = (tn - tno3) * fimp(urblu(j)) + sedorgn(j) * xx
+            sedorgp(j) = .75 * tp * fimp(urblu(j)) + sedorgp(j) * xx
+            surqsolp(j) = .25 * tp * fimp(urblu(j)) + surqsolp(j) * xx
          else
             !! no surface runoff
             twash(j) = twash(j) + idt / 1440.
@@ -163,7 +166,7 @@ subroutine urbanhr(j)
 
       ! Compute evaporation of water (initial dabstraction) from impervious cover
       init_abstrc(j) = init_abstrc(j) - etday / nstep
-      init_abstrc(j) = max(0.,init_abstrc(j))
+      init_abstrc(j) = Max(0.,init_abstrc(j))
    end do
 
    !! perform street sweeping

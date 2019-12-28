@@ -1,13 +1,17 @@
-subroutine latsed
+!> @file latsed.f90
+!> file containing the subroutine latsed
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the sediment load contributed in lateral flow
+!> this subroutine calculates the sediment load contributed in lateral flow
+!> @param[in] j HRU number (none)
+subroutine latsed(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    hru_km(:)   |km^2          |area of HRU in square kilometers
-!!    ihru        |none          |HRU number
 !!    lat_sed(:)  |g/L           |sediment concentration in lateral flow
 !!    latq(:)     |mm H2O        |total lateral flow in soil profile for the
 !!                               |day in HRU
@@ -23,7 +27,8 @@ subroutine latsed
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    qq
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -31,10 +36,8 @@ subroutine latsed
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: xx, qq
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: qq, xx
 
    !! update sediment yield for sediment in lateral flow
    qq = latq(j) + gw_q(j)
