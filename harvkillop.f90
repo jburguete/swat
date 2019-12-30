@@ -255,24 +255,6 @@ subroutine harvkillop(j)
    !!insert new biomss by zhang
    !!=================================
    if (cswat == 2) then
-      !!all the lignin from STD is assigned to LSL,
-      !!add STDL calculation
-      !!
-      !sol_LSL(k,ihru) = sol_STDL(k,ihru)
-      !CLG=BLG(3,JJK)*HUI(JJK)/(HUI(JJK)+EXP(BLG(1,JJK)-BLG(2,JJK)*&HUI(JJK))
-      ! 52  BLG1 = LIGNIN FRACTION IN PLANT AT .5 MATURITY
-      ! 53  BLG2 = LIGNIN FRACTION IN PLANT AT MATURITY
-      !CROPCOM.dat BLG1 = 0.01 BLG2 = 0.10
-      !SUBROUTINE ASCRV(X1,X2,X3,X4)
-      !EPIC0810
-      !THIS SUBPROGRAM COMPUTES S CURVE PARMS GIVEN 2 (X,Y) POINTS.
-      !USE PARM
-      !XX=LOG(X3/X1-X3)
-      !X2=(XX-LOG(X4/X2-X4))/(X4-X3)
-      !X1=XX+X3*X2
-      !RETURN
-      !END
-      !HUI(JJK)=HU(JJK)/XPHU
 
       BLG1 = 0.01/0.10
       BLG2 = 0.99
@@ -281,12 +263,7 @@ subroutine harvkillop(j)
       BLG1 = XX + 0.5*BLG2
       CLG=BLG3*phuacc(j)/(phuacc(j)+Exp(BLG1-BLG2*phuacc(j)))
 
-
-      !if (k == 1) then
       sf = 0.05
-      !else
-      !sf = 0.1
-      !end if
 
       !kg/ha
       sol_min_n = (sol_no3(1,j)+sol_nh3(1,j))
@@ -308,17 +285,11 @@ subroutine harvkillop(j)
             LMF = 0.7
          end if
       end if
-      !if ((resnew * CLG/(resnew_n+1.E-5)) < 47.22) then
-      !    LMF = 0.85 - 0.018 * (resnew * CLG/(resnew_n+1.E-5))
-      !else
-      !    LMF = 0.
-      !end if
 
       LSF =  1 - LMF
 
       sol_LM(1,j) = sol_LM(1,j) + LMF * resnew
       sol_LS(1,j) = sol_LS(1,j) + LSF * resnew
-
 
 
       !here a simplified assumption of 0.5 LSL
@@ -331,8 +302,6 @@ subroutine harvkillop(j)
       sol_LSLC(1,j) = sol_LSLC(1,j) + RLR*0.42*resnew
       sol_LSLNC(1,j) = sol_LSC(1,j) - sol_LSLC(1,j)
 
-      !X3 = MIN(X6,0.42*LSF * resnew/150)
-
       if (resnew_n >= (0.42 * LSF * resnew /150)) then
          sol_LSN(1,j) = sol_LSN(1,j) + 0.42 * LSF * resnew / 150
          sol_LMN(1,j) = sol_LMN(1,j) + resnew_n -&
@@ -342,10 +311,7 @@ subroutine harvkillop(j)
          sol_LMN(1,j) = sol_LMN(1,j) + 1.E-25
       end if
 
-      !LSNF = sol_LSN(1,j)/(sol_LS(1,j)+1.E-5)
-
       sol_LMC(1,j) = sol_LMC(1,j) + 0.42 * LMF * resnew
-      !LMNF = sol_LMN(1,j)/(sol_LM(1,j) + 1.E-5)
 
       !update no3 and nh3 in soil
       sol_no3(1,j) = sol_no3(1,j) * (1-sf)
@@ -364,24 +330,6 @@ subroutine harvkillop(j)
       !!insert new biomss by zhang
       !!==============================
       if (cswat == 2) then
-         !!all the lignin from STD is assigned to LSL,
-         !!add STDL calculation
-         !!
-         !sol_LSL(k,ihru) = sol_STDL(k,ihru)
-         !CLG=BLG(3,JJK)*HUI(JJK)/(HUI(JJK)+EXP(BLG(1,JJK)-BLG(2,JJK)*&HUI(JJK))
-         ! 52  BLG1 = LIGNIN FRACTION IN PLANT AT .5 MATURITY
-         ! 53  BLG2 = LIGNIN FRACTION IN PLANT AT MATURITY
-         !CROPCOM.dat BLG1 = 0.01 BLG2 = 0.10
-         !SUBROUTINE ASCRV(X1,X2,X3,X4)
-         !EPIC0810
-         !THIS SUBPROGRAM COMPUTES S CURVE PARMS GIVEN 2 (X,Y) POINTS.
-         !USE PARM
-         !XX=LOG(X3/X1-X3)
-         !X2=(XX-LOG(X4/X2-X4))/(X4-X3)
-         !X1=XX+X3*X2
-         !RETURN
-         !END
-         !HUI(JJK)=HU(JJK)/XPHU
 
          BLG1 = 0.01/0.10
          BLG2 = 0.99
@@ -417,29 +365,19 @@ subroutine harvkillop(j)
                LMF = 0.7
             end if
          end if
-         !if ((resnew * CLG/(resnew_n+1.E-5)) < 47.22) then
-         !    LMF = 0.85 - 0.018 * (resnew * CLG/(resnew_n+1.E-5))
-         !else
-         !    LMF = 0.
-         !end if
 
          LSF =  1 - LMF
 
          sol_LM(l,j) = sol_LM(l,j) + LMF * resnew
          sol_LS(l,j) = sol_LS(l,j) + LSF * resnew
 
-
-
          !here a simplified assumption of 0.5 LSL
-         !LSLF = CLG ! not used
 
          sol_LSL(l,j) = sol_LSL(l,j) + RLR* LSF * resnew
          sol_LSC(l,j) = sol_LSC(l,j) + 0.42*LSF * resnew
 
          sol_LSLC(l,j) = sol_LSLC(l,j) + RLR*0.42*LSF * resnew
          sol_LSLNC(l,j) = sol_LSC(l,j) - sol_LSLC(l,j)
-
-         !X3 = MIN(X6,0.42*LSF * resnew/150)
 
          if (resnew_ne >= (0.42 * LSF * resnew /150)) then
             sol_LSN(l,j) = sol_LSN(l,j) + 0.42 * LSF * resnew / 150
@@ -450,10 +388,7 @@ subroutine harvkillop(j)
             sol_LMN(l,j) = sol_LMN(l,j) + 1.E-25
          end if
 
-         !LSNF = sol_LSN(l,j)/(sol_LS(l,j)+1.E-5)
-
          sol_LMC(l,j) = sol_LMC(l,j) + 0.42 * LMF * resnew
-         !LMNF = sol_LMN(l,j)/(sol_LM(l,j) + 1.E-5)
 
          !update no3 and nh3 in soil
          sol_no3(l,j) = sol_no3(l,j) * (1-sf)

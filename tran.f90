@@ -11,10 +11,10 @@ subroutine tran(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    ch_k1(j)    |mm/hr         |effective hydraulic conductivity of tributary
+!!    ch_k(1,j)    |mm/hr         |effective hydraulic conductivity of tributary
 !!                               |channel alluvium
-!!    ch_w1(j)    |(m)           |average main channel width
-!!    ch_l1(j)    |(km)          |main channel length
+!!    ch_w(1,j)    |(m)           |average main channel width
+!!    ch_l(1,j)    |(km)          |main channel length
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    peakr       |m^3/s         |peak runoff rate
 !!    qday        |mm H2O        |surface runoff loading to main channel
@@ -67,7 +67,7 @@ subroutine tran(j)
    integer, intent(in) :: j
    real*8 :: a, axw, b, bxw, dur, k, pr1, pxw, qinit, vo, xx, zz
 
-   if (ch_k1(hru_sub(j)) <= 0.) return
+   if (ch_k(1,hru_sub(j)) <= 0.) return
 
 !! save runoff amount prior to transmission losses
    qinit = qday
@@ -80,7 +80,7 @@ subroutine tran(j)
    dur = vo / (peakr * 3600.)      !!duration: hr
    if (dur > 24.) dur = 24.
 
-   xx = 2.6466 * ch_k1(hru_sub(j)) * dur / vo
+   xx = 2.6466 * ch_k(1,hru_sub(j)) * dur / vo
    if (xx < 1.) then
 
       !! zero surface runoff/peak rate
@@ -96,10 +96,10 @@ subroutine tran(j)
       if ((1. - b) .GE. 0.) then
          ! end fix pdw
 
-         zz = - k * ch_w1(hru_sub(j)) * ch_l1(j)
+         zz = - k * ch_w(1,hru_sub(j)) * ch_l(1,j)
          if (zz >= -30.) then
             bxw = Exp(zz)
-            a = -.2258 * ch_k1(hru_sub(j)) * dur
+            a = -.2258 * ch_k(1,hru_sub(j)) * dur
             if (1. - b > 0.01) then
                axw = (a / (1. - b)) * (1. - bxw)
             else

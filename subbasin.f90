@@ -97,7 +97,6 @@ subroutine subbasin(i)
 !!                               |space
 !!    etday       |mm H2O        |actual evapotranspiration occuring on day
 !!                               |in HRU
-!!    ihru        |none          |HRU number
 !!    inflpcp     |mm H2O        |amount of precipitation that infiltrates
 !!                               |into soil (enters soil)
 !!    nafert(:)   |none          |sequence number of auto-fert application
@@ -117,10 +116,10 @@ subroutine subbasin(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i_wtrhru
 !!    ihout1
-!!    iihru
 !!    iru_sub
 !!    j           |none          |HRU number
 !!    k
+!!    l           |none          |HRU number
 !!    ovs
 !!    ovsl
 !!    sumdaru
@@ -148,15 +147,15 @@ subroutine subbasin(i)
    integer, intent(in) :: i
    integer, parameter :: iru_sub = 1 ! route across landscape unit
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
-   integer :: i_wtrhru, ihout1, j, k
+   integer :: i_wtrhru, ihout1, j, k, l
 
-   ihru = hru1(inum1)
+   l = hru1(inum1)
 
-   call sub_subbasin(ihru)
+   call sub_subbasin(l)
 
    do k = 1, hrutot(inum1)
 
-      j = ihru
+      j = l
 
 
       !jj is hru number
@@ -418,7 +417,7 @@ subroutine subbasin(i)
       call virtual(i, j, k)
       aird(j) = 0.
 
-      ihru = ihru + 1
+      l = l + 1
    end do
 
    !! route 2 landscape units

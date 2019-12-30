@@ -105,6 +105,7 @@ subroutine carbon_zhang2(j)
    !Its values: surface litter layer = 1; all other layers = 1-0.75*(SILF + CLAF) (Parton et al., 1993, 1994)
    !XLSLF   : control on potential transformation of structural litter by lignin fraction
    !of structural litter [XLSLF = exp(-3* LSLF) (Parton et al., 1993, 1994)]
+   real*8 Fcgd
    integer, intent(in) :: j
    real*8, parameter :: wdn = 0., HSR = 5.4799998E-04, HPR = 1.2000000E-05,&
       &A1CO2=.55, APCO2=.55, ASCO2=.60
@@ -203,7 +204,7 @@ subroutine carbon_zhang2(j)
          !calculate tillage factor using DSSAT
 
          !!compute soil temperature factor
-         cdg = fcgd(sol_tmp(k,j))
+         cdg = Fcgd(sol_tmp(k,j))
 
          !!compute oxygen (OX)
          OX=1.-0.8*((sol_z(kk,j)+sol_z(kk-1,j))/2)/&

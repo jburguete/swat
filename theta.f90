@@ -1,8 +1,20 @@
-real*8 function theta(r20,thk,tmp) result (r_theta)
+!> @file theta.f90
+!> file containing the function theta
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this function corrects rate constants for temperature
-!!    Equation is III-52 from QUAL2E
+!> this function corrects rate constants for temperature.
+!> Equation is III-52 from QUAL2E
+!> @param[in] r20
+!> value of the reaction rate coefficient at the standard temperature (20
+!> degrees C) (1/day)
+!> @param[in] thk
+!> temperature adjustment factor (empirical constant for each reaction
+!> coefficient) (none)
+!> @param[in] tmp temperature on current day (deg C)
+!> @return value of the reaction rate coefficient at the local temperature
+!> (1/day)
+real*8 function theta(r20, thk, tmp)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -26,7 +38,7 @@ real*8 function theta(r20,thk,tmp) result (r_theta)
 
    real*8, intent (in) :: r20, thk, tmp
 
-   r_theta = r20 * thk ** (tmp - 20.)
+   theta = r20 * thk ** (tmp - 20.)
 
    return
 end

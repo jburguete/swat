@@ -1,19 +1,22 @@
-subroutine rtday
+!> @file rtday.f90
+!> file containing the subroutine rtday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes the daily flow through the reach using a
-!!    variable storage coefficient
+!> this subroutine routes the daily flow through the reach using a
+!> variable storage coefficient
+subroutine rtday
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_k2(:)   |mm/hr         |effective hydraulic conductivity of
+!!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
-!!    ch_l2(:)    |km            |length of main channel
-!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
-!!    ch_s2(:)   |m/m           |average slope of main channel
-!!    ch_w2(:)   |m             |average width of main channel
+!!    ch_l(2,:)   |km            |length of main channel
+!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_s(2,:)   |m/m           |average slope of main channel
+!!    ch_w(2,:)   |m             |average width of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
@@ -28,7 +31,7 @@ subroutine rtday
 !!                               |bankfull depth
 !!    phi(6,:)    |m             |bottom width of main channel
 !!    rnum1       |none          |fraction of overland flow
-!!    rchstor(:)   |m^3 H2O       |water stored in reach
+!!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    varoute(2,:)|m^3 H2O       |water flowing into reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -42,40 +45,51 @@ subroutine rtday
 !!    rttlc       |m^3 H2O       |transmission losses from reach on day
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sdti        |m^3/s         |average flow on day in reach
-!!    rchstor(:)   |m^3 H2O       |water stored in reach
+!!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    det         |hr            |time step (24 hours)
+!!    addarea
+!!    aaa
+!!    adddep
+!!    addp
 !!    c           |none          |inverse of channel side slope
+!!    det         |hr            |time step (24 hours)
 !!    jrch        |none          |reach number
+!!    maxrt
 !!    p           |m             |wetted perimeter
 !!    rh          |m             |hydraulic radius
+!!    rtevp1
+!!    rtevp2
+!!    rttlc1
+!!    rttlc2
 !!    scoef       |none          |Storage coefficient (fraction of water in
 !!                               |reach flowing out on day)
 !!    topw        |m             |top width of main channel
+!!    vc
 !!    vol         |m^3 H2O       |volume of water in reach at beginning of
 !!                               |day
+!!    volrt
 !!    wtrin       |m^3 H2O       |amount of water flowing into reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Sqrt, Min
+!!    Intrinsic: Sqrt, Dmin1, Min
 !!    SWAT: Qman
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 !!    Modified by Balaji Narasimhan
 !!    Spatial Sciences Laboratory, Texas A&M University
+
    use parm
    implicit none
 
    real*8 Qman
+   real*8 :: addarea, aaa, adddep, addp, c, det, maxrt, p, rh, rtevp1, rtevp2,&
+      &rttlc1, rttlc2, scoef, topw, vc, vol, volrt, wtrin
    integer :: jrch
-   real*8 :: wtrin, scoef, p, topw, vol, c, rh
-   real*8 :: volrt, maxrt, adddep, addp, addarea, vc, aaa
-   real*8 :: rttlc1, rttlc2, rtevp1, rtevp2, det
 
    jrch = inum1
 
@@ -91,7 +105,7 @@ subroutine rtday
    c = chside(jrch)
    p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c)
    rh = phi(1,jrch) / p
-   maxrt = Qman(phi(1,jrch), rh, ch_n2(jrch), ch_s2(jrch))
+   maxrt = Qman(phi(1,jrch), rh, ch_n(2,jrch), ch_s(2,jrch))
 
    sdti = 0.
    rchdep = 0.
@@ -113,10 +127,10 @@ subroutine rtday
       !! find the depth until the discharge rate is equal to volrt
       Do While (sdti < volrt)
          adddep = adddep + 0.01
-         addarea = rcharea + ((ch_w2(jrch) * 5) + 4 * adddep) * adddep
-         addp = p + (ch_w2(jrch) * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
+         addarea = rcharea + ((ch_w(2,jrch) * 5) + 4 * adddep) * adddep
+         addp = p + (ch_w(2,jrch) * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
          rh = addarea / addp
-         sdti = Qman(addarea, rh, ch_n2(jrch), ch_s2(jrch))
+         sdti = Qman(addarea, rh, ch_n(2,jrch), ch_s(2,jrch))
       end do
       rcharea = addarea
       rchdep = ch_d(jrch) + adddep
@@ -131,7 +145,7 @@ subroutine rtday
          rcharea = (phi(6,jrch) + c * rchdep) * rchdep
          p = phi(6,jrch) + 2. * rchdep * Sqrt(1. + c * c)
          rh = rcharea / p
-         sdti = Qman(rcharea, rh, ch_n2(jrch), ch_s2(jrch))
+         sdti = Qman(rcharea, rh, ch_n(2,jrch), ch_s(2,jrch))
       end do
       sdti = volrt
    end if
@@ -140,7 +154,7 @@ subroutine rtday
    if (rchdep <= ch_d(jrch)) then
       topw = phi(6,jrch) + 2. * rchdep * c
    else
-      topw = 5 * ch_w2(jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
+      topw = 5 * ch_w(2,jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
    end if
 
 !! Time step of simulation (in hour)
@@ -150,17 +164,16 @@ subroutine rtday
       !! calculate velocity and travel time
       vc = sdti / rcharea
       vel_chan(jrch) = vc
-      rttime = ch_l2(jrch) * 1000. / (3600. * vc)
+      rttime = ch_l(2,jrch) * 1000. / (3600. * vc)
 
 
       !! calculate volume of water leaving reach on day
-      !scoef = 2. * det / (2. * rttime + det)
       scoef =  det / (rttime + det)
       if (scoef > 1.) scoef = 1.
       !rtwtr = scoef * (wtrin + rchstor(jrch)) ! replaced by the following line
       !new storage coefficient replacement
       rtwtr = vc * rcharea * 86400.
-      rtwtr = dmin1 (rtwtr, wtrin)
+      rtwtr = Dmin1(rtwtr, wtrin)
 
 !! calculate amount of water in channel at end of day
       rchstor(jrch) = rchstor(jrch) + wtrin - rtwtr
@@ -177,15 +190,15 @@ subroutine rtday
 
          !!  Total time in hours to clear the water
 
-         rttlc = det * ch_k2(jrch) * ch_l2(jrch) * p
+         rttlc = det * ch_k(2,jrch) * ch_l(2,jrch) * p
          rttlc2 = rttlc * rchstor(jrch) / (rtwtr + rchstor(jrch))
 
          if (rchstor(jrch) <= rttlc2) then
-            rttlc2 = min(rttlc2, rchstor(jrch))
+            rttlc2 = Min(rttlc2, rchstor(jrch))
             rchstor(jrch) = rchstor(jrch) - rttlc2
             rttlc1 = rttlc - rttlc2
             if (rtwtr <= rttlc1) then
-               rttlc1 = min(rttlc1, rtwtr)
+               rttlc1 = Min(rttlc1, rtwtr)
                rtwtr = rtwtr - rttlc1
             else
                rtwtr = rtwtr - rttlc1
@@ -194,7 +207,7 @@ subroutine rtday
             rchstor(jrch) = rchstor(jrch) - rttlc2
             rttlc1 = rttlc - rttlc2
             if (rtwtr <= rttlc1) then
-               rttlc1 = min(rttlc1, rtwtr)
+               rttlc1 = Min(rttlc1, rtwtr)
                rtwtr = rtwtr - rttlc1
             else
                rtwtr = rtwtr - rttlc1
@@ -211,26 +224,26 @@ subroutine rtday
          aaa = evrch * pet_day / 1000.
 
          if (rchdep <= ch_d(jrch)) then
-            rtevp = aaa * ch_l2(jrch) * 1000. * topw
+            rtevp = aaa * ch_l(2,jrch) * 1000. * topw
          else
             if (aaa <=  (rchdep - ch_d(jrch))) then
-               rtevp = aaa * ch_l2(jrch) * 1000. * topw
+               rtevp = aaa * ch_l(2,jrch) * 1000. * topw
             else
                rtevp = (rchdep - ch_d(jrch))
                rtevp = rtevp + (aaa - (rchdep - ch_d(jrch)))
                topw = phi(6,jrch) + 2. * ch_d(jrch) * c
-               rtevp = rtevp * ch_l2(jrch) * 1000. * topw
+               rtevp = rtevp * ch_l(2,jrch) * 1000. * topw
             end if
          end if
 
          rtevp2 = rtevp * rchstor(jrch) / (rtwtr + rchstor(jrch))
 
          if (rchstor(jrch) <= rtevp2) then
-            rtevp2 = min(rtevp2, rchstor(jrch))
+            rtevp2 = Min(rtevp2, rchstor(jrch))
             rchstor(jrch) = rchstor(jrch) - rtevp2
             rtevp1 = rtevp - rtevp2
             if (rtwtr <= rtevp1) then
-               rtevp1 = min(rtevp1, rtwtr)
+               rtevp1 = Min(rtevp1, rtwtr)
                rtwtr = rtwtr - rtevp1
             else
                rtwtr = rtwtr - rtevp1
@@ -239,7 +252,7 @@ subroutine rtday
             rchstor(jrch) = rchstor(jrch) - rtevp2
             rtevp1 = rtevp - rtevp2
             if (rtwtr <= rtevp1) then
-               rtevp1 = min(rtevp1, rtwtr)
+               rtevp1 = Min(rtevp1, rtwtr)
                rtwtr = rtwtr - rtevp1
             else
                rtwtr = rtwtr - rtevp1

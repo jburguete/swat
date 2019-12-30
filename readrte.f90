@@ -49,16 +49,16 @@ subroutine readrte
 !!    ch_erod(:)    |none        |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
-!!    ch_k2(:)      |mm/hr       |effective hydraulic conductivity of
+!!    ch_k(2,:)      |mm/hr       |effective hydraulic conductivity of
 !!                               |main channel alluvium
-!!    ch_l2(:)      |km          |length of main channel
+!!    ch_l(2,:)      |km          |length of main channel
 !!    ch_li(:)      |km          |initial length of main channel
-!!    ch_n2(:)      |none        |Manning's "n" value for the main channel
+!!    ch_n(2,:)      |none        |Manning's "n" value for the main channel
 !!    ch_onco(:)    |ppm         |channel organic n concentration
 !!    ch_opco(:)    |ppm         |channel organic p concentration
-!!    ch_s2(:)      |m/m         |average slope of main channel
+!!    ch_s(2,:)      |m/m         |average slope of main channel
 !!    ch_si(:)      |m/m         |initial slope of main channel
-!!    ch_w2(:)      |m           |average width of main channel
+!!    ch_w(2,:)      |m           |average width of main channel
 !!    ch_wdr(:)     |m/m         |channel width to depth ratio
 !!    chside(:)     |            |change in horizontal distance per unit
 !!                               |  vertical distance (0.0 - 5)
@@ -101,12 +101,12 @@ subroutine readrte
    j = irch
    do
       read (103,5000) titldum
-      read (103,*) ch_w2(j)
+      read (103,*) ch_w(2,j)
       read (103,*) ch_d(j)
-      read (103,*) ch_s2(j)
-      read (103,*) ch_l2(j)
-      read (103,*) ch_n2(j)
-      read (103,*) ch_k2(j)
+      read (103,*) ch_s(2,j)
+      read (103,*) ch_l(2,j)
+      read (103,*) ch_n(2,j)
+      read (103,*) ch_k(2,j)
       read (103,*) ch_cov1(j)
       read (103,*,iostat=eof) ch_cov2(j)
       if (eof < 0) exit
@@ -154,10 +154,10 @@ subroutine readrte
 !!    set default values for parameters
 !!     if (tc_bnk(j) <= 1.e-6) tc_bnk(j) = 0.001
 !!     if (tc_bed(j) <= 1.e-6) tc_bed(j) = 0.001
-   if (ch_s2(j) <= 0.) ch_s2(j) = .0001
-   if (ch_n2(j) <= 0.01) ch_n2(j) = .01
-   if (ch_n2(j) >= 0.70) ch_n2(j) = 0.70
-   if (ch_l2(j) <= 0.) ch_l2(j) = .0010
+   if (ch_s(2,j) <= 0.) ch_s(2,j) = .0001
+   if (ch_n(2,j) <= 0.01) ch_n(2,j) = .01
+   if (ch_n(2,j) >= 0.70) ch_n(2,j) = 0.70
+   if (ch_l(2,j) <= 0.) ch_l(2,j) = .0010
    if (ch_wdr(j) <= 0.) ch_wdr(j) = 3.5
    if (chside(j) <= 1.e-6) chside(j) = 2.0
    if (tc_bnk(j) <= 0.) tc_bnk(j)=0. !! Critical shear stress (N.m^2)
@@ -321,9 +321,9 @@ subroutine readrte
 
 !!    initialize variables for channel degradation
    ch_di(j) = ch_d(j)
-   ch_li(j) = ch_l2(j)
-   ch_si(j) = ch_s2(j)
-   ch_wi(j) = ch_w2(j)
+   ch_li(j) = ch_l(2,j)
+   ch_si(j) = ch_s(2,j)
+   ch_wi(j) = ch_w(2,j)
 
    close (103)
    return

@@ -116,20 +116,16 @@ subroutine zero0
    cfrt_kg = 0.
    ch_d = 0.
    ch_di = 0.
-   ch_k1 = 0.
-   ch_k2 = 0.
+   ch_k = 0.
    ch_li = 0.
-   ch_n1 = 0.
-   ch_n2 = 0.
+   ch_n = 0.
    ch_onco = 0.
    ch_opco = 0.
    ch_orgn = 0.
    ch_orgp = 0.
-   ch_s1 = 0.
-   ch_s2 = 0.
+   ch_s = 0.
    ch_si = 0.
-   ch_w1 = 0.
-   ch_w2 = 0.
+   ch_w = 0.
    ch_wi = 0.
    ch_wdr = 0.
 
@@ -470,9 +466,6 @@ subroutine zero0
    rcn_d = 0.
    drydep_nh4_d = 0.
    drydep_no3_d = 0.
-!! routing 5/3/2010 gsm per jga
-   mhyd1 = 0
-   irtun = 0
 
 !    Drainmod tile equations  01/2006
    sdrain = 0.

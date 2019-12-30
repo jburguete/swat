@@ -4,18 +4,19 @@
 !> modified by Javier Burguete
 
 !> this surboutine modifies surface runoff to account for crack flow
-subroutine crackflow
+!> @param[in] j HRU number (none)
+subroutine crackflow(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    hhqday(:)   |mm H2O        |surface runoff for the hour in HRUS
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    ihru        |none          |HRU number
 !!    surfq(:)    |mm H2O        |surface runoff in the HRU for the day
 !!    voltot      |mm            |total volume of cracks expressed as depth
 !!                               |per unit area
@@ -32,7 +33,6 @@ subroutine crackflow
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    j           |none          |HRU number
 !!    voli        |none          |volume available for crack flow
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -41,10 +41,9 @@ subroutine crackflow
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: voli
-   integer :: ii, j
-
-   j = ihru
+   integer :: ii
 
    !! subtract crack flow from surface runoff
    if (surfq(j) > voltot) then

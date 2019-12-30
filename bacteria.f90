@@ -151,6 +151,7 @@ subroutine bacteria(j)
    use parm
    implicit none
 
+   real*8 Theta
    integer, intent(in) :: j
    real*8 :: blpq, blps, bpq, bps, cbact, wt1, xx
 
@@ -175,11 +176,11 @@ subroutine bacteria(j)
 !! compute bacteria die-off and re-growth on foilage
    if (tmpav(j) > 1.e-6) then
       bactp_plt(j) = bactp_plt(j) * Exp(-Theta(wp20p_plt,thbact,&
-      &tmpav(j))) - bactminp
+         &tmpav(j))) - bactminp
       bactp_plt(j) = Max(0., bactp_plt(j))
       if (bactp_plt(j) < bactminp) bactp_plt(j) = 0.
       bactlp_plt(j) = bactlp_plt(j) * Exp(-Theta(wp20lp_plt,thbact,&
-      &tmpav(j))) - bactminlp
+         &tmpav(j))) - bactminlp
       bactlp_plt(j) = Max(0., bactlp_plt(j))
       if (bactlp_plt(j) < bactminlp) bactlp_plt(j) = 0.
    endif
@@ -187,34 +188,34 @@ subroutine bacteria(j)
 !! compute bacteria die-off and re-growth in surface soil layer
    bpq = bactpq(j)
    bactpq(j) = bactpq(j) * Exp(-Theta(wpq20,thbact,tmpav(j))) -&
-   &bactminp
+      &bactminp
    bactpq(j) = Max(0., bactpq(j))
    if (bactpq(j) < bactminp) bactpq(j) = 0.
    blpq = bactlpq(j)
    bactlpq(j) = bactlpq(j) * Exp(-Theta(wlpq20,thbact,tmpav(j))) -&
-   &bactminlp
+      &bactminlp
    bactlpq(j) = Max(0., bactlpq(j))
    if (bactlpq(j) < bactminlp) bactlpq(j) = 0.
    bps = bactps(j)
    bactps(j) = bactps(j) * Exp(-Theta(wps20,thbact,tmpav(j))) -&
-   &bactminp
+      &bactminp
    bactps(j) = Max(0., bactps(j))
    if (bactps(j) < bactminp) bactps(j) = 0.
    blps = bactlps(j)
    bactlps(j) = bactlps(j) * Exp(-Theta(wlps20,thbact,tmpav(j))) -&
-   &bactminlp
+      &bactminlp
    bactlps(j) = Max(0., bactlps(j))
    if (bactlps(j) < bactminlp) bactlps(j) = 0.
 
 !! compute bacteria in the runoff
    bactrop = bactpq(j) * surfq(j) /&
-   &(sol_bd(1,j) * sol_z(1,j) * bactkdq)
+      &(sol_bd(1,j) * sol_z(1,j) * bactkdq)
    bactrop = Min(bactrop, bactpq(j))
    bactrop = Max(bactrop, 0.)
    bactpq(j) = bactpq(j) - bactrop
 
    bactrolp = bactlpq(j) * surfq(j) /&
-   &(sol_bd(1,j) * sol_z(1,j) * bactkdq)
+      &(sol_bd(1,j) * sol_z(1,j) * bactkdq)
    bactrolp = Min(bactrolp, bactlpq(j))
    bactrolp = Max(bactrolp, 0.)
    bactlpq(j) = bactlpq(j) - bactrolp
@@ -236,13 +237,13 @@ subroutine bacteria(j)
 
 !! compute bacteria incorporated into the soil
    bactlchp = bactpq(j) * sol_prk(1,j) / ((conv_wt(1,j) / 1000.)&
-   &* bactmx)
+      &* bactmx)
    bactlchp = Min(bactlchp, bactpq(j))
    bactlchp = Max(bactlchp, 0.)
    bactpq(j) = bactpq(j) - bactlchp
 
    bactlchlp = bactlpq(j) * sol_prk(1,j) / ((conv_wt(1,j) / 1000.)&
-   &* bactmx)
+      &* bactmx)
    bactlchlp = Min(bactlchlp, bactlpq(j))
    bactlchlp = Max(bactlchlp, 0.)
    bactlpq(j) = bactlpq(j) - bactlchlp
@@ -262,15 +263,6 @@ subroutine bacteria(j)
       sbactlchp = sbactlchp + bactlchp * hru_dafr(j)
       sbactlchlp = sbactlchlp + bactlchlp * hru_dafr(j)
    end if
-
-! 1 is HRU number!
-!      xx = bactpq(1) + bactps(1) + bactp_plt(1)
-!      yy = bactlpq(1) + bactlps(1) + bactlp_plt(1)
-!      write (17,100) iida, xx, yy,
-!     &     bactpq(1), bactps(1), bactlpq(1), bactlps(1),
-!     &     bactrop, bactrolp, bactsedp, bactsedlp, bactlchp, bactlchlp,
-!     &     bactp_plt(1), bactlp_plt(1)
-! 100  format (i4,14f10.7)
 
    return
 end

@@ -1,20 +1,26 @@
-subroutine rthmusk(i)
+!> @file rthmusk.f90
+!> file containing the subroutine rthmusk
+!> @author
+!> code provided by Dr. Valentina Krysanova, Pottsdam Institute for
+!> Climate Impact Research, Germany.\n
+!> Modified by N.Kannan, Blackland Research Center, Temple, USA.\n
+!> Modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes flow through a reach using the
-!!    Muskingum method at a given time step
+!> this subroutine routes flow through a reach using the
+!> Muskingum method at a given time step
+subroutine rthmusk(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |current day of simulation
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_k2(:)   |mm/hr         |effective hydraulic conductivity of
+!!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
-!!    ch_l2(:)    |km            |length of main channel
-!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
-!!    ch_s2(:)   |m/m           |average slope of main channel
-!!    ch_w2(:)   |m             |average width of main channel
+!!    ch_l(2,:)   |km            |length of main channel
+!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_s(2,:)   |m/m           |average slope of main channel
+!!    ch_w(2,:)   |m             |average width of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
@@ -94,7 +100,6 @@ subroutine rthmusk(i)
 !!    ii          |none          |counter (Number of operational step during day)
 !!    jrch        |none          |reach number
 !!    p           |m             |wetted perimeter
-!!    rh          |m             |hydraulic radius
 !!    nstep       |none          |number of steps in a day
 !!    topw        |m             |top width of main channel
 !!    vol         |m^3 H2O       |volume of water in reach at beginning of day
@@ -106,23 +111,18 @@ subroutine rthmusk(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Sqrt
+!!    Intrinsic: Sqrt, Min, Sum
 !!    SWAT: Qman
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
-
-!!    code provided by Dr. Valentina Krysanova, Pottsdam Institute for
-!!    Climate Impact Research, Germany
-!! Modified by N.Kannan, Blackland Research Center, Temple, USA
 
    use parm
    implicit none
 
    real*8 Qman
    integer, intent(in) :: i
-   integer :: jrch, ii
-   real*8 :: xkm, det, yy, c1, c2, c3, c4, wtrin, p, vol, c
-   real*8 :: topw
+   integer :: ii, jrch
+   real*8 :: c, c1, c2, c3, c4, det, p, topw, vol, wtrin, xkm, yy
 
    jrch = inum1
 
@@ -136,7 +136,7 @@ subroutine rthmusk(i)
    c1 = (det - 2. * xkm * msk_x) / yy
    c2 = (det + 2. * xkm * msk_x) / yy
    c3 = (2. * xkm * (1. - msk_x) - det) / yy
-   c4 = phi(5,jrch) * ch_l2(jrch) * det / yy
+   c4 = phi(5,jrch) * ch_l(2,jrch) * det / yy
 
    do ii = 1, nstep   !! begin time step loop
       !! Water entering reach on day
@@ -165,17 +165,17 @@ subroutine rthmusk(i)
       vol = Max(vol,1.e-14) ! changed from e-4 to e-14 for urban modeing by J.Jeong 4/21/2008
 
       !! calculate cross-sectional area of flow
-      hharea(ii) = vol / (ch_l2(jrch) * 1000.)
+      hharea(ii) = vol / (ch_l(2,jrch) * 1000.)
 
       !! calculate depth of flow
       c = chside(jrch)
       if (hharea(ii) <= phi(1,jrch)) then
          hdepth(ii) = Sqrt(hharea(ii) / c + phi(6,jrch) * phi(6,jrch)&
-         &/ (4. * c * c)) - phi(6,jrch) / (2. * c)
+            &/ (4. * c * c)) - phi(6,jrch) / (2. * c)
          if (hdepth(ii) < 0.) hdepth(ii) = 0.
       else
          hdepth(ii) = Sqrt((hharea(ii) - phi(1,jrch)) / 4. + 25. *&
-         &ch_w2(jrch) * ch_w2(jrch) / 64.) - 5. * ch_w2(jrch) / 8.
+            &ch_w(2,jrch) * ch_w(2,jrch) / 64.) - 5. * ch_w(2,jrch) / 8.
          if (hdepth(ii) < 0.) hdepth(ii) = 0.
          hdepth(ii) = hdepth(ii) + ch_d(jrch)
       end if
@@ -185,7 +185,7 @@ subroutine rthmusk(i)
          p = phi(6,jrch) + 2. * hdepth(ii) * Sqrt(1. + c * c)
       else
          p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c) +&
-         &4. * ch_w2(jrch) + 2. * (hdepth(ii) - ch_d(jrch)) * Sqrt(17.)
+            &4. * ch_w(2,jrch) + 2. * (hdepth(ii) - ch_d(jrch)) * Sqrt(17.)
       end if
 
       !! calculate hydraulic radius
@@ -196,11 +196,11 @@ subroutine rthmusk(i)
       end if
 
       !! calculate flow in reach [m3/s]
-      hsdti(ii) = Qman(hharea(ii), rhy(ii), ch_n2(jrch),ch_s2(jrch))
+      hsdti(ii) = Qman(hharea(ii), rhy(ii), ch_n(2,jrch),ch_s(2,jrch))
 
       !! calculate travel time[hour]
       if (hsdti(ii) > 1.e-4) then
-         hhtime(ii) = ch_l2(jrch) * hharea(ii) / (3.6 * hsdti(ii))
+         hhtime(ii) = ch_l(2,jrch) * hharea(ii) / (3.6 * hsdti(ii))
          if (hhtime(ii) < 1.) then
             rttime = rttime + hhtime(ii)
          else
@@ -209,12 +209,12 @@ subroutine rthmusk(i)
       end if
 
       !! calculate transmission losses
-      !! transmission losses are ignored if ch_k2(jrch) is set to zero
+      !! transmission losses are ignored if ch_k(2,jrch) is set to zero
       !! in .rte file
       if (hhtime(ii) < 1.) then
-         hrttlc(ii) = ch_k2(jrch) * ch_l2(jrch) * p * hhtime(ii)
+         hrttlc(ii) = ch_k(2,jrch) * ch_l(2,jrch) * p * hhtime(ii)
       else
-         hrttlc(ii) = ch_k2(jrch) * ch_l2(jrch) * p
+         hrttlc(ii) = ch_k(2,jrch) * ch_l(2,jrch) * p
       end if
       hrttlc(ii) = Min(hrtwtr(ii),hrttlc(ii))
       hrtwtr(ii) = hrtwtr(ii) - hrttlc(ii)
@@ -227,15 +227,15 @@ subroutine rthmusk(i)
          if (hdepth(ii) <= ch_d(jrch)) then
             topw = phi(6,jrch) + 2. * hdepth(ii) * chside(jrch)
          else
-            topw = 5. * ch_w2(jrch) + 2. * (hdepth(ii)-ch_d(jrch)) * 4.
+            topw = 5. * ch_w(2,jrch) + 2. * (hdepth(ii)-ch_d(jrch)) * 4.
          end if
 
          !! calculate evaporation
          if (hhtime(ii) < 1.) then
-            hrtevp(ii) = evrch * pet_day/nstep * ch_l2(jrch) * topw *&
-            &hhtime(ii)
+            hrtevp(ii) = evrch * pet_day/nstep * ch_l(2,jrch) * topw *&
+               &hhtime(ii)
          else
-            hrtevp(ii) = evrch * pet_day/nstep * ch_l2(jrch) * topw
+            hrtevp(ii) = evrch * pet_day/nstep * ch_l(2,jrch) * topw
          end if
          if (hrtevp(ii) < 0.) hrtevp(ii) = 0.
          hrtevp(ii) = Min(hrtwtr(ii),hrtevp(ii))
@@ -246,10 +246,10 @@ subroutine rthmusk(i)
       !! set volume of water in channel at end of hour
       if (ii == 1) then
          hhstor(ii) = rchstor(jrch) + wtrin - hrtwtr(ii) - hrtevp(ii) -&
-         &hrttlc(ii)
+            &hrttlc(ii)
       else
          hhstor(ii) = hhstor(ii-1) + wtrin - hrtwtr(ii) - hrtevp(ii) -&
-         &hrttlc(ii)
+            &hrttlc(ii)
       end if
       if (hhstor(ii) < 0.) then
          hrtwtr(ii) = hrtwtr(ii) + hhstor(ii)

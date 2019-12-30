@@ -1,8 +1,11 @@
-subroutine rchinit
+!> @file rchinit.f90
+!> file containing the subroutine rchinit
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes variables for the daily simulation of the
-!!    channel routing command loop
+!> this subroutine initializes variables for the daily simulation of the
+!> channel routing command loop
+subroutine rchinit
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -42,9 +45,9 @@ subroutine rchinit
 !!    rcharea     |m^2           |cross-sectional area of flow
 !!    rchdep      |m             |depth of flow on day
 !!    rchwtr      |m^3 H2O       |water stored in reach at beginning of day
-!!    reactw      |mg pst        |amount of pesticide in reach that is lost
-!!                               |through reactions
 !!    reactb      |mg pst        |amount of pesticide in sediment that is lost
+!!                               |through reactions
+!!    reactw      |mg pst        |amount of pesticide in reach that is lost
 !!                               |through reactions
 !!    revapday    |m^3 H2O       |amount of water moving from bank storage
 !!                               |into the soil profile or being taken

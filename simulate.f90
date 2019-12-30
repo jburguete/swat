@@ -250,23 +250,22 @@ subroutine simulate
 
          call command(i)           !! command loop
 
-
-         do ihru = 1, nhru
-            if (idaf > 180 .and. sub_lat(hru_sub(ihru)) < 0) then
+         do j = 1, nhru
+            if (idaf > 180 .and. sub_lat(hru_sub(j)) < 0) then
                if (i == 180) then
-                  if (mgtop(nop(ihru),ihru) /=17) then
+                  if (mgtop(nop(j),j) /=17) then
                      dorm_flag = 1
-                     call operatn
+                     call operatn(j)
                      dorm_flag = 0
                   endif
-                  nop(ihru) = nop(ihru) + 1
+                  nop(j) = nop(j) + 1
 
-                  if (nop(ihru) > nopmx(ihru)) then
-                     nop(ihru) = 1
+                  if (nop(j) > nopmx(j)) then
+                     nop(j) = 1
                   end if
 
-                  phubase(ihru) = 0.
-                  yr_skip(ihru) = 0
+                  phubase(j) = 0.
+                  yr_skip(j) = 0
                endif
 
             endif
@@ -330,8 +329,7 @@ subroutine simulate
          if (idaf < 181) then
             if (mgtop(nop(j),j) /= 17) then
                dorm_flag = 1
-               ihru = j
-               call operatn
+               call operatn(j)
                dorm_flag = 0
             end if
             nop(j) = nop(j) + 1

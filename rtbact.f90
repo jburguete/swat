@@ -71,6 +71,7 @@ subroutine rtbact
    use parm
    implicit none
 
+   real*8 Theta
    integer :: ii, jrch
    real*8 :: totbactp, totbactlp, netwtr, initlp, initp
    real*8 :: tday, wtmp

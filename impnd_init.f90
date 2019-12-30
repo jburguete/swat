@@ -241,7 +241,7 @@ subroutine impnd_init
             wet_vol(j) = 10000. * wet_vol(j)       !! 10^4 m^3 => m^3
 
             !! calculate watershed variables
-            wshd_wetfr = wshd_wetfr + (hru_dafr(j) * wet_fr(j))
+            !wshd_wetfr = wshd_wetfr + (hru_dafr(j) * wet_fr(j)) !variable not used
 
             !! calculate shape parameters for surface area equation
             wetdif = wet_mxvol(j) - wet_nvol(j)

@@ -1,4 +1,4 @@
-subroutine watqual2
+subroutine watqual2(jrch)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
 !!    this subroutine performs in-stream nutrient transformations and water
@@ -9,6 +9,7 @@ subroutine watqual2
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch         |none          |reach number
 !!    ai0          |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    ai1          |mg N/mg alg   |fraction of algal biomass that is nitrogen
 !!    ai2          |mg P/mg alg   |fraction of algal biomass that is phosphorus
@@ -42,7 +43,6 @@ subroutine watqual2
 !!                                |   u = mumax * fll * Min(fnn, fpp)
 !!                                |3: harmonic mean
 !!                                |   u = mumax * fll * 2. / ((1/fnn)+(1/fpp))
-!!    inum1        |none          |reach number
 !!    inum2        |none          |inflow hydrograph storage location number
 !!    k_l          |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n          |mg N/L        |michaelis-menton half-saturation constant
@@ -153,7 +153,6 @@ subroutine watqual2
 !!    fnn         |none          |algal growth limitation factor for nitrogen
 !!    fpp         |none          |algal growth limitation factor for phosphorus
 !!    gra         |1/day         |local algal growth rate at 20 deg C
-!!    jrch        |none          |reach number
 !!    lambda      |1/m           |light extinction coefficient
 !!    nh3con      |mg N/L        |initial ammonia concentration in reach
 !!    nitratin    |mg N/L        |nitrate concentration in inflow
@@ -224,7 +223,8 @@ subroutine watqual2
    use parm
    implicit none
 
-   integer :: jrch
+   real*8 Theta
+   integer, intent(in) :: jrch
    real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
    real*8 :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra
    real*8 :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn, heatin
@@ -237,8 +237,6 @@ subroutine watqual2
 !      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
    real*8 :: dalgae, dchla, dorgn, dnh4, dno2, dno3,dorgp,dsolp
    real*8 :: dbod, ddisox, setl
-
-   jrch = inum1
 
    !! initialize water flowing into reach
    wtrin = varoute(2,inum2) * (1. - rnum1)

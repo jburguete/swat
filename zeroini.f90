@@ -241,7 +241,7 @@ subroutine zeroini
    wshd_sw = 0.
    wshd_tstrs = 0.
    wshd_voln = 0.
-   wshd_wetfr = 0.
+   !wshd_wetfr = 0. !variable not used
    wshd_wstrs = 0.
    wshd_yldn = 0.
    wshd_yldp = 0.

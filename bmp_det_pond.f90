@@ -67,7 +67,7 @@ subroutine bmp_det_pond
    sedpnd = dtp_ised(sb) !tons
 
    !! Storage capacity under addon
-   qaddon = dtp_addon(sb,1)**3./(3.*dtp_lwratio(sb)*ch_s2(sb)**2.) !m3 Note: V = d^3 / (3*R*S^2) |Modify by J. Osorio (3/19/2013)
+   qaddon = dtp_addon(sb,1)**3./(3.*dtp_lwratio(sb)*ch_s(2,sb)**2.) !m3 Note: V = d^3 / (3*R*S^2) |Modify by J. Osorio (3/19/2013)
 
    !! iterate for subdaily flow/sediment routing
    do ii=1,nstep
@@ -79,7 +79,7 @@ subroutine bmp_det_pond
       sedin = hhvaroute(3,ihout,ii)  !tons
 
       !! Estimate water depth
-      qdepth = (3.*qpnd*dtp_lwratio(sb)*ch_s2(sb)**2)**0.33333
+      qdepth = (3.*qpnd*dtp_lwratio(sb)*ch_s(2,sb)**2)**0.33333
 
       !! skip to next time step if no ponding occurs
 !    if (qdepth<=0.0001) cycle
@@ -170,7 +170,7 @@ subroutine bmp_det_pond
          qpnd = 0.
       else !detention occurs
          !! Estimating surface area of water
-         backup_length = qdepth / ch_s2(sb)
+         backup_length = qdepth / ch_s(2,sb)
          seep_sa = backup_length/dtp_lwratio(sb)&
          &+ (4. * dtp_lwratio(sb) * qdepth**2) / 3.      !! Note: SSA = w + (4*l*d^2)/(3*w) |Modify by J. Osorio (3/20/2013)
          evap_sa = (2. * backup_length**2) / (3. * dtp_lwratio(sb)) !! Note: ESA = 2 * w * l / 3 |Modify by J. Osorio (3/20/2013)
@@ -182,7 +182,7 @@ subroutine bmp_det_pond
          !! Estimate rainfall, evapotranspiration, and seepage
          pcp_vol  = 10.0 * sub_subp_dt(sb,ii) * evap_sa !m^3
          evap_vol = 10.0 * dtp_evrsv(sb) * pet_day * evap_sa !m^3
-         seep_vol = 10.0 * ch_k2(sb) * seep_sa * idt / 60. !m^3
+         seep_vol = 10.0 * ch_k(2,sb) * seep_sa * idt / 60. !m^3
 
          !! Check mass balance for water in the pond
          qpnd = qpnd_last + qin + pcp_vol - qout - evap_vol&

@@ -56,7 +56,7 @@ subroutine surface(i,j)
 
    !! compute canopy interception
    if (idplt(j) > 0) then
-      call canopyint
+      call canopyint(j)
    end if
 
    !! compute snow melt
@@ -72,7 +72,7 @@ subroutine surface(i,j)
    end if
 
    !! compute crack volume
-   if (icrk == 1) call crackvol
+   if (icrk == 1) call crackvol(j)
 
    !! add overland flow from upstream routing unit
    precipday = precipday + ovrlnd(j)
@@ -107,7 +107,7 @@ subroutine surface(i,j)
    end if
 
    !!calculate subdaily curve number value
-   call dailycn
+   call dailycn(j)
 
    !! compute runoff - surfq in mm H2O
    if (precipday > 0.1) then
@@ -115,7 +115,7 @@ subroutine surface(i,j)
       !! bmp adjustment
       surfq(j) = surfq(j) * bmp_flo(j)
       !! adjust runoff for loss into crack volume
-      if (surfq(j) > 0. .and. icrk == 1) call crackflow
+      if (surfq(j) > 0. .and. icrk == 1) call crackflow(j)
    end if
 
    surfq(j) = surfq(j) + qird(j)
@@ -139,10 +139,10 @@ subroutine surface(i,j)
       call eiusle(j)
 
       !! calculate sediment erosion by rainfall and overland flow
-      call ovr_sed
+      call ovr_sed(j)
    end if
 
-   call cfactor
+   call cfactor(j)
    if (surfq(j) > 1.e-6 .and. peakr > 1.e-6) call ysed(0, j)
 
    if (qday < 0.) qday = 0.

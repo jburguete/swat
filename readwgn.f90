@@ -143,7 +143,7 @@ subroutine readwgn(ii)
    character (len=80) :: titldum
    real*8 :: dl, lattan, pcp, r6, rain_yrs, rndm1, rnm2, sffc, sum1, summm_p,&
       &summn_t, summx_t, tav, tmpsoil, x1, x2, x3, xlv, xx
-   integer :: j, k, m1, mdays, mon, nda, xrnd
+   integer :: j, k, l, m1, mdays, mon, nda, xrnd
 
 
    pcpd = 0.
@@ -330,12 +330,12 @@ subroutine readwgn(ii)
 
 !! assign HRU values
    do j = 1, hrutot(ii)
-      ihru = nhru + j
-      do k = 1, sol_nly(ihru)
-         sol_tmp(k,ihru) = tmpsoil
+      l = nhru + j
+      do k = 1, sol_nly(l)
+         sol_tmp(k,l) = tmpsoil
       end do
-      ffc(ihru) = sffc
-      dormhr(ihru) = dl
+      ffc(l) = sffc
+      dormhr(l) = dl
    end do
 
    close (114)

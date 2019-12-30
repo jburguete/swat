@@ -4,11 +4,13 @@
 !> modified by Javier Burguete
 
 !> calculates curve number for the day in the HRU
-subroutine dailycn
+!> @param[in] j HRU number (none)
+subroutine dailycn(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    icn         |none          |CN method flag:
 !!                               |(for testing alternative methods)
 !!                               |0 use traditional SWAT method which bases
@@ -18,7 +20,6 @@ subroutine dailycn
 !!                               |2 use tradtional SWAT method which bases
 !!                               |  CN on soil moisture but rention is adjusted
 !!                               |  for mildly-sloped tiled-drained watersheds
-!!    ihru        |none          |HRU number
 !!    sci(:)      |none          |retention coefficient for cn method based on
 !!                               |plant ET
 !!    smx(:)      |none          |retention coefficient for cn method based on
@@ -42,7 +43,6 @@ subroutine dailycn
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    r2          |none          |retention parameter in CN equation
 !!    xx          |none          |variable used to store intermediate
 !!                               |calculation result
@@ -57,11 +57,8 @@ subroutine dailycn
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: r2, xx
-   integer :: j
-
-   j = ihru
-
 
    xx = wrt1(j) - wrt2(j) * sol_sw(j)
    if (xx < -20.) xx = -20.

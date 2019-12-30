@@ -1,20 +1,24 @@
-subroutine rtmusk(i)
+!> @file rtmusk.f90
+!> file containing the subroutine rtmusk
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes a daily flow through a reach using the
-!!    Muskingum method
+!> this subroutine routes a daily flow through a reach using the
+!> Muskingum method
+!> @param[in] i current day of simulation (none)
+subroutine rtmusk(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |current day of simulation
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_k2(:)   |mm/hr         |effective hydraulic conductivity of
+!!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
-!!    ch_l2(:)    |km            |length of main channel
-!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
-!!    ch_s2(:)   |m/m           |average slope of main channel
-!!    ch_w2(:)   |m             |average width of main channel
+!!    ch_l(2,:)   |km            |length of main channel
+!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_s(2,:)   |m/m           |average slope of main channel
+!!    ch_w(2,:)   |m             |average width of main channel
 !!    chside(:)   |none          |change in horizontal distance per unit
 !!                               |change in vertical distance on channel side
 !!                               |slopes; always set to 2 (slope=1/2)
@@ -53,7 +57,7 @@ subroutine rtmusk(i)
 !!                               |0.1 bankfull depth (low flow) (ratio
 !!                               |of storage to discharge)
 !!    rnum1       |none          |fraction of overland flow
-!!    rchstor(:)   |m^3 H2O       |water stored in reach
+!!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    varoute(2,:)|m^3 H2O       |water flowing into reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -69,25 +73,40 @@ subroutine rtmusk(i)
 !!    rttlc       |m^3 H2O       |transmission losses from reach on day
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sdti        |m^3/s         |average flow on day in reach
-!!    rchstor(:)   |m^3 H2O       |water stored in reach
+!!    rchstor(:)  |m^3 H2O       |water stored in reach
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    aaa
+!!    addarea
+!!    adddep
+!!    addp
 !!    c           |none          |inverse of channel side slope
 !!    c1          |
 !!    c2          |
 !!    c3          |
 !!    det         |hr            |time step (24 hours)
+!!    detmax
+!!    detmin
+!!    ii
 !!    jrch        |none          |reach number
+!!    maxrt
 !!    nn          |              |number of subdaily computation points for stable
 !!                               |routing in the muskingum routing method
 !!    p           |m             |wetted perimeter
+!!    qoutday
 !!    rh          |m             |hydraulic radius
+!!    rtevp1
+!!    rtevp2
+!!    rttlc1
+!!    rttlc2
 !!    topw        |m             |top width of main channel
+!!    vc
 !!    vol         |m^3 H2O       |volume of water in reach at beginning of
 !!                               |day
+!!    volrt
 !!    wtrin       |m^3 H2O       |water entering reach on day
 !!    xkm         |hr            |storage time constant for the reach on
 !!                               |current day
@@ -111,15 +130,13 @@ subroutine rtmusk(i)
 
    real*8 Qman
    integer, intent(in) :: i
-   integer :: jrch,nn,ii
-   real*8 :: xkm, det, yy, c1, c2, c3, wtrin, p, vol, c, rh
-   real*8 :: topw,msk1,msk2,detmax,detmin,qinday,qoutday
-   real*8 :: volrt, maxrt, adddep, addp, addarea
-   real*8 :: rttlc1, rttlc2, rtevp1, rtevp2
-   real*8 :: aaa, vc
+   real*8 :: aaa, addarea, adddep, addp, c, c1, c2, c3, det, detmax, detmin,&
+      &maxrt, p, qoutday, rh, rtevp1, rtevp2, rttlc1, rttlc2, topw, vc, vol,&
+      &volrt, wtrin, xkm, yy
+   integer :: ii, jrch, nn
 
    jrch = inum1
-   qinday = 0; qoutday = 0
+   qoutday = 0
 
    det = 24.
 
@@ -128,10 +145,8 @@ subroutine rtmusk(i)
    wtrin = varoute(2,inum2) * (1. - rnum1)
 
 !! Compute storage time constant for reach (msk_co1 + msk_co2 = 1.)
-   msk1 = msk_co1 / (msk_co1 + msk_co2)
-   msk2 = msk_co2 / (msk_co1 + msk_co2)
-   msk_co1 = msk1
-   msk_co2 = msk2
+   msk_co1 = msk_co1 / (msk_co1 + msk_co2)
+   msk_co2 = 1. - msk_co1
    xkm = phi(10,jrch) * msk_co1 + phi(13,jrch) * msk_co2
 
 !! Muskingum numerical stability -Jaehak Jeong, 2011
@@ -168,7 +183,7 @@ subroutine rtmusk(i)
       c = chside(jrch)
       p = phi(6,jrch) + 2. * ch_d(jrch) * Sqrt(1. + c * c)
       rh = phi(1,jrch) / p
-      maxrt = Qman(phi(1,jrch), rh, ch_n2(jrch), ch_s2(jrch))
+      maxrt = Qman(phi(1,jrch), rh, ch_n(2,jrch), ch_s(2,jrch))
 
       sdti = 0.
       rchdep = 0.
@@ -187,12 +202,12 @@ subroutine rtmusk(i)
          !! find the crossectional area and depth for volrt
          !! by iteration method at 1cm interval depth
          !! find the depth until the discharge rate is equal to volrt
-         Do While (sdti < volrt)
+         do while (sdti < volrt)
             adddep = adddep + 0.01
-            addarea = rcharea + ((ch_w2(jrch) * 5) + 4 * adddep) * adddep
-            addp = p + (ch_w2(jrch) * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
+            addarea = rcharea + ((ch_w(2,jrch) * 5) + 4 * adddep) * adddep
+            addp = p + (ch_w(2,jrch) * 4) + 2. * adddep * Sqrt(1. + 4 * 4)
             rh = addarea / addp
-            sdti = Qman(addarea, rh, ch_n2(jrch), ch_s2(jrch))
+            sdti = Qman(addarea, rh, ch_n(2,jrch), ch_s(2,jrch))
          end do
          rcharea = addarea
          rchdep = ch_d(jrch) + adddep
@@ -202,12 +217,12 @@ subroutine rtmusk(i)
          !! find the crossectional area and depth for volrt
          !! by iteration method at 1cm interval depth
          !! find the depth until the discharge rate is equal to volrt
-         Do While (sdti < volrt)
+         do while (sdti < volrt)
             rchdep = rchdep + 0.01
             rcharea = (phi(6,jrch) + c * rchdep) * rchdep
             p = phi(6,jrch) + 2. * rchdep * Sqrt(1. + c * c)
             rh = rcharea / p
-            sdti = Qman(rcharea, rh, ch_n2(jrch), ch_s2(jrch))
+            sdti = Qman(rcharea, rh, ch_n(2,jrch), ch_s(2,jrch))
          end do
          sdti = volrt
       end if
@@ -216,7 +231,7 @@ subroutine rtmusk(i)
       if (rchdep <= ch_d(jrch)) then
          topw = phi(6,jrch) + 2. * rchdep * c
       else
-         topw = 5 * ch_w2(jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
+         topw = 5 * ch_w(2,jrch) + 2. * (rchdep - ch_d(jrch)) * 4.
       end if
 
       if (sdti > 0) then
@@ -224,7 +239,7 @@ subroutine rtmusk(i)
 !! calculate velocity and travel time
          vc = sdti / rcharea
          vel_chan(jrch) = vc
-         rttime = ch_l2(jrch) * 1000. / (3600. * vc)
+         rttime = ch_l(2,jrch) * 1000. / (3600. * vc)
 
 !! Compute coefficients
          yy = 2. * xkm * (1. - msk_x) + det
@@ -258,15 +273,15 @@ subroutine rtmusk(i)
 
             !!  Total time in hours to clear the water
 
-            rttlc = det * ch_k2(jrch) * ch_l2(jrch) * p
+            rttlc = det * ch_k(2,jrch) * ch_l(2,jrch) * p
             rttlc2 = rttlc * rchstor(jrch) / (rtwtr + rchstor(jrch))
 
             if (rchstor(jrch) <= rttlc2) then
-               rttlc2 = min(rttlc2, rchstor(jrch))
+               rttlc2 = Min(rttlc2, rchstor(jrch))
                rchstor(jrch) = rchstor(jrch) - rttlc2
                rttlc1 = rttlc - rttlc2
                if (rtwtr <= rttlc1) then
-                  rttlc1 = min(rttlc1, rtwtr)
+                  rttlc1 = Min(rttlc1, rtwtr)
                   rtwtr = rtwtr - rttlc1
                else
                   rtwtr = rtwtr - rttlc1
@@ -275,7 +290,7 @@ subroutine rtmusk(i)
                rchstor(jrch) = rchstor(jrch) - rttlc2
                rttlc1 = rttlc - rttlc2
                if (rtwtr <= rttlc1) then
-                  rttlc1 = min(rttlc1, rtwtr)
+                  rttlc1 = Min(rttlc1, rtwtr)
                   rtwtr = rtwtr - rttlc1
                else
                   rtwtr = rtwtr - rttlc1
@@ -292,26 +307,26 @@ subroutine rtmusk(i)
             aaa = evrch * pet_day / 1000.
 
             if (rchdep <= ch_d(jrch)) then
-               rtevp = aaa * ch_l2(jrch) * 1000. * topw
+               rtevp = aaa * ch_l(2,jrch) * 1000. * topw
             else
                if (aaa <=  (rchdep - ch_d(jrch))) then
-                  rtevp = aaa * ch_l2(jrch) * 1000. * topw
+                  rtevp = aaa * ch_l(2,jrch) * 1000. * topw
                else
                   rtevp = (rchdep - ch_d(jrch))
                   rtevp = rtevp + (aaa - (rchdep - ch_d(jrch)))
                   topw = phi(6,jrch) + 2. * ch_d(jrch) * c
-                  rtevp = rtevp * ch_l2(jrch) * 1000. * topw
+                  rtevp = rtevp * ch_l(2,jrch) * 1000. * topw
                end if
             end if
 
             rtevp2 = rtevp * rchstor(jrch) / (rtwtr + rchstor(jrch))
 
             if (rchstor(jrch) <= rtevp2) then
-               rtevp2 = min(rtevp2, rchstor(jrch))
+               rtevp2 = Min(rtevp2, rchstor(jrch))
                rchstor(jrch) = rchstor(jrch) - rtevp2
                rtevp1 = rtevp - rtevp2
                if (rtwtr <= rtevp1) then
-                  rtevp1 = min(rtevp1, rtwtr)
+                  rtevp1 = Min(rtevp1, rtwtr)
                   rtwtr = rtwtr - rtevp1
                else
                   rtwtr = rtwtr - rtevp1
@@ -320,7 +335,7 @@ subroutine rtmusk(i)
                rchstor(jrch) = rchstor(jrch) - rtevp2
                rtevp1 = rtevp - rtevp2
                if (rtwtr <= rtevp1) then
-                  rtevp1 = min(rtevp1, rtwtr)
+                  rtevp1 = Min(rtevp1, rtwtr)
                   rtwtr = rtwtr - rtevp1
                else
                   rtwtr = rtwtr - rtevp1
@@ -334,7 +349,6 @@ subroutine rtmusk(i)
          flwout(jrch) = rtwtr
 
 !! define flow parameters for current day
-         qinday = qinday + wtrin
          qoutday = qoutday + rtwtr
 
 
@@ -355,9 +369,6 @@ subroutine rtmusk(i)
 !! precipitation on reach is not calculated because area of HRUs
 !! in subbasin sums up to entire subbasin area (including channel
 !! area) so precipitation is accounted for in subbasin loop
-
-!!      volinprev(jrch) = wtrin
-!! qoutprev(jrch) = rtwtr
 
    if (rtwtr < 0.) rtwtr = 0.
    if (rchstor(jrch) < 0.) rchstor(jrch) = 0.

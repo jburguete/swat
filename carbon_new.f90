@@ -45,6 +45,8 @@ subroutine carbon(i, j)
    use parm
    implicit none
 
+   real*8 Fcgd
+
    !! local functions
    real*8 :: fwf, fof, ftilf, fcx, fsol_cdec, fCNnew, fhc, fnetmin
 
@@ -185,7 +187,7 @@ subroutine carbon(i, j)
          sut = wf * of
 
          !! compute soil temperature factor - cdg
-         cdg = fcgd(sol_tmp(kk,j))
+         cdg = Fcgd(sol_tmp(kk,j))
 
          !! compute combined factor
 !!        xx = sqrt(cdg * sut)
@@ -507,16 +509,6 @@ real*8 Function fof(void, por)
    fof = 0.5 + 0.5 * xx3 / (xx3 + Exp(-20. * xx3))
 End function
 
-
-real*8 Function fcgd(xx)
-   implicit none
-   real*8, intent (in) :: xx
-   real*8, parameter :: tn = -5., top = 35., tx = 50.
-   real*8 :: qq
-   qq = (tn - top)/(top - tx)
-   fcgd = ((xx - tn)**qq) * (tx - xx) / (((top - tn)**qq) * (tx -top ))
-   if (fcgd < 0.) fcgd = 0.
-End function
 
 real*8 Function ftilf(tillage, wc, sat)
    implicit none

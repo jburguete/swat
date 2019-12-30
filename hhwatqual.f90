@@ -221,6 +221,7 @@ subroutine hhwatqual
    use parm
    implicit none
 
+   real*8 Theta
    integer :: jrch, ii
    real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
    real*8 :: orgpin, dispin, cbodin, disoxin, thour, wtmp, fll, gra

@@ -5,17 +5,18 @@
 
 !> this subroutine predicts daily soil loss caused by water erosion
 !> using the modified universal soil loss equation
-subroutine cfactor
+!> @param[in] j HRU number (none)
+subroutine cfactor(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    cvm(:)      |none          |natural log of USLE_C (the minimum value
 !!                               |of the USLE C factor for the land cover)
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
 !!    icr(:)      |none          |sequence number of crop grown within a year
 !!    idplt(:,:,:)|none          |land cover code from crop.dat
-!!    ihru        |none          |HRU number
 !!    nro(:)      |none          |sequence number of year in rotation
 !!    peakr       |m^3/s         |peak runoff rate
 !!    rsd_covco   |              |residue cover factor for computing fraction of
@@ -42,7 +43,6 @@ subroutine cfactor
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    c           |
-!!    j           |none          |HRU number
 !!    bio_frcov   |              |fraction of cover by biomass - adjusted for
 !!                                  canopy height
 !!    grcov_fr    |              |fraction of cover by biomass as function of lai
@@ -57,10 +57,8 @@ subroutine cfactor
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: bio_frcov, c, grcov_fr, rsd_frcov
-   integer :: j
-
-   j = ihru
 
    !! HRU sediment calculations
    if (icfac == 0) then
@@ -81,7 +79,7 @@ subroutine cfactor
       c = Dmax1(1.e-10, rsd_frcov * bio_frcov)
    end if
 
-   usle_cfac(ihru) = c
+   usle_cfac(j) = c
 
    return
 end

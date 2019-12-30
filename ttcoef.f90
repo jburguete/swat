@@ -12,10 +12,10 @@ subroutine ttcoef(k)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)    |m             |average depth of main channel
-!!    ch_l2(:)   |km            |length of main channel
-!!    ch_n2(:)   |none          |Manning's "n" value for the main channel
-!!    ch_s2(:)   |m/m           |average slope of main channel
-!!    ch_w2(:)   |m             |average width of main channel
+!!    ch_l(2,:)   |km            |length of main channel
+!!    ch_n(2,:)   |none          |Manning's "n" value for the main channel
+!!    ch_s(2,:)   |m/m           |average slope of main channel
+!!    ch_w(2,:)   |m             |average width of main channel
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -96,13 +96,13 @@ subroutine ttcoef(k)
    end if
 
    d = ch_d(k)
-   b = ch_w2(k) - 2. * d * chsslope
+   b = ch_w(2,k) - 2. * d * chsslope
 
 
 !!    check if bottom width (b) is < 0
    if (b <= 0.) then
-      b = .5 * ch_w2(k)
-      chsslope = (ch_w2(k) - b) / (2. * d)
+      b = .5 * ch_w(2,k)
+      chsslope = (ch_w(2,k) - b) / (2. * d)
    end if
    phi(6,k) = b
    phi(7,k) = d
@@ -112,30 +112,30 @@ subroutine ttcoef(k)
    a = b * d + chsslope * d * d
    rh = a / p
    phi(1,k) = a
-   phi(5,k) = Qman(a, rh, ch_n2(k), ch_s2(k))
-   phi(8,k) = Qman(aa, rh, ch_n2(k), ch_s2(k))
+   phi(5,k) = Qman(a, rh, ch_n(2,k), ch_s(2,k))
+   phi(8,k) = Qman(aa, rh, ch_n(2,k), ch_s(2,k))
    phi(9,k) = phi(8,k) * 5. / 3.
-   phi(10,k) = ch_l2(k) / phi(9,k) / 3.6
-   tt2 = ch_l2(k) * a / phi(5,k)
+   phi(10,k) = ch_l(2,k) / phi(9,k) / 3.6
+   tt2 = ch_l(2,k) * a / phi(5,k)
 
 !!    compute flow and travel time at 1.2 bankfull depth
    d = 1.2 * ch_d(k)
-   a = a + ch_w2(k) * ch_d(k) + fps * (d - ch_d(k)) ** 2
-   p = p + 4. * ch_w2(k) + 0.4 * ch_d(k) * Sqrt(fps * fps + 1.)
+   a = a + ch_w(2,k) * ch_d(k) + fps * (d - ch_d(k)) ** 2
+   p = p + 4. * ch_w(2,k) + 0.4 * ch_d(k) * Sqrt(fps * fps + 1.)
    rh = a / p
-   qq1 = Qman(a, rh, ch_n2(k), ch_s2(k))
-   tt1 = ch_l2(k) * a / qq1
+   qq1 = Qman(a, rh, ch_n(2,k), ch_s(2,k))
+   tt1 = ch_l(2,k) * a / qq1
 
 !!    compute flow and travel time at 0.1 bankfull depth
    d = 0.1 * ch_d(k)
    p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
    a = b * d + chsslope * d * d
    rh = a / p
-   qq1 = Qman(a, rh, ch_n2(k), ch_s2(k))
-   tt1 = ch_l2(k) * a / qq1
-   phi(11,k) = Qman(aa, rh, ch_n2(k), ch_s2(k))
+   qq1 = Qman(a, rh, ch_n(2,k), ch_s(2,k))
+   tt1 = ch_l(2,k) * a / qq1
+   phi(11,k) = Qman(aa, rh, ch_n(2,k), ch_s(2,k))
    phi(12,k) = phi(11,k) * 5. / 3.
-   phi(13,k) = ch_l2(k) / phi(12,k) / 3.6
+   phi(13,k) = ch_l(2,k) / phi(12,k) / 3.6
 
    return
 end

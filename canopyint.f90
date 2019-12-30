@@ -5,11 +5,13 @@
 
 !> this subroutine computes canopy interception of rainfall
 !> used for methods other than curve number
-subroutine canopyint
+!> @param[in] j HRU number (none)
+subroutine canopyint(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    blai(:)     |none          |maximum (potential) leaf area index
 !!    canmx(:)    |mm H2O        |maximum canopy storage
 !!    canstor(:)  |mm H2O        |amount of water held in canopy storage
@@ -20,7 +22,6 @@ subroutine canopyint
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    ihru        |none          |HRU number
 !!    laiday(:)   |m**2/m**2     |leaf area index
 !!    nro(:)      |none          |sequence number of year in rotation
 !!    precipday   |mm H2O        |precipitation for the day in HRU
@@ -43,7 +44,6 @@ subroutine canopyint
 !!                               |area
 !!    canstori    |mm H2O        |initial canopy storage water content
 !!    ii          |none          |counter
-!!    j           |none          |HRU number
 !!    xx          |mm H2O        |precipitation prior to canopy interception
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -53,10 +53,9 @@ subroutine canopyint
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: canmxl, canstori, xx
-   integer :: ii, j
-
-   j = ihru
+   integer :: ii
 
    if (blai(idplt(j)) < 0.001) return
 

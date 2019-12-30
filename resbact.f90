@@ -53,6 +53,7 @@ subroutine resbact
    use parm
    implicit none
 
+   real*8 Theta
    integer :: jres
    real*8 :: totbactp, totbactlp, netwtr
    real*8 :: wtmp

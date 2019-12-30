@@ -13,7 +13,6 @@ subroutine readpnd(i)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    hrutot(:)   |none          |number of HRUs in subbasin
-!!    ihru        |none          |HRU number
 !!    i           |none          |subbasin number
 !!    nhru        |none          |number of last HRU in previous subbasin
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -118,6 +117,7 @@ subroutine readpnd(i)
 !!    ii
 !!    j           |none          |counter
 !!    k
+!!    l           |none          |HRU number
 !!    lus
 !!    pnd_d50
 !!    pnd_d50mm
@@ -190,7 +190,7 @@ subroutine readpnd(i)
       &sub_ha, sw1, sw2, swetfr, swetk, swetmsa, swetmv, swetns, swetnsa,&
       &swetnv, swets, swetv, swno3, sworgn, sworgp, swsolp, velsetlpnd,&
       &wetevcoeff
-   integer :: eof, ii, j, k, sifld1, sifld2, sndt, spnd1, spnd2
+   integer :: eof, ii, j, k, l, sifld1, sifld2, sndt, spnd1, spnd2
 
    eof = 0
    spndfr = 0.
@@ -733,53 +733,53 @@ subroutine readpnd(i)
 
 !! assign values to HRUs
    do j = 1, hrutot(i)
-      ihru = nhru + j
-      pnd_fr(ihru) = spndfr
-      pnd_psa(ihru) = spndpsa
-      pnd_pvol(ihru) = spndpv
-      pnd_esa(ihru) = spndesa
-      pnd_evol(ihru) = spndev
-      pnd_vol(ihru) = spndv
-      pnd_sed(ihru) = spnds
-      pnd_nsed(ihru) = spndns
-      pnd_k(ihru) = spndk
-      iflod(1,ihru) = sifld1
-      iflod(2,ihru) = sifld2
-      ndtarg(ihru) = sndt
-      psetlp(1,ihru) = sp1
-      psetlp(2,ihru) = sp2
-      nsetlp(1,ihru) = sn1
-      nsetlp(2,ihru) = sn2
-      chlap(ihru) = schla
-      seccip(ihru) = sseci
-      pnd_no3(ihru) = spno3
-      pnd_solp(ihru) = spsolp
-      pnd_orgn(ihru) = sporgn
-      pnd_orgp(ihru) = sporgp
-      ipnd(1,ihru) = spnd1
-      ipnd(2,ihru) = spnd2
-      velsetlp(ihru) = velsetlpnd
-      wet_fr(ihru) = swetfr
-      wet_nsa(ihru) = swetnsa
-      wet_nvol(ihru) = swetnv
-      wet_mxsa(ihru) = swetmsa
-      wet_mxvol(ihru) = swetmv
-      wet_vol(ihru) = swetv
-      wet_sed(ihru) = swets
-      wet_nsed(ihru) = swetns
-      wet_k(ihru) = swetk
-      psetlw(1,ihru) = sw1
-      psetlw(2,ihru) = sw2
-      nsetlw(1,ihru) = snw1
-      nsetlw(2,ihru) = snw2
-      chlaw(ihru) = schlaw
-      secciw(ihru) = sseciw
-      wet_no3(ihru) = swno3
-      wet_solp(ihru) = swsolp
-      wet_orgn(ihru) = sworgn
-      wet_orgp(ihru) = sworgp
-      evpnd(ihru) = pndevcoeff
-      evwet(ihru) = wetevcoeff
+      l = nhru + j
+      pnd_fr(l) = spndfr
+      pnd_psa(l) = spndpsa
+      pnd_pvol(l) = spndpv
+      pnd_esa(l) = spndesa
+      pnd_evol(l) = spndev
+      pnd_vol(l) = spndv
+      pnd_sed(l) = spnds
+      pnd_nsed(l) = spndns
+      pnd_k(l) = spndk
+      iflod(1,l) = sifld1
+      iflod(2,l) = sifld2
+      ndtarg(l) = sndt
+      psetlp(1,l) = sp1
+      psetlp(2,l) = sp2
+      nsetlp(1,l) = sn1
+      nsetlp(2,l) = sn2
+      chlap(l) = schla
+      seccip(l) = sseci
+      pnd_no3(l) = spno3
+      pnd_solp(l) = spsolp
+      pnd_orgn(l) = sporgn
+      pnd_orgp(l) = sporgp
+      ipnd(1,l) = spnd1
+      ipnd(2,l) = spnd2
+      velsetlp(l) = velsetlpnd
+      wet_fr(l) = swetfr
+      wet_nsa(l) = swetnsa
+      wet_nvol(l) = swetnv
+      wet_mxsa(l) = swetmsa
+      wet_mxvol(l) = swetmv
+      wet_vol(l) = swetv
+      wet_sed(l) = swets
+      wet_nsed(l) = swetns
+      wet_k(l) = swetk
+      psetlw(1,l) = sw1
+      psetlw(2,l) = sw2
+      nsetlw(1,l) = snw1
+      nsetlw(2,l) = snw2
+      chlaw(l) = schlaw
+      secciw(l) = sseciw
+      wet_no3(l) = swno3
+      wet_solp(l) = swsolp
+      wet_orgn(l) = sworgn
+      wet_orgp(l) = sworgp
+      evpnd(l) = pndevcoeff
+      evwet(l) = wetevcoeff
    end do
 
 !!    close (104)

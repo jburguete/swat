@@ -79,10 +79,8 @@ subroutine allocate_parms
    allocate (ru_a(msub,mru))
    allocate (ru_ktc(msub,mru))
    allocate (gwq_ru(mhru))
-   allocate (mhyd1(msub))
    allocate (ils2(mhru))
    allocate (ils2flag(msub))
-   allocate (irtun(msub))
    allocate (ifirsthr(mrech))
 
 !!    arrays which contain data related to the number of recday commands
@@ -432,15 +430,11 @@ subroutine allocate_parms
    allocate (sub_hhwtmp(msub,nstep))   ! 24 changed to nstep 4 urban modeling  Oct. 19,2007
    allocate (uh(msub,nstep*3+1))      !! was 49 changed to nstep  OCt22, 2007
 
-   allocate (ch_k1(mxsubch))
-   allocate (ch_k2(mxsubch))
-   allocate (ch_n1(mxsubch))
-   allocate (ch_n2(mxsubch))
-   allocate (ch_s1(mxsubch))
-   allocate (ch_s2(mxsubch))
-   allocate (ch_w1(mxsubch))
-   allocate (ch_w2(mxsubch))
-   allocate (ch_l2(mxsubch))
+   allocate (ch_k(2,mxsubch))
+   allocate (ch_n(2,mxsubch))
+   allocate (ch_s(2,mxsubch))
+   allocate (ch_w(2,mxsubch))
+   allocate (ch_l(2,mxsubch))
    allocate (ch_d(mxsubch))
    allocate (chside(mxsubch))
    allocate (ch_di(mxsubch))
@@ -873,7 +867,6 @@ subroutine allocate_parms
    allocate (canmx(mhru))
    allocate (canstor(mhru))
    allocate (cbodu(mhru))
-   allocate (ch_l1(mhru))
    allocate (chl_a(mhru))
    allocate (chlap(mhru))
    allocate (chlaw(mhru))

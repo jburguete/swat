@@ -13,8 +13,8 @@ subroutine writea(i)
 !!    i           |julian date   |current day of simulation
 !!    bio_yrms(:) |metric tons/ha|annual biomass (dry weight) in the HRU
 !!    ch_d(:)     |m             |average depth of main channel
-!!    ch_s2(:)    |m/m           |average slope of main channel
-!!    ch_w2(:)    |m             |average width of main channel
+!!    ch_s(2,:)    |m/m           |average slope of main channel
+!!    ch_w(2,:)    |m             |average width of main channel
 !!    curyr       |none          |current year of simulation (consecutive)
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
@@ -220,7 +220,7 @@ subroutine writea(i)
       if (ideg == 1) then
          write (16,780) iyr
          do j = 1, nrch
-            write (16,779) j, ch_d(j), ch_w2(j), ch_s2(j)
+            write (16,779) j, ch_d(j), ch_w(2,j), ch_s(2,j)
          end do
       end if
 

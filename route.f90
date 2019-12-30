@@ -14,11 +14,11 @@ subroutine route(i)
 !!                               | 2 = Kodatie
 !!                               | 3 = Molinas Wu
 !!                               | 4 = Yang
-!!    ch_l2(:)    |km            |length of main channel
+!!    ch_l(2,:)    |km            |length of main channel
 !!    ch_revap(:) |none          |revap coeff: this variable controls the amount
 !!                               |of water moving from bank storage to the root
 !!                               |zone as a result of soil moisture depletion
-!!    ch_w2(:)   |m             |average width of main channel
+!!    ch_w(2,:)   |m             |average width of main channel
 !!    da_ha       |ha            |area of watershed in hectares
 !!    hru_sub(:)  |none          |subbasin number for HRU
 !!    ievent      |none          |rainfall/runoff code
@@ -121,7 +121,7 @@ subroutine route(i)
    end if
 
 !! compute revap from bank storage
-   revapday = ch_revap(jrch) * pet_day * ch_l2(jrch) * ch_w2(jrch)
+   revapday = ch_revap(jrch) * pet_day * ch_l(2,jrch) * ch_w(2,jrch)
    revapday = Min(revapday,bankst(jrch))
    bankst(jrch) = bankst(jrch) - revapday
 
@@ -186,18 +186,11 @@ subroutine route(i)
       end if
    else
       if (ievent == 0) then
-         select case (ch_eqn(jrch))
-          case (0)
-            call rtsed
-          case (1)
-            call rtsed_bagnold
-          case (2)
-            call rtsed_kodatie
-          case (3)
-            call rtsed_Molinas_Wu
-          case (4)
-            call rtsed_yangsand
-         end select
+         if (ch_eqn(jrch) == 0) then
+            call rtsed(jrch)
+         else
+            call rtsed2(jrch)
+         end if
       else
          call rthsed
          do ii = 1, nstep
@@ -212,8 +205,8 @@ subroutine route(i)
 
 !! perform in-stream nutrient calculations
    if (ievent == 0) then
-      if (iwq == 2) call watqual2
-      if (iwq == 1) call watqual(i)
+      if (iwq == 2) call watqual2(jrch)
+      if (iwq == 1) call watqual(i, jrch)
       if (iwq == 0) call noqual
    else
       if (iwq == 1) call hhwatqual

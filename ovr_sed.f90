@@ -5,11 +5,13 @@
 
 !> this subroutine computes splash erosion by raindrop impact and flow erosion
 !> by overland flow
-subroutine ovr_sed()
+!> @param[in] j HRU number (none)
+subroutine ovr_sed(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    cht(:)      |m             |canopy height
 !!    fimp(:)     |fraction      |fraction of HRU area that is
 !!                               |impervious (both directly and
@@ -44,7 +46,6 @@ subroutine ovr_sed()
 !!   c
 !!   canopy_cover
 !!   erod_k       |g/J           |soil detachability value
-!!   j            |none          |HRU number
 !!   k            |none          |time step of the day
 !!   ke_direct    |J/m2/mm       |rainfall kinetic energy of direct throughfall
 !!   ke_leaf      |J/m2/mm       |rainfall kinetic energy of leaf drainage
@@ -74,12 +75,11 @@ subroutine ovr_sed()
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8 :: bed_shear, c, canopy_cover, erod_k, ke_direct, ke_leaf, ke_total,&
       &percent_clay, percent_sand, percent_silt, pheff, rain_d50,&
       &rdepth_direct, rdepth_leaf, rdepth_tot, rintnsty, sedov, sedspl
-   integer :: j, k
-
-   j = ihru
+   integer :: k
 
 !! Fraction of sand
    percent_clay = sol_clay(1,j)

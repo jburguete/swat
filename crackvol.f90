@@ -5,12 +5,13 @@
 
 !> this surboutine computes total crack volume for the soil profile and
 !> modifies surface runoff to account for crack flow
-subroutine crackvol
+!> @param[in] j HRU number (none)
+subroutine crackvol(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ihru        |none          |HRU number
+!!    j           |none          |HRU number
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc - wp)
 !!    sol_nly(:)  |none          |number of soil layers in HRU
@@ -39,7 +40,6 @@ subroutine crackvol
 !!    crlag       |none          |lag factor for day
 !!    crlagdry    |none          |lag in crack development when soil is dry
 !!    crlagwet    |none          |lag in crack development when soil is wet
-!!    j           |none          |HRU number
 !!    l           |none          |counter
 !!    volcrnew    |mm            |crack volume for soil layer based on new
 !!                               |moisture conditions
@@ -50,11 +50,11 @@ subroutine crackvol
    use parm
    implicit none
 
+   integer, intent(in) :: j
    real*8, parameter :: crlagdry = .99, crlagwet = 0.
    real*8 :: crlag, volcrnew
-   integer :: j, l
+   integer :: l
 
-   j = ihru
    voltot = 0.
 
    !! calculate volume of cracks in soil

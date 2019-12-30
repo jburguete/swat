@@ -41,8 +41,7 @@ subroutine zero2
    br1 = 0.
    br2 = 0.
    bw = 0.
-   ch_l1 = 0.
-   ch_l2 = 0.
+   ch_l = 0.
    ch_revap = 0.
    chlap = 0.
    chlar = 0.

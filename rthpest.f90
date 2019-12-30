@@ -7,8 +7,8 @@ subroutine rthpest
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_l2(:)      |km            |length of main channel
-!!    ch_w2(:)     |m             |average width of main channel
+!!    ch_l(2,:)      |km            |length of main channel
+!!    ch_w(2,:)     |m             |average width of main channel
 !!    chpst_conc(:) |mg/(m**3)     |initial pesticide concentration in reach
 !!    chpst_koc(:)  |m**3/g        |pesticide partition coefficient between
 !!                                 |water and sediment in reach
@@ -103,7 +103,7 @@ subroutine rthpest
    jrch = inum1
 
 !! calculate volume of active river bed sediment layer
-   bedvol = ch_w2(jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
+   bedvol = ch_w(2,jrch) * ch_l(2,jrch) * 1000. * sedpst_act(jrch)
 
    do ii = 1, nstep
       frsrb = 0.

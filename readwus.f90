@@ -34,6 +34,7 @@ subroutine readwus(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof         |none          |end of file flag
 !!    j           |none          |counter
+!!    l           |none          |HRU number
 !!    mon         |none          |counter
 !!    swudp
 !!    swupnd
@@ -48,7 +49,7 @@ subroutine readwus(i)
 
    integer, intent(in) :: i
    character (len=80) :: titldum
-   integer :: eof, j, mon
+   integer :: eof, j, l, mon
    real*8 :: swudp(12), swupnd(12), swush(12)
 
    eof = 0
@@ -82,11 +83,11 @@ subroutine readwus(i)
    end do
 
    do j = 1, hrutot(i)
-      ihru = nhru + j
+      l = nhru + j
       do mon = 1, 12
-         wupnd(mon,ihru) = swupnd(mon)
-         wushal(mon,ihru) = swush(mon)
-         wudeep(mon,ihru) = swudp(mon)
+         wupnd(mon,l) = swupnd(mon)
+         wushal(mon,l) = swush(mon)
+         wudeep(mon,l) = swudp(mon)
       end do
    end do
 

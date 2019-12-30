@@ -75,6 +75,7 @@ subroutine resnut
    use parm
    implicit none
 
+   real*8 Theta
    integer :: jres
    real*8 :: nitrok, phosk, tpco, chlaco, conc_p, conc_n, xx
 

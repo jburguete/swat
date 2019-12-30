@@ -19,12 +19,12 @@ subroutine readsub(i)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_k1(:)    |mm/hr         |effective hydraulic conductivity of tributary
+!!    ch_k(1,:)    |mm/hr         |effective hydraulic conductivity of tributary
 !!                               |channel alluvium
-!!    ch_l1(:)    |km            |longest tributary channel length in subbasin
-!!    ch_n1(:)    |none          |Manning's "n" value for the tributary channels
-!!    ch_s1(:)    |m/m           |average slope of tributary channels
-!!    ch_w1(:)    |m             |average width of tributary channels
+!!    ch_l(1,:)    |km            |longest tributary channel length in subbasin
+!!    ch_n(1,:)    |none          |Manning's "n" value for the tributary channels
+!!    ch_s(1,:)    |m/m           |average slope of tributary channels
+!!    ch_w(1,:)    |m             |average width of tributary channels
 !!    cncoef_sub  |              |soil water depletion coefficient used
 !!                               | in the new (modified curve number method)
 !!                               | same as soil index coeff used in APEX
@@ -117,6 +117,7 @@ subroutine readsub(i)
 !!    jj          |none          |variable to take special HRUs into account
 !!    k
 !!    kk
+!!    l           |none          |HRU number
 !!    mgtfile     |NA            |HRU management data
 !!    mon         |none          |monthly counter
 !!    opsfile     |NA            |name of operation schedule file for Phil G.
@@ -148,7 +149,7 @@ subroutine readsub(i)
    character (len=13) :: chmfile, gwfile, hrufile, mgtfile, opsfile, pndfile,&
       &sdrfile, septfile, solfile, wgnfile, wusfile
    real*8 :: ch_ls, sdrift, sno_sub, sumebfr
-   integer :: eof, ils, j, jj, k, kk, mon
+   integer :: eof, ils, j, jj, k, kk, l, mon
 
    wgnfile = ""
    pndfile = ""
@@ -201,10 +202,10 @@ subroutine readsub(i)
    read (101,*) sno_sub
    read (101,5100) titldum
    read (101,*) ch_ls
-   read (101,*) ch_s1(i)
-   read (101,*) ch_w1(i)
-   read (101,*) ch_k1(i)
-   read (101,*) ch_n1(i)
+   read (101,*) ch_s(1,i)
+   read (101,*) ch_w(1,i)
+   read (101,*) ch_k(1,i)
+   read (101,*) ch_n(1,i)
    read (101,5100) titldum
    read (101,5300) pndfile
    call caps(pndfile)
@@ -253,11 +254,11 @@ subroutine readsub(i)
    !!General HRUs
    read (101,5100) titldum
    do j = jj, hrutot(i)
-      ihru = nhru + j
-      if (j == 1) hru1(i) = ihru
-!         ipot(ihru) = ip
-!         ifld(ihru) = if
-!         irip(ihru) = ir
+      l = nhru + j
+      if (j == 1) hru1(i) = l
+!         ipot(l) = ip
+!         ifld(l) = if
+!         irip(l) = ir
       chmfile = ""
       hrufile = ""
       mgtfile = ""
@@ -267,7 +268,7 @@ subroutine readsub(i)
       septfile = ""
       sdrfile = ""
       read (101,5300) hrufile, mgtfile, solfile, chmfile, gwfile,&
-         &opsfile, septfile, sdrfile, ils2(ihru)
+         &opsfile, septfile, sdrfile, ils2(l)
       call caps(hrufile)
       call caps(mgtfile)
       call caps(solfile)
@@ -276,22 +277,22 @@ subroutine readsub(i)
       if (septfile /='             ') then
          call caps (septfile)
          open (172,file=septfile, status='old')
-         isep_hru(ihru) = 1
-         call readsepticbz(ihru)
+         isep_hru(l) = 1
+         call readsepticbz(l)
       end if
       if (sdrfile /= '             ') then
          call caps(sdrfile)
          open (112,file=sdrfile)
-         call readsdr(ihru)
-         if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn   !! todd campbell 06/07/18
+         call readsdr(l)
+         if (sdrain(l) <= 0.) sdrain(l) = sdrain_bsn   !! todd campbell 06/07/18
       else
-         if (re(ihru) <= 0.) re(ihru) = re_bsn
-         if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
-         if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
-         if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
-         if (latksatf(ihru) <= 0.) latksatf(ihru) = latksatf_bsn
-         if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
-         !           sdrain(ihru) = 0.      !!!! nbs 11/25/15
+         if (re(l) <= 0.) re(l) = re_bsn
+         if (sdrain(l) <= 0.) sdrain(l) = sdrain_bsn
+         if (drain_co(l) <= 0.) drain_co(l) = drain_co_bsn
+         if (pc(l) <= 0.) pc(l) = pc_bsn
+         if (latksatf(l) <= 0.) latksatf(l) = latksatf_bsn
+         if (sstmaxd(l) <= 0.) sstmaxd(l) = sstmaxd_bsn
+         !           sdrain(l) = 0.      !!!! nbs 11/25/15
       end if
 
       open (106,file=chmfile)
@@ -299,20 +300,20 @@ subroutine readsub(i)
       open (108,file=hrufile)
       open (109,file=mgtfile)
       open (110,file=gwfile)
-      call readhru(i, ihru)
-      call readchm(ihru)
-      call readmgt(ihru)
-      call readsol(ihru)
-      call readgw(i, ihru)
+      call readhru(i, l)
+      call readchm(l)
+      call readmgt(l)
+      call readsol(l)
+      call readgw(i, l)
       if (opsfile /= '             ') then
          call caps(opsfile)
          open (111,file=opsfile)
-         call readops(ihru)
+         call readops(l)
       end if
 
       ! set up variables for landscape routing
 !          if (ils_nofig == 1) then
-      if (ils2(ihru) == 0) then
+      if (ils2(l) == 0) then
          ils = 1
       else
          ils = 2
@@ -322,56 +323,56 @@ subroutine readsub(i)
 !         end if
 
       ! estimate drainage area for urban distributed bmps in hectares - jaehak
-      if (urblu(ihru)>0) then
+      if (urblu(l)>0) then
          kk=1
-         bmpdrain(ihru) = 1
+         bmpdrain(l) = 1
          do while(lu_nodrain(kk).ne."    ")
-            if (urbname(urblu(ihru)).eq.lu_nodrain(kk)) then
-               bmpdrain(ihru) = 0
+            if (urbname(urblu(l)).eq.lu_nodrain(kk)) then
+               bmpdrain(l) = 0
                exit
             end if
             kk = kk + 1
             if (kk>30) exit
          end do
-         if(bmpdrain(ihru)==1) then
-            sub_ha_imp(i) = sub_ha_imp(i) + hru_ha(ihru) * fimp(urblu(ihru))
-            sub_ha_urb(i) = sub_ha_urb(i) + hru_ha(ihru)
+         if(bmpdrain(l)==1) then
+            sub_ha_imp(i) = sub_ha_imp(i) + hru_ha(l) * fimp(urblu(l))
+            sub_ha_urb(i) = sub_ha_urb(i) + hru_ha(l)
          end if
       end if
 
       ! HRU selection criteria for Irrigation by retention-irrigation basins
       if (num_ri(i)>0) then
-         if(sol_z(sol_nly(ihru),ihru)>300& !!    - soil thickness > 12 inches
-            &.AND.sol_k(1,ihru)>0.76&       !    - permeability > 0.03 inches/hr (=0.76mm/hr)
-            &.AND.hru_slp(ihru)<0.1&        !!    - hru slope < 10%
-            &.AND.urblu(ihru)>0) then !urban LU
+         if(sol_z(sol_nly(l),l)>300& !!    - soil thickness > 12 inches
+            &.AND.sol_k(1,l)>0.76&       !    - permeability > 0.03 inches/hr (=0.76mm/hr)
+            &.AND.hru_slp(l)<0.1&        !!    - hru slope < 10%
+            &.AND.urblu(l)>0) then !urban LU
 
-            ri_luflg(ihru) = 1 !irrigate HRU
+            ri_luflg(l) = 1 !irrigate HRU
          end if
 
          do kk=1,num_noirr(i)
-            if (urbname(urblu(ihru)).eq.ri_nirr(i,kk)) then
-               ri_luflg(ihru) = 0 !exclude these land uses from irrigation
+            if (urbname(urblu(l)).eq.ri_nirr(i,kk)) then
+               ri_luflg(l) = 0 !exclude these land uses from irrigation
             end if
          end do
 
-         if (ri_luflg(ihru) == 1) then
-            ri_subkm(i) = ri_subkm(i) + hru_km(ihru) * (1.-fimp(urblu(ihru))) !km2
+         if (ri_luflg(l) == 1) then
+            ri_subkm(i) = ri_subkm(i) + hru_km(l) * (1.-fimp(urblu(l))) !km2
          end if
       end if
 
       ! estimate impervious cover in the upstream drainage area for on-line bmps
-      if (iurban(ihru) > 0) then
-         subdr_ickm(i) = subdr_ickm(i) + hru_km(ihru) * fimp(urblu(ihru))
+      if (iurban(l) > 0) then
+         subdr_ickm(i) = subdr_ickm(i) + hru_km(l) * fimp(urblu(l))
       end if
       ! estimate average Curve Number for the subbasin
-      sub_cn2(i) = sub_cn2(i) + cn2(ihru) * hru_fr(ihru)
+      sub_cn2(i) = sub_cn2(i) + cn2(l) * hru_fr(l)
    end do      ! hru loop
 
    !! set up routing unit fractions for landscape routing
    do j = jj, hrutot(i)
-      ihru = nhru + j
-      if (ils2(ihru) == 0) then
+      l = nhru + j
+      if (ils2(l) == 0) then
          ils = 1
       else
          ils = 2
@@ -380,20 +381,20 @@ subroutine readsub(i)
    end do
    if (ils == 2) then
       do j = jj, hrutot(i)
-         hru_rufr(ils,ihru) = hru_fr(ihru) * sub_km(i) / daru_km(i,ils)
+         hru_rufr(ils,l) = hru_fr(l) * sub_km(i) / daru_km(i,ils)
       end do
    end if
 
 !! commented the following statements and moved above in the 'else'
 !! where it reads the sdrfile.  Jeff should check.
 !!    set default values
-!      do ihru = jj, hrutot(i)
-!        if (re(ihru) <= 0.) re(ihru) = re_bsn
-!   if (sdrain(ihru) <= 0.) sdrain(ihru) = sdrain_bsn
-!   if (drain_co(ihru) <= 0.) drain_co(ihru) = drain_co_bsn
-!   if (pc(ihru) <= 0.) pc(ihru) = pc_bsn
-!        if (latksatf(ihru) <= 0.) latksatf(ihru) = latksatf_bsn
-!   if (sstmaxd(ihru) <= 0.) sstmaxd(ihru) = sstmaxd_bsn
+!      do l = jj, hrutot(i)
+!        if (re(l) <= 0.) re(l) = re_bsn
+!   if (sdrain(l) <= 0.) sdrain(l) = sdrain_bsn
+!   if (drain_co(l) <= 0.) drain_co(l) = drain_co_bsn
+!   if (pc(l) <= 0.) pc(l) = pc_bsn
+!        if (latksatf(l) <= 0.) latksatf(l) = latksatf_bsn
+!   if (sstmaxd(l) <= 0.) sstmaxd(l) = sstmaxd_bsn
 !     end do
 
    !     estimate drainage area for urban on-line bmps in square km
@@ -413,9 +414,9 @@ subroutine readsub(i)
 
    if (fcst_reg(i) <= 0.) fcst_reg(i) = 1
    if (co2(i) <= 0.) co2(i) = 330.
-   if (ch_s1(i) <= 0.) ch_s1(i) = .0001
-   if (ch_n1(i) <= 0.005) ch_n1(i) = 0.005
-   if (ch_n1(i) >= 0.70) ch_n1(i) = 0.70
+   if (ch_s(1,i) <= 0.) ch_s(1,i) = .0001
+   if (ch_n(1,i) <= 0.005) ch_n(1,i) = 0.005
+   if (ch_n(1,i) >= 0.70) ch_n(1,i) = 0.70
    do j = 1, 10
       if (sub_smtmp(j,i) < 1.e-6) sub_smtmp(j,i) = smtmp
       if (sub_sftmp(j,i) < 1.e-6) sub_sftmp(j,i) = sftmp
@@ -434,21 +435,21 @@ subroutine readsub(i)
    end if
 
 !!    This equation given to us by EPA, in the process of getting reference
-   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w1(i)) - 2.5889) + .2267) / 2.
+   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) + .2267) / 2.
 
 !! assign subbasin values to HRUs where needed
    do j = 1, hrutot(i)
-      ihru = nhru + j
-      hru_sub(ihru) = i
+      l = nhru + j
+      hru_sub(l) = i
 !!   hru_seq = sequential hru number within the subbasin
-      hru_seq(ihru) = j
-      hrugis(ihru) = subgis(i)
+      hru_seq(l) = j
+      hrugis(l) = subgis(i)
       do k = 1, 10
-         snoeb(k,ihru) = ssnoeb(k)
+         snoeb(k,l) = ssnoeb(k)
       end do
-      sno_hru(ihru) = sno_sub
-      ch_l1(ihru) = ch_ls
-      driftco(ihru) = sdrift
+      sno_hru(l) = sno_sub
+      ch_l(1,l) = ch_ls
+      driftco(l) = sdrift
    end do
 
 !! calculate watershed land area

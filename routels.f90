@@ -168,7 +168,6 @@ subroutine routels(iru_sub)
                   inflpcp = sol_k(1,jj) * trt + dstor
                   inflpcp = Min (inflpcp, surfqrunon)
                   surfqout = surfqout + (surfqrunon - inflpcp) * 10. * xx
-                  ihru = jj
                   latq(jj) = 0.
                   sepbtm(jj) = 0.
                   qtile = 0.
