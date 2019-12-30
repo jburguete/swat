@@ -1,6 +1,9 @@
-subroutine routeunit
+!> @file routeunit.f90
+!> file containing the subroutine routeunit
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
+subroutine routeunit
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -28,11 +31,12 @@ subroutine routeunit
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!
 
+!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
    use parm
    implicit none
    integer :: jj, kk
    real*8 :: sumc, sumeiq, xx
-!        inum2 = 1
    varoute(:,ihout) = 0.
    sumc = 0.
    sumeiq = 0.
@@ -48,15 +52,11 @@ subroutine routeunit
          varoute(4,ihout) = varoute(4,ihout) + sedorgn(jj) * xx
          varoute(5,ihout) = varoute(5,ihout) + sedorgp(jj) * xx
          varoute(6,ihout) = varoute(6,ihout) + (latno3(jj) + no3gw(jj)&
-         &+ surqno3(jj)) * xx
+            &+ surqno3(jj)) * xx
          varoute(7,ihout) = varoute(7,ihout) + (surqsolp(jj) + minpgw(jj)) * xx
          varoute(8,ihout) = 0.
          varoute(9,ihout) = 0.
          varoute(10,ihout) = 0.
-!!          varoute(11,ihout) = varoute(11,ihout) + (hrupstd(irtpest,1,jj)
-!!     &         + hrupstd(irtpest,4,jj)) * xx
-!!          varoute(12,ihout) = varoute(12,ihout) + (hrupstd(irtpest,2,jj)
-!!     &            ) * xx
          varoute(11,ihout) = 0.
          varoute(12,ihout) = 0.
          varoute(13,ihout) = 0.

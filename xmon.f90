@@ -40,7 +40,6 @@ subroutine xmon
 
    integer :: m1, nda
 
-
    if (iida > ndays(2)) then
       do i_mo = 2, 12
          m1 = i_mo + 1

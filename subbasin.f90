@@ -120,6 +120,7 @@ subroutine subbasin(i)
 !!    iihru
 !!    iru_sub
 !!    j           |none          |HRU number
+!!    k
 !!    ovs
 !!    ovsl
 !!    sumdaru
@@ -158,7 +159,6 @@ subroutine subbasin(i)
       j = ihru
 
 
-      !!    deptil(:)   |mm  |depth of mixing caused by tillage operation
       !jj is hru number
       if (cswat == 2) then
          if (tillage_switch(j) .eq. 1) then
@@ -168,8 +168,6 @@ subroutine subbasin(i)
             else
                tillage_days(j) = tillage_days(j) + 1
             end if
-            !tillage_depth(j) = dtil
-            !tillage_switch(j) = .TRUE.
          end if
       end if
 
@@ -205,20 +203,12 @@ subroutine subbasin(i)
          !! calculate soil temperature for soil layers
          call solt(j)
 
-!       if (ipot(j) /= j .and. imp_trig(nro(j),nrelease(j),j)==1)       &  Srini pothole
-!
-!     &        then
          !! calculate surface runoff if HRU is not impounded or an
          !! undrained depression--
          call surface(i,j)
 
-         !! add surface flow that was routed across the landscape on the previous day
-         !!   qday = qday + surfq_ru(j)
-         !!   surfq_ru(j) = 0.
-
          !! compute effective rainfall (amount that percs into soil)
          inflpcp = Max(0.,precipday - surfq(j))
-!        end if
 
          !! perform management operations
          if (yr_skip(j) == 0) call operatn(j)
@@ -274,7 +264,7 @@ subroutine subbasin(i)
          !! write daily air and soil temperature file
          !! can be uncommmented if needed by user and also in readfile.f
 
-!      write (120,12112) i,j,tmx(j),tmn(j),(sol_tmp(k,j),k=1,sol_nly(j))
+!         write (120,12112) i,j,tmx(j),tmn(j),(sol_tmp(k,j),k=1,sol_nly(j))
 !12112  format (2i4,12f8.2)
 
          !! compute nitrogen and phosphorus mineralization
@@ -366,13 +356,12 @@ subroutine subbasin(i)
          call substor(j)
 
          !! compute reduction in pollutants due to edge-of-field filter strip
-         if (vfsi(j) >0.)then
-            call filter(i)
-            if (filterw(j) > 0.) call buffer
-         end if
-         if (vfsi(j) == 0. .and. filterw(j) > 0.) then
-            call filtw
-            call buffer
+         if (vfsi(j) > 0.) then
+            call filter(i, j)
+            if (filterw(j) > 0.) call buffer(j)
+         else if (vfsi(j) == 0. .and. filterw(j) > 0.) then
+            call filtw(j)
+            call buffer(j)
          end if
 
          !! compute reduction in pollutants due to in field grass waterway
@@ -394,15 +383,15 @@ subroutine subbasin(i)
 
          !! compute pond processes
          if (ievent == 0) then
-            call hrupond
+            call hrupond(j)
          else
-            call hrupondhr
+            call hrupondhr(j)
          endif
 
 !       Srini pothole
          if (pot_fr(j) > 0.) call pothole(i, j)
 
-         xx = sed_con(j)+soln_con(j)+solp_con(j)+orgn_con(j)+orgp_con(j)
+         xx = sed_con(j) + soln_con(j) + solp_con(j) + orgn_con(j) + orgp_con(j)
          if (xx > 1.e-6) then
             call urb_bmp(j)
          end if
@@ -426,7 +415,7 @@ subroutine subbasin(i)
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method
-      call virtual(i,j,k)
+      call virtual(i, j, k)
       aird(j) = 0.
 
       ihru = ihru + 1

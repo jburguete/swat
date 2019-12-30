@@ -1,12 +1,17 @@
-subroutine buffer
+!> @file buffer.f90
+!> file containing the subroutine buffer
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the reduction of nitrates through a riparian
-!!    buffer system - developed for Sushama at NC State
+!> this subroutine calculates the reduction of nitrates through a riparian
+!> buffer system - developed for Sushama at NC State
+!> @param[in] j HRU number (none)
+subroutine buffer(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
 !!                               |channel with surface runoff
 !!    bactrop     |# colonies/ha |persistent bacteria transported to main
@@ -22,7 +27,6 @@ subroutine buffer
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    ihru        |none          |HRU number
 !!    npmx        |none          |number of different pesticides used in
 !!                               |the simulation
 !!    nyskip      |none          |number of years to skip output summarization
@@ -103,8 +107,8 @@ subroutine buffer
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
+!!    reduc       |none          |reduction factor
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -112,16 +116,16 @@ subroutine buffer
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: reduc
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: reduc, xx
 
 !! compute nitrate reduction as a function of distance to stream
    reduc = 2.1661 * filterw(j) - 5.1302
-   if (reduc < 0.) reduc = 0.
-   latno3(j) = latno3(j) * (1. - reduc / 100.)
-   no3gw(j) = no3gw(j) * (1. - reduc / 100.)
+   if (reduc > 0.) then
+      xx =  1. - reduc / 100.
+      latno3(j) = latno3(j) * xx
+      no3gw(j) = no3gw(j) * xx
+   end if
 
    return
 end

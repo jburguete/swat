@@ -1,8 +1,12 @@
-subroutine watuse(j)
+!> @file watuse.f90
+!> file containing the subroutine watuse
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine removes water from appropriate source (pond,
-!!    shallow aquifer, and/or deep aquifer) for consumptive water use
+!> this subroutine removes water from appropriate source (pond,
+!> shallow aquifer, and/or deep aquifer) for consumptive water use
+!> @param[in] j HRU number (none)
+subroutine watuse(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -33,6 +37,8 @@ subroutine watuse(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
+!!    sub_ha
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -41,7 +47,7 @@ subroutine watuse(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: cnv, sub_ha
+   real*8 :: cnv, sub_ha, xx
 
    sub_ha = da_ha * sub_fr(hru_sub(j))
    cnv = sub_ha * 10.
@@ -49,15 +55,17 @@ subroutine watuse(j)
    pnd_vol(j) = pnd_vol(j) - wupnd(i_mo,j) * 10000.
    if (pnd_vol(j) < 0.) pnd_vol(j) = 0.
 
-   rchrg_src(j) = 0.
+   xx = 10000. / cnv
+
    if (wushal(i_mo,j) < 0.) then
-      rchrg_src(j) = -1. * wushal(i_mo,j) * 10000. / cnv
+      rchrg_src(j) = -1. * wushal(i_mo,j) * xx
    else
-      shallst(j) = shallst(j) - wushal(i_mo,j) * 10000. / cnv
+      rchrg_src(j) = 0.
+      shallst(j) = shallst(j) - wushal(i_mo,j) * xx
       if (shallst(j) < 0.) shallst(j) = 0.
    end if
 
-   deepst(j) = deepst(j) - wudeep(i_mo,j) * 10000. / cnv
+   deepst(j) = deepst(j) - wudeep(i_mo,j) * xx
    if (deepst(j) < 0.) deepst(j) = 0.
 
    return

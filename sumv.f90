@@ -1,11 +1,16 @@
-subroutine sumv(j)
+!> @file sumv.f90
+!> file containing the subroutine sumv
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs summary calculations for HRU
+!> this subroutine performs summary calculations for HRU
+!> @param[in] j HRU number (none)
+subroutine sumv(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    auton       |kg N/ha       |amount of nitrogen applied in auto-fert
 !!                               |application
 !!    autop       |kg P/ha       |amount of phosphorus applied in auto-fert
@@ -146,7 +151,7 @@ subroutine sumv(j)
 !!    snomlt      |mm H2O        |amount of water in snow melt for the day in
 !!                               |HRU
 !!    sol_cnsw(:) |mm H2O        |soil water content used to calculate daily
-!!                               |CN value (initial soil wter content for day)
+!!                               |CN value (initial soil water content for day)
 !!    sol_sw(:)   |mm H2O        |amount of water stored in the soil profile
 !!                               |on any given day
 !!    sol_tmp(2,:)|deg C         |daily average temperature of second soil layer
@@ -189,15 +194,15 @@ subroutine sumv(j)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hrupstd(:,1,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstd(1,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU on day
 !!                               |(in solution)
-!!    hrupstd(:,2,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstd(2,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU on day
 !!                               |(sorbed to sediment)
-!!    hrupstd(:,3,:)|mg pst/ha   |total pesticide loading to stream in surface
+!!    hrupstd(3,:,:)|mg pst/ha   |total pesticide loading to stream in surface
 !!                               |runoff from HRU
-!!    hrupstd(:,4,:)|mg pst      |amount of pesticide type in lateral flow
+!!    hrupstd(4,:,:)|mg pst      |amount of pesticide type in lateral flow
 !!                               |contribution to stream from HRU on day
 !!                               |(in solution)
 !!    hrumono(1,:)|mm H2O        |precipitation in HRU during month
@@ -217,110 +222,110 @@ subroutine sumv(j)
 !!                               |HRU during month
 !!    hrumono(9,:)|mm H2O        |total amount of water entering both aquifers
 !!                               |from HRU during month
-!!    hrumono(10,:)|mm H2O        |water yield (total amount of water entering
+!!    hrumono(10,:)|mm H2O       |water yield (total amount of water entering
 !!                               |main channel) from HRU during month
-!!    hrumono(11,:)|mm H2O        |amount of water percolating out of the soil
+!!    hrumono(11,:)|mm H2O       |amount of water percolating out of the soil
 !!                               |profile and into the vadose zone in HRU
 !!                               |during month
-!!    hrumono(12,:)|mm H2O        |actual evapotranspiration in HRU during month
-!!    hrumono(13,:)|mm H2O        |amount of transmission losses from tributary
+!!    hrumono(12,:)|mm H2O       |actual evapotranspiration in HRU during month
+!!    hrumono(13,:)|mm H2O       |amount of transmission losses from tributary
 !!                               |channels in HRU for month
 !!    hrumono(14,:)|metric tons/ha|sediment yield from HRU for month
-!!    hrumono(15,:)|mm H2O        |actual amount of transpiration that occurs
+!!    hrumono(15,:)|mm H2O       |actual amount of transpiration that occurs
 !!                               |during month in HRU
-!!    hrumono(16,:)|mm H2O        |actual amount of evaporation (from soil) that
+!!    hrumono(16,:)|mm H2O       |actual amount of evaporation (from soil) that
 !!                               |occurs during month in HRU
-!!    hrumono(17,:)|kg N/ha       |amount of nitrogen applied in continuous
+!!    hrumono(17,:)|kg N/ha      |amount of nitrogen applied in continuous
 !!                               |fertilizer operation during month in HRU
-!!    hrumono(18,:)|kg P/ha       |amount of phosphorus applied in continuous
+!!    hrumono(18,:)|kg P/ha      |amount of phosphorus applied in continuous
 !!                               |fertilizer operation during month in HRU
-!!    hrumono(19,:)|mm H2O        |amount of surface runoff generated during month
+!!    hrumono(19,:)|mm H2O       |amount of surface runoff generated during month
 !!                               |in HRU
-!!    hrumono(20,:)|none          |CN values during month in HRU
-!!    hrumono(21,:)|mm H2O        |sum of daily soil water values used to calculate
+!!    hrumono(20,:)|none         |CN values during month in HRU
+!!    hrumono(21,:)|mm H2O       |sum of daily soil water values used to calculate
 !!                               |the curve number
-!!    hrumono(23,:)|mm H2O        |amount of water removed from shallow aquifer
+!!    hrumono(23,:)|mm H2O       |amount of water removed from shallow aquifer
 !!                               |in HRU for irrigation during month
-!!    hrumono(24,:)|mm H2O        |amount of water removed from deep aquifer
+!!    hrumono(24,:)|mm H2O       |amount of water removed from deep aquifer
 !!                               |in HRU for irrigation during month
-!!    hrumono(25,:)|mm H2O        |potential evapotranspiration in HRU during
+!!    hrumono(25,:)|mm H2O       |potential evapotranspiration in HRU during
 !!                               |month
-!!    hrumono(26,:)|kg N/ha       |monthly amount of N (organic & mineral)
+!!    hrumono(26,:)|kg N/ha      |monthly amount of N (organic & mineral)
 !!                               |applied in HRU during grazing
-!!    hrumono(27,:)|kg P/ha       |monthly amount of P (organic & mineral)
+!!    hrumono(27,:)|kg P/ha      |monthly amount of P (organic & mineral)
 !!                               |applied in HRU during grazing
-!!    hrumono(28,:)|kg N/ha       |monthly amount of N (organic & mineral)
+!!    hrumono(28,:)|kg N/ha      |monthly amount of N (organic & mineral)
 !!                               |auto-applied in HRU
-!!    hrumono(29,:)|kg P/ha       |monthly amount of P (organic & mineral)
+!!    hrumono(29,:)|kg P/ha      |monthly amount of P (organic & mineral)
 !!                               |auto-applied in HRU
-!!    hrumono(30,:)|deg C         |sum of daily soil temperature values
-!!    hrumono(31,:)|stress days   |water stress days in HRU during month
-!!    hrumono(32,:)|stress days   |temperature stress days in HRU during month
-!!    hrumono(33,:)|stress days   |nitrogen stress days in HRU during month
-!!    hrumono(34,:)|stress days   |phosphorus stress days in HRU during month
-!!    hrumono(35,:)|kg N/ha       |organic nitrogen in surface runoff in HRU
+!!    hrumono(30,:)|deg C        |sum of daily soil temperature values
+!!    hrumono(31,:)|stress days  |water stress days in HRU during month
+!!    hrumono(32,:)|stress days  |temperature stress days in HRU during month
+!!    hrumono(33,:)|stress days  |nitrogen stress days in HRU during month
+!!    hrumono(34,:)|stress days  |phosphorus stress days in HRU during month
+!!    hrumono(35,:)|kg N/ha      |organic nitrogen in surface runoff in HRU
 !!                               |during month
-!!    hrumono(36,:)|kg P/ha       |organic phosphorus in surface runoff in HRU
+!!    hrumono(36,:)|kg P/ha      |organic phosphorus in surface runoff in HRU
 !!                               |during month
-!!    hrumono(37,:)|kg N/ha       |nitrate in surface runoff in HRU during month
-!!    hrumono(38,:)|kg N/ha       |nitrate in lateral flow in HRU during month
-!!    hrumono(39,:)|kg P/ha       |soluble phosphorus in surface runoff in HRU
+!!    hrumono(37,:)|kg N/ha      |nitrate in surface runoff in HRU during month
+!!    hrumono(38,:)|kg N/ha      |nitrate in lateral flow in HRU during month
+!!    hrumono(39,:)|kg P/ha      |soluble phosphorus in surface runoff in HRU
 !!                               |during month
-!!    hrumono(40,:)|kg N/ha       |amount of nitrogen removed from soil by plant
+!!    hrumono(40,:)|kg N/ha      |amount of nitrogen removed from soil by plant
 !!                               |uptake in HRU during month
-!!    hrumono(41,:)|kg N/ha       |nitrate percolating past bottom of soil
+!!    hrumono(41,:)|kg N/ha      |nitrate percolating past bottom of soil
 !!                               |profile in HRU during month
-!!    hrumono(42,:)|kg P/ha       |amount of phosphorus removed from soil by
+!!    hrumono(42,:)|kg P/ha      |amount of phosphorus removed from soil by
 !!                               |plant uptake in HRU during month
-!!    hrumono(43,:)|kg P/ha       |amount of phosphorus moving from labile
+!!    hrumono(43,:)|kg P/ha      |amount of phosphorus moving from labile
 !!                               |mineral to active mineral pool in HRU during
 !!                               |month
-!!    hrumono(44,:)|kg P/ha       |amount of phosphorus moving from active
+!!    hrumono(44,:)|kg P/ha      |amount of phosphorus moving from active
 !!                               |mineral to stable mineral pool in HRU during
 !!                               |month
-!!    hrumono(45,:)|kg N/ha       |amount of nitrogen applied to HRU in
+!!    hrumono(45,:)|kg N/ha      |amount of nitrogen applied to HRU in
 !!                               |fertilizer and grazing operations during month
-!!    hrumono(46,:)|kg P/ha       |amount of phosphorus applied to HRU in
+!!    hrumono(46,:)|kg P/ha      |amount of phosphorus applied to HRU in
 !!                               |fertilizer and grazing operations during month
-!!    hrumono(47,:)|kg N/ha       |amount of nitrogen added to soil by fixation
+!!    hrumono(47,:)|kg N/ha      |amount of nitrogen added to soil by fixation
 !!                               |in HRU during month
-!!    hrumono(48,:)|kg N/ha       |amount of nitrogen lost by denitrification
+!!    hrumono(48,:)|kg N/ha      |amount of nitrogen lost by denitrification
 !!                               |in HRU during month
-!!    hrumono(49,:)|kg N/ha       |amount of nitrogen moving from active organic
+!!    hrumono(49,:)|kg N/ha      |amount of nitrogen moving from active organic
 !!                               |to nitrate pool in HRU during month
-!!    hrumono(50,:)|kg N/ha       |amount of nitrogen moving from active organic
+!!    hrumono(50,:)|kg N/ha      |amount of nitrogen moving from active organic
 !!                               |to stable organic pool in HRU during month
-!!    hrumono(51,:)|kg P/ha       |amount of phosphorus moving from organic to
+!!    hrumono(51,:)|kg P/ha      |amount of phosphorus moving from organic to
 !!                               |labile mineral pool in HRU during month
-!!    hrumono(52,:)|kg N/ha       |amount of nitrogen moving from fresh organic
+!!    hrumono(52,:)|kg N/ha      |amount of nitrogen moving from fresh organic
 !!                               |to nitrate and active organic pools in HRU
 !!                               |during month
-!!    hrumono(53,:)|kg P/ha       |amount of phosphorus moving from fresh
+!!    hrumono(53,:)|kg P/ha      |amount of phosphorus moving from fresh
 !!                               |organic to the labile mineral and organic
 !!                               |pools in HRU during month
-!!    hrumono(54,:)|kg N/ha       |amount of nitrogen added to soil in rain
+!!    hrumono(54,:)|kg N/ha      |amount of nitrogen added to soil in rain
 !!    hrumono(61,:)|metric tons/ha|daily soil loss predicted with USLE equation
-!!    hrumono(62,:)|mm H2O        |drainage tile flow contribution to main
+!!    hrumono(62,:)|mm H2O       |drainage tile flow contribution to main
 !!                               |channel from HRU in month
-!!    hrumono(63,:)|# bacteria/ha |persistent bacteria transported to main
+!!    hrumono(63,:)|# bacteria/ha|persistent bacteria transported to main
 !!                               |channel from HRU during month
-!!    hrumono(64,:)|# bacteria/ha |less persistent bacteria transported to main
+!!    hrumono(64,:)|# bacteria/ha|less persistent bacteria transported to main
 !!                               |channel from HRU during month
-!!    hrumono(65,:)|kg N/ha       |nitrate loading from groundwater in HRU to
+!!    hrumono(65,:)|kg N/ha      |nitrate loading from groundwater in HRU to
 !!                               |main channel during month
-!!    hrumono(66,:)|kg P/ha       |soluble P loading from groundwater in HRU to
+!!    hrumono(66,:)|kg P/ha      |soluble P loading from groundwater in HRU to
 !!                               |main channel during month
-!!    hrumono(67,:)|kg P/ha       |loading of mineral P attached to sediment
+!!    hrumono(67,:)|kg P/ha      |loading of mineral P attached to sediment
 !!                               |in HRU to main channel during month
-!!    wpstdayo(:,1) |mg pst/ha   |amount of pesticide type in surface runoff
+!!    wpstdayo(1,:) |mg pst/ha   |amount of pesticide type in surface runoff
 !!                               |contribution to stream in watershed on day
 !!                               |(in solution)
-!!    wpstdayo(:,2) |mg pst/ha   |amount of pesticide type in surface runoff
+!!    wpstdayo(2,:) |mg pst/ha   |amount of pesticide type in surface runoff
 !!                               |contribution to stream in watershed on day
 !!                               |(sorbed to sediment)
-!!    wpstdayo(:,3) |kg pst/ha   |amount of pesticide type leached from soil
+!!    wpstdayo(3,:) |kg pst/ha   |amount of pesticide type leached from soil
 !!                               |profile in watershed on day
-!!    wpstdayo(:,4) |kg pst/ha   |amount of pesticide type in lateral flow
+!!    wpstdayo(4,:) |kg pst/ha   |amount of pesticide type in lateral flow
 !!                               |contribution to stream in watershed on day
 !!    wshddayo(1) |mm H2O        |average amount of precipitation in watershed
 !!                               |for the day
@@ -385,16 +390,16 @@ subroutine sumv(j)
 !!                               |in watershed for day
 !!    wshddayo(46)|kg N/ha       |nitrate percolation past bottom of soil
 !!                               |profile in watershed for day
-!!    wshddayo(104)|mm H2O        |groundwater contribution to stream in
+!!    wshddayo(104)|mm H2O       |groundwater contribution to stream in
 !!                               |watershed on day
-!!    wshddayo(105)|mm H2O        |amount of water moving from shallow aquifer
+!!    wshddayo(105)|mm H2O       |amount of water moving from shallow aquifer
 !!                               |to plants/soil profile in watershed on day
-!!    wshddayo(106)|mm H2O        |deep aquifer recharge in watershed on day
-!!    wshddayo(107)|mm H2O        |total amount of water entering both aquifers
+!!    wshddayo(106)|mm H2O       |deep aquifer recharge in watershed on day
+!!    wshddayo(107)|mm H2O       |total amount of water entering both aquifers
 !!                               |in watershed on day
-!!    wshddayo(108)|mm H2O        |potential evapotranspiration in watershed
+!!    wshddayo(108)|mm H2O       |potential evapotranspiration in watershed
 !!                               |on day
-!!    wshddayo(109)|mm H2O        |drainage tile flow contribution to stream
+!!    wshddayo(109)|mm H2O       |drainage tile flow contribution to stream
 !!                               |in watershed on day
 !!    wshddayo(110)|kg/ha        |NO3 yield (gwq)
 !!    wshddayo(111)|mm H2O       |NO3 yield (tile)
@@ -431,7 +436,6 @@ subroutine sumv(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    j           |none          |HRU number
 !!    k           |none          |counter (pesticides)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -622,15 +626,15 @@ subroutine sumv(j)
       if (hrupest(j) == 1) then
          do k = 1, npmx
             !! HRU summary
-            hrupstd(k,1,j) = pst_surq(k,j) * 1.e6 * hru_ha(j)
-            hrupstd(k,2,j) = pst_sed(k,j) * 1.e6 * hru_ha(j)
-            hrupstd(k,3,j) = (pst_surq(k,j) + pst_sed(k,j)) * 1.e6
-            hrupstd(k,4,j) = lat_pst(k) * 1.e6 * hru_ha(j)
+            hrupstd(1,k,j) = pst_surq(k,j) * 1.e6 * hru_ha(j)
+            hrupstd(2,k,j) = pst_sed(k,j) * 1.e6 * hru_ha(j)
+            hrupstd(3,k,j) = (pst_surq(k,j) + pst_sed(k,j)) * 1.e6
+            hrupstd(4,k,j) = lat_pst(k) * 1.e6 * hru_ha(j)
             !! watershed summary
-            wpstdayo(k,1) = wpstdayo(k,1) + pst_surq(k,j) * hru_dafr(j) * 1.e6
-            wpstdayo(k,2) = wpstdayo(k,2) + pst_sed(k,j) * hru_dafr(j) * 1.e6
-            wpstdayo(k,3) = wpstdayo(k,3) + pstsol(k) * hru_dafr(j)
-            wpstdayo(k,4) = wpstdayo(k,4) + lat_pst(k) * hru_dafr(j)
+            wpstdayo(1,k) = wpstdayo(1,k) + pst_surq(k,j) * hru_dafr(j) * 1.e6
+            wpstdayo(2,k) = wpstdayo(2,k) + pst_sed(k,j) * hru_dafr(j) * 1.e6
+            wpstdayo(3,k) = wpstdayo(3,k) + pstsol(k) * hru_dafr(j)
+            wpstdayo(4,k) = wpstdayo(4,k) + lat_pst(k) * hru_dafr(j)
          end do
       end if
    end if

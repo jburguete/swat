@@ -16,15 +16,15 @@ subroutine pestw
 !!    plt_pst(:,:)|kg/ha         |pesticide on plant foliage
 !!    sol_nly(:)  |none          |number of layers in soil profile
 !!    sol_pst(:,:,:)|kg/ha       |pesticide in soil layer
-!!    wpstaao(:,1)|mg pst/ha     |amount of pesticide type in surface runoff
+!!    wpstaao(1,:)|mg pst/ha     |amount of pesticide type in surface runoff
 !!                               |contribution to stream in watershed
 !!                               |(in solution) - average annual
-!!    wpstaao(:,2)|mg pst/ha     |amount of pesticide type in surface runoff
+!!    wpstaao(2,:)|mg pst/ha     |amount of pesticide type in surface runoff
 !!                               |contribution to stream in watershed
 !!                               |(sorbed to sediment) -average annual
-!!    wpstaao(:,3)|kg pst/ha     |amount of pesticide type leached from soil
+!!    wpstaao(3,:)|kg pst/ha     |amount of pesticide type leached from soil
 !!                               |profile in watershed - average annual
-!!    wpstaao(:,4)|kg pst/ha     |amount of pesticide type in lateral flow
+!!    wpstaao(4,:)|kg pst/ha     |amount of pesticide type in lateral flow
 !!                               |contribution to stream in watershed -
 !!                               |average annual
 !!    wshd_pstap(:)|kg pst/ha     |average annual amount of pesticide type
@@ -36,9 +36,9 @@ subroutine pestw
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    wpstaao(:,3)|mg pst/ha     |amount of pesticide type leached from soil
+!!    wpstaao(3,:)|mg pst/ha     |amount of pesticide type leached from soil
 !!                               |profile in watershed on day
-!!    wpstaao(:,4)|mg pst/ha     |amount of pesticide type in lateral flow
+!!    wpstaao(4,:)|mg pst/ha     |amount of pesticide type in lateral flow
 !!                               |contribution to stream in watershed on day
 !!    wshd_pstap(:)|mg pst/ha     |average annual  amount of pesticide type
 !!                               |applied in watershed during simulation
@@ -72,17 +72,17 @@ subroutine pestw
       kk = npno(k)
 
       !! change units from kg/ha to mg/ha
-      wpstaao(k,3) = wpstaao(k,3) * 1.e6
-      wpstaao(k,4) = wpstaao(k,4) * 1.e6
+      wpstaao(3,k) = wpstaao(3,k) * 1.e6
+      wpstaao(4,k) = wpstaao(4,k) * 1.e6
       wshd_pstap(k) = wshd_pstap(k) * 1.e6
       wshd_pstdg(k) = wshd_pstdg(k) * 1.e6
 
       if (iscen == 1) then
          write (26,5000) kk, pname(kk), wshd_pstap(k), wshd_pstdg(k),&
-         &wpstaao(k,1), wpstaao(k,2), wpstaao(k,3), wpstaao(k,4)
+         &wpstaao(1,k), wpstaao(2,k), wpstaao(3,k), wpstaao(4,k)
       else if (isproj == 1) then
          write (19,5000) kk, pname(kk), wshd_pstap(k), wshd_pstdg(k),&
-         &wpstaao(k,1), wpstaao(k,2), wpstaao(k,3), wpstaao(k,4)
+         &wpstaao(1,k), wpstaao(2,k), wpstaao(3,k), wpstaao(4,k)
       endif
 
       !!calculate pesticide levels on plants/in soil at end of simulation

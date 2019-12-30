@@ -10,7 +10,7 @@ include 'modparm.f90'
 program main
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
-!!    name        |units         |definition
+!!    name        |units       |definition
 !!         ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    fcstcycles  |none        |number of times forecast period is simulated
 !!                             |(using different weather generator seeds each

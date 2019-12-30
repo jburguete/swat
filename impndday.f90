@@ -1,11 +1,16 @@
-subroutine impndday
+!> @file impndday.f90
+!> file containing the subroutine impndday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes daily HRU output to the output.wtr file
+!> this subroutine writes daily HRU output to the output.wtr file
+!> @param[in] j HRU number (none)
+subroutine impndday(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j             |none          |HRU number
 !!    cpnm(:)       |NA            |four character code to represent crop name
 !!    ep_day        |mm H2O        |actual amount of transpiration that occurs on
 !!                                 |day in HRU
@@ -18,7 +23,6 @@ subroutine impndday
 !!                                 |current year
 !!    iida          |julian date   |current day of simulation
 !!    idplt(:,:,:)  |none          |land cover code from crop.dat
-!!    ihru          |none          |HRU number
 !!    inum1         |none          |subbasin number
 !!    ipot(:)       |none          |number of HRU (in subbasin) that is ponding
 !!                                 |water--the HRU that the surface runoff from
@@ -117,15 +121,14 @@ subroutine impndday
 !!    iflag       |none          |flag to denote presence of impoundment in
 !!                               |HRU
 !!    ii          |none          |counter
-!!    j           |none          |HRU number
 !!    minp_ppm    |mg P/L        |mineral P concentration in pond
-!!    minp_ppw    |mg P/L        |mineral P concentration in wetland
 !!    orgn_ppm    |mg N/L        |organic N concentration in pond
 !!    orgn_ppw    |mg N/L        |organic N concentration in wetland
 !!    orgp_ppm    |mg P/L        |organic P concentration in pond
 !!    orgp_ppw    |mg P/L        |organic P concentration in wetland
 !!    pdvas(:)    |varies        |array to hold HRU output values
 !!    sb          |none          |subbasin number
+!!    solp_ppw
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -133,56 +136,54 @@ subroutine impndday
    use parm
    implicit none
 
-   integer :: j, sb, ii, iflag
-   real*8 :: orgn_ppm, orgp_ppm, ano3_ppm, minp_ppm, chla_ppm
-   real*8 :: orgn_ppw, orgp_ppw, ano3_ppw, solp_ppw, chla_ppw, cnv
+   integer, intent(in) :: j
    real*8, dimension (40) :: pdvas
+   real*8 :: ano3_ppm, ano3_ppw, chla_ppm, chla_ppw, cnv, minp_ppm, orgn_ppm,&
+      &orgn_ppw, orgp_ppm, orgp_ppw, solp_ppw
+   integer :: iflag, ii, sb
    character*4 cropname
 
-   j = ihru
    sb = inum1
 
    iflag = 0
    if (pnd_fr(j) >= 0.01) iflag = 1
    if (wet_fr(j) >= 0.01) iflag = 1
-   !!    if (ipot(j) == j) iflag = 1
    if (pot_fr(j) > 0.) iflag = 1
 
    if (iflag == 1) then
-      cnv = 0.
       cnv = 10. * hru_ha(j)
 
 !! calculate nutrient concentrations
-      orgn_ppm = 0.
-      orgp_ppm = 0.
-      ano3_ppm = 0.
-      minp_ppm = 0.
-      chla_ppm = 0.
-      orgn_ppw = 0.
-      orgp_ppw = 0.
-      ano3_ppw = 0.
-      solp_ppw = 0.
-      chla_ppw = 0.
       if (pnd_vol(j) > 1.) then
          orgn_ppm = 1000. * pnd_orgn(j) / pnd_vol(j)
          orgp_ppm = 1000. * pnd_orgp(j) / pnd_vol(j)
          ano3_ppm = 1000. * (pnd_no3(j) + pnd_no3s(j) + pnd_no3g(j)) /&
-         &pnd_vol(j)
+            &pnd_vol(j)
          minp_ppm = 1000. * (pnd_solp(j) + pnd_psed(j) + pnd_solpg(j)) /&
-         &pnd_vol(j)
+            &pnd_vol(j)
          chla_ppm = 1000. * pnd_chla(j) / pnd_vol(j)
+      else
+         orgn_ppm = 0.
+         orgp_ppm = 0.
+         ano3_ppm = 0.
+         minp_ppm = 0.
+         chla_ppm = 0.
       endif
       if (wet_vol(j) > 1.) then
          orgn_ppw = 1000. * wet_orgn(j) / wet_vol(j)
          orgp_ppw = 1000. * wet_orgp(j) / wet_vol(j)
          ano3_ppw = 1000. * (wet_no3(j) + wet_no3s(j) + wet_no3g(j)) /&
-         &wet_vol(j)
+            &wet_vol(j)
          solp_ppw = 1000. * (wet_solp(j) + wet_solpg(j) + wet_psed(j)) /&
-         &wet_vol(j)
+            &wet_vol(j)
          chla_ppw = 1000. * wet_chla(j) / wet_vol(j)
+      else
+         orgn_ppw = 0.
+         orgp_ppw = 0.
+         ano3_ppw = 0.
+         solp_ppw = 0.
+         chla_ppw = 0.
       end if
-
-      pdvas = 0.
 
       pdvas(1) = pndpcp / cnv
       pdvas(2) = pndflwi / cnv
@@ -233,7 +234,7 @@ subroutine impndday
 
       if (iwtr == 1) then
          write (29,1000) cropname, j, subnum(j), hruno(j), sb,&
-         &nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, 40)
+            &nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, 40)
       end if
    end if
 

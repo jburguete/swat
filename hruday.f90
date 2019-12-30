@@ -1,7 +1,12 @@
-subroutine hruday(i, j)
+!> @file hruday.f90
+!> file containing the subroutine hruday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes daily HRU output to the output.hru file
+!> this subroutine writes daily HRU output to the output.hru file
+!> @param[in] i current day in simulation--loop counter (julian date)
+!> @param[in] j HRU number (none)
+subroutine hruday(i, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -171,50 +176,69 @@ subroutine hruday(i, j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    cropname
+!!    dp
+!!    idplant
+!!    iflag
 !!    ii          |none          |counter
+!!    k
+!!    ly
 !!    pdvas(:)    |varies        |array to hold HRU output values
 !!    pdvs(:)     |varies        |array to hold selected HRU output values
 !!                               |when user doesn't want to print all
+!!    sat
 !!    sb          |none          |subbasin number
+!!    soilwater
+!!    sol_cmass
+!!    sol_mass
+!!    sol_nmass
+!!    sum_depth
+!!    sumdepth
+!!    sumwater
+!!    sumwfsc
+!!    tot_BMC
+!!    tot_cmass
+!!    tot_HPC
+!!    tot_HSC
+!!    tot_LMC
+!!    tot_LSC
+!!    tot_mass
+!!    tot_nmass
+!!    tot_no3_nh3
+!!    tot_pmass
+!!    tot_solp
+!!    wc
+!!    wfsc
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    SWAT: Icl, xmon
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   integer Icl
    integer, intent(in) :: i, j
-   integer :: sb, ii, iflag, idplant, k, icl
-   real*8 :: sol_mass, sol_cmass, sol_nmass, tot_mass, tot_cmass, tot_nmass,&
-   &tot_LSC, tot_LMC, tot_HSC, tot_HPC, tot_BMC, tot_pmass, tot_solp,&
-   &tot_no3_nh3
    real*8, dimension (mhruo) :: pdvas, pdvs
+   real*8, dimension (11) :: soilwater, sum_depth, wfsc !10, 100, 200, 300, 400, ..., 1000 mm
+   real*8 :: dp, sat, sol_cmass, sol_mass, sol_nmass, sumdepth, sumwater,&
+      &sumwfsc, tot_BMC, tot_cmass, tot_HPC, tot_HSC, tot_LMC, tot_LSC,&
+      &tot_mass, tot_nmass, tot_no3_nh3, tot_pmass, tot_solp, wc, xx
+   integer :: idplant, iflag, ii, k, ly, sb
    character (len=4) :: cropname
-
-   !!by zhang print out soil water
-   !!===============================
-   integer :: ly
-   real*8 :: sumwater, sumwfsc, sumdepth, sat, wc, dp
-   real*8 :: soilwater(11), wfsc(11), sum_depth(11) !10, 100, 200, 300, 400, ..., 1000 mm
-   !!by zhang print out soil water
-   !!===============================
 
 
    !!by zhang print out soil water
    !!===============================
    if (cswat == 2) then
-      !fc = sol_fc(kk,j) + sol_wpmm(kk,j)  ! units mm
-      !wc = sol_st(kk,j) + sol_wpmm(kk,j)  ! units mm
-      !sat = sol_ul(kk,j) + sol_wpmm(kk,j) ! units mm
-      !void = sol_por(kk,j) * (1. - wc / sat)   ! fraction
 
-      soilwater(1) = 0.
-      wfsc(1) = 0.
+      soilwater = 0.
+      wfsc = 0.
       sum_depth(1) = 10.
       do k = 2, 11
-         soilwater(k) = 0.
-         wfsc(k) = 0.
-         sum_depth(k) = 100. * (k -1)
+         sum_depth(k) = 100. * (k - 1)
       end do
 
       wc = sol_st(1,j) + sol_wpmm(1,j)
@@ -228,62 +252,64 @@ subroutine hruday(i, j)
             sumwfsc = 0.
             sumdepth = 0.
             do ly = 2, sol_nly(j)
-               if (sol_z(ly-1,j) .ge. sum_depth(k-1) .and. sol_z(ly,j) .le. sum_depth(k)) then
-
+               if (sol_z(ly-1,j) .ge. sum_depth(k-1)&
+                   &.and. sol_z(ly,j) .le. sum_depth(k)) then
                   dp = sol_z(ly,j) - sol_z(ly-1,j)
                   if (dp .gt. 0.) then
-                     wc = sol_st(ly,j) + sol_wpmm(ly,j)*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-                     sat = sol_ul(ly,j) + sol_wpmm(ly,j)*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-
-
+                     xx = dp / (sol_z(ly,j) - sol_z(ly-1,j))
+                     wc = sol_st(ly,j) + sol_wpmm(ly,j) * xx
+                     sat = sol_ul(ly,j) + sol_wpmm(ly,j) * xx
                      sumwater = sumwater + wc * dp
                      sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                      sumdepth = sumdepth + dp
                   end if
 
-               elseif ((sol_z(ly-1,j) .gt. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,j) .ge. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,j) .gt. sum_depth(k-1) .and. sol_z(ly,j) .ge. sum_depth(k))) &
-                  then
+               elseif ((sol_z(ly-1,j) .gt. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .gt. sum_depth(k))&
+                  &.or. (sol_z(ly-1,j) .ge. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .gt. sum_depth(k))&
+                  &.or. (sol_z(ly-1,j) .gt. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .ge. sum_depth(k))) then
                   if (sol_z(ly-1,j) .le. sum_depth(k)) then
                      dp = sum_depth(k) - sol_z(ly-1,j)
                      if (dp .gt. 0.) then
-                        wc = (sol_st(ly,j) + sol_wpmm(ly,j)) *(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-                        sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) *(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-
-
+                        xx = dp / (sol_z(ly,j) - sol_z(ly-1,j))
+                        wc = (sol_st(ly,j) + sol_wpmm(ly,j)) * xx
+                        sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) * xx
                         sumwater = sumwater + wc * dp
                         sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                         sumdepth = sumdepth + dp
                      end if
                   end if
-               elseif ((sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .lt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,j) .le. sum_depth(k-1) .and. sol_z(ly,j) .lt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .le. sum_depth(k))) &
-                  then
+               elseif ((sol_z(ly-1,j) .lt. sum_depth(k-1)&
+                       &.and. sol_z(ly,j) .lt. sum_depth(k))&
+                  &.or. (sol_z(ly-1,j) .le. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .lt. sum_depth(k))&
+                  &.or. (sol_z(ly-1,j) .lt. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .le. sum_depth(k))) then
                   if (sol_z(ly,j) .ge. sum_depth(k-1)) then
                      dp = sol_z(ly,j) - sum_depth(k-1)
                      if (dp .gt. 0.) then
-                        wc = (sol_st(ly,j) + sol_wpmm(ly,j))*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-                        sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) *(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-
-
+                        xx = dp / (sol_z(ly,j) - sol_z(ly-1,j))
+                        wc = (sol_st(ly,j) + sol_wpmm(ly,j)) * xx
+                        sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) * xx
                         sumwater = sumwater + wc * dp
                         sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                         sumdepth = sumdepth + dp
                      end if
                   end if
 
-               elseif ((sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,j) .le. sum_depth(k-1) .and. sol_z(ly,j) .gt. sum_depth(k)) &
-                  .or. (sol_z(ly-1,j) .lt. sum_depth(k-1) .and. sol_z(ly,j) .ge. sum_depth(k))) &
-                  then
+               elseif ((sol_z(ly-1,j) .lt. sum_depth(k-1)&
+                        &.and. sol_z(ly,j) .gt. sum_depth(k))&
+                  &.or. (sol_z(ly-1,j) .le. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .gt. sum_depth(k))&
+                  &.or. (sol_z(ly-1,j) .lt. sum_depth(k-1)&
+                         &.and. sol_z(ly,j) .ge. sum_depth(k))) then
                   dp = sum_depth(k) - sum_depth(k-1)
                   if (dp .gt. 0.) then
-                     wc = (sol_st(ly,j) + sol_wpmm(ly,j))*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-                     sat = (sol_ul(ly,j) + sol_wpmm(ly,j))*(dp/(sol_z(ly,j)-sol_z(ly-1,j)))
-
-
+                     xx = dp / (sol_z(ly,j) - sol_z(ly-1,j))
+                     wc = (sol_st(ly,j) + sol_wpmm(ly,j)) * xx
+                     sat = (sol_ul(ly,j) + sol_wpmm(ly,j)) * xx
                      sumwater = sumwater + wc * dp
                      sumwfsc = sumwfsc + sol_por(ly,j) * (wc / sat) * dp
                      sumdepth = sumdepth + dp
@@ -311,9 +337,6 @@ subroutine hruday(i, j)
       if (ipdhru(ii) == j) iflag = 1
    end do
    if (iflag == 0) return
-
-   pdvas = 0.
-   pdvs = 0.
 
    pdvas(1) = subp(j)
    pdvas(2) = snofall
@@ -385,16 +408,13 @@ subroutine hruday(i, j)
    pdvas(67) = bactrop + bactsedp
    pdvas(68) = bactrolp + bactsedlp
    pdvas(69) = wtab(j)   !! based on 30 day antecedent climate (mm) (prec,et)
-!      pdvas(70) = wtabelo   !! based on depth from soil surface (mm)
    pdvas(70) = wat_tbl(j)   !! based on depth from soil surface (mm): Dmoriasi 4/08/2014
 !!    added current snow content in the hru (not summed)
    pdvas(71) = sno_hru(j)
-
 !!    added current soil carbon for first layer
    pdvas(72) = cmup_kgh(j)  !! first soil layer only
 !!    added current soil carbon integrated - aggregating all soil layers
    pdvas(73) = cmtot_kgh(j)
-
 !!    adding qtile to output.hru write 3/2/2010 gsm
    pdvas(74) = qtile
 !    tileno3 - output.hru
@@ -422,54 +442,66 @@ subroutine hruday(i, j)
       endif
 
       if (iscen == 1 .and. isproj == 0) then
-         if (icalen == 0) write (28,1001) cropname, j, subnum(j),        &
-         &      hruno(j), sb, nmgt(j), iida, hru_km(j),                     &
-         &       (pdvs(ii), ii = 1, itots)
-         if (icalen == 1) write (28,1002) cropname, j, subnum(j),        &
-         &      hruno(j), sb, nmgt(j), i_mo, icl(iida), iyr, hru_km(j),     &
-         &       (pdvs(ii), ii = 1, itots)
-1002     format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i2,1x,i2,1x,i4,1x,e10.5,       &
-         & 66f10.3,1x,e10.5,1x,e10.5,8e10.3,3f10.3)
+         select case (icalen)
+          case (0)
+            write (28,1001) cropname, j, subnum(j),&
+               &hruno(j), sb, nmgt(j), iida, hru_km(j),&
+               &(pdvs(ii), ii = 1, itots)
+          case (1)
+            write (28,1002) cropname, j, subnum(j),&
+               &hruno(j), sb, nmgt(j), i_mo, Icl(iida), iyr, hru_km(j),&
+               &(pdvs(ii), ii = 1, itots)
+         end select
 
 !!    added for binary files 3/25/09 gsm line below and write (33333
          if (ia_b == 1) then
-            write (33333) j, hrugis(j), sb,                                  &
-            &               nmgt(j), iida, hru_km(j), (pdvs(ii), ii = 1, itots)
+            write (33333) j, hrugis(j), sb,&
+               &nmgt(j), iida, hru_km(j), (pdvs(ii), ii = 1, itots)
          endif
       else if (isproj == 1) then
-         write (21,1000) cropname, j, subnum(j), hruno(j), sb,           &
-         &          nmgt(j), iida, hru_km(j), (pdvs(ii), ii = 1, itots)
+         write (21,1000) cropname, j, subnum(j), hruno(j), sb,&
+            &nmgt(j), iida, hru_km(j), (pdvs(ii), ii = 1, itots)
       else if (iscen == 1 .and. isproj == 2) then
-         if(icalen == 0)write (28,1000) cropname, j, subnum(j), hruno(j),&
-         &      sb, nmgt(j), iida, hru_km(j), (pdvs(ii), ii = 1, itots), iyr
-         if(icalen == 1)write (28,1003) cropname, j, subnum(j), hruno(j),&
-         &      sb, nmgt(j), i_mo, icl(iida), iyr, hru_km(j),               &
-         &      (pdvs(ii), ii = 1, itots), iyr
-1003     format(a4,i5,1x,a5,a4,i5,1x,i4,1x,i2,1x,i2,1x,i4,1x,e10.5,66f10.3,&
-         &1x,e10.5,1x,e10.5,8e10.3,f10.3,1x,i4)
+         select case (icalen)
+          case (0)
+            write (28,1000) cropname, j, subnum(j), hruno(j),&
+               &sb, nmgt(j), iida, hru_km(j), (pdvs(ii), ii = 1, itots), iyr
+          case (1)
+            write (28,1003) cropname, j, subnum(j), hruno(j),&
+               &sb, nmgt(j), i_mo, Icl(iida), iyr, hru_km(j),&
+               &(pdvs(ii), ii = 1, itots), iyr
+         end select
       end if
    else
       if (iscen == 1 .and. isproj == 0) then
-         if(icalen == 0)write (28,1000) cropname, j, subnum(j), hruno(j),&
-         &        sb,nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo)
-         if(icalen == 1)write (28,1003) cropname, j, subnum(j), hruno(j),&
-         &        sb,nmgt(j), i_mo, icl(iida), iyr, hru_km(j),              &
-         &        (pdvas(ii), ii = 1, mhruo)
+         select case (icalen)
+          case (0)
+            write (28,1000) cropname, j, subnum(j), hruno(j),&
+               &sb,nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+          case (1)
+            write (28,1003) cropname, j, subnum(j), hruno(j),&
+               &sb,nmgt(j), i_mo, Icl(iida), iyr, hru_km(j),&
+               &(pdvas(ii), ii = 1, mhruo)
+         end select
 !!    added for binary files 3/25/09 gsm line below and write (33333
          if (ia_b == 1) then
-            write (33333)  j, hrugis(j), sb,                           &
-            &              nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+            write (33333)  j, hrugis(j), sb,&
+               &nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo)
          endif
 
       else if (isproj == 1) then
-         write (21,1000) cropname, j, subnum(j), hruno(j), sb,           &
-         &              nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo)
+         write (21,1000) cropname, j, subnum(j), hruno(j), sb,&
+            &nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo)
       else if (iscen == 1 .and. isproj == 2) then
-         if(icalen == 0)write (28,1000) cropname, j, subnum(j), hruno(j),&
-         &      sb,nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo), iyr
-         if(icalen == 1)write(28,1000) cropname, j, subnum(j), hruno(j),&
-         &      sb,nmgt(j), i_mo, icl(iida), iyr, hru_km(j),                &
-         &      (pdvas(ii), ii = 1, mhruo), iyr
+         select case (icalen)
+          case (0)
+            write (28,1000) cropname, j, subnum(j), hruno(j),&
+               &sb,nmgt(j), iida, hru_km(j), (pdvas(ii), ii = 1, mhruo), iyr
+          case (1)
+            write(28,1000) cropname, j, subnum(j), hruno(j),&
+               &sb,nmgt(j), i_mo, Icl(iida), iyr, hru_km(j),&
+               &(pdvas(ii), ii = 1, mhruo), iyr
+         end select
       end if
    end if
 
@@ -491,22 +523,22 @@ subroutine hruday(i, j)
          tot_solp = 0.
          tot_no3_nh3 =0.
          do k=1,sol_nly(j)
+            xx = 1. - sol_rock(k,j) / 100.
             if (k == 1) then
-               sol_mass = (10) / 1000.* 10000. * sol_bd(k,j)* 1000. * &
-                  (1- sol_rock(k,j) / 100.)
+               sol_mass = sol_bd(k,j) * 100000. * xx
             else
-               sol_mass = (sol_z(k,j) - sol_z(k-1,j)) / 1000.* 10000. &
-                  * sol_bd(k,j)* 1000. * (1- sol_rock(k,j) / 100.)
+               sol_mass = (sol_z(k,j) - sol_z(k-1,j)) * 10000.&
+                  &* sol_bd(k,j) * xx
             end if
-            sol_cmass = sol_LSC(k,j)+sol_LMC(k,j)+sol_HPC(k,j)+sol_HSC(k,j) &
+            sol_cmass = sol_LSC(k,j)+sol_LMC(k,j)+sol_HPC(k,j)+sol_HSC(k,j)&
                &+sol_BMC(k,j)
-            sol_nmass = sol_LSN(k,j)+sol_LMN(k,j)+sol_HPN(k,j)+sol_HSN(k,j) &
+            sol_nmass = sol_LSN(k,j)+sol_LMN(k,j)+sol_HPN(k,j)+sol_HSN(k,j)&
                &+sol_BMN(k,j)
-            write (98,9000) iyr, i, k, j, sol_mass,sol_cmass,              &
-               &sol_nmass,sol_LS(k,j),sol_LM(k,j),                         &
-               &sol_LSC(k,j),sol_LMC(k,j),sol_HSC(k,j),sol_HPC(k,j),       &
-               &sol_BMC(k,j),sol_LSN(k,j),sol_LMN(k,j),sol_HPN(k,j),       &
-               &sol_HSN(k,j),sol_BMN(k,j),sol_no3(k,j),sol_fop(k,j),       &
+            write (98,9000) iyr, i, k, j, sol_mass,sol_cmass,&
+               &sol_nmass,sol_LS(k,j),sol_LM(k,j),&
+               &sol_LSC(k,j),sol_LMC(k,j),sol_HSC(k,j),sol_HPC(k,j),&
+               &sol_BMC(k,j),sol_LSN(k,j),sol_LMN(k,j),sol_HPN(k,j),&
+               &sol_HSN(k,j),sol_BMN(k,j),sol_no3(k,j),sol_fop(k,j),&
                &sol_orgp(k,j),sol_solp(k,j)
 
             tot_mass = tot_mass + sol_mass
@@ -517,18 +549,18 @@ subroutine hruday(i, j)
             tot_HSC = tot_HSC + sol_HSC(k,j)
             tot_HPC = tot_HPC + sol_HPC(k,j)
             tot_BMC = tot_BMC + sol_BMC(k,j)
-            tot_pmass =tot_pmass+ sol_orgp(k,j) + sol_fop(k,j)                       &
-               +  sol_solp(k,j)
+            tot_pmass =tot_pmass+ sol_orgp(k,j) + sol_fop(k,j)&
+               &+sol_solp(k,j)
             tot_solp = tot_solp + sol_solp(k,j)
 
             tot_no3_nh3 = tot_no3_nh3  + sol_no3(k,j) + sol_nh3(k,j)
          end do
 
-         write (1001,9001) iyr, i, j, rsdc_d(j), sedc_d(j), percc_d(j),            &
-            &latc_d(j),emitc_d(j), grainc_d(j), surfqc_d(j), stoverc_d(j),         &
-            &NPPC_d(j), foc_d(j),rspc_d(j),tot_mass,tot_cmass,tot_nmass,           &
-            &tot_LSC,tot_LMC,tot_HSC,tot_HPC,tot_BMC,                              &
-            &bio_ms(j)*0.42, rwt(j), tot_no3_nh3,wdntl,etday,tillage_factor(j),    &
+         write (1001,9001) iyr, i, j, rsdc_d(j), sedc_d(j), percc_d(j),&
+            &latc_d(j),emitc_d(j), grainc_d(j), surfqc_d(j), stoverc_d(j),&
+            &NPPC_d(j), foc_d(j),rspc_d(j),tot_mass,tot_cmass,tot_nmass,&
+            &tot_LSC,tot_LMC,tot_HSC,tot_HPC,tot_BMC,&
+            &bio_ms(j)*0.42, rwt(j), tot_no3_nh3,wdntl,etday,tillage_factor(j),&
             &(soilwater(ii), ii = 1, 11), (wfsc(ii), ii = 1, 11)
       end if
    end if
@@ -538,8 +570,14 @@ subroutine hruday(i, j)
 
    return
 
-1000 format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i4,e10.5,66f10.3,1x,e10.5,1x,e10.5,8e10.3,3f10.3,1x,i4)
-1001 format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i4,e10.5,66f10.3,1x,e10.5,1x,e10.5,8e10.3,3f10.3)
+1000 format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i4,e10.5,66f10.3,1x,e10.5,1x,e10.5,&
+   &8e10.3,3f10.3,1x,i4)
+1001 format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i4,e10.5,66f10.3,1x,e10.5,1x,e10.5,&
+   &8e10.3,3f10.3)
+1002 format (a4,i5,1x,a5,a4,i5,1x,i4,1x,i2,1x,i2,1x,i4,1x,e10.5,&
+   &66f10.3,1x,e10.5,1x,e10.5,8e10.3,3f10.3)
+1003 format(a4,i5,1x,a5,a4,i5,1x,i4,1x,i2,1x,i2,1x,i4,1x,e10.5,66f10.3,&
+   &1x,e10.5,1x,e10.5,8e10.3,f10.3,1x,i4)
 9000 format(i4,i4,i2,i8,21(f16.3))
 9001 format(i4,i4,i8,48(f16.3))
 end

@@ -1,16 +1,19 @@
-subroutine gw_no3
+!> @file gw_no3.f90
+!> file containing the subroutine gw_no3
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine estimates groundwater contribution to
-!!    streamflow
+!> this subroutine estimates groundwater contribution to streamflow
+!> @param[in] j HRU number (none)
+subroutine gw_no3(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    alpha_bf(:) |1/days        |alpha factor for groundwater recession curve
 !!    alpha_bfe(:)|none          |Exp(-alpha_bf(:))
 !!    deepst(:)   |mm H2O        |depth of water in deep aquifer
-!!    ihru        |none          |HRU number
 !!    gw_delaye(:)|none          |Exp(-1./(delay(:)) where delay(:) is the
 !!                               |groundwater delay (time required for water
 !!                               |leaving the bottom of the root zone to reach
@@ -57,13 +60,15 @@ subroutine gw_no3
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
+!!    gwseepn
 !!    rchrg1      |mm H2O        |amount of water entering shallow aquifer on
 !!                               |previous day
+!!    revapn
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
+!!    Intrinsic: Dmax1
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 !!    revap is subtracted and rchrg is delayed (johnson, 1977)
@@ -71,17 +76,14 @@ subroutine gw_no3
    use parm
    implicit none
 
-   integer :: j
-   real*8 :: rchrgn1, revapn, gwseepn, xx
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: gwseepn, rchrgn1, revapn, xx
 
    rchrgn1 = rchrg_n(j)
    if (rchrgn1 < 1.e-6) rchrgn1 = 0.0
 
 !! compute nitrate aquifer loading from recharge for current day
-   rchrg_n(j) = (1.- gw_delaye(j)) * percn(j) + gw_delaye(j)&
-   &* rchrgn1
+   rchrg_n(j) = (1.- gw_delaye(j)) * percn(j) + gw_delaye(j) * rchrgn1
    shallst_n(j) = shallst_n(j) + rchrg_n(j)
 
    if (shallst_n(j) < 1.e-6) shallst_n(j) = 0.0
@@ -94,10 +96,10 @@ subroutine gw_no3
    xx = shallst(j) + gw_q(j) + revapday + gwseep
    if (xx > 1.) then
       xx = shallst_n(j) / (shallst(j) + gw_q(j) + revapday + gwseep)
+      if (xx < 1.e-6) xx = 0.0
    else
       xx = 0.
    end if
-   if (xx < 1.e-6) xx = 0.0
    no3gw(j) = xx * gw_q(j)
    !! bmp adjustment
    no3gw(j) = no3gw(j) * bmp_sns(j)
@@ -105,16 +107,16 @@ subroutine gw_no3
    revapn = xx * revapday
    gwseepn = xx * gwseep
 
-   revapn = dmax1(1.e-6,revapn)
-   gwseepn = dmax1(1.e-6,gwseepn)
+   revapn = Dmax1(1.e-6,revapn)
+   gwseepn = Dmax1(1.e-6,gwseepn)
 
 !! subtract nitrate losses from the shallow aquifer
    shallst_n(j) = shallst_n(j) - no3gw(j) - revapn - gwseepn
-   shallst_n(j) = dmax1 (0., shallst_n(j))
+   shallst_n(j) = Dmax1 (0., shallst_n(j))
 
 !! compute nitrate losses in the groundwater
    shallst_n(j) = shallst_n(j) * gw_nloss(j)
-   shallst_n(j) = dmax1(0., shallst_n(j))
+   shallst_n(j) = Dmax1(0., shallst_n(j))
 
    return
 end

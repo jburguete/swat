@@ -1,82 +1,98 @@
+!> @file grass_wway.f90
+!> file containing the subroutine grass_wway
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine controls the grass waterways
+!> @param[in] j HRU number (none)
 subroutine grass_wway(j)
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls the grass waterways
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    surfq(:)        |mm H2O        |amount of water in surface runoff generated
-!!    grwat_n(:)      |none          |Mannings's n for grassed waterway
+!!    grwat_d(:)      |m             |Depth of Grassed waterway
 !!    grwat_i(:)      |none          |On/off Flag for waterway simulation
 !!    grwat_l(:)      |km            |Length of Grass Waterway
-!!    grwat_w(:)      |none          |Width of grass waterway
-!!    grwat_d(:)      |m             |Depth of Grassed waterway
+!!    grwat_n(:)      |none          |Mannings's n for grassed waterway
 !!    grwat_s(:)      |m/m           |Slope of grass waterway
 !!    grwat_spcon(:)  |none          |sediment transport coefficant defined by user
+!!    grwat_w(:)      |none          |Width of grass waterway
 !!    tc_gwat(:)      |none          |Time of concentration for Grassed waterway and its drainage area
 !!    mhru
-!!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
-
-!!    wat_phi1(:)    |m^2           |cross-sectional area of flow at bankfull
-!!                                   |depth
-!!    wat_phi2(:)    |none          |
-!!    wat_phi3(:)    |none          |
-!!    wat_phi4(:)    |none          |
-!!    wat_phi5(:)    |m^3/s         |flow rate when reach is at bankfull depth
-!!    wat_phi6(:)    |m             |bottom width of main channel
-!!    wat_phi7(:)    |m             |depth of water when reach is at bankfull
-!!                                   |depth
-!!    wat_phi8(:)    |m/s           |average velocity when reach is at
-!!                                   |bankfull depth
-!!    wat_phi9(:)    |m/s           |wave celerity when reach is at
-!!                                   |bankfull depth
-!!    wat_phi10(:)   |hr            |storage time constant for reach at
-!!                                   |bankfull depth (ratio of storage to
-!!                                   |discharge)
-!!    wat_phi13(:)   |m/s           |average velocity when reach is at
-!!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi13(:)   |m/s           |wave celerity when reach is at
-!!                                   |0.1 bankfull depth (low flow)
-!!    wat_phi13(:)   |hr            |storage time constant for reach at
-!!                                   |0.1 bankfull depth (low flow) (ratio
-!!                                   |of storage to discharge)
+!!    peakr           |m^3/s         |peak runoff rate for the day
+!!    rcharea         |m^2           |cross-sectional area of flow
+!!    rchdep          |m             |depth of flow on day
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 !!    surfq(:)        |mm H2O        |surface runoff generated on day in HRU
+!!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
+
+!!    wat_phi1(:)     |m^2           |cross-sectional area of flow at bankfull
+!!                                   |depth
+!!    wat_phi5(:)     |m^3/s         |flow rate when reach is at bankfull depth
+!!    wat_phi6(:)     |m             |bottom width of main channel
+!!    wat_phi7(:)     |m             |depth of water when reach is at bankfull
+!!                                   |depth
+!!    wat_phi8(:)     |m/s           |average velocity when reach is at
+!!                                   |bankfull depth
+!!    wat_phi9(:)     |m/s           |wave celerity when reach is at
+!!                                   |bankfull depth
+!!    wat_phi10(:)    |hr            |storage time constant for reach at
+!!                                   |bankfull depth (ratio of storage to
+!!                                   |discharge)
+!!    wat_phi13(:)    |m/s           |average velocity when reach is at
+!!                                   |0.1 bankfull depth (low flow)
+!!                                   |of storage to discharge)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    sedyld(:)       |metric tons   |daily soil loss caused by water erosion
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    peakr       |m^3/s         |peak runoff rate for the day
-!!    chflow_m3   |m^3/s         |Runoff in CMS
-!!    chflow_day  |m^3/day       |Runoff
-!!    K           |m^3/s         |Total number of HRUs plus this HRU number
-!!    rcharea     |m^2           |cross-sectional area of flow
-!!    rchdep      |m             |depth of flow on day
-!!    sf_area     |m^2           |area of waterway sides in sheetflow
-!!    sf_sed      |kg/m^2        |sediment loads on sides of waterway
-!!    surq_remove |%             |percent of surface runoff capture in VFS
+!!    chflow_m3   |m^3/s         |runoff in CMS
+!!    chflow_day  |m^3/day       |runoff
+!!    cych
+!!    cyin
+!!    k           |none          |total number of HRUs plus this HRU number
+!!    depnet
+!!    p
+!!    rh
+!!    sed_frac
 !!    sed_remove  |%             |percent of sediment capture in VFS
+!!    sedin       |mg            |sediment in waterway
+!!    sedint      |mg            |sediment into waterway channel
+!!    sedout      |mg            |sediment out of waterway channel
+!!    sedtrap
+!!    sf_area     |m^2           |area of waterway sides in sheetflow
+!!    sf_depth
+!!    sf_sed      |kg/m^2        |sediment loads on sides of waterway
+!!    surq_frac
+!!    surq_remove |%             |percent of surface runoff capture in VFS
 !!    vc          |m/s           |flow velocity in reach
-!!    Sedin       |mg            | Sediment in waterway
-!!    Sedint      |mg            | Sediment into waterway channel
-!!    Sedout      |mg            | Sediment out of waterway channel
+!!    xrem
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Sqrt, Log, Max
 !!    SWAT: Qman
+
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
    use parm
    implicit none
+
    real*8 Qman
    integer, intent(in) :: j
+   real*8 :: chflow_day, chflow_m3, cych, cyin, depnet, p, rh, sed_frac,&
+      &sed_remove, sedin, sedint, sedout, sedtrap, sf_area, sf_depth, sf_sed,&
+      &surq_frac, surq_remove, vc, xrem, xx
    integer :: k
-   real*8 :: chflow_m3, sf_area, surq_remove, sf_sed ,sed_remove,vc,&
-   &chflow_day, rh, cych, cyin, depnet, p, sed_frac, sedin, sedint, sedout,&
-   &sedtrap, sf_depth, surq_frac, xrem
 
 !! do this only if there is surface runoff this day
    if (surfq(j) > 0.001) then
@@ -147,16 +163,14 @@ subroutine grass_wway(j)
       sedint = sedin * (1. - sed_remove / 100.)
 
 !!        calculate flow velocity
-      vc = 0.001
       if (rcharea > 1.e-4) then
          vc = peakr / rcharea
          if (vc > wat_phi9(j)) vc = wat_phi9(j)
+      else
+         vc = 0.001
       end if
 
 !!        compute deposition in the waterway
-      cyin = 0.
-      cych = 0.
-      depnet = 0.
 !! if there is significant flow calculate
       if (chflow_m3 > 1.e-4) then
 !! Calculate sediment concentration in inflow mg/m^3
@@ -167,6 +181,10 @@ subroutine grass_wway(j)
          depnet = chflow_day * (cyin - cych)
          if (depnet < 0.) depnet = 0
          if (depnet > sedint) depnet = sedint
+      else
+         cyin = 0.
+         cych = 0.
+         depnet = 0.
       endif
 !! Calculate sediment out of waterway channel
       sedout = sedint - depnet
@@ -226,9 +244,10 @@ subroutine grass_wway(j)
 !! Calculate pesticide removal
 !! based on the sediment and runoff removal only
       if (hrupest(j) == 1) then
+         xx = 1. - sed_remove / 100.
          do k = 1, npmx
             pst_surq(k,j) = pst_surq(k,j) * surq_frac
-            pst_sed(k,j) = pst_sed(k,j) * (1. - sed_remove / 100.)
+            pst_sed(k,j) = pst_sed(k,j) * xx
          end do
       end if
 !! compute bacteria reductions

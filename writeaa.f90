@@ -16,10 +16,10 @@ subroutine writeaa
 !!    hrupest(:)   |none          |pesticide use flag:
 !!                                | 0: no pesticides used in HRU
 !!                                | 1: pesticides used in HRU
-!!    hrupsta(:,1,:)|mg pst       |amount of pesticide type in surface runoff
+!!    hrupsta(1,:,:)|mg pst       |amount of pesticide type in surface runoff
 !!                                |contribution to stream from HRU during
 !!                                |simulation (in solution)
-!!    hrupsta(:,2,:)|mg pst       |amount of pesticide type in surface runoff
+!!    hrupsta(2,:,:)|mg pst       |amount of pesticide type in surface runoff
 !!                                |contribution to stream from HRU during
 !!                                |simulation (sorbed to sediment)
 !!    icodes(:)     |none         |routing command code:
@@ -515,7 +515,7 @@ subroutine writeaa
       do j = 1, nhru
          if (hrupest(j) == 1) then
             write (30,5600) subnum(j), hruno(j), yrs,&
-               &(hrupsta(k,1,j), hrupsta(k,2,j), k = 1, npmx)
+               &(hrupsta(1,k,j), hrupsta(2,k,j), k = 1, npmx)
          end if
       end do
    end if

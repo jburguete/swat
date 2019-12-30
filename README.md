@@ -7,16 +7,16 @@ Objectives
 ----------
 
 * Standard indentation and translation to Fortran 90 by using
-[findent](https://sourceforge.net/projects/findent). See the
-translate-fortran90.pl perl script file (:heavy_check_mark:)
+  [findent](https://sourceforge.net/projects/findent). See the
+  translate-fortran90.pl perl script file (:heavy_check_mark:)
 * Exhaustive use of the "implicit none" directive to detect bad variable usage
-(:heavy_check_mark:)
+  (:heavy_check_mark:)
 * Generate a GNU [Make](http://www.gnu.org/software/make) makefile and compile
-with GNU [GFortran](https://gcc.gnu.org/fortran). See the gernerate-makefile.pl
-perl script file (:heavy_check_mark:)
+  with GNU [GFortran](https://gcc.gnu.org/fortran). See the
+  gernerate-makefile.pl perl script file (:heavy_check_mark:)
 * Remove non-used variables and format labels (:heavy_check_mark:)
 * Detect and solve all uninitialized variables (:heavy_check_mark:
-:construction:, some proposed solutions could be incorrect) 
+  :construction:, some proposed solutions could be incorrect) 
 * Remove unneeded variable initializations (:heavy_check_mark:) as:
 
   `j=0 ! this line is not necessary`
@@ -25,14 +25,15 @@ perl script file (:heavy_check_mark:)
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
-* Remove global counters (as i, ihru, iihru or idum in module parm). Using local
-  counters or passing values as argument are preferred (:construction:)
+* Remove global counters (as i, ihru, iihru, inum1 or idum in module parm).
+  Using local counters or passing values as argument are preferred
+  (:construction:)
 * Generate a detailed list of issues detected in the original code
-(:heavy_check_mark:, see at the end of this README)
+  (:heavy_check_mark:, see at the end of this README)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:construction:, a lot of work)
 * Standardize comments by using Doxygen style in order to generate
-documentation. See at latex/refman.pdf (:construction:, a lot of work)
+  documentation. See at latex/refman.pdf (:construction:, a lot of work)
 
 Required tools
 --------------
@@ -40,19 +41,19 @@ Required tools
 * [GFortran](https://gcc.gnu.org/fortran) (to compile the source code)
 * [Make](https://www.gnu.org/software/make) (to build the executable file)
 * [Perl](https://www.perl.org) (optional: to execute the perl scripts to 
-update the makefile or to translate original files to Fortran 90)
+  update the makefile or to translate original files to Fortran 90)
 * [Findent](https://sourceforge.net/projects/findent) (optional: to translate
-original files to Fortran 90 with a standard indentation)
+  original files to Fortran 90 with a standard indentation)
 * [Doxygen](http://www.doxygen.nl) (optional: to generate a reference
-programming manual from source code)
+  programming manual from source code)
 * [TeX Live](https://www.tug.org/texlive) or [MiKTeX](https://miktex.org/)
-(optional: to generate a reference programming manual from source code)
+  (optional: to generate a reference programming manual from source code)
 * On Microsoft Windows systems you have to install
-[MSYS2](http://sourceforge.net/projects/msys2) and the required utilities
-([GFortran](https://gcc.gnu.org/fortran) and
-[Make](https://www.gnu.org/software/make)). You can follow detailed instructions
-in
-[install-unix](https://github.com/jburguete/install-unix/blob/master/tutorial.pdf)
+  [MSYS2](http://sourceforge.net/projects/msys2) and the required utilities
+  ([GFortran](https://gcc.gnu.org/fortran) and
+  [Make](https://www.gnu.org/software/make)). You can follow detailed
+  instructions in
+  [install-unix](https://github.com/jburguete/install-unix/blob/master/tutorial.pdf)
 
 Instructions to generate Fortran 90 style code from original code
 -----------------------------------------------------------------
@@ -79,15 +80,15 @@ and [Make](https://www.gnu.org/software/make))
 > $ make
 
 * In a [MSYS2](http://sourceforge.net/projects/msys2) terminal in Microsoft
-Windows:
+  Windows:
 > $ EXE=".exe" LDFLAGS="-static" make
 
 * Cross-compiling a 32 bits Microsoft Windows executable in a UNIX type
-operative system:
+  operative system:
 > $ prefix="i686-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 * Cross-compiling a 64 bits Microsoft Windows executable in a UNIX type
-operative system:
+  operative system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" LDFLAGS="-static" make
 
 
@@ -101,16 +102,16 @@ and [Make](https://www.gnu.org/software/make))
 > $ CFLAGS="-march=native -flto" LDFLAGS="-flto" make strip
 
 * In a [MSYS2](http://sourceforge.net/projects/msys2) terminal in Microsoft
-Windows:
+  Windows:
 > $ EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static" make strip
 
 * Cross-compiling a 32 bits Microsoft Windows executable in a UNIX type
-operative system:
+  operative system:
 > $ prefix="i686-w64-mingw32-" EXE=".exe" CFLAGS="-flto" LDFLAGS="-flto -static"
 > make strip
 
 * Cross-compiling a 64 bits Microsoft Windows executable in a UNIX type
-operative system:
+  operative system:
 > $ prefix="x86\_64-w64-mingw32-" EXE=".exe" CFLAGS="-flto"
 > LDFLAGS="-flto -static" make strip
 

@@ -1,7 +1,6 @@
+!> this subroutine simulates channel routing
+!> @param[in] i current day in simulation--loop counter (julian date)
 subroutine route(i)
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine simulates channel routing
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -66,10 +65,10 @@ subroutine route(i)
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min
-!!    SWAT: rchinit, rtover, rtday, rtmusk, rthourly, rtsed, rthsed, watqual
-!!    SWAT: noqual, hhwatqual, hhnoqual, rtpest, rthpest, rtbact, irr_rch
-!!    SWAT: rchuse, reachout
-
+!!    SWAT: rchinit, rtday, rtmusk, rthvsc, rthmusk, rtsed, rtsed_bagnold,
+!!          rtsed_kodatie, rtsed_Molinas_Wu, rtsed_yangsand, rthsed, watqual2,
+!!          watqual, noqual, hhwatqual, hhnoqual, rtpest, rthpest, rtbact,
+!!          irr_rch, rchuse, rtout
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
@@ -84,14 +83,9 @@ subroutine route(i)
    !inum5 is the landscape within the subbasin
    isub = inum3
    iru = inum5
-   !ru_ovs(isub,iru)
 
 !! initialize variables for route command loop
    call rchinit
-
-!! route overland flow
-!!      iru_sub = inum4   !!routing unit number
-!!      call routels(iru_sub)
 
    vel_chan(jrch) = 0.
    dep_chan(jrch) = 0.
@@ -192,11 +186,18 @@ subroutine route(i)
       end if
    else
       if (ievent == 0) then
-         if (ch_eqn(jrch) == 0) call rtsed
-         if (ch_eqn(jrch) == 1) call rtsed_bagnold
-         if (ch_eqn(jrch) == 2) call rtsed_kodatie
-         if (ch_eqn(jrch) == 3) call rtsed_Molinas_Wu
-         if (ch_eqn(jrch) == 4) call rtsed_yangsand
+         select case (ch_eqn(jrch))
+          case (0)
+            call rtsed
+          case (1)
+            call rtsed_bagnold
+          case (2)
+            call rtsed_kodatie
+          case (3)
+            call rtsed_Molinas_Wu
+          case (4)
+            call rtsed_yangsand
+         end select
       else
          call rthsed
          do ii = 1, nstep
@@ -218,9 +219,6 @@ subroutine route(i)
       if (iwq == 1) call hhwatqual
       if (iwq == 0) call hhnoqual
    end if
-
-!! perform in-stream pesticide calculations
-!!      call biofilm
 
 !! perform in-stream pesticide calculations
    if (ievent == 0) then

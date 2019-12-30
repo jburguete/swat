@@ -1,11 +1,17 @@
-subroutine filtw
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the reduction of pollutants in surface runoff
-!!    due to an edge of field filter or buffer strip
+!> @file filtw.f90
+!> file containing the subroutine filtw
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine calculates the reduction of pollutants in surface runoff
+!> due to an edge of field filter or buffer strip
+!> @param[in] j HRU number (none)
+subroutine filtw(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
 !!                               |channel with surface runoff
 !!    bactrop     |# colonies/ha |persistent bacteria transported to main
@@ -21,7 +27,6 @@ subroutine filtw
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    ihru        |none          |HRU number
 !!    npmx        |none          |number of different pesticides used in
 !!                               |the simulation
 !!    nyskip      |none          |number of years to skip output summarization
@@ -102,8 +107,8 @@ subroutine filtw
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
 !!    k           |none          |counter
+!!    xx          |none          |reduction factor
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -111,40 +116,43 @@ subroutine filtw
    use parm
    implicit none
 
-   integer :: j, k
-
-   j = ihru
+   integer, intent(in) :: j
+   real*8 :: xx
+   integer :: k
 
 !! compute filter strip reduction
-   bactrop = bactrop * fsred(j)
-   bactrolp = bactrolp * fsred(j)
-   bactsedp = bactsedp * fsred(j)
-   bactsedlp = bactsedlp * fsred(j)
-   sedorgn(j) = sedorgn(j) * (1. - trapeff(j))
-   surqno3(j) = surqno3(j) * (1. - trapeff(j))
-   sedorgp(j) = sedorgp(j) * (1. - trapeff(j))
-   sedminpa(j) = sedminpa(j) * (1. - trapeff(j))
-   sedminps(j) = sedminps(j) * (1. - trapeff(j))
-   surqsolp(j) = surqsolp(j) * (1. - trapeff(j))
-   sedyld(j) = sedyld(j) * (1. - trapeff(j))
-   sanyld(j) = sanyld(j) * (1. - trapeff(j))
-   silyld(j) = silyld(j) * (1. - trapeff(j))
-   clayld(j) = clayld(j) * (1. - trapeff(j))
-   sagyld(j) = sagyld(j) * (1. - trapeff(j))
-   lagyld(j) = lagyld(j) * (1. - trapeff(j))
+   xx = fsred(j)
+   bactrop = bactrop * xx
+   bactrolp = bactrolp * xx
+   bactsedp = bactsedp * xx
+   bactsedlp = bactsedlp * xx
+   xx = 1. - trapeff(j)
+   sedorgn(j) = sedorgn(j) * xx
+   surqno3(j) = surqno3(j) * xx
+   sedorgp(j) = sedorgp(j) * xx
+   sedminpa(j) = sedminpa(j) * xx
+   sedminps(j) = sedminps(j) * xx
+   surqsolp(j) = surqsolp(j) * xx
+   sedyld(j) = sedyld(j) * xx
+   sanyld(j) = sanyld(j) * xx
+   silyld(j) = silyld(j) * xx
+   clayld(j) = clayld(j) * xx
+   sagyld(j) = sagyld(j) * xx
+   lagyld(j) = lagyld(j) * xx
    if (hrupest(j) == 1) then
       do k = 1, npmx
-         pst_surq(k,j) = pst_surq(k,j) * (1. - trapeff(j))
-         pst_sed(k,j) = pst_sed(k,j) * (1. - trapeff(j))
+         pst_surq(k,j) = pst_surq(k,j) * xx
+         pst_sed(k,j) = pst_sed(k,j) * xx
       end do
    end if
 
 !! summary calculations
    if (curyr > nyskip) then
-      sbactrop = sbactrop + bactrop * hru_dafr(j)
-      sbactrolp = sbactrolp + bactrolp * hru_dafr(j)
-      sbactsedp = sbactsedp + bactsedp * hru_dafr(j)
-      sbactsedlp = sbactsedlp + bactsedlp * hru_dafr(j)
+      xx = hru_dafr(j)
+      sbactrop = sbactrop + bactrop * xx
+      sbactrolp = sbactrolp + bactrolp * xx
+      sbactsedp = sbactsedp + bactsedp * xx
+      sbactsedlp = sbactsedlp + bactsedlp * xx
    end if
 
    return

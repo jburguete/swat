@@ -18,7 +18,7 @@ subroutine zero0
    lid_sw_add = 0.
    lid_farea = 0.
    rg_sarea = 0.
-   co_p = .1
+   !co_p = .1 !not used
 
    ifirstatmo = 1
    mo_atmo = 0
@@ -106,10 +106,7 @@ subroutine zero0
    bio_eat = 0.
    bio_trmp = 0.
    brt = 0.
-   bss1 = 0.
-   bss2 = 0.
-   bss3 = 0.
-   bss4 = 0.
+   bss = 0.
    canmx = 0.
    canstor = 0.
    cbodcnst = 0.
@@ -321,8 +318,7 @@ subroutine zero0
    ifirstr = 1
    ifirstt = 1
    ifld = 0
-   iflod1 = 0
-   iflod2 = 0
+   iflod = 0
    ifrt_freq = 0
    ifrttyp = 0
    irelh = 1

@@ -19,10 +19,10 @@ subroutine writea(i)
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    hrupsty(:,1,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupsty(1,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during year
 !!                               |(in solution)
-!!    hrupsty(:,2,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupsty(2,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during year
 !!                               |(sorbed to sediment)
 !!    hruyro(:,:) |varies        |HRU annual output array
@@ -230,11 +230,11 @@ subroutine writea(i)
             if (hrupest(j) == 1) then
                sum1 = 0.
                do k = 1, npmx
-                  sum1 = sum1 + hrupsty(k,1,j) + hrupsty(k,2,j)
+                  sum1 = sum1 + hrupsty(1,k,j) + hrupsty(2,k,j)
                end do
                if (sum1 > 0. .and. iprp == 1) then
                   write (30,5100) subnum(j), hruno(j), iyr,&
-                     &(hrupsty(k,1,j), hrupsty(k,2,j), k = 1, npmx)
+                     &(hrupsty(1,k,j), hrupsty(2,k,j), k = 1, npmx)
                end if
             end if
          end do

@@ -1,6 +1,9 @@
-subroutine routels(iru_sub)
+!> @file routels.f90
+!> file containing the subroutine routels
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
+subroutine routels(iru_sub)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -27,32 +30,56 @@ subroutine routels(iru_sub)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!
+!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
+!!    name        |units         |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    cy
+!!    dakm
+!!    dep
+!!    dr
+!!    dr_er
+!!    dstor
+!!    frac
+!!    gwqout
+!!    gwqrunon
+!!    ii
+!!    jj
+!!    kk
+!!    lyr
+!!    latqlyr
+!!    latqout
+!!    latqrunon
+!     ls_gwq
+!!    ls_latq
+!!    ls_overq
+!!    orgn
+!!    orgp
+!!    qs
+!!    sed
+!!    surfqout
+!!    surfqrunon
+!!    trancap
+!!    trt
+!!    vs
+!!    xslat
+!!    xx
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Min
+!!    SWAT: percmain
+
+!!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+
    use parm
    implicit none
    integer, intent(in) :: iru_sub
    integer :: ii, jj, kk, lyr
-   real*8 :: cy, dakm, dep, dr, dr_er, dstor, frac, gwqrunon,&
-   &orgn, orgp, qs, sed, surfqout, trancap, trt, vs, xslat, xx
-   real*8 :: latqout, gwqout, latqrunon, surfqrunon, latqlyr
+   real*8 :: cy, dakm, dep, dr, dr_er, dstor, frac, gwqout, gwqrunon, latqlyr,&
+      &latqout, latqrunon,  ls_gwq, ls_latq, ls_overq, orgn, orgp, qs, sed,&
+      &surfqout, surfqrunon, trancap, trt, vs, xslat, xx
 
 !!    compute infiltration from surface runon to next landscape unit
-   real*8 :: ls_overq, ls_latq, ls_gwq
-
-!!    water
-!      if (rnum1 > 1.e-4) return
-!      xx = varoute(29,inum2) + varoute(30,inum2) + varoute(31,inum2) +
-!     &        varoute(32,inum2)
-!      if (xx < 1.e-6) then
-!        ls_overq = varoute(1,inum2) * rnum1
-!        ls_latq = 0.
-!        ls_tileq = 0.
-!        ls_gwq = 0.
-!      else
-!        ls_overq = varoute(29,inum2) * rnum1
-!        ls_latq = varoute(30,inum2) * rnum1
-!        ls_tileq = varoute(31,inum2) * rnum1
-!        ls_gwq = varoute(32,inum2) * rnum1
-!      end if
 
    if (inum5 == 0 .or. inum8 == 0) then
       surfqrunon = 0.
@@ -68,8 +95,8 @@ subroutine routels(iru_sub)
       !! use surface runoff (mm) for eiq - m3/(10 * 100*km2) = mm
       ru_eiq(inum3,inum1) = ls_overq / (1000. * daru_km(inum3,inum1))
       trancap = ru_ktc(inum3,inum1) * ru_c(inum3,inum1) *&
-      &ru_eiq(inum3,inum1) * ru_k(inum3,inum1) *&
-      &ru_a(inum3,inum1)**1.4 * ru_ovs(inum3,inum1)**1.4
+         &ru_eiq(inum3,inum1) * ru_k(inum3,inum1) *&
+         &ru_a(inum3,inum1)**1.4 * ru_ovs(inum3,inum1)**1.4
       trancap = trancap * daru_km(inum3,inum1) * 100.   !! t/ha -> t
       if (sed > trancap) then
          varoute(3,ihout) = trancap
@@ -154,9 +181,6 @@ subroutine routels(iru_sub)
          varoute(29,ihout) = varoute(29,ihout) + surfqout
          varoute(30,ihout) = varoute(30,ihout) + latqout
          varoute(32,ihout) = varoute(32,ihout) + gwqout
-         !    surfq_ru(jj) = surfqout / (10. * xx)
-         !    latq_ru(jj) = latqout / (10. * xx)
-         !    infl_ru(jj) = inflpcp
          varoute(2,ihout) = varoute(2,ihout) + surfqout + latqout + gwqout
       end if
    end if
@@ -185,7 +209,7 @@ subroutine routels(iru_sub)
                xslat = 0.
                do lyr = 1, sol_nly(jj)
                   latqlyr = ((sol_z(lyr,jj)-dep) / sol_z(sol_nly(jj),jj))&
-                  &* latqrunon
+                     &* latqrunon
                   dep = sol_z(lyr,jj)
                   sol_st(lyr,jj) = sol_st(lyr,jj) + latqlyr
                   if (sol_st(lyr,jj) > sol_ul(lyr,jj)) then

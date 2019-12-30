@@ -1,3 +1,10 @@
+!> @file pondhr.f90
+!> file containing the subroutine pondhr
+!> @author
+!> modified by Javier Burguete
+
+!> @param[in] j HRU or reach number (none)
+!> @param[in] k current time step of the day (none)
 subroutine pondhr(j,k)
 
 !!    ~ ~ ~ PURPOSE ~ ~ ~
@@ -7,23 +14,25 @@ subroutine pondhr(j,k)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bp1(:)      |none          |1st shape parameter for pond surface area
+!!    j           |none          |HRU or reach number
+!!    k           |none          |current time step of the day
+!!    bp(1,:)     |none          |1st shape parameter for pond surface area
 !!                               |equation
-!!    bp2(:)      |none          |2nd shape parameter for the pond surface area
+!!    bp(2,:)     |none          |2nd shape parameter for the pond surface area
 !!                               |equation
 !!    chlap(:)    |none          |chlorophyll-a production coefficient for pond
 !!    hru_sub(:)  |none          |subbasin in which HRU/reach is located
-!!    iflod1(:)   |none          |beginning month of non-flood season
-!!    iflod2(:)   |none          |ending month of non-flood season
-!!    ipnd1(:)    |none          |beginning month of 2nd "season" of nutrient
+!!    iflod(1,:)  |none          |beginning month of non-flood season
+!!    iflod(2,:)  |none          |ending month of non-flood season
+!!    ipnd(1,:)   |none          |beginning month of 2nd "season" of nutrient
 !!                               |settling
-!!    ipnd2(:)    |none          |ending month of 2nd "season" of nutrient
+!!    ipnd(2,:)   |none          |ending month of 2nd "season" of nutrient
 !!                               |settling
 !!    i_mo        |none          |current month of simulation
 !!    ndtarg(:)   |none          |number of days required to reach target
 !!                               |storage from current pond storage
-!!    nsetlp1(:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlp2(:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlp(1,:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlp(2,:) |m/day         |nitrogen settling rate for 2nd season
 !!    pet_day     |mm H2O        |potential evapotranspiration on day
 !!    pnd_evol(:) |m^3 H2O       |volume of water required to fill pond
 !!                               |to the emergency spillway
@@ -55,8 +64,8 @@ subroutine pondhr(j,k)
 !!    pnd_vol(:)  |m^3 H2O       |volume of water in pond
 !!    pndflwi     |m^3 H2O       |volume of water flowing into pond on day
 !!    pndsedin    |metric tons   |sediment entering pond during day
-!!    psetlp1(:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlp2(:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlp(1,:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlp(2,:) |m/day         |phosphorus settling rate for 2nd season
 !!    rainsub(:,:)|mm H2O        |precipitation for the time step during the
 !!                               |day in HRU
 !!    seccip(:)   |none          |water clarity coefficient for pond
@@ -105,8 +114,6 @@ subroutine pondhr(j,k)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    chlaco      |ppb (ug/L)    |concentration of chlorophyll-a in pond
-!!    j           |none          |HRU or reach number
-!!    k           |none          |current time step of the day
 !!    nitrok      |none          |fraction of nitrogen in pond removed by
 !!                               |settling
 !!    phosk       |none          |fraction of phosphorus in pond removed by
@@ -130,7 +137,7 @@ subroutine pondhr(j,k)
    implicit none
 
    integer, intent (in) :: j, k
-   real*8 :: vol, sed, pndsa, xx, targ, tpco, phosk, nitrok, chlaco
+   real*8 :: chlaco, nitrok, phosk, pndsa, sed, targ, tpco, vol, xx
 
 
    !! store initial values
@@ -138,10 +145,7 @@ subroutine pondhr(j,k)
    sed = pnd_sed(j)
 
    !! calculate water balance for day
-   pndsa = bp1(j) * pnd_vol(j) ** bp2(j)
-   !       pndev = 6. * pet_day * pndsa
-   !       pndsep = pnd_k(j) * pndsa * 240.
-   !       pndpcp = subp(j) * pndsa * 10.
+   pndsa = bp(1,j) * pnd_vol(j) ** bp(2,j)
    pndev = 6. * pet_day * pndsa / nstep       !! urban modeling by J.Jeong
    pndsep = pnd_k(j) * pndsa * 240./ nstep    !! urban modeling by J.Jeong
    pndpcp = rainsub(j,k) * pndsa * 10.        !! urban modeling by J.Jeong
@@ -190,21 +194,21 @@ subroutine pondhr(j,k)
       else
          !! target storage based on flood season and soil water
          xx = 0.
-         if (iflod2(j) > iflod1(j)) then
-            if (i_mo > iflod1(j) .and. i_mo < iflod2(j)) then
+         if (iflod(2,j) > iflod(1,j)) then
+            if (i_mo > iflod(1,j) .and. i_mo < iflod(2,j)) then
                targ = pnd_evol(j)
             else
                xx = Min(sol_sw(j) / sol_sumfc(j),1.)
                targ = pnd_pvol(j) + .5 * (1. - xx) *&
-               &(pnd_evol(j) - pnd_pvol(j))
+                  &(pnd_evol(j) - pnd_pvol(j))
             end if
          else
-            if (i_mo > iflod1(j) .or. i_mo < iflod2(j)) then
+            if (i_mo > iflod(1,j) .or. i_mo < iflod(2,j)) then
                targ = pnd_evol(j)
             else
                xx = Min(sol_sw(j) / sol_sumfc(j),1.)
                targ = pnd_pvol(j) + .5 * (1. - xx) *&
-               &(pnd_evol(j) - pnd_pvol(j))
+                  &(pnd_evol(j) - pnd_pvol(j))
             end if
          end if
          if (pnd_vol(j) > targ) then
@@ -234,12 +238,12 @@ subroutine pondhr(j,k)
 
       !! determine settling rate
       !! part of equation 29.1.3 in SWAT manual
-      if (i_mo >= ipnd1(j) .and. i_mo <= ipnd2(j)) then
-         phosk = psetlp1(j)
-         nitrok = nsetlp1(j)
+      if (i_mo >= ipnd(1,j) .and. i_mo <= ipnd(2,j)) then
+         phosk = psetlp(1,j)
+         nitrok = nsetlp(1,j)
       else
-         phosk = psetlp2(j)
-         nitrok = nsetlp2(j)
+         phosk = psetlp(2,j)
+         nitrok = nsetlp(2,j)
       endif
       xx = pndsa * 10000. / pnd_vol(k)
       phosk = phosk * xx  !setl/mean depth
@@ -262,7 +266,7 @@ subroutine pondhr(j,k)
 
       if (pnd_vol(j) + pndflwo > 0.1) then
          tpco = 1.e+6 * (pnd_solp(j) + pnd_orgp(j) + pnd_psed(j) +&
-         &pnd_solpg(j)) / (pnd_vol(j) + pndflwo)
+            &pnd_solpg(j)) / (pnd_vol(j) + pndflwo)
       else
          tpco = 0.
       endif

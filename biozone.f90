@@ -1,5 +1,5 @@
-!> @file pkq.f90
-!> file containing the subroutine pkq
+!> @file biozone.f90
+!> file containing the subroutine biozone
 !> @author
 !> J. Jeong,\n
 !> C. Santhi,\n

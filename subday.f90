@@ -1,7 +1,11 @@
-subroutine subday(j)
+!> @file subday.f90
+!> file containing the subroutine subday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes daily subbasin output to the output.sub file
+!> this subroutine writes daily subbasin output to the output.sub file
+!> @param[in] j HRU number (none)
+subroutine subday(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -54,22 +58,26 @@ subroutine subday(j)
 !!    sub_ha      |ha            |area of subbasin in hectares
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Sum
+!!    SWAT: Icl
+
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   integer Icl
    integer, intent(in) :: j
-   integer :: sb, ii, icl
-   real*8 :: sub_ha
    real*8, dimension (msubo) :: pdvab, pdvb
+   real*8 :: sub_ha
+   integer :: ii, sb
 
    sb = hru_sub(j)
 
    sub_ha = da_ha * sub_fr(sb)
 
    pdvab = 0.
-   pdvb = 0.
 
    pdvab(1) = sub_subp(sb)
    pdvab(2) = sub_snom(sb)
@@ -101,34 +109,39 @@ subroutine subday(j)
       do ii = 1, itotb
          pdvb(ii) = pdvab(ipdvab(ii))
       end do
-      if (icalen == 0) write(31,1000)sb, subgis(sb), iida, sub_km(sb),&
-      &(pdvb(ii), ii = 1, itotb)
-      if (icalen == 1) write(31,1001)sb, subgis(sb), i_mo, icl(iida),&
-      &iyr, sub_km(sb), (pdvb(ii), ii = 1, itotb)
+      select case (icalen)
+       case (0)
+         write(31,1000)sb, subgis(sb), iida, sub_km(sb),&
+            &(pdvb(ii), ii = 1, itotb)
+       case (1)
+         write(31,1001)sb, subgis(sb), i_mo, Icl(iida),&
+            &iyr, sub_km(sb), (pdvb(ii), ii = 1, itotb)
+      end select
 
 !!    added for binary files 3/25/09 gsm line below and write (66666
       if (ia_b == 1) then
          write (66666) sb, subgis(sb), iida, sub_km(sb),&
-         &(pdvb(ii), ii = 1, itotb)
+            &(pdvb(ii), ii = 1, itotb)
       endif
    else
-      if (icalen == 0)write(31,1000) sb, subgis(sb), iida, sub_km(sb),&
-      &(pdvab(ii), ii = 1, msubo)
-      if (icalen == 1)write(31,1001) sb, subgis(sb), i_mo, icl(iida),&
-      &iyr, sub_km(sb), (pdvab(ii), ii = 1, msubo)
+      select case (icalen)
+       case (0)
+         write(31,1000) sb, subgis(sb), iida, sub_km(sb),&
+            &(pdvab(ii), ii = 1, msubo)
+       case (1)
+         write(31,1001) sb, subgis(sb), i_mo, Icl(iida),&
+            &iyr, sub_km(sb), (pdvab(ii), ii = 1, msubo)
+      end select
 !!    added for binary files 3/25/09 gsm line below and write (6666
       if (ia_b == 1) then
          write(66666) sb, subgis(sb), iida, sub_km(sb),&
-         &(pdvab(ii), ii = 1, msubo)
+            &(pdvab(ii), ii = 1, msubo)
       endif
 
    end if
 
 
    return
-!     changed for jennifer b.
-!1000 format ('BIGSUB',i4,1x,i8,1x,i4,e10.5,18f10.3)
-!1000 format ('BIGSUB',i4,1x,i8,1x,i4,e10.5,21f10.3)
 1000 format ('BIGSUB',i5,1x,i8,1x,i4,e10.5,18e10.3,1x,e10.5,5e10.3)
 1001 format('BIGSUB',i5,1x,i8,1x,i2,1x,i2,1x,i4,1x,e10.5,18e10.3,1x,&
    &e10.5, 5e10.3)

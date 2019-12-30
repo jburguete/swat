@@ -1,10 +1,16 @@
+!> @file urb_bmp.f90
+!> file containing the subroutine urb_bmp
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine
+!> @param[in] j HRU number (none)
 subroutine urb_bmp(j)
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j              |none          |HRU number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -15,6 +21,12 @@ subroutine urb_bmp(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name       |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    sednppm
+!!    sedppm
+!!    sedpppm
+!!    solnppm
+!!    solpppm
+!!    xx
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~

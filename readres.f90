@@ -23,9 +23,9 @@ subroutine readres(i)
 !!    br2(:)       |none          |2nd shape parameter for reservoir surface area
 !!                                |equation
 !!    evrsv(:)     |none          |lake evaporation coefficient
-!!    iflod1r(:)   |none          |beginning month of non-flood season
+!!    iflodr(1,:)   |none          |beginning month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    iflod2r(:)   |none          |ending month of non-flood season
+!!    iflodr(2,:)   |none          |ending month of non-flood season
 !!                                |(needed if IRESCO=2)
 !!    iresco(:)    |none          |outflow simulation code:
 !!                                |0 compute outflow for uncontrolled reservoir
@@ -182,9 +182,9 @@ subroutine readres(i)
       if (eof < 0) exit
       read (105,1100,iostat=eof) resmono
       if (eof < 0) exit
-      read (105,*,iostat=eof) iflod1r(i)
+      read (105,*,iostat=eof) iflodr(1,i)
       if (eof < 0) exit
-      read (105,*,iostat=eof) iflod2r(i)
+      read (105,*,iostat=eof) iflodr(2,i)
       if (eof < 0) exit
       read (105,*,iostat=eof) ndtargr(i)
       if (eof < 0) exit

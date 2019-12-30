@@ -13,9 +13,9 @@ subroutine res
 !!                                |area equation
 !!    curyr        |none          |current year of simulation
 !!    evrsv(:)     |none          |lake evaporation coefficient
-!!    iflod1r(:)   |none          |beginning month of non-flood season
+!!    iflodr(1,:)   |none          |beginning month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    iflod2r(:)   |none          |ending month of non-flood season
+!!    iflodr(2,:)   |none          |ending month of non-flood season
 !!                                |(needed if IRESCO=2)
 !!    inum1        |none          |reservoir number
 !!    iresco(:)    |none          |outflow simulation code:
@@ -164,8 +164,8 @@ subroutine res
          targ = starg(i_mo,jres)
       else
          !! target storage based on flood season and soil water
-         if (iflod2r(jres) > iflod1r(jres)) then
-            if (i_mo > iflod1r(jres) .and. i_mo < iflod2r(jres)) then
+         if (iflodr(2,jres) > iflodr(1,jres)) then
+            if (i_mo > iflodr(1,jres) .and. i_mo < iflodr(2,jres)) then
                targ = res_evol(jres)
             else
                xx = Min(sub_sw(res_sub(jres)) /sub_sumfc(res_sub(jres)), 1.)
@@ -173,7 +173,7 @@ subroutine res
                &(res_evol(jres) - res_pvol(jres))
             end if
          else
-            if (i_mo > iflod1r(jres) .or. i_mo < iflod2r(jres)) then
+            if (i_mo > iflodr(1,jres) .or. i_mo < iflodr(2,jres)) then
                targ = res_evol(jres)
             else
                xx = Min(sub_sw(res_sub(jres)) /sub_sumfc(res_sub(jres)), 1.)

@@ -45,6 +45,7 @@ subroutine nlch(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    alph_e
 !!    co          |kg N/mm       |concentration of nitrate in solution
 !!    cosurf      |kg N/mm       |concentration of nitrate in surface runoff
 !!    jj          |none          |counter (soil layers)
@@ -117,7 +118,7 @@ subroutine nlch(j)
       !! Daniel 1/2012
       !! calculate nitrate in tile flow
       if (ldrain(j) == jj) then
-         alph_e(j) = Exp(-1./(n_lag(j) + 1.e-6))
+         !alph_e = Exp(-1./(n_lag(j) + 1.e-6))!not used
          ww1 = -1./ ((1. - anion_excl(j)) * sol_ul(jj,j))
          ! vno3_c = sol_no3(jj,j) * (1. - Exp(ww1)) !overwritten by the following lines
          if (tno3 > 1.001) then
@@ -126,7 +127,7 @@ subroutine nlch(j)
             tno3ln = 0.
          end if
          vno3_c = tno3ln * (1. - Exp(ww1))
-         co_p(j) = co_p(j) * (1. - alph_e(j)) + vno3_c * alph_e(j)
+         !co_p(j) = co_p(j) * (1. - alph_e) + vno3_c * alph_e !not used
          tileno3(j) = co * qtile     !Daniel 1/2012
          tileno3(j) = Min(tileno3(j), sol_no3(jj,j))
          !! bmp adjustment

@@ -1,8 +1,13 @@
-subroutine pothole(i, j)
+!> @file pothole.f90
+!> file containing the subroutine pothole
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine simulates depressional areas that do not drain to the
-!!    stream network (potholes) and impounded areas such as rice paddies
+!> this subroutine simulates depressional areas that do not drain to the
+!> stream network (potholes) and impounded areas such as rice paddies
+!> @param[in] i current day in simulation--loop counter (none)
+!> @param[in] j HRU number (none)
+subroutine pothole(i, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
@@ -30,7 +35,6 @@ subroutine pothole(i, j)
 !!    imp_trig(:,:,:)|none          |release/impound action code:
 !!                                  |0 begin impounding water
 !!                                  |1 release impounded water
-!!    irelease(:,:,:)|julian date   |date of impound/release operation
 !!    laiday(:)      |none          |leaf area index
 !!    nrelease(:)    |none          |sequence number of impound/release
 !!                                  |operation within the year
@@ -90,8 +94,8 @@ subroutine pothole(i, j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    pot_no3(:)     |kg N          |amount of nitrate in pothole water body
 !!    pot_solp(:)    |1/d           | soluble P loss rate in the pothole (.01 - 0.5)
-!!    pot_orgn(:)     |kg N         |amount of organic N in pothole water body
-!!    pot_orgp(:)     |             |amount of organic P in pothole water body
+!!    pot_orgn(:)    |kg N          |amount of organic N in pothole water body
+!!    pot_orgp(:)    |kg P          |amount of organic P in pothole water body
 !!    pot_mpa(:)     |kg N          |amount of active mineral pool P in pothole water body
 !!    pot_mps(:)     |kg N          |amount of stable mineral pool P in pothole water body
 !!    pot_sed(:)     |metric tons   |amount of sediment in pothole water body
@@ -132,24 +136,51 @@ subroutine pothole(i, j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    claloss
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    excess      |mm H2O        |amount of water moving into soil that exceeds
-!!                               |storage of layer
+!!    drcla
+!!    drsil
+!!    drtot
 !!    ly          |none          |counter (soil layers)
+!!    lagloss
+!!    minpaloss
+!!    minpsloss
+!!    no3in
 !!    no3loss     |kg N          |amount of nitrate lost from water body
+!!    orgnloss
+!!    orgploss
 !!    pi          |none          |pi
+!!    pot_depth
 !!    potev       |m^3 H2O       |evaporation from impounded water body
 !!    potmm       |mm H2O        |volume of water in pothole expressed as depth
 !!                               |over HRU
-!!    potpcp      |m^3 H2O       |precipitation falling on water body
+!!    potmpao
+!!    potmpso
+!!    potno3o
+!!    potorgno
+!!    potorgpo
+!!    potsa_ini
 !!    potsep      |m^3 H2O       |seepage from impounded water body
+!!    potsolpo
+!!    potvol_ini
+!!    potvol_m3
+!!    potvol_sep
+!!    potvol_tile
+!!    qdayi
+!!    qin
+!!    sagloss
+!!    sanloss
 !!    sedloss     |metric tons   |amount of sediment lost from water body
+!!    silloss
+!!    solp_tileo
+!!    solploss
 !!    spillo      |m^3 H2O       |amount of water released to main channel from
 !!                               |impounded water body due to spill-over
 !!    sumo        |m^3 H2O       |sum of all releases from water body on
 !!                               |current day
 !!    tileo       |m^3 H2O       |amount of water released to the main channel
 !!                               |from the water body by drainage tiles
+!!    xx
 !!    yy          |none          |fraction of maximum seepage allowed to occur
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -163,19 +194,18 @@ subroutine pothole(i, j)
 
    integer, intent(in) :: i, j
    real*8, parameter :: pi = 3.1416
+   real*8 :: claloss, cnv, drcla, drsil, drtot, lagloss, minpaloss, minpsloss,&
+      &no3in, no3loss, orgnloss, orgploss, pot_depth, potev, potmm, potmpao,&
+      &potmpso, potno3o, potorgno, potorgpo, potsa_ini, potsep, potsolpo,&
+      &potvol_ini, potvol_m3, potvol_sep, potvol_tile, qdayi, qin, sagloss,&
+      &sanloss, sedloss, silloss, solp_tileo, solploss, spillo, sumo, tileo,&
+      &xx, yy
    integer :: ly
-   real*8 :: potsep, sumo, potev, cnv, potpcp, no3in, qdayi
-   real*8 :: sedloss, no3loss, yy
-   real*8 :: sanloss, silloss, claloss, sagloss, lagloss
-   real*8 :: potmm, minpsloss, minpaloss, solploss, orgnloss, orgploss
-   real*8 :: qin, potvol_m3, drcla, drsil, drtot, pot_depth, potmpao, potmpso, potno3o, potorgno, potorgpo, potsa_ini,&
-     potsolpo, potvol_ini, potvol_sep, potvol_tile, solp_tileo, spillo, tileo, xx
 
 !! initialize variables
    tileo = 0.
    potev = 0.
    spillo = 0.
-   potpcp = 0.
    potsep = 0.
    sumo = 0.
    potpcpmm = 0.
@@ -194,8 +224,6 @@ subroutine pothole(i, j)
    potorgpo = 0.
    potmpso = 0.
    potmpao = 0.
-   potvol_ini = 0.
-   potsa_ini = 0.
    sedloss = 0.
    no3loss = 0.
    solploss = 0.
@@ -214,7 +242,6 @@ subroutine pothole(i, j)
 
 !!    conversion factors
    cnv = 10. * hru_ha(j)
-   !rto = 1. !not used
 
 !     when water is impounding
    if (imp_trig(j) == 1) return
@@ -291,7 +318,6 @@ subroutine pothole(i, j)
 !       if overflow, then send the overflow to the HRU surface flow
    if (pot_vol(j) > pot_volxmm(j)) then
       qdr(j) = qdr(j) + (pot_vol(j)- pot_volxmm(j))
-!          qday = qday + (pot_vol(j)- pot_volxmm(j))
       spillo = pot_vol(j) - pot_volxmm(j)
       pot_vol(j) = pot_volxmm(j)
       xx = spillo / (spillo + pot_volxmm(j))
@@ -362,22 +388,20 @@ subroutine pothole(i, j)
 
 !        compute total delivery ratio for pot_sed
       drtot = (pot_cla(j) + pot_sil(j) + pot_san(j) + pot_sag(j) +&
-      &pot_lag(j)) / (potclai(j) + potsili(j) + potsani(j) +&
-      &potsagi(j) + potlagi(j))
+         &pot_lag(j)) / (potclai(j) + potsili(j) + potsani(j) +&
+         &potsagi(j) + potlagi(j))
       pot_sed(j) = drtot * pot_sed(j)
 
 !        compute organic settling assuming an enrichment ratio of 3 on clay (0.75)
 !        delivery of organics is 0.75*dr(clay)- assuming dr on all non-clay = 1
-      pot_orgn(j) = .75 * drcla * pot_orgn(j)
-      pot_orgp(j) = .75 * drcla * pot_orgp(j)
-      pot_mps(j) = .75 * drcla * pot_mps(j)
-      pot_mpa(j) = .75 * drcla * pot_mpa(j)
+      xx = .75 * drcla
+      pot_orgn(j) = xx * pot_orgn(j)
+      pot_orgp(j) = xx * pot_orgp(j)
+      pot_mps(j) = xx * pot_mps(j)
+      pot_mpa(j) = xx * pot_mpa(j)
 
       pot_no3(j) = pot_no3(j) * (1. - pot_no3l(j))
       pot_solp(j) = pot_solp(j) * (1. - pot_solpl(j))
-!         hlife_pot = 20.    !!assume half life of 20 days
-!         pot_no3(j) = Exp(-.693 / hlife_pot) * pot_no3(j)
-!         pot_solp(j) = Exp(-.693 / hlife_pot) * pot_solp(j)
 
 !       compute flow from surface inlet tile
       tileo = Min(pot_tilemm(j), pot_vol(j))
@@ -402,38 +426,6 @@ subroutine pothole(i, j)
       pot_vol(j) = pot_vol(j) - potsep
       pot_seep(j) = potsep
 
-!         call percmain
-!         sol_st(1,j) = sol_st(1,j) + potsep
-!!        redistribute water so that no layer exceeds maximum storage
-!          excess = sol_st(ly,j) - sol_fc(ly,j)
-!          do ly = 1, sol_nly(j)
-!            if (excess < 0.) exit
-!            if (ly < sol_nly(j)) then
-!              sol_st(ly+1,j) = sol_st(ly+1,j) + excess
-!              excess = sol_st(ly+1,j) - sol_fc(ly+1,j)
-!              sol_st(ly,j) = sol_fc(ly,j)
-!            else
-!              sol_st(ly,j) = sol_fc(ly,j)
-!            end if
-!          end do
-!          excess = Max(0.,excess)
-!
-!          if (excess > 1.e-9) then
-!            do ly = 1, sol_nly(j)
-!              excess = sol_st(ly,j) - sol_ul(ly,j)
-!              if (excess < 0.) exit
-!              if (ly < sol_nly(j)) then
-!                sol_st(ly+1,j) = sol_st(ly+1,j) + excess
-!                sol_st(ly,j) = sol_ul(ly,j)
-!              else
-!                sol_st(ly,j) = sol_ul(ly,j)
-!                pot_vol(j) = pot_vol(j) + excess
-!                potsep = potsep - excess
-!              end if
-!            end do
-!            pot_seep(j) = pot_seep(j) + potsep
-!          end if
-
 !         recompute total soil water
       sol_sw(j) = 0.
       do ly = 1, sol_nly(j)
@@ -450,122 +442,126 @@ subroutine pothole(i, j)
 
       if (potvol_tile > 1.e-6) then
 
-         sedloss = pot_sed(j) * tileo / potvol_tile
+         xx = tileo / potvol_tile
+
+         sedloss = pot_sed(j) * xx
          sedloss = Min(sedloss, pot_sed(j))
 
          pot_sed(j) = pot_sed(j) - sedloss
          potsedo = potsedo + sedloss
          sedyld(j) = sedyld(j) + sedloss
-         no3loss = pot_no3(j) *  tileo / potvol_tile
+         no3loss = pot_no3(j) * xx
          no3loss = Min(no3loss, pot_no3(j))
          pot_no3(j) = pot_no3(j) - no3loss
          surqno3(j) = surqno3(j) + no3loss / hru_ha(j)
 
-         solploss = pot_solp(j) *  tileo / potvol_tile
+         solploss = pot_solp(j) * xx
          solploss = Min(solploss, pot_solp(j))
          solp_tileo = solploss
          pot_solp(j) = pot_solp(j) - solploss
          surqsolp(j) = surqsolp(j) + solploss / hru_ha(j)
 
-         orgnloss = pot_orgn(j) *  tileo / potvol_tile
+         orgnloss = pot_orgn(j) * xx
          orgnloss = Min(orgnloss, pot_orgn(j))
          pot_orgn(j) = pot_orgn(j) - orgnloss
          sedorgn(j) = sedorgn(j) + orgnloss / hru_ha(j)
 
-         orgploss = pot_orgp(j) *  tileo / potvol_tile
+         orgploss = pot_orgp(j) * xx
          orgploss = Min(orgploss, pot_orgp(j))
          pot_orgp(j) = pot_orgp(j) - orgploss
          sedorgp(j) = sedorgp(j) + orgploss / hru_ha(j)
 
-         minpsloss = pot_mps(j) *  tileo / potvol_tile
+         minpsloss = pot_mps(j) * xx
          minpsloss = Min(minpsloss, pot_mps(j))
          pot_mps(j) = pot_mps(j) - minpsloss
          sedminps(j) = sedminps(j) + minpsloss / hru_ha(j)
 
-         minpaloss = pot_mpa(j) *  tileo / potvol_tile
+         minpaloss = pot_mpa(j) * xx
          minpaloss = Min(minpaloss, pot_mpa(j))
          pot_mpa(j) = pot_mpa(j) - minpaloss
          sedminpa(j) = sedminpa(j) + minpaloss / hru_ha(j)
 
-         sanloss = pot_san(j) *  tileo / potvol_tile
+         sanloss = pot_san(j) * xx
          pot_san(j) = pot_san(j) - sanloss
          potsano = potsano + sanloss
          sanyld(j) = sanyld(j) + sanloss
 
-         silloss = pot_sil(j) *  tileo / potvol_tile
+         silloss = pot_sil(j) * xx
          pot_sil(j) = pot_sil(j) - silloss
          potsilo = potsilo + silloss
          silyld(j) = silyld(j) + silloss
 
-         claloss = pot_cla(j) *  tileo / potvol_tile
+         claloss = pot_cla(j) * xx
          pot_cla(j) = pot_cla(j) - claloss
          potclao = potclao + claloss
          clayld(j) = clayld(j) + claloss
 
-         sagloss = pot_sag(j) *  tileo / potvol_tile
+         sagloss = pot_sag(j) * xx
          pot_sag(j) = pot_sag(j) - sagloss
          potsago = potsago + sagloss
          sagyld(j) = sagyld(j) + sagloss
 
-         lagloss = pot_lag(j) *  tileo / potvol_tile
+         lagloss = pot_lag(j) * xx
          pot_lag(j) = pot_lag(j) - lagloss
          potlago = potlago + lagloss
          lagyld(j) = lagyld(j) + lagloss
 
 
 !         track loadings removed via tile flow
-         tile_sedo(j)= tile_sedo(j)+ sedloss
-         tile_no3o(j)= tile_no3o(j)+ no3loss
-         tile_solpo(j)= tile_solpo(j)+ solploss
-         tile_orgno(j)= tile_orgno(j)+ orgnloss
-         tile_orgpo(j)= tile_orgpo(j)+ orgploss
-         tile_minpso(j)= tile_minpso(j)+ minpsloss
-         tile_minpao(j)= tile_minpao(j)+ minpaloss
+         tile_sedo(j) = tile_sedo(j) + sedloss
+         tile_no3o(j) = tile_no3o(j) + no3loss
+         tile_solpo(j) = tile_solpo(j) + solploss
+         tile_orgno(j) = tile_orgno(j) + orgnloss
+         tile_orgpo(j) = tile_orgpo(j) + orgploss
+         tile_minpso(j) = tile_minpso(j) + minpsloss
+         tile_minpao(j) = tile_minpao(j) + minpaloss
       end if
 
       if (potvol_sep > 1.e-6) then
 
-         sedloss = pot_sed(j) * potsep / potvol_sep
+         xx = potsep / potvol_sep
+
+         sedloss = pot_sed(j) * xx
          sedloss = Min(sedloss, pot_sed(j))
          pot_sed(j) = pot_sed(j) - sedloss
 
-         no3loss = pot_no3(j) *  potsep / potvol_sep
+         no3loss = pot_no3(j) * xx
          no3loss = Min(no3loss, pot_no3(j))
          pot_no3(j) = pot_no3(j) - no3loss
 
-         solploss = pot_solp(j) *  potsep / potvol_sep
+         solploss = pot_solp(j) * xx
          solploss = Min(solploss, pot_solp(j))
          pot_solp(j) = pot_solp(j) - solploss
 
-         orgnloss = pot_orgn(j) *  potsep / potvol_sep
+         orgnloss = pot_orgn(j) * xx
          orgnloss = Min(orgnloss, pot_orgn(j))
          pot_orgn(j) = pot_orgn(j) - orgnloss
 
-         orgploss = pot_orgp(j) *  potsep / potvol_sep
+         orgploss = pot_orgp(j) * xx
          orgploss = Min(orgploss, pot_orgp(j))
          pot_orgp(j) = pot_orgp(j) - orgploss
 
-         minpsloss = pot_mps(j) *  potsep / potvol_sep
+         minpsloss = pot_mps(j) * xx
          minpsloss = Min(minpsloss, pot_mps(j))
          pot_mps(j) = pot_mps(j) - minpsloss
 
-         minpaloss = pot_mpa(j) *  potsep / potvol_sep
+         minpaloss = pot_mpa(j) * xx
          minpaloss = Min(minpaloss, pot_mpa(j))
          pot_mpa(j) = pot_mpa(j) - minpaloss
 
-         sanloss = pot_san(j) *  potsep / potvol_sep
+         sanloss = pot_san(j) * xx
          pot_san(j) = pot_san(j) - sanloss
 
-         silloss = pot_sil(j) *  potsep / potvol_sep
+         silloss = pot_sil(j) * xx
          pot_sil(j) = pot_sil(j) - silloss
 
-         claloss = pot_cla(j) *  potsep / potvol_sep
+         claloss = pot_cla(j) * xx
          pot_cla(j) = pot_cla(j) - claloss
 
-         sagloss = pot_sag(j) *  potsep / potvol_sep
+         sagloss = pot_sag(j) * xx
          pot_sag(j) = pot_sag(j) - sagloss
 
-         lagloss = pot_lag(j) *  potsep / potvol_sep
+         lagloss = pot_lag(j) * xx
          pot_lag(j) = pot_lag(j) - lagloss
 
 !         track loadings removed via seepage
@@ -573,13 +569,6 @@ subroutine pothole(i, j)
       end if
 
    endif
-
-!       if urban bmp - set maximum concentrations
-!        xx = sed_con(j) + soln_con(j) + solp_con(j) + orgn_con(j)       &
-!     &             + orgp_con(j)
-!        if (xx > 1.e-6) then
-!          call urb_bmp
-!        end if
 
 !     summary calculations
    if (curyr > nyskip) then
@@ -607,8 +596,8 @@ subroutine pothole(i, j)
 !     !!! output.pot and output.wtr turned on by same code named IWTR in file.cio
    if (iwtr == 1) then
       write (125,2000) subnum(j), hruno(j), i, iyr, potvol_ini,&
-      &potsa_ini, spillo, potsep, potev, sol_sw(j), tileo,&
-      &pot_vol(j), potsa(j)
+         &potsa_ini, spillo, potsep, potev, sol_sw(j), tileo,&
+         &pot_vol(j), potsa(j)
    endif
 
    return

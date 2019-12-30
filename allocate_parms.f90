@@ -55,18 +55,6 @@ subroutine allocate_parms
 
    integer :: imho, itempa, mxsubch
 
-   allocate (alph_e(mhru))
-   allocate (co_p(mhru))
-
-
-!! initialize variables
-   !mvaro = 33
-   !mhruo = 79
-   !mrcho = 62
-   !msubo = 24
-   !mstdo = 113
-   !motot = 600             !! (50 years limit)
-
    allocate (surlag(mhru))
    allocate (cdn(mhru))
    allocate (cmn(mhru))
@@ -76,27 +64,6 @@ subroutine allocate_parms
    allocate (sdnco(mhru))
 !!!!!!!!!! drains
    allocate (wnan(mlyr))
-
-!!      allocate (rcn(12,msub))
-
-!!    arrays for Landscape Transport Capacity
-   allocate (l_k1(msub))
-   allocate (l_k2(msub))
-   allocate (l_lambda(msub))
-   allocate (l_beta(msub))
-   allocate (l_gama(msub))
-   allocate (l_harea(msub))
-   allocate (l_vleng(msub))
-   allocate (l_vslope(msub))
-   allocate (l_ktc(msub))
-
-!!    arrays for Biofilm in reach
-   allocate (biofilm_mumax(mch))
-   allocate (biofilm_kinv(mch))
-   allocate (biofilm_klw(mch))
-   allocate (biofilm_kla(mch))
-   allocate (biofilm_cdet(mch))
-   allocate (biofilm_bm(mch))
 
    mxsubch = Max(msub+1,mch+1)
    itempa = Max(mhru,mch)
@@ -343,10 +310,6 @@ subroutine allocate_parms
    allocate (grast(mch))
 
 !!    arrays which contain data related to reach output
-!   allocate (icolr(mrcho))
-!     allocate (ipdvar(mrcho))
-!!  increased ipdvar(42) to 45 to add Total N/Total P/NO3conc(mg/l)
-!   allocate (ipdvar(46))
    allocate (rchaao(mrcho,mxsubch))
    allocate (rchdy(mrcho,mxsubch))
    allocate (rchmono(mrcho,mxsubch))
@@ -373,11 +336,8 @@ subroutine allocate_parms
 
    allocate (fcst_reg(msub))
    allocate (harg_petco(msub))
-!      allocate (hqd(nstep*3+1))  !! was 73, changed for urban
    allocate (hqdsave(msub,nstep*4))  !! was 49, changed for urban -> changed to 2d array J.Jeong 4/17/2009
    allocate (hsdsave(msub,nstep*4))  !! J.Jeong 4/22/2009
-   !!    allocate (hqd(73))
-   !!    allocate (hqdsave(msub,49))
    allocate (hru1(msub))
    allocate (hrutot(msub))
    allocate (ihgage(msub))
@@ -462,9 +422,6 @@ subroutine allocate_parms
    allocate (radinc(msub,12))
    allocate (rfinc(msub,12))
    allocate (tmpinc(msub,12))
-   !!    allocate (sub_hhqd(msub,24))
-   !!    allocate (sub_hhwtmp(msub,24))
-   !!    allocate (uh(msub,49))
 
    allocate (sub_sftmp(10,msub))
    allocate (sub_smtmp(10,msub))
@@ -527,8 +484,6 @@ subroutine allocate_parms
    allocate (submono(msubo,msub))
    allocate (subaao(msubo,msub))
    allocate (subyro(msubo,msub))
-!   allocate (ipdvab(msubo))
-!   allocate (icolb(msubo))
 
 !!    arrays which contain data related to soil layers, HRUs
 !    Drainmod tile equations  01/2006
@@ -597,18 +552,12 @@ subroutine allocate_parms
    allocate (sol_kp(mpst,mhru,mlyr))
    allocate (sol_pst(mpst,mhru,mlyr))
 
-!!    arrays which contain data related to transfer command
-!   allocate (mo_transb(100))
-!   allocate (mo_transe(100))
-!   allocate (ih_tran(100))
-
 !!    arrays which contain data related to reservoirs
    allocate (br1(mres))
    allocate (br2(mres))
    allocate (chlar(mres))
    allocate (evrsv(mres))
-   allocate (iflod1r(mres))
-   allocate (iflod2r(mres))
+   allocate (iflodr(2,mres))
    allocate (ires1(mres))
    allocate (ires2(mres))
    allocate (iresco(mres))
@@ -682,10 +631,8 @@ subroutine allocate_parms
    allocate (lkpst_mass(mres))
    allocate (lkspst_mass(mres))
 
-   allocate (nsetlr1(mres))
-   allocate (nsetlr2(mres))
-   allocate (psetlr1(mres))
-   allocate (psetlr2(mres))
+   allocate (nsetlr(2,mres))
+   allocate (psetlr(2,mres))
    allocate (oflowmx(12,mres))
    allocate (oflowmn(12,mres))
    allocate (starg(12,mres))
@@ -703,12 +650,9 @@ subroutine allocate_parms
    allocate (velsetlr(mres))
 
 !! arrays for reservoir output
-!   allocate (icolrsv(41))
    allocate (resoutm(41,mres))
    allocate (resouta(41,mres))
    allocate (resouty(41,mres))
-
-!   allocate (resdata(7))
 
 !!    arrays which contain data related to reservoirs, year
    allocate (res_out(mres,12,myr))
@@ -726,7 +670,6 @@ subroutine allocate_parms
 
 !!    arrays which contain data related to landcover/landuse in database
    allocate (alai_min(mcrdb))
-!     allocate (air_str(mcrdb))
    allocate (bio_e(mcrdb))
    allocate (bio_leaf(mcrdb))
    allocate (bio_n1(mcrdb))
@@ -898,7 +841,6 @@ subroutine allocate_parms
    allocate (varoute(mvaro,mhyd))
    allocate (vartran(mvaro,mhyd))
    allocate (hhvaroute(mvaro,mhyd,nstep))  !! from 24 to nstep for urban
-   !!    allocate (hhvaroute(mvaro,mhyd,24))  !! from 24 to nstep for urban
 
 !!    arrays which contain data related to HRUs
    allocate (aairr(mhru))
@@ -925,11 +867,9 @@ subroutine allocate_parms
    allocate (bio_ms(mhru))
    allocate (bio_yrms(mhru))
    allocate (biomix(mhru))
-   allocate (bp1(mhru))
-   allocate (bp2(mhru))
+   allocate (bp(2,mhru))
    allocate (brt(mhru))
-   allocate (bw1(mhru))
-   allocate (bw2(mhru))
+   allocate (bw(2,mhru))
    allocate (canmx(mhru))
    allocate (canstor(mhru))
    allocate (cbodu(mhru))
@@ -1044,8 +984,7 @@ subroutine allocate_parms
    allocate (idorm(mhru))
    allocate (ifilt(20,mhru))
    allocate (ifld(mhru))
-   allocate (iflod1(mhru))
-   allocate (iflod2(mhru))
+   allocate (iflod(2,mhru))
    allocate (igro(mhru))
    allocate (igrz(mhru))
    allocate (iopday(iopera,mhru))
@@ -1078,9 +1017,7 @@ subroutine allocate_parms
    allocate (irra_flag(mhru))
    imho = max(mhru,20)
    allocate (ipdhru(imho))
-   allocate (ipnd1(mhru))
-   allocate (ipnd2(mhru))
-!!      allocate (ipot(mhru))
+   allocate (ipnd(2,mhru))
    allocate (irip(mhru))
    allocate (irn(mhru))
    allocate (irrno(mhru))
@@ -1396,39 +1333,16 @@ subroutine allocate_parms
    allocate (rainsub(mhru,nstep))
    allocate (precipdt(nstep+1))
 
-   allocate (bss1(mhru))
-   allocate (bss2(mhru))
-   allocate (bss3(mhru))
-   allocate (bss4(mhru))
-   allocate (nsetlp1(mhru))
-   allocate (nsetlp2(mhru))
-   allocate (nsetlw1(mhru))
-   allocate (nsetlw2(mhru))
-   allocate (psetlp1(mhru))
-   allocate (psetlp2(mhru))
-   allocate (psetlw1(mhru))
-   allocate (psetlw2(mhru))
+   allocate (bss(4,mhru))
+   allocate (nsetlp(2,mhru))
+   allocate (nsetlw(2,mhru))
+   allocate (psetlp(2,mhru))
+   allocate (psetlw(2,mhru))
    allocate (wrt1(mhru))
    allocate (wrt2(mhru))
    allocate (wgncur(3,mhru))
    allocate (wgnold(3,mhru))
-   allocate (surf_bs1(mhru))
-   allocate (surf_bs2(mhru))
-   allocate (surf_bs3(mhru))
-   allocate (surf_bs4(mhru))
-   allocate (surf_bs5(mhru))
-   allocate (surf_bs6(mhru))
-   allocate (surf_bs7(mhru))
-   allocate (surf_bs8(mhru))
-   allocate (surf_bs9(mhru))
-   allocate (surf_bs10(mhru))
-   allocate (surf_bs11(mhru))
-   allocate (surf_bs12(mhru))
-   allocate (surf_bs13(mhru))
-   allocate (surf_bs14(mhru))
-   allocate (surf_bs15(mhru))
-   allocate (surf_bs16(mhru))
-   allocate (surf_bs17(mhru))
+   allocate (surf_bs(17,mhru))
    allocate (rndseed(10,mhru))
    allocate (pcpband(10,mhru))
    allocate (snoeb(10,mhru))
@@ -1464,16 +1378,14 @@ subroutine allocate_parms
    allocate (pst_surq(mpst,mhru))
    allocate (zdb(mpst,mhru))
 
-   allocate (pst_lag(mpst,3,mhru))
+   allocate (pst_lag(3,mpst,mhru))
 
 
 !!    arrays which contain data related to HRU output
-   allocate (hrupsta(mpst,4,mhru))
-   allocate (hrupstd(mpst,4,mhru))
-   allocate (hrupstm(mpst,4,mhru))
-   allocate (hrupsty(mpst,4,mhru))
-!   allocate (icols(mhruo))
-!   allocate (ipdvas(mhruo))
+   allocate (hrupsta(4,mpst,mhru))
+   allocate (hrupstd(4,mpst,mhru))
+   allocate (hrupstm(4,mpst,mhru))
+   allocate (hrupsty(4,mpst,mhru))
    allocate (hrumono(74,mhru))
    allocate (hruyro(74,mhru))
    allocate (hruaao(74,mhru))
@@ -1547,36 +1459,6 @@ subroutine allocate_parms
    allocate (srbpstmon(mrecm,myr,12))
 
 !!    arrays
-!   allocate (ndays(13))
-!   allocate (ndays_leap(13))
-!   allocate (ndays_noleap(13))
-!   allocate (idg(9))
-!   allocate (ndmo(12))
-   !   allocate (halgae(24))
-   !   allocate (hbactlp(24))
-   !   allocate (hbactp(24))
-   !   allocate (hbod(24))
-   !   allocate (hchla(24))
-   !   allocate (hdepth(24))
-   !   allocate (hdisox(24))
-   !   allocate (hharea(24))
-   !  allocate (hhqday(24))
-   !   allocate (hhstor(24))
-   !   allocate (hhtime(24))
-   !   allocate (hnh4(24))
-   !   allocate (hno2(24))
-   !   allocate (hno3(24))
-   !   allocate (horgn(24))
-   !   allocate (horgp(24))
-   !   allocate (hrchwtr(24))
-   !   allocate (hrtwtr(24))
-   !   allocate (hsdti(24))
-   !   allocate (hsedst(24))
-   !   allocate (hsedyld(24))
-   !   allocate (hsolp(24))
-   !   allocate (hsolpst(24))
-   !   allocate (hsorpst(24))
-   !   allocate (hhprecip(24))
    allocate (halgae(nstep))
    allocate (hbactlp(nstep))
    allocate (hbactp(nstep))
@@ -1601,22 +1483,14 @@ subroutine allocate_parms
    allocate (hsolp(nstep))
    allocate (hsolpst(nstep))
    allocate (hsorpst(nstep))
-!   allocate (wshdaao(mstdo))
-!   allocate (wshddayo(mstdo))
-!   allocate (wshdmono(mstdo))
-!   allocate (wshdyro(mstdo))
-!   allocate (fcstaao(16))
 
-   allocate (wpstaao(mpst,5))
-   allocate (wpstmono(mpst,5))
-   allocate (wpstyro(mpst,5))
-   allocate (wpstdayo(mpst,5))
+   allocate (wpstaao(4,mpst))
+   allocate (wpstmono(4,mpst))
+   allocate (wpstyro(4,mpst))
+   allocate (wpstdayo(4,mpst))
 
-!   allocate (wshd_aamon(12,8))
 
 !!arrays that store initial values
-!   allocate (ivar_orig(10))
-!   allocate (rvar_orig(10))
    allocate (wattemp(mch))
 !! sj, june 07 modifications to carbon balance routines
    allocate (sol_n(mlyr,mhru))
@@ -1644,8 +1518,7 @@ subroutine allocate_parms
    allocate (cfh(mhru))
    allocate (cfdec(mhru))
 !! sj aug 09 end
-   allocate (hhsurf_bs1(mhru,nstep))
-   allocate (hhsurf_bs2(mhru,nstep)) 
+   allocate (hhsurf_bs(2,mhru,nstep)) 
    allocate (ubnrunoff(nstep),ubntss(nstep))
    allocate (sub_ubnrunoff(msub,nstep),sub_ubntss(msub,nstep))
 
@@ -1798,8 +1671,6 @@ subroutine allocate_parms
 !!    LID simulations
 !!    Common variable
 !!    van Genuchten equation's coefficients
-!      allocate(lid_vgcl,lid_vgcm,lid_qsurf_total,
-!     & lid_farea_sum)
    allocate(lid_cuminf_last(mhru,4),lid_sw_last(mhru,4),&
       &interval_last(mhru,4),lid_f_last(mhru,4),lid_cumr_last(mhru,4),&
       &lid_str_last(mhru,4),lid_farea(mhru,4),lid_qsurf(mhru,4),&
@@ -1839,7 +1710,6 @@ subroutine allocate_parms
 
    !! By Zhang for C/N cycling
    !! ============================
-   !allocate(sol_PH(mlyr,mhru))
    allocate(sol_CAC(mlyr,mhru))
    allocate(sol_CEC(mlyr,mhru))
    allocate(sol_BMC(mlyr,mhru))

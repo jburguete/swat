@@ -50,13 +50,13 @@ subroutine impnd_init
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bp1(:)      |none          |1st shape parameter for pond surface area
+!!    bp(1,:)      |none          |1st shape parameter for pond surface area
 !!                               |equation
-!!    bp2(:)      |none          |2nd shape parameter for the pond surface area
+!!    bp(2,:)      |none          |2nd shape parameter for the pond surface area
 !!                               |equation
-!!    bw1(:)      |none          |1st shape parameter for wetland surface area
+!!    bw(1,:)      |none          |1st shape parameter for wetland surface area
 !!                               |equation
-!!    bw2(:)      |none          |2nd shape parameter for the wetland surface
+!!    bw(2,:)      |none          |2nd shape parameter for the wetland surface
 !!                               |area equation
 !!    pnd_evol(:) |m^3 H2O       |runoff volume from catchment area needed to
 !!                               |fill the ponds to the emergency spillway
@@ -182,19 +182,19 @@ subroutine impnd_init
             if ((pe_sa - pp_sa) > 0. .and. (pe_vo - pp_vo) > 0.) then
                lnvol = Log10(pe_vo) - Log10(pp_vo)
                if (lnvol > 1.e-4) then
-                  bp2(j) = (Log10(pe_sa) - Log10(pp_sa)) / lnvol
+                  bp(2,j) = (Log10(pe_sa) - Log10(pp_sa)) / lnvol
                else
-                  bp2(j) = (Log10(pe_sa) - Log10(pp_sa)) / 0.001
+                  bp(2,j) = (Log10(pe_sa) - Log10(pp_sa)) / 0.001
                end if
-               if (bp2(j) > .9) then
-                  bp2(j) = .9
-                  bp1(j) = (pnd_psa(j) / pnd_pvol(j)) ** .9
+               if (bp(2,j) > .9) then
+                  bp(2,j) = .9
+                  bp(1,j) = (pnd_psa(j) / pnd_pvol(j)) ** .9
                else
-                  bp1(j) = (pnd_esa(j) / pnd_evol(j)) ** bp2(j)
+                  bp(1,j) = (pnd_esa(j) / pnd_evol(j)) ** bp(2,j)
                endif
             else
-               bp2(j) = .9
-               bp1(j) = (pnd_psa(j) / pnd_pvol(j)) ** .9
+               bp(2,j) = .9
+               bp(1,j) = (pnd_psa(j) / pnd_pvol(j)) ** .9
             end if
 
          else
@@ -248,15 +248,15 @@ subroutine impnd_init
             if ((wet_mxsa(j) - wet_nsa(j)) > 0. .and. wetdif > 0.) then
                lnvol = Log10(wet_mxvol(j)) - Log10(wet_nvol(j))
                if (lnvol > 1.e-4) then
-                  bw2(j) = (Log10(wet_mxsa(j)) - Log10(wet_nsa(j))) / lnvol
+                  bw(2,j) = (Log10(wet_mxsa(j)) - Log10(wet_nsa(j))) / lnvol
                else
-                  bw2(j) = (Log10(wet_mxsa(j)) - Log10(wet_nsa(j))) / 0.001
+                  bw(2,j) = (Log10(wet_mxsa(j)) - Log10(wet_nsa(j))) / 0.001
                end if
-               if (bw2(j) > 0.9) bw2(j) = .9
-               bw1(j) = (wet_mxsa(j) / wet_mxvol(j)) ** bw2(j)
+               if (bw(2,j) > 0.9) bw(2,j) = .9
+               bw(1,j) = (wet_mxsa(j) / wet_mxvol(j)) ** bw(2,j)
             else
-               bw2(j) = .9
-               bw1(j) = (wet_nsa(j) / wet_nvol(j)) ** .9
+               bw(2,j) = .9
+               bw(1,j) = (wet_nsa(j) / wet_nvol(j)) ** .9
             end if
          else
             wet_fr(j) = 0.

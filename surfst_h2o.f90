@@ -21,7 +21,7 @@ subroutine surfst_h2o(j)
 !!                               |outlet
 !!    hhqday(:)   |mm H2O        |surface runoff generated in HRU on the
 !!                               |current hour at current day
-!!    surf_bs1(:)|mm H2O        |amount of surface runoff lagged over one
+!!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day
 !!    surfq(:)    |mm H2O        |surface runoff generated in HRU on the
 !!                               |current day
@@ -35,7 +35,7 @@ subroutine surfst_h2o(j)
 !!                               |current hour at current day
 !!    qday        |mm H2O        |surface runoff loading to main channel
 !!                               |from HRU on current day
-!!    surf_bs1(:)|mm H2O        |amount of surface runoff lagged over one
+!!    surf_bs(1,:)|mm H2O        |amount of surface runoff lagged over one
 !!                               |day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -59,26 +59,26 @@ subroutine surfst_h2o(j)
 
    if (ievent == 0) then
 
-      bsprev = surf_bs1(j)
-      surf_bs1(j) = Max(1.e-6, surf_bs1(j) + surfq(j))
-      qday = surf_bs1(j) * brt(j)
-      surf_bs1(j) = surf_bs1(j) - qday
+      bsprev = surf_bs(1,j)
+      surf_bs(1,j) = Max(1.e-6, surf_bs(1,j) + surfq(j))
+      qday = surf_bs(1,j) * brt(j)
+      surf_bs(1,j) = surf_bs(1,j) - qday
 
    else
       !subdaily runoff lag (applies only to runoff from pervious surface)
-      bsprev = hhsurf_bs1(j,nstep)  ! lag from previous day J.Jeong 4/06/2009
+      bsprev = hhsurf_bs(1,j,nstep)  ! lag from previous day J.Jeong 4/06/2009
 
       do k=1,nstep
 
          !! Left-over (previous timestep) + inflow (current  timestep)
-         hhsurf_bs1(j,k) = Max(0., bsprev + hhqday(k))
+         hhsurf_bs(1,j,k) = Max(0., bsprev + hhqday(k))
 
          !! new estimation of runoff and sediment reaching the main channel
-         hhqday(k) = hhsurf_bs1(j,k) * brt(j)
-         hhsurf_bs1(j,k) = hhsurf_bs1(j,k) - hhqday(k)
+         hhqday(k) = hhsurf_bs(1,j,k) * brt(j)
+         hhsurf_bs(1,j,k) = hhsurf_bs(1,j,k) - hhqday(k)
 
          !! lagged at the end of time step
-         bsprev = hhsurf_bs1(j,k)
+         bsprev = hhsurf_bs(1,j,k)
       end do
 
       !! daily total yield from the HRU

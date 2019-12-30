@@ -12,8 +12,7 @@ subroutine zero_urbn
    urban_flag = 0
    sci = 0.
 
-   hhsurf_bs1 = 0.
-   hhsurf_bs2 = 0.
+   hhsurf_bs = 0.
    bf_flg = 0.
    ubnrunoff = 0.
    ubntss = 0.

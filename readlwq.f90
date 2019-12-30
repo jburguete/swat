@@ -45,16 +45,16 @@ subroutine readlwq(ii)
 !!    lkspst_conc(:)|mg/m**3       |pesticide concentration in lake bed sediment
 !!    lkspst_rea(:) |1/day         |pesticide reaction coefficient in lake bed
 !!                                 |sediment
-!!    nsetlr1(:)   |m/day         |nitrogen settling rate for mid-year
+!!    nsetlr(1,:)   |m/day         |nitrogen settling rate for mid-year
 !!                                 |period (read in as m/year and converted to
 !!                                 |m/day)
-!!    nsetlr2(:)   |m/day         |nitrogen settling rate for remainder of
+!!    nsetlr(2,:)   |m/day         |nitrogen settling rate for remainder of
 !!                                 |year (read in as m/year and converted to
 !!                                 |m/day)
-!!    psetlr1(:)   |m/day         |phosphorus settling rate for mid-year
+!!    psetlr(1,:)   |m/day         |phosphorus settling rate for mid-year
 !!                                 |period (read in as m/year and converted to
 !!                                 |m/day)
-!!    psetlr2(:)   |m/day         |phosphorus settling rate for remainder of
+!!    psetlr(2,:)   |m/day         |phosphorus settling rate for remainder of
 !!                                 |year (read in as m/year and converted to
 !!                                 |m/day)
 !!    res_nh3(:)    |kg N          |amount of ammonia in reservoir
@@ -112,13 +112,13 @@ subroutine readlwq(ii)
       if (eof < 0) exit
       read (106,*,iostat=eof) ires2(ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) psetlr1(ii)
+      read (106,*,iostat=eof) psetlr(1,ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) psetlr2(ii)
+      read (106,*,iostat=eof) psetlr(2,ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) nsetlr1(ii)
+      read (106,*,iostat=eof) nsetlr(1,ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) nsetlr2(ii)
+      read (106,*,iostat=eof) nsetlr(2,ii)
       if (eof < 0) exit
       read (106,*,iostat=eof) chlar(ii)
       if (eof < 0) exit
@@ -172,10 +172,10 @@ subroutine readlwq(ii)
    end do
 
 !!    convert units
-   psetlr1(ii) = psetlr1(ii) / 365.         !m/yr -> m/day
-   psetlr2(ii) = psetlr2(ii) / 365.
-   nsetlr1(ii) = nsetlr1(ii) / 365.
-   nsetlr2(ii) = nsetlr2(ii) / 365.
+   psetlr(1,ii) = psetlr(1,ii) / 365.         !m/yr -> m/day
+   psetlr(2,ii) = psetlr(2,ii) / 365.
+   nsetlr(1,ii) = nsetlr(1,ii) / 365.
+   nsetlr(2,ii) = nsetlr(2,ii) / 365.
 !     set initial n and p concentrations --> (ppm) * (m^3) / 1000 = kg
 !                                            ppm = t/m^3 * 10^6
    res_solp(ii) = solpi * res_vol(ii) / 1000.

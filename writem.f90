@@ -16,10 +16,10 @@ subroutine writem(i)
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    hrupstm(:,1,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstm(1,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during month
 !!                               |(in solution)
-!!    hrupstm(:,2,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstm(2,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during month
 !!                               |(sorbed to sediment)
 !!    idaf        |julian date   |beginning day of simulation
@@ -261,11 +261,11 @@ subroutine writem(i)
                if (hrupest(j) == 1) then
                   sum1 = 0.
                   do k = 1, npmx
-                     sum1 = sum1 + hrupstm(k,1,j) + hrupstm(k,2,j)
+                     sum1 = sum1 + hrupstm(1,k,j) + hrupstm(2,k,j)
                   end do
                   if (sum1 > 0. .and. iprp == 1) then
                      write (30,5100) subnum(j), hruno(j), iyr, mo_chk,&
-                        &(hrupstm(k,1,j), hrupstm(k,2,j), k = 1, npmx)
+                        &(hrupstm(1,k,j), hrupstm(2,k,j), k = 1, npmx)
                   end if
                end if
             end do

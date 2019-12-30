@@ -1,7 +1,11 @@
-subroutine print_hyd(i)
+!> @file print_hyd.f90
+!> file containing the subroutine print_hyd
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine summarizes data for subbasins with multiple HRUs and
+!> this subroutine summarizes data for subbasins with multiple HRUs and
+!> @param[in] i current day in simulation--loop counter (julian date)
+subroutine print_hyd(i)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition

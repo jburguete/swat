@@ -1,8 +1,12 @@
-subroutine subwq(j)
+!> @file subwq.f90
+!> file containing the subroutine subwq
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes HRU loadings of chlorophyll-a, CBOD,
-!!    and dissolved oxygen to the main channel
+!> this subroutine computes HRU loadings of chlorophyll-a, CBOD,
+!> and dissolved oxygen to the main channel
+!> @param[in] j HRU number (none)
+subroutine subwq(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -44,23 +48,17 @@ subroutine subwq(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    org_c       |kg            |organic carbon content of surface runoff on
-!!                               |day in HRU
-!!    tp          |kmoles P      |kilomoles of phosphorus in nutrient loading to
-!!                               |main channel
 !!    wtmp        |deg K         |temperature of surface runoff
-!!    ww          |none          |variable to hold intermediate calculation
+!!    v1          |none          |variable to hold intermediate calculation
+!!                               |result
+!!    v2          |none          |variable to hold intermediate calculation
 !!                               |result
 !!    xx          |none          |variable to hold intermediate calculation
-!!                               |result
-!!    yy          |none          |variable to hold intermediate calculation
-!!                               |result
-!!    zz          |none          |variable to hold intermediate calculation
 !!                               |result
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp
+!!    Intrinsic: Max, Exp, Min
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -68,48 +66,46 @@ subroutine subwq(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: tp, org_c, wtmp, ww, xx, yy, zz
-
-   !! calculcate water temperature
-   !! Stefan and Preudhomme. 1993.  Stream temperature estimation
-   !!from air temperature.  Water Res. Bull. p. 27-45
-   !! SWAT manual 2.3.13
-   wtmp = 5.0 + 0.75 * tmpav(j)
-   if (wtmp <= 0.1) wtmp = 0.1
-   wtmp = wtmp + 273.15    !! deg C to deg K
+   real*8 :: v1, v2, wtmp, xx
 
    if (qdr(j) > 1.e-4) then
-      tp = 100. * (sedorgn(j) + surqno3(j)) / qdr(j)   !100*kg/ha/mm = ppm
-      chl_a(j) = chla_subco * tp
+
+      !! calculcate water temperature
+      !! Stefan and Preudhomme. 1993.  Stream temperature estimation
+      !!from air temperature.  Water Res. Bull. p. 27-45
+      !! SWAT manual 2.3.13
+      wtmp = Max(0.1, 5.0 + 0.75 * tmpav(j))
+      wtmp = wtmp + 273.15    !! deg C to deg K
+
+      xx = 100. * (sedorgn(j) + surqno3(j)) / qdr(j)   !100*kg/ha/mm = ppm
+      chl_a(j) = chla_subco * xx
 
       !! calculate organic carbon loading to main channel
-      org_c = (sol_cbn(1,j) / 100.) * enratio * sedyld(j) * 1000.
-
-      !!add by zhang
-      !!========================
       if (cswat == 2) then
-         org_c = sedc_d(j)*hru_ha(j)
+         xx = sedc_d(j) * hru_ha(j)
+      else
+         xx = sol_cbn(1,j) * enratio * sedyld(j) * 10.
       end if
-      !!add by zhang
-      !!========================
 
 
       !! calculate carbonaceous biological oxygen demand (CBOD)
-      cbodu(j) = cbodu(j) + 2.7 * org_c / (qdr(j) * hru_km(j)) !jaehak 2016
+      cbodu(j) = cbodu(j) + 2.7 * xx / (qdr(j) * hru_km(j)) !jaehak 2016
 
       !! calculate dissolved oxygen saturation concentration
       !! QUAL2E equation III-29
-      ww = -139.34410 + (1.575701E05 / wtmp)
-      xx = 6.642308E07 / (wtmp**2)
-      yy = 1.243800E10 / (wtmp**3)
-      zz = 8.621949E11 / (wtmp**4)
-      soxy = Exp(ww - xx + yy - zz)
-      if (soxy < 0.) soxy = 0.
+      v1 = 1. / wtmp
+      v2 = v1
+      xx = -139.34410 + 1.575701E05 * v2
+      v2 = v2 * v1
+      xx = xx - 6.642308E07 * v2
+      v2 = v2 * v1
+      xx = xx + 1.243800E10 * v2
+      v2 = v2 * v1
+      xx = xx - 8.621949E11 * v2
+      soxy = Exp(xx)
 
       !! calculate actual dissolved oxygen concentration
-      doxq(j) = soxy * exp(-0.1 * cbodu(j))
-      if (doxq(j) < 0.0) doxq(j) = 0.0
-      if (doxq(j) > soxy) doxq(j) = soxy
+      doxq(j) = Min(soxy, soxy * Exp(-0.1 * cbodu(j)))
    else
       chl_a(j) = 0.
       cbodu(j) = 0.

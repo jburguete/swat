@@ -1,47 +1,76 @@
-subroutine bmp_ri_pond(kk,riflw,rised)
+!> @file bmp_ri_pond.f90
+!> file containing the subroutine bmp_ri_pond
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes water through a retention irrigation pond in the subbasin
+!> this subroutine routes water through a retention irrigation pond in the
+!> subbasin
+!> param[in] kk pond id number in the subbasin
+!> param[inout] riflw stormwater runoff coming in/out of pond at a time step
+!> param[inout] rised overland flow sediment coming in/out of pond at a time
+!> step
+subroutine bmp_ri_pond(kk, riflw, rised)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    flw(:,:)    |mm            |stormwater runoff coming in/out of pond at a time step
 !!    kk          |none          |pond id number in the subbasin
+!!    riflw(:,:)  |mm            |stormwater runoff coming in/out of pond at a time step
+!!    rised(:,:)  |mm            |overland flow sediment coming in/out of pond at a time step
 !!    ri_sed(:)   |tons          |total sediment deposited in the pond
-!!    sed(:,:)    |mm            |overland flow sediment coming in/out of pond at a time step
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    flw(:,:)    |mm            |stormwater runoff coming in/out of pond at a time step
 !!    ri_sed(:)   |tons          |total sediment deposited in the pond
-!!    sed(:,:)    |mm            |overland flow sediment coming in/out of pond at a time step
+!!    riflw(:,:)  |mm            |stormwater runoff coming in/out of pond at a time step
+!!    rised(:,:)  |mm            |overland flow sediment coming in/out of pond at a time step
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    sb          |none          |subbasin or reach number
+!!    hpnd
 !!    ii          |none          |time step
+!!    inflw
+!!    insed
+!!    ksat
+!!    ksed
+!!    mxh
+!!    mxvol
+!!    outflw
+!!    outsed
+!!    qet
+!!    qin
+!!    qout
+!!    qpnd
+!!    qpump
+!!    qseep
+!!    sb          |none          |subbasin or reach number
+!!    sedconc
+!!    sedpnde
+!!    sedpndi
+!!    sedpump
+!!    sub_ha
+!!    td
+!!    tsa
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Min
+!!    Intrinsic: Max, Min, Exp
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: sb, kk, ii
-   real*8 :: tsa,mxvol,ksat,sub_ha,mxh
-   real*8 :: qin,qout,qpnd,hpnd,qet
-   real*8 :: qseep,qpump
-   real*8 :: sedconc,sedpndi, sedpnde,ksed,td,sedpump
-   real*8, dimension(4,0:nstep), intent(inout) :: riflw,rised
-   real*8, dimension(0:nstep) :: inflw,insed,outflw,outsed
+   integer, intent(in) :: kk
+   real*8, dimension(4,0:nstep), intent(inout) :: riflw, rised
+   real*8, dimension(0:nstep) :: inflw, insed, outflw, outsed
+   real*8 :: hpnd, ksat, ksed, mxh, mxvol, qet, qin, qout, qpnd, qpump, qseep,&
+      &sedconc, sedpnde, sedpndi, sedpump, sub_ha, td, tsa
+   integer :: ii, sb
 
    sb = inum1
    sub_ha = da_ha * sub_fr(sb)
@@ -67,7 +96,7 @@ subroutine bmp_ri_pond(kk,riflw,rised)
 
       !inflow = runoff + precipitation
       qin = inflw(ii) * 10. * (sub_ha - tsa / 10000.) +&
-      &precipdt(ii) * tsa / 1000.  !m^3
+         &precipdt(ii) * tsa / 1000.  !m^3
 
       !update ponded water volume
       qpnd = qpnd + qin
@@ -91,24 +120,24 @@ subroutine bmp_ri_pond(kk,riflw,rised)
       !Transmission loss through infiltration
       qseep = ksat * tsa / 1000./ 60. * idt !m^3
       bmp_recharge(sb) = bmp_recharge(sb)&
-      &+ qseep / (sub_ha*10000.- tsa) *1000.
+         &+ qseep / (sub_ha * 10000. - tsa) * 1000.
 
       !Evapotranspiration loss
       qet = ri_evrsv(sb,kk) * tsa * pet_day / 1000. / 1440. * idt !m^3
 
       !water pumped for irrigation
-      qpump =  max(0.,ri_pmpvol(kk,ii))
+      qpump =  Max(0.,ri_pmpvol(kk,ii))
 
       !mass balance
       qpnd = qpnd - qseep - qet - qpump
-      if(qpnd<0) qpnd = 0
+      if (qpnd<0) qpnd = 0
       hpnd = qpnd / (mxvol / mxh)
 
       !Estimate TSS removal due to sedimentation
       if (sedconc>12.) then ! assume 12mg/l as equilibrium concentration, , Huber et al. 2006
-         ksed = min(134.8,41.1 * hpnd ** (-0.999))  !decay coefficient, Huber et al. 2006
+         ksed = Min(134.8,41.1 * hpnd ** (-0.999))  !decay coefficient, Huber et al. 2006
          td = 1. / nstep !detention time, day
-         sedconc = (sedconc - 12.) * exp(-ksed * td) + 12.
+         sedconc = (sedconc - 12.) * Exp(-ksed * td) + 12.
       endif
 
       !sediment pumped

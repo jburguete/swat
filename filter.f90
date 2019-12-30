@@ -1,12 +1,18 @@
-subroutine filter(i)
+!> @file filter.f90
+!> file containing the subroutine filter
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine calculates the reduction of pollutants in surface runoff
-!!    due to an edge of field filter or buffer strip
+!> this subroutine calculates the reduction of pollutants in surface runoff
+!> due to an edge of field filter or buffer strip
+!> @param[in] i current day in simulation--loop counter (julian date)
+!> @param[in] j HRU number (none)
+subroutine filter(i, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |HRU number
 !!    bactrolp    |# colonies/ha |less persistent bacteria transported to main
 !!                               |channel with surface runoff
 !!    bactrop     |# colonies/ha |persistent bacteria transported to main
@@ -22,7 +28,6 @@ subroutine filter(i)
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    ihru        |none          |HRU number
 !!    npmx        |none          |number of different pesticides used in
 !!                               |the simulation
 !!    nyskip      |none          |number of years to skip output summarization
@@ -61,10 +66,6 @@ subroutine filter(i)
 !!                               |entering the most concentrated 10% of the VFS.
 !!    vfsratio(:) |none          |Field area/VFS area ratio
 !!    hru_slp(:)  |m/m           |average slope steepness
-
-
-
-
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -111,35 +112,41 @@ subroutine filter(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    j           |none          |HRU number
-!!    k           |none          |counter
-!!    drain_vfs1  |ha            |drainage area of vfs section 1
-!!    drain_vfs2  |ha            |drainage area of vfs section 2
 !!    area_vfs1   |ha            |Area of vfs section 1
 !!    area_vfs2   |ha            |Area of vfs section 2
-!!    vfs_depth1  |mm            |Runoff Loading for vfs section 1
-!!    vfs_depth2  |mm            |Runoff Loading for vfs section 2
-!!    vfs_sed1    |kg/m^2        |sediment loading for vfs section 1
-!!    vfs_sed2    |kg/m^2        |sediment loading for vfs section 2
-!!    surq_remove1|%             |Surface runoff removal for for vfs section 1
-!!    surq_remove2|%             |Surface runoff removal for for vfs section 2
-!!    surq_remove |%             |Average surface runoff removal for for entire vfs
-!!    sed_remove1 |%             |sediment removal for for vfs section 1
-!!    sed_remove2 |%             |sediment removal for for vfs section 2
-!!    sed_remove  |%             |Average sediment removal for for entire vfs
+!!    drain_vfs1  |ha            |drainage area of vfs section 1
+!!    drain_vfs2  |ha            |drainage area of vfs section 2
+!!    drain_vfs3
+!!    k           |none          |counter
+!!    orgn_remove |%             |Average organic N removal from surface
+!!                               |runoff for for entire vfs
+!!   partp_remove |%             |Average particulate P removal from surface
+!!                               | runoff for for entire vfs
 !!        remove1 |%             |Generic removal for for vfs section 1
 !!                               |(recycled for constituants)
 !!        remove2 |%             |Generic removal for for vfs section 2
 !!                               |(recycled for constituants)
-!!    orgn_remove |%             |Average organic N removal from surface
-!!                               |runoff for for entire vfs
-!! surqno3_remove |%             |Average nitrate removal from surface
-!!                               |runoff for for entire vfs
-!!   partp_remove |%             |Average particulate P removal from surface
-!!                               | runoff for for entire vfs
+!!    sed_remove  |%             |Average sediment removal for for entire vfs
+!!    sed_remove1 |%             |sediment removal for for vfs section 1
+!!    sed_remove2 |%             |sediment removal for for vfs section 2
+!!    sedtrap
 !!   solP_remove  |%             |Average soluble P removal from surface
 !!                               |runoff for for entire vfs
+!!    surq_remove |%             |Average surface runoff removal for for entire vfs
+!!    surq_remove1|%             |Surface runoff removal for for vfs section 1
+!!    surq_remove2|%             |Surface runoff removal for for vfs section 2
+!! surqno3_remove |%             |Average nitrate removal from surface
+!!    vfs_depth1  |mm            |Runoff Loading for vfs section 1
+!!    vfs_depth2  |mm            |Runoff Loading for vfs section 2
+!!    vfs_ratio1
+!!    vfs_ratio2
+!!    vfs_sed1    |kg/m^2        |sediment loading for vfs section 1
+!!    vfs_sed2    |kg/m^2        |sediment loading for vfs section 2
+!!                               |runoff for for entire vfs
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Log, Max
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -147,17 +154,14 @@ subroutine filter(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
-   integer :: j, k
-   real*8 :: drain_vfs1, drain_vfs2, area_vfs1, area_vfs2, vfs_depth1,&
-   &vfs_depth2, vfs_sed1, vfs_sed2, surq_remove1, surq_remove2,&
-   &surq_remove, sed_remove1, sed_remove2, sed_remove, remove1,&
-   &remove2, orgn_remove, surqno3_remove, partp_remove, solP_remove,&
-   &sedtrap, xrem
-   real*8 drain_vfs3, vfs_ratio1, vfs_ratio2
-
-   j = ihru
-
+   integer, intent(in) :: i, j
+   real*8 :: area_vfs1, area_vfs2, drain_vfs1, drain_vfs2, drain_vfs3,&
+      &orgn_remove, partp_remove, remove1, remove2, sed_remove, sed_remove1,&
+      sed_remove2, sedtrap, solP_remove, surq_remove, surq_remove1,&
+      &surq_remove2, surqno3_remove, vfs_depth1, vfs_depth2, vfs_ratio1,&
+      &vfs_ratio2,vfs_sed1, vfs_sed2, xrem
+   integer :: k
+   
    if (i == 100) then
       remove2=0
    end if
@@ -178,8 +182,8 @@ subroutine filter(i)
       area_vfs2 = hru_ha(j) * 0.1 / vfsratio(j)
 
 !! Calculate drainage area to vfs area ratio (unitless)
-      vfs_ratio1 = drain_vfs1/area_vfs1
-      vfs_ratio2 = drain_vfs2/area_vfs2
+      vfs_ratio1 = drain_vfs1 / area_vfs1
+      vfs_ratio2 = drain_vfs2 / area_vfs2
 
 !! calculate runoff depth over buffer area in mm
       vfs_depth1 = vfs_ratio1 * surfq(j)
@@ -187,23 +191,23 @@ subroutine filter(i)
 
 !! calculate sediment loading over buffer area in kg/m^2
       vfs_sed1 = (sedyld(j) / hru_ha(j) * 1000 * drain_vfs1) /&
-      &(area_vfs1 * 10000)
+         &(area_vfs1 * 10000)
       vfs_sed2 = (sedyld(j) / hru_ha(j) * 1000 * drain_vfs2) /&
-      &(area_vfs2 * 10000)
+         &(area_vfs2 * 10000)
 
 !! calculate Runoff Removal by vfs (used for nutrient removal estimation only) based on runoff depth and ksat
 !! Based on vfsmod simulations
 
-      surq_remove1 = 75.8 - 10.8 * Log(vfs_depth1)+25.9*Log(sol_k(1,j))
+      surq_remove1 = 75.8 - 10.8 * Log(vfs_depth1) + 25.9 * Log(sol_k(1,j))
       if (surq_remove1 > 100.) surq_remove1 = 100.
       if (surq_remove1 < 0.) surq_remove1 = 0.
 
-      surq_remove2 = 75.8 - 10.8 * Log(vfs_depth2)+25.9*Log(sol_k(1,j))
+      surq_remove2 = 75.8 - 10.8 * Log(vfs_depth2) + 25.9 * Log(sol_k(1,j))
       if (surq_remove2 > 100.) surq_remove2 = 100.
       if (surq_remove2 < 0.) surq_remove2 = 0.
 
       surq_remove = (surq_remove1 * drain_vfs1 + surq_remove2&
-      &* drain_vfs2)/hru_ha(j)
+         &* drain_vfs2)/hru_ha(j)
 
 !! calculate sediment Removal
 !! Based on measured data from literature
@@ -217,7 +221,7 @@ subroutine filter(i)
       if (sed_remove2 < 0.) sed_remove2 = 0.
 
       sed_remove = (sed_remove1 * drain_vfs1 + sed_remove2&
-      &* drain_vfs2)/hru_ha(j)
+         &* drain_vfs2)/hru_ha(j)
 
       sedyld(j) = sedyld(j) * (1. - sed_remove / 100.)
       sedyld(j) = Max(0., sedyld(j))
@@ -272,7 +276,7 @@ subroutine filter(i)
       if (remove2 < 0.) remove2 = 0.
 
       orgn_remove = (remove1 * drain_vfs1 + remove2&
-      &* drain_vfs2)/hru_ha(j)
+         &* drain_vfs2)/hru_ha(j)
       sedorgn(j) = sedorgn(j) * (1. - orgn_remove / 100.)
 
 !! calculate Nitrate removal from surface runoff
@@ -287,7 +291,7 @@ subroutine filter(i)
       if (remove2 < 0.) remove2 = 0.
 
       surqno3_remove = (remove1 * drain_vfs1 + remove2&
-      &* drain_vfs2)/hru_ha(j)
+         &* drain_vfs2)/hru_ha(j)
       surqno3(j) = surqno3(j) * (1. - surqno3_remove / 100.)
 
 !! calculate Particulate P removal from surface runoff
@@ -302,7 +306,7 @@ subroutine filter(i)
       if (remove2 < 0.) remove2 = 0.
 
       partP_remove = (remove1 * drain_vfs1 + remove2&
-      &* drain_vfs2)/hru_ha(j)
+         &* drain_vfs2)/hru_ha(j)
       sedminpa(j) = sedminpa(j) * (1. - partP_remove / 100.)
       sedminps(j) = sedminps(j) * (1. - partP_remove / 100.)
       sedorgp(j) = sedorgp(j) * (1. - partP_remove / 100.)
@@ -318,7 +322,7 @@ subroutine filter(i)
       if (remove2 < 0.) remove2 = 0.
 
       solp_remove = (remove1 * drain_vfs1 + remove2&
-      &* drain_vfs2)/hru_ha(j)
+         &* drain_vfs2)/hru_ha(j)
       surqsolp(j) = surqsolp(j) * (1. - solp_remove / 100.)
 
 !! Calculate pesticide removal

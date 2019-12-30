@@ -14,10 +14,10 @@ subroutine resnut
 !!                               |"season"
 !!    ires2(:)    |none          |end of mid-year nutrient settling "season"
 !!    i_mo        |none          |current month of simulation
-!!    nsetlr1(:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlr2(:) |m/day         |nitrogen settling rate for 2nd season
-!!    psetlr1(:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlr2(:) |m/day         |phosphorus settling rate for 2nd season
+!!    nsetlr(1,:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlr(2,:) |m/day         |nitrogen settling rate for 2nd season
+!!    psetlr(1,:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlr(2,:) |m/day         |phosphorus settling rate for 2nd season
 !!    res_nh3(:)  |kg N          |amount of ammonia in reservoir
 !!    res_no2(:)  |kg N          |amount of nitrite in reservoir
 !!    res_no3(:)  |kg N          |amount of nitrate in reservoir
@@ -96,11 +96,11 @@ subroutine resnut
 
 !! if reservoir volume greater than 1 m^3, perform nutrient calculations
    if (i_mo >= ires1(jres) .and. i_mo <= ires2(jres)) then
-      phosk = psetlr1(jres)
-      nitrok = nsetlr1(jres)
+      phosk = psetlr(1,jres)
+      nitrok = nsetlr(1,jres)
    else
-      phosk = psetlr2(jres)
-      nitrok = nsetlr2(jres)
+      phosk = psetlr(2,jres)
+      nitrok = nsetlr(2,jres)
    endif
 
    !! add incoming nutrients to those in reservoir

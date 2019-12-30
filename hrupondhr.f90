@@ -1,20 +1,24 @@
-subroutine hrupondhr
+!> @file hrupondhr.f90
+!> file containing the subroutine hrupondhr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes water and sediment through ponds in the HRUs
-!!    in a subdaily time step
+!> this subroutine routes water and sediment through ponds in the HRUs
+!> in a subdaily time step
+!> @param[in] j HRU number (none)
+subroutine hrupondhr(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bp1(:)      |none          |1st shape parameter for pond surface area
+!!    j           |none          |HRU number
+!!    bp(1,:)     |none          |1st shape parameter for pond surface area
 !!                               |equation
-!!    bp2(:)      |none          |2nd shape parameter for the pond surface area
+!!    bp(2,:)     |none          |2nd shape parameter for the pond surface area
 !!                               |equation
 !!    hhqday(:)   |mm H2O        |surface runoff generated each hour of day
 !!                               |in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
-!!    ihru        |none          |HRU number
 !!    latno3(:)   |kg N/ha       |amount of NO3-N in lateral flow in HRU for
 !!                               |the day
 !!    minpgw(:)   |kg P/ha       |soluble P loading to reach in groundwater
@@ -91,24 +95,23 @@ subroutine hrupondhr
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
-!!    j           |none          |HRU number
+!!    k           |none          |counter
 !!    pndsa       |ha            |surface area of pond on current day
 !!    xx          |none          |fraction of HRU not draining into ponds
 !!    yy          |none          |fraction of water leaving pond on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: pond
+!!    SWAT: pondhr
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: j, k
+   integer, intent(in) :: j
+   integer :: k
    real*8 :: cnv, pndsa, xx, yy
-
-   j = ihru
 
    if (pnd_fr(j) > 0.01) then
 
@@ -117,7 +120,7 @@ subroutine hrupondhr
          cnv = hru_ha(j) * 10.
 
          !! calculate area of HRU covered by pond
-         pndsa = bp1(j) * pnd_vol(j) ** bp2(j)
+         pndsa = bp(1,j) * pnd_vol(j) ** bp(2,j)
 
          !! calculate water flowing into pond for day
 !        pndflwi = qdr(j) * 10. * (hru_ha(j) * pnd_fr(j) - pndsa)
@@ -175,25 +178,27 @@ subroutine hrupondhr
          !! compute nutrients leaving pond
          if (pndflwo > 1.e-10) then
             yy = pndflwo / (pnd_vol(j) + pndflwo)
-            sedorgn(j) = sedorgn(j) + pnd_orgn(j) * yy / hru_ha(j)
-            surqno3(j) = surqno3(j) + pnd_no3(j) * yy / hru_ha(j)
-            latno3(j) = latno3(j) + pnd_no3s(j) * yy / hru_ha(j)
-            no3gw(j) = no3gw(j) + pnd_no3g(j) * yy / hru_ha(j)
-            sedorgp(j) = sedorgp(j) + pnd_orgp(j) * yy / hru_ha(j)
-            sedminps(j) = sedminps(j) + pnd_psed(j) * yy / hru_ha(j)
-            surqsolp(j) = surqsolp(j) + pnd_solp(j) * yy / hru_ha(j)
-            minpgw(j) = minpgw(j) + pnd_solpg(j) * yy / hru_ha(j)
+            xx = yy / hru_ha(j)
+            sedorgn(j) = sedorgn(j) + pnd_orgn(j) * xx
+            surqno3(j) = surqno3(j) + pnd_no3(j) * xx
+            latno3(j) = latno3(j) + pnd_no3s(j) * xx
+            no3gw(j) = no3gw(j) + pnd_no3g(j) * xx
+            sedorgp(j) = sedorgp(j) + pnd_orgp(j) * xx
+            sedminps(j) = sedminps(j) + pnd_psed(j) * xx
+            surqsolp(j) = surqsolp(j) + pnd_solp(j) * xx
+            minpgw(j) = minpgw(j) + pnd_solpg(j) * xx
 
             !! adjust nutrient content in pond
-            pnd_orgn(j) = pnd_orgn(j) * (1. - yy)
-            pnd_no3(j) = pnd_no3(j) * (1. - yy)
-            pnd_no3g(j) = pnd_no3g(j) * (1. - yy)
-            pnd_no3s(j) = pnd_no3s(j) * (1. - yy)
-            pnd_orgp(j) = pnd_orgp(j) * (1. - yy)
-            pnd_psed(j) = pnd_psed(j) * (1. - yy)
-            pnd_solp(j) = pnd_solp(j) * (1. - yy)
-            pnd_solpg(j) = pnd_solpg(j) * (1. - yy)
-            pnd_chla(j) = pnd_chla(j) * (1. - yy)
+            xx = 1. - yy
+            pnd_orgn(j) = pnd_orgn(j) * xx
+            pnd_no3(j) = pnd_no3(j) * xx
+            pnd_no3g(j) = pnd_no3g(j) * xx
+            pnd_no3s(j) = pnd_no3s(j) * xx
+            pnd_orgp(j) = pnd_orgp(j) * xx
+            pnd_psed(j) = pnd_psed(j) * xx
+            pnd_solp(j) = pnd_solp(j) * xx
+            pnd_solpg(j) = pnd_solpg(j) * xx
+            pnd_chla(j) = pnd_chla(j) * xx
          end if
 
 

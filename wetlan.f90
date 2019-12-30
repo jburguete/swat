@@ -1,31 +1,35 @@
-subroutine wetlan(j)
+!> @file wetlan.f90
+!> file containing the subroutine wetlan
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine simulates wetlands
+!> this subroutine simulates wetlands
+!> @param[in] j HRU number (none)
+subroutine wetlan(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    bw1(:)      |none          |1st shape parameter for wetland surface area
+!!    bw(1,:)     |none          |1st shape parameter for wetland surface area
 !!                               |equation
-!!    bw2(:)      |none          |2nd shape parameter for the wetland surface
+!!    bw(2,:)     |none          |2nd shape parameter for the wetland surface
 !!                               |area equation
 !!    chlaw(:)    |none          |chlorophyll-a production coefficient for
 !!                               |wetland
 !!    hru_dafr(:) |none          |fraction of watershed area in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
-!!    ipnd1(:)    |none          |beginning month of 2nd "season" of nutrient
+!!    ipnd(1,:)    |none          |beginning month of 2nd "season" of nutrient
 !!                               |settling
-!!    ipnd2(:)    |none          |ending month of 2nd "season" of nutrient
+!!    ipnd(2,:)    |none          |ending month of 2nd "season" of nutrient
 !!                               |settling
 !!    minpgw(:)   |kg P/ha       |soluble P loading to reach in groundwater
 !!    no3gw(:)    |kg N/ha       |nitrate loading to reach in groundwater
-!!    nsetlw1(:) |m/day         |nitrogen settling rate for 1st season
-!!    nsetlw2(:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlw(1,:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlw(2,:) |m/day         |nitrogen settling rate for 2nd season
 !!    pet_day     |mm H2O        |potential evapotranspiration for day in HRU
-!!    psetlw1(:) |m/day         |phosphorus settling rate for 1st season
-!!    psetlw2(:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlw(1,:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlw(2,:) |m/day         |phosphorus settling rate for 2nd season
 !!    qdr(:)      |mm H2O        |net water loading from HRU to main channel
 !!    secciw(:)   |none          |water clarity coefficient for wetland
 !!    sed_stl(:)  |kg/kg         |fraction of sediment remaining suspended in
@@ -131,17 +135,19 @@ subroutine wetlan(j)
 !!    xx          |none          |variable to hold intermediate calculation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Max, Min
+
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: vol, cnv, sed, wetsa, xx, phosk, nitrok, tpco
-   real*8 :: wetsani, wetsili, wetclai, wetsagi, wetlagi
-   real*8 :: san, sil, cla, sag, lag, inised, finsed,setsed,remsetsed
-   real*8 :: wetsano, wetsilo, wetclao, wetsago, wetlago
-   real*8 :: qdayi, latqi, chlaco, fr_cur, yy
+   real*8 :: chlaco, cla, cnv, finsed, fr_cur, inised, lag, latqi, nitrok,&
+      &phosk, qdayi, remsetsed, sag, san, sed, setsed, sil, tpco, vol, wetclai,&
+      &wetclao, wetlagi, wetlago, wetsa, wetsagi, wetsago, wetsani, wetsano,&
+      &wetsili, wetsilo, xx, yy
 
    if (wet_fr(j) > 0.) then
       cnv = hru_ha(j) * 10.               !conversion factor
@@ -157,7 +163,7 @@ subroutine wetlan(j)
       lag = wet_lag(j)
 
       !! calculate water balance for day
-      wetsa = bw1(j) * wet_vol(j) ** bw2(j)
+      wetsa = bw(1,j) * wet_vol(j) ** bw(2,j)
 
       wetev = 10. * evwet(j) * pet_day * wetsa
       wetsep = wet_k(j) * wetsa * 240.
@@ -180,8 +186,9 @@ subroutine wetlan(j)
       wetflwi = wetflwi * 10. * (hru_ha(j) * wet_fr(j) - wetsa)
       qdayi = qday
       latqi = latq(j)
-      qday = qday * (1. - wet_fr(j))
-      latq(j) = latq(j) * (1. - wet_fr(j))
+      xx = 1. - wet_fr(j)
+      qday = qday * xx
+      latq(j) = latq(j) * xx
       wetloss = qdayi - qday
       lwetloss = latqi - latq(j)
 
@@ -268,13 +275,13 @@ subroutine wetlan(j)
       else
 
          !! compute new sediment concentration
-         wet_sed(j) = (sed * vol + wetsedi) / wet_vol(j)
-
-         wet_san(j) = (san * vol + wetsani) / wet_vol(j)
-         wet_sil(j) = (sil * vol + wetsili) / wet_vol(j)
-         wet_cla(j) = (cla * vol + wetclai) / wet_vol(j)
-         wet_sag(j) = (sag * vol + wetsagi) / wet_vol(j)
-         wet_lag(j) = (lag * vol + wetlagi) / wet_vol(j)
+         xx = 1. / wet_vol(j)
+         wet_sed(j) = (sed * vol + wetsedi) * xx
+         wet_san(j) = (san * vol + wetsani) * xx
+         wet_sil(j) = (sil * vol + wetsili) * xx
+         wet_cla(j) = (cla * vol + wetclai) * xx
+         wet_sag(j) = (sag * vol + wetsagi) * xx
+         wet_lag(j) = (lag * vol + wetlagi) * xx
 
          !! compute outflow if wetland water volume > 0
          if (wet_vol(j) <= wet_nvol(j)) then
@@ -333,7 +340,6 @@ subroutine wetlan(j)
 
          !! compute sediment leaving wetland
          wetsedo = wet_sed(j) * wetflwo
-
          wetsano = wet_san(j) * wetflwo
          wetsilo = wet_sil(j) * wetflwo
          wetclao = wet_cla(j) * wetflwo
@@ -352,12 +358,12 @@ subroutine wetlan(j)
          wetsedc = vol * sed + wetsedi - wetsedo - wet_sed(j) * wet_vol(j)
          !! determine settling rate for nutrients
          !! part of equation 29.1.3 in SWAT manual
-         if (i_mo >= ipnd1(j) .and. i_mo <= ipnd2(j)) then
-            phosk = psetlw1(j)
-            nitrok = nsetlw1(j)
+         if (i_mo >= ipnd(1,j) .and. i_mo <= ipnd(2,j)) then
+            phosk = psetlw(1,j)
+            nitrok = nsetlw(1,j)
          else
-            phosk = psetlw2(j)
-            nitrok = nsetlw2(j)
+            phosk = psetlw(2,j)
+            nitrok = nsetlw(2,j)
          endif
          xx = wetsa * 10000. / wet_vol(j)
          phosk = phosk * xx
@@ -367,14 +373,16 @@ subroutine wetlan(j)
 
          !! remove nutrients by settling
          !! other part of equation 29.1.3 in SWAT manual
-         wet_solp(j) = wet_solp(j) * (1. - phosk)
-         wet_psed(j) = wet_psed(j) * (1. - phosk)
-         wet_orgp(j) = wet_orgp(j) * (1. - phosk)
-         wet_solpg(j) = wet_solpg(j) * (1. - phosk)
-         wet_orgn(j) = wet_orgn(j) * (1. - nitrok)
-         wet_no3(j) = wet_no3(j) * (1. - nitrok)
-         wet_no3s(j) = wet_no3s(j) * (1. - nitrok)
-         wet_no3g(j) = wet_no3g(j) * (1. - nitrok)
+         xx = 1. - phosk
+         wet_solp(j) = wet_solp(j) * xx
+         wet_psed(j) = wet_psed(j) * xx
+         wet_orgp(j) = wet_orgp(j) * xx
+         wet_solpg(j) = wet_solpg(j) * xx
+         xx = 1. - nitrok
+         wet_orgn(j) = wet_orgn(j) * xx
+         wet_no3(j) = wet_no3(j) * xx
+         wet_no3s(j) = wet_no3s(j) * xx
+         wet_no3g(j) = wet_no3g(j) * xx
 
          if (wet_vol(j) < 1.e-6) wet_vol(j) = 0.0
          if (wet_orgn(j) < 1.e-6) wet_orgn(j) = 0.0
@@ -387,7 +395,7 @@ subroutine wetlan(j)
          if (wet_solpg(j) < 1.e-6) wet_solpg(j) = 0.0
 
          tpco = 1.e+6 * (wet_solp(j) + wet_orgp(j) + wet_psed(j) +&
-         &wet_solpg(j)) / (wet_vol(j) + wetflwo)
+            &wet_solpg(j)) / (wet_vol(j) + wetflwo)
          chlaco = 0.
          wet_chla(j) = 0.
          wet_seci(j) = 0.
@@ -403,25 +411,27 @@ subroutine wetlan(j)
 
          !! compute nutrients leaving wetland
          yy = wetflwo / (wet_vol(j) + wetflwo)
-         sedorgn(j) = sedorgn(j) + wet_orgn(j) * yy / hru_ha(j)
-         surqno3(j) = surqno3(j) + wet_no3(j) * yy / hru_ha(j)
-         latno3(j) = latno3(j) + wet_no3s(j) * yy / hru_ha(j)
-         no3gw(j) = no3gw(j) + wet_no3g(j) * yy / hru_ha(j)
-         sedorgp(j) = sedorgp(j) + wet_orgp(j) * yy / hru_ha(j)
-         sedminps(j) = sedminps(j) + wet_psed(j) * yy / hru_ha(j)
-         surqsolp(j) = surqsolp(j) + wet_solp(j) * yy / hru_ha(j)
-         minpgw(j) = minpgw(j) + wet_solpg(j) * yy / hru_ha(j)
+         xx = yy / hru_ha(j)
+         sedorgn(j) = sedorgn(j) + wet_orgn(j) * xx
+         surqno3(j) = surqno3(j) + wet_no3(j) * xx
+         latno3(j) = latno3(j) + wet_no3s(j) * xx
+         no3gw(j) = no3gw(j) + wet_no3g(j) * xx
+         sedorgp(j) = sedorgp(j) + wet_orgp(j) * xx
+         sedminps(j) = sedminps(j) + wet_psed(j) * xx
+         surqsolp(j) = surqsolp(j) + wet_solp(j) * xx
+         minpgw(j) = minpgw(j) + wet_solpg(j) * xx
 
          !!update nutrient pools in wetlands
-         wet_orgn(j) = wet_orgn(j) * (1. - yy)
-         wet_no3(j) = wet_no3(j) * (1. - yy)
-         wet_no3s(j) = wet_no3s(j) * (1. - yy)
-         wet_no3g(j) = wet_no3g(j) * (1. - yy)
-         wet_orgp(j) = wet_orgp(j) * (1. - yy)
-         wet_psed(j) = wet_psed(j) * (1. - yy)
-         wet_solp(j) = wet_solp(j) * (1. - yy)
-         wet_solpg(j) = wet_solpg(j) * (1. - yy)
-         wet_chla(j) = wet_chla(j) * (1. - yy)
+         xx = 1. - yy
+         wet_orgn(j) = wet_orgn(j) * xx
+         wet_no3(j) = wet_no3(j) * xx
+         wet_no3s(j) = wet_no3s(j) * xx
+         wet_no3g(j) = wet_no3g(j) * xx
+         wet_orgp(j) = wet_orgp(j) * xx
+         wet_psed(j) = wet_psed(j) * xx
+         wet_solp(j) = wet_solp(j) * xx
+         wet_solpg(j) = wet_solpg(j) * xx
+         wet_chla(j) = wet_chla(j) * xx
 
       end if
 

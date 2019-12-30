@@ -108,10 +108,10 @@ subroutine rchday
    use parm
    implicit none
 
+   integer Icl
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
    integer :: ii, j, kk
-   integer :: Icl
 
    do j = 1, subtot
 

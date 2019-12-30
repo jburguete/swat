@@ -13,10 +13,10 @@ subroutine writed
 !!    hrupest(:)  |none          |pesticide use flag:
 !!                               | 0: no pesticides used in HRU
 !!                               | 1: pesticides used in HRU
-!!    hrupstd(:,1,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstd(1,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU on day
 !!                               |(in solution)
-!!    hrupstd(:,2,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstd(2,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU on day
 !!                               |(sorbed to sediment)
 !!    iida        |julian date   |current day of simulation
@@ -74,13 +74,13 @@ subroutine writed
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    hrupstm(:,1,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstm(1,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during month
 !!                               |(in solution)
-!!    hrupstm(:,2,:)|mg pst      |amount of pesticide type in surface runoff
+!!    hrupstm(2,:,:)|mg pst      |amount of pesticide type in surface runoff
 !!                               |contribution to stream from HRU during month
 !!                               |(sorbed to sediment)
-!!    hrupstm(:,3,:)|mg pst/ha   |total pesticide loading to stream in surface
+!!    hrupstm(3,:,:)|mg pst/ha   |total pesticide loading to stream in surface
 !!                               |runoff from HRU during month
 !!    wshddayo(12)|metric tons/ha|sediment yield from HRUs in watershed
 !!                               |for day
@@ -149,11 +149,11 @@ subroutine writed
          if (hrupest(j) == 1) then
             pstsum = 0.
             do k = 1, npmx
-               pstsum = pstsum + hrupstd(k,1,j) + hrupstd(k,2,j)
+               pstsum = pstsum + hrupstd(1,k,j) + hrupstd(2,k,j)
             end do
             if (pstsum > 0. .and. iprp == 1) then
                write (30,5100) subnum(j), hruno(j), iyr, iida,&
-                  &(hrupstd(k,1,j), hrupstd(k,2,j), k = 1, npmx)
+                  &(hrupstd(1,k,j), hrupstd(2,k,j), k = 1, npmx)
             end if
          end if
       end do
