@@ -1,12 +1,12 @@
-subroutine irr_rch
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the irrigation operation when the water
-!!    source is a reach
+!> this subroutine performs the irrigation operation when the water
+!> source is a reach
+!> @param[in] jrch reach number (none)
+subroutine irr_rch(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch            |none          |reach number
 !!    aird(:)         |mm H2O        |amount of water applied to HRU on current
 !!                                   |day
 !!    auto_wstr(:)    |none or mm    |water stress factor which triggers auto
@@ -27,7 +27,6 @@ subroutine irr_rch
 !!    wstrs_id(:)     |none          |water stress identifier:
 !!                                   |1 plant water demand
 !!                                   |2 soil water deficit
-!!    inum1           |none          |reach number
 !!    ipot(:)         |none          |number of HRU (in subbasin) that is ponding
 !!                                   |water--the HRU that the surface runoff from
 !!                                   |current HRU drains into. This variable is
@@ -91,7 +90,7 @@ subroutine irr_rch
 !!                               |0 no irrigation operation on current day
 !!                               |1 scheduled irrigation
 !!                               |2 auto irrigation
-!!    jrch        |none          |reach number
+!!    ii          |none          |HRU number
 !!    k           |none          |HRU number
 !!    vminmm      |mm H2O        |maximum amount of water available for
 !!                               |irrigation from reach
@@ -100,12 +99,14 @@ subroutine irr_rch
 !!                               |operation
 !!    vol         |m^3 H2O       |volume of water applied in irrigation
 !!                               |operation
+!!    wtr_avail
 !!    wtrin       |m^3 H2O       |water outflow from reach prior to subtracting
 !!                               |irrigation diversions
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: abs, Min
+!!    Intrinsic: Abs, Min, Dmax1
 !!    SWAT: irrigate
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -113,10 +114,9 @@ subroutine irr_rch
    use parm
    implicit none
 
-   integer :: jrch, k, flag, ii
-   real*8 :: cnv, vmm, vminmm, vol, wtrin, vmxi, wtr_avail, xx
-
-   jrch = inum1
+   integer, intent(in) :: jrch
+   real*8 :: cnv, vminmm, vmm, vmxi, vol, wtr_avail, wtrin, xx
+   integer :: flag, ii, k
 
    wtrin = rtwtr + rchstor(jrch)
 
@@ -126,7 +126,7 @@ subroutine irr_rch
       if (auto_wstr(k) > 0.) then
          if (wstrs_id(k) == 1 .and. strsw(k) < auto_wstr(k)) flag = 2
          if (wstrs_id(k) == 2 .and. sol_sumfc(k) - sol_sw(k) >&
-         &auto_wstr(k)) flag = 2
+            &auto_wstr(k)) flag = 2
       end if
 
       !! Set parameters based on manual or auto irrigation
@@ -151,7 +151,7 @@ subroutine irr_rch
                !! compute maximum amount of water allowed in HRU
                if (divmax(k) < 0.) then
                   !!divmax units are 10^4 m^3
-                  vmm = abs(divmax(k)) * 10000. / cnv
+                  vmm = Abs(divmax(k)) * 10000. / cnv
                else
                   !! divmax units are mm H2O
                   vmm = divmax(k)
@@ -176,15 +176,9 @@ subroutine irr_rch
                if (vmm > 0.) then
                   vol = vmm * cnv
 
-                  !!         if (ipot(k) == k) then
-                  !if (pot_fr(k) > 1.e-6) then
-                  !  pot_vol(k) = pot_vol(k) + vol / (10. * potsa(k))
-                  !else
-                  call irrigate(k,vmm)
-                  !end if
+                  call irrigate(k, vmm)
 
                   !! subtract irrigation from reach outflow
-                  !!     if (ipot(k) /= k) then
                   if (pot_fr(k) > 1.e-6) then
                      vol = aird(k) * cnv
                   end if
@@ -194,7 +188,6 @@ subroutine irr_rch
                         if (hrtwtr(ii) < 0.) hrtwtr(ii) = 0.
                      end do
                   end if
-!!                xx = vol                                       !! BN: replaced "wtrin" with "vol"
                   vol = vol / irr_eff(k)   !! BN: inserted to account for irr. efficiency
                   xx = (wtr_avail - flowmin(k) * 86400.) * flowfr(k)                 !! BN: inserted: xx = available/allowed amount in m3/s
                   xx = Min(xx, vol)                                                  !! BN: inserted dabstracted water cannot be more than allowed/available amount
@@ -207,7 +200,7 @@ subroutine irr_rch
                   end if
                   if (xx > 0.) then
                      rtwtr = rtwtr - xx
-                     rtwtr = dmax1(0., rtwtr)
+                     rtwtr = Dmax1(0., rtwtr)
                   end if
 
                   !! advance irrigation operation number
@@ -219,11 +212,11 @@ subroutine irr_rch
 
                if (imgt == 1) then
                   write (143, 1000) subnum(k), hruno(k), iyr, i_mo, iida,&
-                  &hru_km(k), "         ",  " AUTOIRR", phubase(k), phuacc(k),&
-                  &sol_sw(k), bio_ms(k), sol_rsd(1,k),sol_sumno3(k),&
-                  &sol_sumsolp(k), aird(k), irrsc(k), irrno(k)
+                     &hru_km(k), "         ",  " AUTOIRR", phubase(k),&
+                     &phuacc(k), sol_sw(k), bio_ms(k), sol_rsd(1,k),&
+                     &sol_sumno3(k), sol_sumsolp(k), aird(k), irrsc(k), irrno(k)
 1000              format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,10x,f10.2,70x,&
-                  &i10,10x,i10)
+                     &i10,10x,i10)
                end if
             end if
          end if

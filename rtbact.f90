@@ -1,11 +1,16 @@
-subroutine rtbact
+!> @file rtbact.f90
+!> file containing the subroutine rtbact
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes bacteria through the stream network
+!> this subroutine routes bacteria through the stream network
+!> @param[in] jrch reach number (none)
+subroutine rtbact(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch             |none          |reach number
 !!    hrchwtr(:)       |m^3 H2O     |water stored in reach at beginning of hour
 !!    hhvaroute(2,:,:) |m^3 H2O     |water flowing into reach on day
 !!    hhvaroute(18,:,:)|# cfu/100ml |persistent bacteria
@@ -15,7 +20,6 @@ subroutine rtbact
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    inum1            |none        |reach number
 !!    inum2            |none        |inflow hydrograph storage location number
 !!    rch_bactlp(:)    |# cfu/100ml |less persistent bacteria stored in reach
 !!    rch_bactp(:)     |# cfu/100ml |persistent bacteria stored in reach
@@ -54,7 +58,6 @@ subroutine rtbact
 !!                               |of hour (less persistent)
 !!    initp       |# cfu/100mL   |bacteria concentration in reach at beginning
 !!                               |of hour (persistent)
-!!    jrch        |none          |reach number
 !!    netwtr      |m^3 H2O       |net amount of water in reach during time step
 !!    tday        |day           |routing time for the reach
 !!    totbactlp   |10^4 cfu      |mass less persistent bacteria
@@ -63,7 +66,7 @@ subroutine rtbact
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max
+!!    Intrinsic: Max, Exp
 !!    SWAT: Theta
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -72,18 +75,15 @@ subroutine rtbact
    implicit none
 
    real*8 Theta
-   integer :: ii, jrch
-   real*8 :: totbactp, totbactlp, netwtr, initlp, initp
-   real*8 :: tday, wtmp
-
-   jrch = inum1
+   integer, intent(in) :: jrch
+   real*8 :: initlp, initp, netwtr, tday, totbactlp, totbactp, wtmp
+   integer :: ii
 
    !! calculate temperature in stream
    !! Stefan and Preudhomme. 1993.  Stream temperature estimation
    !! from air temperature.  Water Res. Bull. p. 27-45
    !! SWAT manual equation 2.3.13
-   wtmp = 5.0 + 0.75 * tmpav(jrch)
-   if (wtmp <= 0.) wtmp = 0.1
+   wtmp = Max(0.1, 5.0 + 0.75 * tmpav(jrch))
 
 !     skipping hourly bacteria route for now  04/16/07 nubs
    if (ievent > 0) then                !! hourly mass balance
@@ -93,9 +93,9 @@ subroutine rtbact
       do ii = 1, nstep
          !! total bacteria mass in reach
          totbactp = hhvaroute(18,inum2,ii) * hhvaroute(2,inum2,ii) *&
-         &(1. - rnum1) + initp * hrchwtr(ii)
+            &(1. - rnum1) + initp * hrchwtr(ii)
          totbactlp = hhvaroute(19,inum2,ii) * hhvaroute(2,inum2,ii) *&
-         &(1. - rnum1) + initlp * hrchwtr(ii)
+            &(1. - rnum1) + initlp * hrchwtr(ii)
 
          !! compute bacteria die-off
          totbactp = totbactp * Exp(-Theta(wdprch / 24.,thbact,wtmp))
@@ -128,9 +128,9 @@ subroutine rtbact
       !! total bacteria mass in reach
 
       totbactp = varoute(18,inum2) * varoute(2,inum2) * (1. - rnum1)&
-      &+ rch_bactp(jrch) * rchwtr
+         &+ rch_bactp(jrch) * rchwtr
       totbactlp = varoute(19,inum2) * varoute(2,inum2) *&
-      &(1. - rnum1) + rch_bactlp(jrch) * rchwtr
+         &(1. - rnum1) + rch_bactlp(jrch) * rchwtr
 
       !! compute bacteria die-off
       !! calculate flow duration

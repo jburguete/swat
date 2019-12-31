@@ -16,7 +16,7 @@ subroutine route(i, jrch)
 !!                               | 2 = Kodatie
 !!                               | 3 = Molinas Wu
 !!                               | 4 = Yang
-!!    ch_l(2,:)    |km            |length of main channel
+!!    ch_l(2,:)   |km            |length of main channel
 !!    ch_revap(:) |none          |revap coeff: this variable controls the amount
 !!                               |of water moving from bank storage to the root
 !!                               |zone as a result of soil moisture depletion
@@ -224,14 +224,14 @@ subroutine route(i, jrch)
    if (ievent == 0) then
       call rtpest(jrch)
    else
-      call rthpest
+      call rthpest(jrch)
    end if
 
 !! perform in-stream bacteria calculations
-   call rtbact
+   call rtbact(jrch)
 
 !! remove water from reach for irrigation
-   call irr_rch
+   call irr_rch(jrch)
 
 !! remove water from reach for consumptive water use
    call rchuse

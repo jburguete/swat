@@ -1,3 +1,8 @@
+!> @file rtpest.f90
+!> file containing the subroutine rtpest
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine computes the daily stream pesticide balance
 !> (soluble and sorbed)
 !> @param[in] jrch reach number (none)
@@ -76,6 +81,7 @@ subroutine rtpest(jrch)
 !!                               |during time step
 !!    sedcon      |g/m^3         |sediment concentration
 !!    sedpstmass  |mg pst        |mass of pesticide in bed sediment
+!!    solmax
 !!    solpstin    |mg pst        |soluble pesticide entering reach during
 !!                               |time step
 !!    sorpstin    |mg pst        |sorbed pesticide entering reach during
@@ -86,7 +92,7 @@ subroutine rtpest(jrch)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: abs
+!!    Intrinsic: Abs
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -94,8 +100,8 @@ subroutine rtpest(jrch)
    implicit none
 
    integer, intent(in) :: jrch
-   real*8 :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
-   real*8 :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
+   real*8 :: bedvol, chpstmass, depth, fd2, frsol, frsrb, pstin, sedcon,&
+      &sedpstmass, solmax, solpstin, sorpstin, tday, wtrin
 
 !! initialize depth of water for pesticide calculations
    if (rchdep < 0.1) then
@@ -114,14 +120,6 @@ subroutine rtpest(jrch)
    solpstin = varoute(11,inum2) * (1. - rnum1)
    sorpstin = varoute(12,inum2) * (1. - rnum1)
    pstin = solpstin + sorpstin
-
-!! add pesticide drifting from HRUs in subbasin to reach
-!      if (rtwtr > 0.) then
-!        pstin = pstin + (drift(jrch) * 1.e6)
-!      else
-!        sedpst_conc(jrch) = sedpst_conc(jrch) + drift(jrch) * 1.e6 /    &
-!     &                                                            bedvol
-!      endif
 
    !! calculate mass of pesticide in reach
    chpstmass = pstin + chpst_conc(jrch) * rchwtr
@@ -202,23 +200,23 @@ subroutine rtpest(jrch)
 
       !! calculate diffusion of pesticide between reach and sediment
       difus = chpst_mix(jrch) * (fd2 * sedpstmass - frsol *&
-      &chpstmass) * tday / depth
+         &chpstmass) * tday / depth
       if (difus > 0.) then
          if (difus > sedpstmass) then
             difus = sedpstmass
             sedpstmass = 0.
          else
-            sedpstmass = sedpstmass - abs(difus)
+            sedpstmass = sedpstmass - Abs(difus)
          end if
-         chpstmass = chpstmass + abs(difus)
+         chpstmass = chpstmass + Abs(difus)
       else
-         if (abs(difus) > chpstmass) then
+         if (Abs(difus) > chpstmass) then
             difus = -chpstmass
             chpstmass = 0.
          else
-            chpstmass = chpstmass - abs(difus)
+            chpstmass = chpstmass - Abs(difus)
          end if
-         sedpstmass = sedpstmass + abs(difus)
+         sedpstmass = sedpstmass + Abs(difus)
       end if
 
       !! calculate removal of pesticide from active sediment layer

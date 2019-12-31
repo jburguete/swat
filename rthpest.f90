@@ -1,13 +1,18 @@
-subroutine rthpest
+!> @file rthpest.f90
+!> file containing the subroutine rthpest
+!> @author
+!> modified by Javier Burguete
 
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     this subroutine computes the hourly stream pesticide balance
-!!     (soluble and sorbed)
+!> this subroutine computes the hourly stream pesticide balance
+!> (soluble and sorbed)
+!> @param[in] jrch reach number (none)
+subroutine rthpest(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_l(2,:)      |km            |length of main channel
+!!    jrch          |none          |reach number
+!!    ch_l(2,:)     |km            |length of main channel
 !!    ch_w(2,:)     |m             |average width of main channel
 !!    chpst_conc(:) |mg/(m**3)     |initial pesticide concentration in reach
 !!    chpst_koc(:)  |m**3/g        |pesticide partition coefficient between
@@ -25,7 +30,6 @@ subroutine rthpest
 !!                                 |channel in subbasin
 !!    hdepth(:)     |m             |depth of flow in hour
 !!    hru_sub(:)    |none          |subbasin number where reach is located
-!!    inum1         |none          |reach number
 !!    inum2         |none          |inflow hydrograph storage location number
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rnum1         |none          |fraction of overland flow
@@ -74,11 +78,11 @@ subroutine rthpest
 !!    frsol       |none          |fraction of pesticide in reach that is soluble
 !!    frsrb       |none          |fraction of pesticide in reach that is sorbed
 !!    ii          |none          |counter
-!!    jrch        |none          |reach number
 !!    pstin       |mg pst        |total pesticide transported into reach
 !!                               |during time step
 !!    sedcon      |g/m^3         |sediment concentration
 !!    sedpstmass  |mg pst        |mass of pesticide in bed sediment
+!!    solmax
 !!    solpstin    |mg pst        |soluble pesticide entering reach during
 !!                               |time step
 !!    sorpstin    |mg pst        |sorbed pesticide entering reach during
@@ -89,18 +93,17 @@ subroutine rthpest
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: abs
+!!    Intrinsic: Abs
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jrch, ii
-   real*8 :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
-   real*8 :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, thour
-
-   jrch = inum1
+   integer, intent(in) :: jrch
+   real*8 :: bedvol, chpstmass, depth, fd2, frsol, frsrb, pstin, sedcon,&
+      &sedpstmass, solmax, solpstin, sorpstin, thour, wtrin
+   integer :: ii
 
 !! calculate volume of active river bed sediment layer
    bedvol = ch_w(2,jrch) * ch_l(2,jrch) * 1000. * sedpst_act(jrch)
@@ -123,14 +126,6 @@ subroutine rthpest
       solpstin = hhvaroute(11,inum2,ii) * (1. - rnum1)
       sorpstin = hhvaroute(12,inum2,ii) * (1. - rnum1)
       pstin = solpstin + sorpstin
-
-!! add pesticide drifting from HRUs in subbasin to reach
-!      if (rtwtr > 0.) then
-!        pstin = pstin + (drift(jrch) * 1.e6)
-!      else
-!        sedpst_conc(jrch) = sedpst_conc(jrch) + drift(jrch) * 1.e6 /    &
-!     &                                                            bedvol
-!      endif
 
       !! calculate mass of pesticide in reach
       chpstmass = pstin + chpst_conc(jrch) * hrchwtr(ii)
@@ -156,7 +151,6 @@ subroutine rthpest
             else
                frsol = solpstin / (solpstin + sorpstin)
             end if
-!         frsol = 1. / (1. + chpst_koc(jrch) * sedcon)
             frsrb = 1. - frsol
          else
             !!drifting pesticide is only pesticide entering
@@ -210,23 +204,23 @@ subroutine rthpest
 
          !! calculate diffusion of pesticide between reach and sediment
          difus = chpst_mix(jrch) * (fd2 * sedpstmass - frsol *&
-         &chpstmass) * thour / (depth * 24.)
+            &chpstmass) * thour / (depth * 24.)
          if (difus > 0.) then
             if (difus > sedpstmass) then
                difus = sedpstmass
                sedpstmass = 0.
             else
-               sedpstmass = sedpstmass - abs(difus)
+               sedpstmass = sedpstmass - Abs(difus)
             end if
-            chpstmass = chpstmass + abs(difus)
+            chpstmass = chpstmass + Abs(difus)
          else
-            if (abs(difus) > chpstmass) then
+            if (Abs(difus) > chpstmass) then
                difus = -chpstmass
                chpstmass = 0.
             else
-               chpstmass = chpstmass - abs(difus)
+               chpstmass = chpstmass - Abs(difus)
             end if
-            sedpstmass = sedpstmass + abs(difus)
+            sedpstmass = sedpstmass + Abs(difus)
          end if
 
          !! calculate removal of pesticide from active sediment layer

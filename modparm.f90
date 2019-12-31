@@ -2272,6 +2272,7 @@ module parm
    real*8, dimension (:), allocatable :: drift
 !> dissolved oxygen concentration in reach (mg O2/L)
    real*8, dimension (:), allocatable :: rch_dox
+!> persistent bacteria in reach/outflow at end of day (# cfu/100ml)
    real*8, dimension (:), allocatable :: rch_bactp
 !> alpha factor for bank storage recession curve (days)
    real*8, dimension (:), allocatable :: alpha_bnk
@@ -2392,6 +2393,7 @@ module parm
    real*8, dimension (:), allocatable :: chpst_rea
 !> pesticide volatilization coefficient in reach (m/day)
    real*8, dimension (:), allocatable :: chpst_vol
+!> initial pesticide concentration in reach (mg/(m^3))
    real*8, dimension (:), allocatable :: chpst_conc
 !> pesticide partition coefficient between water and sediment in reach (m^3/g)
    real*8, dimension (:), allocatable :: chpst_koc
@@ -2413,6 +2415,7 @@ module parm
    real*8, dimension (:), allocatable :: sedpst_act
 !> carbonaceous biochemical oxygen demand in reach (mg O2/L)
    real*8, dimension (:), allocatable :: rch_cbod
+!> less persistent bacteria in reach/outflow at end of day (# cfu/100ml)
    real*8, dimension (:), allocatable :: rch_bactlp
 !> change in horizontal distance per unit vertical distance (0.0 - 5)\n
 !> 0 = for vertical channel bank\n
@@ -3223,7 +3226,9 @@ module parm
 !> hhvaroute(14,:,:) ammonium (kg N)\n
 !> hhvaroute(15,:,:) nitrite (kg N)\n
 !> hhvaroute(16,:,:) carbonaceous biological oxygen demand (kg)\n
-!> hhvaroute(17,:,:) dissolved oxygen (kg O2)
+!> hhvaroute(17,:,:) dissolved oxygen (kg O2)\n
+!> hhvaroute(18,:,:) persistent bacteria (# cfu/100ml)\n
+!> hhvaroute(19,:,:) less persistent bacteria (# cfu/100ml)
    real*8, dimension (:,:,:), allocatable :: hhvaroute
 !> routing command code (none):\n
 !> 0 = finish\n
@@ -4183,7 +4188,7 @@ module parm
    integer, dimension (:), allocatable :: igrz
 !> number of days HRU has been grazed (days)
    integer, dimension (:), allocatable :: ndeat
-!> subbasin in which HRU/reach is located (none)
+!> subbasin number in which HRU/reach is located (none)
    integer, dimension (:), allocatable :: hru_sub
 !> urban land type identification number from urban database (urban.dat) (none)
    integer, dimension (:), allocatable :: urblu
@@ -4417,7 +4422,10 @@ module parm
    real*8, dimension (:), allocatable :: hdisox,hchla,hsedyld,hsedst
 !> cross-sectional area of flow (m^2)
    real*8, dimension (:), allocatable :: hharea
-   real*8, dimension (:), allocatable :: hsolpst,hsorpst
+!> soluble pesticide concentration in outflow on day (mg pst/m^3)
+   real*8, dimension (:), allocatable :: hsolpst
+!> sorbed pesticide concentration in outflow on day (mg pst/m^3)
+   real*8, dimension (:), allocatable :: hsorpst
 !> surface runoff generated each timestep of day in HRU (mm H2O)
    real*8, dimension (:), allocatable :: hhqday
 !> precipitation, or effective precipitation reaching soil surface, in time step
@@ -4425,7 +4433,10 @@ module parm
    real*8, dimension (:), allocatable :: precipdt
 !> travel time of flow in reach for hour (hour)
    real*8, dimension (:), allocatable :: hhtime
-   real*8, dimension (:), allocatable :: hbactp,hbactlp
+!> less persistent bacteria in reach/outflow during hour (# cfu/100mL)
+   real*8, dimension (:), allocatable :: hbactlp
+!> persistent bacteria in reach/outflow during hour (# cfu/100mL)
+   real*8, dimension (:), allocatable :: hbactp
 ! store initial values
    integer, dimension (10) :: ivar_orig
    real*8, dimension (10) :: rvar_orig
