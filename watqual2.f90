@@ -1,10 +1,13 @@
+!> @file watqual2.f90
+!> file containing the subroutine watqual2
+!> @author
+!> adapted by Ann van Griensven, Belgium.\n
+!> Modified by Javier Burguete
+
+!> this subroutine performs in-stream nutrient transformations and water
+!> quality calculations
+!> @param[in] jrch reach number (none)
 subroutine watqual2(jrch)
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs in-stream nutrient transformations and water
-!!    quality calculations
-
-!!    adapted by Ann van Griensven, Belgium
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -142,8 +145,18 @@ subroutine watqual2(jrch)
 !!    chlin       |mg chl-a/L    |chlorophyll-a concentration in inflow
 !!    cinn        |mg N/L        |effective available nitrogen concentration
 !!    cordo       |none          |nitrification rate correction factor
+!!    dalgae
+!!    dbod
+!!    dchla
+!!    ddisox
 !!    disoxin     |mg O2/L       |dissolved oxygen concentration in inflow
 !!    dispin      |mg P/L        |soluble P concentration in inflow
+!!    dnh4
+!!    dno2
+!!    dno3
+!!    dorgn
+!!    dorgp
+!!    dsolp
 !!    f1          |none          |fraction of algal nitrogen uptake from
 !!                               |ammonia pool
 !!    fl_1        |none          |growth attenuation factor for light, based on
@@ -153,6 +166,7 @@ subroutine watqual2(jrch)
 !!    fnn         |none          |algal growth limitation factor for nitrogen
 !!    fpp         |none          |algal growth limitation factor for phosphorus
 !!    gra         |1/day         |local algal growth rate at 20 deg C
+!!    heatin
 !!    lambda      |1/m           |light extinction coefficient
 !!    nh3con      |mg N/L        |initial ammonia concentration in reach
 !!    nitratin    |mg N/L        |nitrate concentration in inflow
@@ -165,6 +179,7 @@ subroutine watqual2(jrch)
 !!    orgnin      |mg N/L        |organic N concentration in inflow
 !!    orgpcon     |mg P/L        |initial organic P concentration in reach
 !!    orgpin      |mg P/L        |organic P concentration in inflow
+!!    setl
 !!    solpcon     |mg P/L        |initial soluble P concentration in reach
 !!    tday        |none          |flow duration (fraction of 24 hr)
 !!    thbc1       |none          |temperature adjustment factor for local
@@ -197,12 +212,12 @@ subroutine watqual2(jrch)
 !!                               |organic N settling rate
 !!    thrs5       |none          |temperature adjustment factor for local
 !!                               |organic P settling rate
-!!    wtmp        |deg C         |temperature of water in reach
-!!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    uu          |varies        |variable to hold intermediate calculation
 !!                               |result
 !!    vv          |varies        |variable to hold intermediate calculation
 !!                               |result
+!!    wtmp        |deg C         |temperature of water in reach
+!!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    wtrtot      |m^3 H2O       |inflow + storage water
 !!    ww          |varies        |variable to hold intermediate calculation
 !!                               |result
@@ -215,28 +230,26 @@ subroutine watqual2(jrch)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Log, Exp, Min
-!!    SWAT: Theta
+!!    Intrinsic: Exp, Log, Min
+!!    SWAT: Theta, Oxygen_saturation
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   real*8 Theta
+   real*8 Theta, Oxygen_saturation
    integer, intent(in) :: jrch
-   real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-   real*8 :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra
-   real*8 :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn, heatin
-   real*8 :: uu, vv, cordo, f1, algcon, orgncon, nh3con, no2con, no3con
-   real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot, bc1mod, bc2mod
-   real*8, parameter :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
-   real*8, parameter :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
-   real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
-   real*8, parameter :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
-!      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
-   real*8 :: dalgae, dchla, dorgn, dnh4, dno2, dno3,dorgp,dsolp
-   real*8 :: dbod, ddisox, setl
+   real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047,&
+      &thbc4 = 1.047, thgra = 1.047, thrho = 1.047, thrk1 = 1.047,&
+      &thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060, thrs1 = 1.024,&
+      &thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
+   real*8 :: algcon, algi, algin, ammoin, bc1mod, bc2mod, cbodcon, cbodin,&
+      &chlin, cinn, cordo, dalgae, dbod, dchla, ddisox, disoxin, dispin, dnh4,&
+      &dno2, dno3, dorgn, dorgp, dsolp, f1, fl_1, fll, fnn, fpp, gra, heatin,&
+      &lambda, nh3con, nitratin, nitritin, no2con, no3con, o2con, orgncon,&
+      &orgnin, orgpcon, orgpin, setl, solpcon, tday, uu, vv, wtmp, wtrin,&
+      &wtrtot, ww, xx, yy, zz
 
    !! initialize water flowing into reach
    wtrin = varoute(2,inum2) * (1. - rnum1)
@@ -256,9 +269,6 @@ subroutine watqual2(jrch)
       o2con  = rch_dox(jrch)
       wtmp = wattemp(jrch)
 
-! write(104,*) 't',jrch,disoxin, wtrin, rch_dox(jrch)
-!         o2con = (disoxin * wtrin + rch_dox(jrch) * rchwtr) / wtrtot
-
       !! calculate temperature in stream
       !! Stefan and Preudhomme. 1993.  Stream temperature estimation
       !! from air temperature.  Water Res. Bull. p. 27-45
@@ -272,24 +282,12 @@ subroutine watqual2(jrch)
 
       !! calculate saturation concentration for dissolved oxygen
       !! QUAL2E section 3.6.1 equation III-29
-      ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
-      xx = 6.642308e07 / ((wtmp + 273.15)**2)
-      yy = 1.243800e10 / ((wtmp + 273.15)**3)
-      zz = 8.621949e11 / ((wtmp + 273.15)**4)
-      soxy = Exp(ww - xx + yy - zz)
-      if (soxy < 1.e-6) soxy = 0.
+      soxy = Oxygen_saturation(wtmp)
 !! end initialize concentrations
 
 !! O2 impact calculations
       !! calculate nitrification rate correction factor for low
       !! oxygen QUAL2E equation III-21
-!       write(104, *) o2con, 'o'
-      !! the following 3 lines are overwritten
-!      o2con2=o2con
-!      if (o2con2.le.0.1) o2con2=0.1
-!      if (o2con2.gt.30.) o2con2=30.
-!      cordo = 1.0 - Exp(-0.6 * o2con2)
-!       write(104, *) cordo, 'cordo'
       if (o2con.le.0.001) o2con=0.001
       if (o2con.gt.30.) o2con=30.
       cordo = 1.0 - Exp(-0.6 * o2con)
@@ -308,7 +306,7 @@ subroutine watqual2(jrch)
       !! (algal self shading) QUAL2E equation III-12
       if (ai0 * algcon > 1.e-6) then
          lambda = lambda0 + (lambda1 * ai0 * algcon) + lambda2 *&
-         &(ai0 * algcon) ** (.66667)
+            &(ai0 * algcon) ** (.66667)
       else
          lambda = lambda0
       endif
@@ -330,7 +328,7 @@ subroutine watqual2(jrch)
       !! calculate growth attenuation factor for light, based on
       !! daylight average light intensity QUAL2E equation III-7b
       fl_1 = (1. / (lambda * rchdep)) *&
-      &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * rchdep))))
+         &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * rchdep))))
       fll = 0.92 * (dayl(hru1(jrch)) / 24.) * fl_1
 
       !! calculcate local algal growth rate
@@ -354,9 +352,9 @@ subroutine watqual2(jrch)
       !! calculate algal biomass concentration at end of day
       !! (phytoplanktonic algae)
       !! QUAL2E equation III-2
-      setl=min(1.,Theta(rs1(jrch),thrs1,wtmp)/ rchdep)
+      setl = Min(1., Theta(rs1(jrch),thrs1,wtmp) / rchdep)
       dalgae = algcon + (Theta(gra,thgra,wtmp) * algcon -&
-      &Theta(rhoq,thrho,wtmp) * algcon - setl * algcon) * tday
+         &Theta(rhoq,thrho,wtmp) * algcon - setl * algcon) * tday
       if (dalgae < 0.00001) algae(jrch) = 0.00001
 
       !! calculate chlorophyll-a concentration at end of day
@@ -376,34 +374,33 @@ subroutine watqual2(jrch)
       !! calculate dissolved oxygen concentration if reach at
       !! end of day QUAL2E section 3.6 equation III-28
 
-      vv = 0.
-      xx = 0.
-      yy = 0.
-      zz = 0.
-      !hh=Theta(rk2(jrch),thrk2,wtmp) ! not used
       uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
       if (algcon.gt.0.001) then
          vv = (ai3 * Theta(gra,thgra,wtmp) - ai4&
-         &* Theta(rhoq,thrho,wtmp)) * algcon
-
+            &* Theta(rhoq,thrho,wtmp)) * algcon
       else
+         vv = 0.
          algcon=0.001
       end if
       ww = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
-
-      if(rchdep.gt.0.001) xx = Theta(rk4(jrch),thrk4,wtmp) / (rchdep * 1000.)
+      if (rchdep.gt.0.001) then
+         xx = Theta(rk4(jrch),thrk4,wtmp) / (rchdep * 1000.)
+      else
+         xx = 0.
+      end if
       if (nh3con.gt.0.001) then
          yy = ai5 * Theta(bc1mod,thbc1,wtmp) * nh3con
       else
+         yy = 0.
          nh3con=0.001
       end if
       if (no2con.gt.0.001) then
          zz = ai6 * Theta(bc2mod,thbc2,wtmp) * no2con
       else
+         zz = 0.
          no2con=0.001
       end if
       ddisox = o2con + (uu + vv - ww - xx - yy - zz) * tday
-      !o2proc=o2con-ddisox ! not used
       if (ddisox < 0.00001) ddisox = 0.00001
 !! end oxygen calculations
 
@@ -477,17 +474,19 @@ subroutine watqual2(jrch)
       cinn = 0.
 
       if (wtrin > 0.001) then
-         chlin = 1000. * varoute(13,inum2) * (1. - rnum1) / wtrin
+         xx = 1. - rnum1
+         yy = 1000. * xx / wtrin
+         chlin = varoute(13,inum2) * yy
          algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-         orgnin = 1000. * varoute(4,inum2) * (1. - rnum1) / wtrin
-         ammoin = 1000. * varoute(14,inum2) * (1. - rnum1) / wtrin
-         nitritin = 1000. * varoute(15,inum2) * (1. - rnum1) / wtrin
-         nitratin = 1000. * varoute(6,inum2) * (1. - rnum1) / wtrin
-         orgpin = 1000. * varoute(5,inum2) * (1. - rnum1) / wtrin
-         dispin = 1000. * varoute(7,inum2) * (1. - rnum1) / wtrin
-         cbodin = 1000. * varoute(16,inum2) * (1. - rnum1) / wtrin
-         disoxin= 1000. * varoute(17,inum2) * (1. - rnum1) / wtrin
-         heatin = varoute(1,inum2) * (1. - rnum1)
+         orgnin = varoute(4,inum2) * yy
+         ammoin = varoute(14,inum2) * yy
+         nitritin = varoute(15,inum2) * yy
+         nitratin = varoute(6,inum2) * yy
+         orgpin = varoute(5,inum2) * yy
+         dispin = varoute(7,inum2) * yy
+         cbodin = varoute(16,inum2) * yy
+         disoxin= varoute(17,inum2) * yy
+         heatin = varoute(1,inum2) * xx
       end if
 
       wattemp(jrch) =(heatin * wtrin + wtmp * rchwtr) / wtrtot

@@ -487,7 +487,6 @@ subroutine zero0
    rsr1 = 0.
    rsr2 = 0.
    sed_con = 0.
-   sepcrk = 0.
    sq_rto = 0.
    sol_clay = 0.
 !    Drainmod tile equations  01/2006

@@ -1,13 +1,13 @@
-subroutine rtpest
-
-!!     ~ ~ ~ PURPOSE ~ ~ ~
-!!     this subroutine computes the daily stream pesticide balance
-!!     (soluble and sorbed)
+!> this subroutine computes the daily stream pesticide balance
+!> (soluble and sorbed)
+!> @param[in] jrch reach number (none)
+subroutine rtpest(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    ch_l(2,:)      |km            |length of main channel
+!!    jrch          |none          |reach number
+!!    ch_l(2,:)     |km            |length of main channel
 !!    ch_w(2,:)     |m             |average width of main channel
 !!    chpst_conc(:) |mg/(m**3)     |initial pesticide concentration in reach
 !!    chpst_koc(:)  |m**3/g        |pesticide partition coefficient between
@@ -24,7 +24,6 @@ subroutine rtpest
 !!    drift(:)      |kg            |amount of pesticide drifting onto main
 !!                                 |channel in subbasin
 !!    hru_sub(:)    |none          |subbasin number where reach is located
-!!    inum1         |none          |reach number
 !!    inum2         |none          |inflow hydrograph storage location number
 !!    rchdep        |m             |depth of flow on day
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
@@ -73,7 +72,6 @@ subroutine rtpest
 !!    fd2         |
 !!    frsol       |none          |fraction of pesticide in reach that is soluble
 !!    frsrb       |none          |fraction of pesticide in reach that is sorbed
-!!    jrch        |none          |reach number
 !!    pstin       |mg pst        |total pesticide transported into reach
 !!                               |during time step
 !!    sedcon      |g/m^3         |sediment concentration
@@ -95,11 +93,9 @@ subroutine rtpest
    use parm
    implicit none
 
-   integer :: jrch
+   integer, intent(in) :: jrch
    real*8 :: solpstin, sorpstin, pstin, depth, chpstmass, frsol, frsrb
    real*8 :: sedpstmass, bedvol, fd2, wtrin, solmax, sedcon, tday
-
-   jrch = inum1
 
 !! initialize depth of water for pesticide calculations
    if (rchdep < 0.1) then

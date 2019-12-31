@@ -1,12 +1,17 @@
-subroutine hhnoqual
+!> @file hhnoqual.f90
+!> file containing the subroutine hhnoqual
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs in-stream nutrient calculations. No trans-
-!!    formations are calculated
+!> this subroutine performs in-stream nutrient calculations. No transformations
+!> are calculated
+!> @param[in] jrch reach number (none)
+subroutine hhnoqual(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch        |none          |reach number
 !!    ai0              |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    algae(:)         |mg alg/L      |algal biomass concentration in reach
 !!    ammonian(:)      |mg N/L        |ammonia concentration in reach
@@ -24,7 +29,6 @@ subroutine hhnoqual
 !!    hhvaroute(17,:,:)|kg O2         |dissolved oxygen
 !!    hrchwtr(ii)      |m^3 H2O       |water stored in reach at beginning of day
 !!    hrtwtr(:)        |m^3 H2O       |flow out of reach
-!!    inum1            |none          |reach number
 !!    inum2            |none          |inflow hydrograph storage location number
 !!    nitraten(:)      |mg N/L        |nitrate concentration in reach
 !!    nitriten(:)      |mg N/L        |nitrite concentration in reach
@@ -66,7 +70,6 @@ subroutine hhnoqual
 !!    chlin       |mg chl-a/L    |chlorophyll-a concentration in inflow
 !!    disoxin     |mg O2/L       |dissolved oxygen concentration in inflow
 !!    dispin      |mg P/L        |soluble P concentration in inflow
-!!    jrch        |none          |reach number
 !!    nh3con      |mg N/L        |initial ammonia concentration in reach
 !!    nitratin    |mg N/L        |nitrate concentration in inflow
 !!    nitritin    |mg N/L        |nitrite concentration in inflow
@@ -82,6 +85,7 @@ subroutine hhnoqual
 !!    wtmp        |deg C         |temperature of water in reach
 !!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    wtrtot      |m^3 H2O       |inflow + storage water
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -93,13 +97,11 @@ subroutine hhnoqual
    use parm
    implicit none
 
-   integer :: jrch, ii
-   real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-   real*8 :: orgpin, dispin, cbodin, disoxin, wtmp
-   real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot
-   real*8 :: algcon, orgncon, nh3con, no2con, no3con, xx
-
-   jrch = inum1
+   integer, intent(in) :: jrch
+   real*8 :: algcon, algin, ammoin, cbodcon, cbodin, chlin, disoxin, dispin,&
+      &nh3con, nitratin, nitritin, no2con, no3con, o2con, orgncon, orgnin,&
+      &orgpcon, orgpin, solpcon, wtmp, wtrin, wtrtot, xx
+   integer :: ii
 
 !! hourly loop
    do ii = 1, nstep

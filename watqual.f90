@@ -1,14 +1,19 @@
-subroutine watqual(i, jrch)
+!> @file watqual.f90
+!> file containing the subroutine watqual
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs in-stream nutrient transformations and water
-!!    quality calculations
+!> this subroutine performs in-stream nutrient transformations and water
+!> quality calculations
+!> @param[in] i current day in simulation--loop counter (julian date)
+!> @param[in] jrch reach number (none)
+subroutine watqual(i, jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i            |julian date   |current day in simulation--loop counter
-!!    jrch        |none          |reach number
+!!    jrch         |none          |reach number
 !!    ai0          |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    ai1          |mg N/mg alg   |fraction of algal biomass that is nitrogen
 !!    ai2          |mg P/mg alg   |fraction of algal biomass that is phosphorus
@@ -138,11 +143,15 @@ subroutine watqual(i, jrch)
 !!                               |concentration in reach
 !!    cbodin      |mg/L          |carbonaceous biological oxygen demand
 !!                               |concentration in inflow
+!!    cbodrch
 !!    chlin       |mg chl-a/L    |chlorophyll-a concentration in inflow
 !!    cinn        |mg N/L        |effective available nitrogen concentration
 !!    cordo       |none          |nitrification rate correction factor
+!!    coef
+!!    dcoef
 !!    disoxin     |mg O2/L       |dissolved oxygen concentration in inflow
 !!    dispin      |mg P/L        |soluble P concentration in inflow
+!!    doxrch
 !!    f1          |none          |fraction of algal nitrogen uptake from
 !!                               |ammonia pool
 !!    fl_1        |none          |growth attenuation factor for light, based on
@@ -196,12 +205,12 @@ subroutine watqual(i, jrch)
 !!                               |organic N settling rate
 !!    thrs5       |none          |temperature adjustment factor for local
 !!                               |organic P settling rate
-!!    wtmp        |deg C         |temperature of water in reach
-!!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    uu          |varies        |variable to hold intermediate calculation
 !!                               |result
 !!    vv          |varies        |variable to hold intermediate calculation
 !!                               |result
+!!    wtmp        |deg C         |temperature of water in reach
+!!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    wtrtot      |m^3 H2O       |inflow + storage water
 !!    ww          |varies        |variable to hold intermediate calculation
 !!                               |result
@@ -214,28 +223,25 @@ subroutine watqual(i, jrch)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Log, Exp, Min
-!!    SWAT: Theta
+!!    Intrinsic: Dmax1, Exp, Log, Min, Dmin1
+!!    SWAT: Theta, Oxygen_saturation
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   real*8 Theta
+   real*8 Theta, Oxygen_saturation
    integer, intent(in) :: i, jrch
-   real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-   real*8 :: orgpin, dispin, cbodin, disoxin, tday, wtmp, fll, gra
-   real*8 :: lambda, fnn, fpp, algi, fl_1, xx, yy, zz, ww, cinn
-   real*8 :: uu, vv, cordo, f1, algcon, orgncon, nh3con, no2con, no3con
-   real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot, bc1mod, bc2mod
-   real*8 :: cbodrch, coef, doxrch
-   real*8, parameter :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024
-   real*8, parameter :: thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
-   real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047
-   real*8, parameter :: thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
-!      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
-   real*8, parameter :: dcoef = 3.
+   real*8, parameter :: dcoef = 3., thbc1 = 1.083, thbc2 = 1.047,&
+      &thbc3 = 1.047, thbc4 = 1.047, thgra = 1.047, thrho = 1.047,&
+      &thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060,&
+      &thrs1 = 1.024, thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
+   real*8 :: algcon, algi, algin, ammoin, bc1mod, bc2mod, cbodcon, cbodin,&
+      &cbodrch, chlin, cinn, coef, cordo, disoxin, dispin, doxrch, f1, fl_1,&
+      &fll, fnn, fpp, gra, lambda, nh3con, nitratin, nitritin, no2con, no3con,&
+      &o2con, orgncon, orgnin, orgpcon, orgpin, solpcon, tday, uu, vv, wtmp,&
+      &wtrin, wtrtot, ww, xx, yy, zz
 
    !! initialize water flowing into reach
    wtrin = varoute(2,inum2) * (1. - rnum1)
@@ -243,32 +249,34 @@ subroutine watqual(i, jrch)
    if (wtrin > 1.e-4) then
 !! concentrations
       !! initialize inflow concentrations
-      chlin = 0.
-      algin = 0.
-      orgnin = 0.
-      ammoin = 0.
-      nitritin = 0.
-      nitratin = 0.
-      orgpin = 0.
-      dispin = 0.
-      cbodin = 0.
-      disoxin = 0.
-      cinn = 0.
       if (wtrin > 0.001) then
-         chlin = 1000. * varoute(13,inum2) * (1. - rnum1) / wtrin
+         xx = 1. - rnum1
+         yy = 1000. * xx / wtrin
+         chlin = varoute(13,inum2) * yy
          algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-         orgnin = 1000. * varoute(4,inum2) * (1. - rnum1) / wtrin
-         ammoin = 1000. * varoute(14,inum2) * (1. - rnum1) / wtrin
-         nitritin = 1000. * varoute(15,inum2) * (1. - rnum1) / wtrin
-         nitratin = 1000. * varoute(6,inum2) * (1. - rnum1) / wtrin
-         orgpin = 1000. * varoute(5,inum2) * (1. - rnum1) / wtrin
-         dispin = 1000. * varoute(7,inum2) * (1. - rnum1) / wtrin
-         cbodin = 1000. * varoute(16,inum2) * (1. - rnum1) / wtrin
-         disoxin = 1000. * varoute(17,inum2) * (1. - rnum1) / wtrin
+         orgnin = varoute(4,inum2) * yy
+         ammoin = varoute(14,inum2) * yy
+         nitritin = varoute(15,inum2) * yy
+         nitratin = varoute(6,inum2) * yy
+         orgpin = varoute(5,inum2) * yy
+         dispin = varoute(7,inum2) * yy
+         cbodin = varoute(16,inum2) * yy
+         disoxin = varoute(17,inum2) * yy
+      else
+         chlin = 0.
+         algin = 0.
+         orgnin = 0.
+         ammoin = 0.
+         nitritin = 0.
+         nitratin = 0.
+         orgpin = 0.
+         dispin = 0.
+         cbodin = 0.
+         disoxin = 0.
       end if
 
       !! initialize concentration of nutrient in reach
-      rch_cbod(jrch) = dmax1(1.e-6,rch_cbod(jrch))
+      rch_cbod(jrch) = Dmax1(1.e-6,rch_cbod(jrch))
       wtrtot = wtrin + rchwtr
       algcon = (algin * wtrin + algae(jrch) * rchwtr) / wtrtot
       orgncon = (orgnin * wtrin + organicn(jrch) * rchwtr) / wtrtot
@@ -302,12 +310,7 @@ subroutine watqual(i, jrch)
 
       !! calculate saturation concentration for dissolved oxygen
       !! QUAL2E section 3.6.1 equation III-29
-      ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
-      xx = 6.642308e07 / ((wtmp + 273.15)**2)
-      yy = 1.243800e10 / ((wtmp + 273.15)**3)
-      zz = 8.621949e11 / ((wtmp + 273.15)**4)
-      soxy = Exp(ww - xx + yy - zz)
-      if (soxy < 1.e-6) soxy = 0.
+      soxy = Oxygen_saturation(wtmp)
 !! end initialize concentrations
 
 !! O2 impact calculations
@@ -332,7 +335,7 @@ subroutine watqual(i, jrch)
       !! (algal self shading) QUAL2E equation III-12
       if (ai0 * algcon > 1.e-6) then
          lambda = lambda0 + (lambda1 * ai0 * algcon) + lambda2 *&
-         &(ai0 * algcon) ** (.66667)
+            &(ai0 * algcon) ** (.66667)
       else
          lambda = lambda0
       endif
@@ -356,7 +359,7 @@ subroutine watqual(i, jrch)
       !! calculate growth attenuation factor for light, based on
       !! daylight average light intensity QUAL2E equation III-7b
       fl_1 = (1. / (lambda * rchdep)) *&
-      &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * rchdep))))
+         &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * rchdep))))
       fll = 0.92 * (dayl(hru1(jrch)) / 24.) * fl_1
 
       !! calculcate local algal growth rate
@@ -382,8 +385,8 @@ subroutine watqual(i, jrch)
       !! QUAL2E equation III-2
       algae(jrch) = 0.
       algae(jrch) = algcon + (Theta(gra,thgra,wtmp) * algcon -&
-      &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
-      &/ rchdep * algcon) * tday
+         &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
+         &/ rchdep * algcon) * tday
       if (algae(jrch) < 1.e-6) algae(jrch) = 0.
       !! JGA added to set algae limit *****
       if (algae(jrch) > 5000.) algae(jrch) = 5000.
@@ -402,10 +405,10 @@ subroutine watqual(i, jrch)
       rch_cbod(jrch) = cbodcon - (yy + zz) * tday
 
       !!deoxygenation rate
-      coef = exp(-Theta(rk1(jrch),thrk1,wtmp) * tday)
+      coef = Exp(-Theta(rk1(jrch),thrk1,wtmp) * tday)
       cbodrch = coef * cbodcon
       !!cbod rate loss due to settling
-      coef = exp(-Theta(rk3(jrch),thrk3,wtmp) * tday)
+      coef = Exp(-Theta(rk3(jrch),thrk3,wtmp) * tday)
       cbodrch = coef * cbodrch
 
       rch_cbod(jrch) = cbodrch
@@ -418,24 +421,19 @@ subroutine watqual(i, jrch)
       rk2(jrch) = 1.0
       uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
       vv = (ai3 * Theta(gra,thgra,wtmp) - ai4 *&
-      &Theta(rhoq,thrho,wtmp)) * algcon
+         &Theta(rhoq,thrho,wtmp)) * algcon
       ww = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
       xx = Theta(rk4(jrch),thrk4,wtmp) / (rchdep * 1000.)
       yy = ai5 * Theta(bc1mod,thbc1,wtmp) * nh3con
       zz = ai6 * Theta(bc2mod,thbc2,wtmp) * no2con
       rch_dox(jrch) = o2con + (uu + vv - ww - xx - yy - zz) * tday
-      rch_dox(jrch) = dmin1(0.1, rch_dox(jrch))
+      rch_dox(jrch) = Dmin1(0.1, rch_dox(jrch))
 
       !algea O2 production minus respiration
-      !if (vv > 0.) then
       doxrch = soxy
-      !else
-      !  coef = exp(-0.03 * vv)
-      !  doxrch = coef * soxy
-      !end if
 
       !cbod deoxygenation
-      coef = exp(-0.1 * ww)
+      coef = Exp(-0.1 * ww)
       doxrch = coef * doxrch
 
       !benthic sediment oxidation
@@ -443,11 +441,11 @@ subroutine watqual(i, jrch)
       doxrch = coef * doxrch
 
       !ammonia oxydation
-      coef = exp(-0.05 * yy)
+      coef = Exp(-0.05 * yy)
       doxrch = coef * doxrch
 
       !nitrite oxydation
-      coef = exp(-0.05 * zz)
+      coef = Exp(-0.05 * zz)
       doxrch = coef * doxrch
 
       !reaeration
@@ -456,7 +454,6 @@ subroutine watqual(i, jrch)
 
       if (rch_dox(jrch) < 1.e-6) rch_dox(jrch) = 0.
       if (rch_dox(jrch) > soxy) rch_dox(jrch) = soxy
-      !if (rch_dox(jrch) > dcoef * o2con) rch_dox(jrch)= dcoef * o2con
 !! end oxygen calculations
 
 !! nitrogen calculations
@@ -465,13 +462,10 @@ subroutine watqual(i, jrch)
       xx = ai1 * Theta(rhoq,thrho,wtmp) * algcon
       yy = Theta(bc3(jrch),thbc3,wtmp) * orgncon
       zz = Theta(rs4(jrch),thrs4,wtmp) * orgncon
-!        red_fac = orgncon / 4.
-!        if (red_fac > 0.75) red_fac = 0.75
-!        zz = zz + red_fac
       organicn(jrch) = 0.
       organicn(jrch) = orgncon + (xx - yy - zz) * tday
       if (organicn(jrch) < 1.e-6) organicn(jrch) = 0.
-      if(organicn(jrch) > dcoef * orgncon) organicn(jrch) = dcoef * orgncon
+      if (organicn(jrch) > dcoef * orgncon) organicn(jrch) = dcoef * orgncon
 
       !! calculate fraction of algal nitrogen uptake from ammonia
       !! pool QUAL2E equation III-18
@@ -486,7 +480,7 @@ subroutine watqual(i, jrch)
       ammonian(jrch) = nh3con + (ww - xx + yy - zz) * tday
       if (ammonian(jrch) < 1.e-6) ammonian(jrch) = 0.
       if (ammonian(jrch) > dcoef * nh3con .and. nh3con > 0.)&
-      &ammonian(jrch) = dcoef * nh3con
+         &ammonian(jrch) = dcoef * nh3con
 
       !! calculate concentration of nitrite at end of day
       !! QUAL2E section 3.3.3 equation III-19
@@ -495,7 +489,7 @@ subroutine watqual(i, jrch)
       nitriten(jrch) = no2con + (yy - zz) * tday
       if (nitriten(jrch) < 1.e-6) nitriten(jrch) = 0.
       if (nitriten(jrch) > dcoef * no2con .and. no2con > 0.)&
-      &nitriten(jrch) = dcoef * no2con
+         &nitriten(jrch) = dcoef * no2con
 
       !! calculate nitrate concentration at end of day
       !! QUAL2E section 3.3.4 equation III-20
@@ -553,17 +547,13 @@ subroutine watqual(i, jrch)
       orgncon = 0.0
    endif
 
-!!!! commented following statements per conversation with
-!!!! srini 10/22/08
-!    write for srinisan 12/07/2004
-!!    write added back 03/02/2010 - per Srin email
    if (ihumus == 1) then
       write (82,5000) jrch, i, tmpav(jrch),&
-      &chlin, chlora(jrch), orgncon, organicn(jrch),&
-      &ammoin, ammonian(jrch), nitritin, nitriten(jrch),&
-      &nitratin, nitraten(jrch), orgpin, organicp(jrch),&
-      &dispin, disolvp(jrch), cbodin, rch_cbod(jrch), soxy,&
-      &disoxin, rch_dox(jrch), varoute (2,inum2), rttime
+         &chlin, chlora(jrch), orgncon, organicn(jrch),&
+         &ammoin, ammonian(jrch), nitritin, nitriten(jrch),&
+         &nitratin, nitraten(jrch), orgpin, organicp(jrch),&
+         &dispin, disolvp(jrch), cbodin, rch_cbod(jrch), soxy,&
+         &disoxin, rch_dox(jrch), varoute (2,inum2), rttime
 5000  format ('REACH', i4, i5, 22e12.4)
    end if
 

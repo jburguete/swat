@@ -93,6 +93,7 @@ subroutine hrupond(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
 !!    latqi
+!!    pndloss
 !!    pndsa       |ha            |surface area of pond on current day
 !!    qdayi
 !!    xx          |none          |fraction of HRU not draining into ponds
@@ -108,7 +109,7 @@ subroutine hrupond(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: cnv, latqi, pndsa, qdayi, xx, yy
+   real*8 :: cnv, latqi, pndloss, pndsa, qdayi, xx, yy
 
    if (pnd_fr(j) > 1.e-6) then
       cnv = hru_ha(j) * 10.

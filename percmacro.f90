@@ -28,8 +28,6 @@ subroutine percmacro(j)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    crk         |mm H2O        |percolation due to crack flow
-!!    sepcrk      |mm H2O        |water entering cracks in soil
 !!    sepbtm(:)   |mm H2O        |percolation from bottom of soil profile for
 !!                               |the day in HRU
 !!    sol_prk(:,:)|mm H2O        |percolation storage array
@@ -38,8 +36,10 @@ subroutine percmacro(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    crk         |mm H2O        |percolation due to crack flow
 !!    crklch      |none          |
 !!    ly          |none          |counter (soil layer)
+!!    sepcrk      |mm H2O        |water entering cracks in soil
 !!    xx          |mm H2O        |water deficiency in soil layer
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -53,7 +53,7 @@ subroutine percmacro(j)
 
    integer, intent(in) :: j
    real*8, parameter :: crklch = 0.5
-   real*8 :: xx
+   real*8 :: crk, sepcrk, xx
    integer :: ly
 
    sepcrk = Min(voltot, inflpcp)
@@ -63,7 +63,7 @@ subroutine percmacro(j)
          crk = 0.
          if (ly == sol_nly(j)) then
             crk = crklch * (volcr(ly,j) / (sol_z(ly,j) - sol_z(ly-1,j))&
-            &* voltot - volcrmin)
+               &* voltot - volcrmin)
             if (crk < sepcrk) then
                sepcrk = sepcrk - crk
                sepbtm(j) = sepbtm(j) + crk

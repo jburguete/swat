@@ -1,12 +1,20 @@
-subroutine rthsed
+!> @file rthsed.f90
+!> file containing the subroutine rthsed
+!> @author
+!> modified by J.Jeong and N.Kannan for urban sub-hourly sediment modeling,\n
+!> and by Balagi for bank erosion.
+!> Modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes sediment from subbasin to basin outlets
-!!    on a sub-daily timestep
+!> this subroutine routes sediment from subbasin to basin outlets
+!> on a sub-daily timestep
+!> Brownlie (1981) bed load model and Yang (1973, 1984) model added.
+!> @param[in] jrch reach number (none)
+subroutine rthsed(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch        |none          |reach number
 !!    ch_cov1(:)  |none          |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
@@ -30,7 +38,6 @@ subroutine rthsed
 !!    ideg        |none          |channel degredation code
 !!                               |0: do not compute channel degradation
 !!                               |1: compute channel degredation (downcutting and widening)
-!!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    prf(:)      |none          |Reach peak rate adjustment factor for sediment routing in the channel. Allows impact of
@@ -60,48 +67,65 @@ subroutine rthsed
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    channel_d50
+!!    coefa
+!!    coefb
+!!    coefc
+!!    coefd
+!!    coefe
+!!    cych
+!!    cyin
+!!    d_fract
 !!    dat2        |m             |change in channel depth during time step
 !!    deg         |metric tons   |sediment reentrained in water by channel degradation
+!!    deg1
+!!    deg2
+!!    deg24
 !!    dep         |metric tons   |sediment deposited on river bottom
+!!    dep24
 !!    depdeg      |m             |depth of degradation/deposition from original
 !!    depnet      |metric tons   |
 !!    dot         |
+!!    Fr_g
+!!    Fr_gc
 !!    ii          |none          |counter
-!!    jrch        |none          |reach number
+!!    log10sedcon
+!!    particle_specific_gravity
+!!    qin
 !!    qin         |m^3 H2O       |water in reach during time step
-!!    vc          |m/s           |flow velocity in reach
-!!    sedcon      |mg/L          |sediment concentration
-!!    shrstrss    |none          |critical shear stress for bed erosion
+!!    qdin
 !!    Reynolds_g  |none          |grain Reynolds number
+!!    sedcon      |mg/L          |sediment concentration
+!!    sedin
+!!    shear_stress|none          |critical shear stress for bed erosion
+!!    thbase
+!!    tmpw
+!!    vc          |m/s           |flow velocity in reach
+!!    vfall
+!!    visco_h2o
+!!    vshear
+!!    ycoeff
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Max
+!!    Intrinsic: Sqrt, Log10, Abs, Max
 !!    SWAT: ttcoef
-
-!!    code modified by J.Jeong and N.Kannan for urban sub-hourly sediment modeling
-!!    and by Balagi for bank erosion.
-!!    Brownlie (1981) bed load model and Yang (1973, 1984) model added.
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jrch, ii
-   real*8 :: qin, qdin, sedin, vc, cyin, cych, depnet, deg, dep
-   real*8 :: depdeg, dot, ycoeff, Reynolds_g, visco_h2o, tmpw
-   real*8 :: channel_d50, particle_specific_gravity, Fr_g, Fr_gc
-   real*8 :: log10sedcon, sedcon, deg24, dep24
-   real*8 :: vfall, coefa, coefb, coefc, coefd, coefe
-
-   real*8 :: thbase,  shear_stress, vshear, deg1, deg2, d_fract, dat2
+   integer, intent(in) :: jrch
+   integer :: ii
+   real*8, parameter :: particle_specific_gravity = 2.65
+   real*8 :: channel_d50, coefa, coefb, coefc, coefd, coefe, cych, cyin,&
+      &d_fract, dat2, deg, deg1, deg2, deg24, dep, dep24, depdeg, depnet, dot,&
+      &Fr_g, Fr_gc, log10sedcon, qin, qdin, Reynolds_g, sedcon, sedin,&
+      &shear_stress, thbase, tmpw, vc, vfall, visco_h2o, vshear, ycoeff
 
    deg24=0.; dep24=0
-   jrch = inum1
    channel_d50 = ch_d50 / 1000. !! unit change mm->m
-   particle_specific_gravity = 2.65
-   sedin = 0.
 
    do ii = 1, nstep
 
@@ -150,8 +174,8 @@ subroutine rthsed
             tmpw = sub_hhwtmp(jrch,ii)
 
             !! water viscosity (m2/s) using 3rd order polynomial interpolation
-            visco_h2o = -3.e-6 * tmpw ** 3 + 0.0006 * tmpw ** 2 -&
-            &0.0469 * tmpw + 1.7517
+            visco_h2o = ((-3.e-6 * tmpw + 0.0006) * tmpw -&
+               &0.0469) * tmpw + 1.7517
             visco_h2o = visco_h2o * 1.e-6
 
             !! Use either Brownlie or Yang Model for bead load calculation
@@ -162,25 +186,26 @@ subroutine rthsed
              case (1)
                !!Brownlie Model
                !! grain Reynolds number
-               Reynolds_g = sqrt(9.81 * channel_d50 ** 3) / visco_h2o
+               Reynolds_g = Sqrt(9.81 * channel_d50 ** 3) / visco_h2o
 
                !!critical shear stress for grain Froude number
-               ycoeff = (sqrt(particle_specific_gravity - 1.) *&
-               &Reynolds_g) ** (-0.6)
+               ycoeff = (Sqrt(particle_specific_gravity - 1.) *&
+                  &Reynolds_g) ** (-0.6)
                shear_stress = 0.22 * ycoeff + 0.06 * 10 ** (-7.7 * ycoeff)
 
                !! critical grain Froude number
-               fr_gc = 4.596 * shear_stress ** 0.5293 * ch_s(2,jrch) ** (-0.1405)&
-               &* sig_g ** (-0.1606)
+               fr_gc = 4.596 * shear_stress ** 0.5293&
+                  &* ch_s(2,jrch) ** (-0.1405) * sig_g ** (-0.1606)
 
                !! grain Froude number
-               fr_g = vc / sqrt((particle_specific_gravity - 1.) *&
-               &9.81 * (ch_d50 / 1000.))
+               fr_g = vc / Sqrt((particle_specific_gravity - 1.) *&
+                  &9.81 * (ch_d50 / 1000.))
 
                !! sediment concentration at the channel outlet [ppm, or g/m3]
-               if(fr_g>fr_gc) then
-                  sedcon = 7115 * 1.268 * (fr_g - fr_gc) ** 1.978 *&
-                  &ch_s(2,jrch) ** 0.6601 * (rhy(ii) / channel_d50) ** (-0.3301)
+               if (fr_g>fr_gc) then
+                  sedcon = 7115 * 1.268 * (fr_g - fr_gc) ** 1.978&
+                     &* ch_s(2,jrch) ** 0.6601&
+                     &* (rhy(ii) / channel_d50) ** (-0.3301)
                else
                   sedcon = 0.
                endif
@@ -189,48 +214,44 @@ subroutine rthsed
              case (2)
                !!Yang Model
                !! particle fall velocity
-               vfall = 9.81 * channel_d50 ** 2 * (particle_specific_gravity - 1.)&
-               &/ (18.* visco_h2o)
+               vfall = 9.81 * channel_d50 ** 2&
+                  &* (particle_specific_gravity - 1.) / (18.* visco_h2o)
 
                !! shear velocity
-               vshear = sqrt(9.81 * rhy(ii) * ch_s(2,jrch))
+               vshear = Sqrt(9.81 * rhy(ii) * ch_s(2,jrch))
 
                coefa = vfall * channel_d50 / visco_h2o
                coefe = vshear * channel_d50 / visco_h2o
 
-               if(coefe<70) then
+               if (coefe < 70) then
                   if (coefe<1.2) coefe = 1.2
-                  coefb = 2.5 / (log10(coefe) - 0.06) + 0.66
-               elseif(coefe>=70) then
-                  coefb = 2.05
+                  coefb = 2.5 / (Log10(coefe) - 0.06) + 0.66
                else
-                  write(*,*) 'Error in implementing Yang erosion model'
-!!       stop
-                  coefb = 0.
+                  coefb = 2.05
                endif
 
                coefc = vshear / vfall
                coefd = vc * ch_s(2,jrch) / vfall - coefb * ch_s(2,jrch)
-               if(coefd<=0) coefd = 1.e-6
+               if (coefd<=0) coefd = 1.e-6
 
-               if(ch_d50<=2.0) then ! in millimeter
+               if (ch_d50<=2.0) then ! in millimeter
                   !! use sand equation (1973)
-                  log10sedcon = 5.435 - 0.286 * log10(coefa) - 0.457 *&
-                  &log10(coefc) +(1.799 - 0.409 *log10(coefa) - 0.314 *&
-                  &log10(coefc)) * log10(coefd)
+                  log10sedcon = 5.435 - 0.286 * Log10(coefa) - 0.457 *&
+                     &Log10(coefc) +(1.799 - 0.409 *Log10(coefa) - 0.314 *&
+                     &Log10(coefc)) * Log10(coefd)
 
-               else !if(ch_d50>2.0) then !redundant
+               else !if (ch_d50>2.0) then !redundant
                   !! use gravel equation (1984)
-                  log10sedcon = 6.681 - 0.633 * log10(coefa) - 4.816 *&
-                  &log10(coefc) +(2.784 - 0.305 *log10(coefa) - 0.282 *&
-                  &log10(coefc)) * log10(coefd)
+                  log10sedcon = 6.681 - 0.633 * Log10(coefa) - 4.816 *&
+                     &Log10(coefc) +(2.784 - 0.305 *Log10(coefa) - 0.282 *&
+                     &Log10(coefc)) * Log10(coefd)
                endif
                sedcon = 10 ** log10sedcon !ppm
                cych = sedcon * 1.e-6 !tons/m3
             end select
 
             depnet = qin * (cych - cyin)
-            if(abs(depnet) < 1.e-6) depnet = 0.
+            if (Abs(depnet) < 1.e-6) depnet = 0.
 
 !!  tbase is multiplied so that erosion is proportional to the traveltime,
 !!  which is directly related to the length of the channel
@@ -260,7 +281,6 @@ subroutine rthsed
             if (hsedyld(ii) < 1.e-12) hsedyld(ii) = 0.
 
 
-
             d_fract = hrtwtr(ii) / qin
             if (d_fract > 1.) d_fract = 1.
 
@@ -279,8 +299,6 @@ subroutine rthsed
             depch(jrch) = depch(jrch) + dep
             sedst(jrch) = hsedst(ii)
 
-
-
             deg24 = deg24 + deg2
             dep24 = dep24 + dep
          else
@@ -289,8 +307,6 @@ subroutine rthsed
          end if
       end if
    end do
-
-
 
 
 !!    Bank erosion
@@ -303,7 +319,6 @@ subroutine rthsed
    rchdy(58,jrch) = 0.
 !!    Total suspended sediments
    rchdy(59,jrch) = 0.
-
 
 
 !!    Organic nitrogen and Organic Phosphorus contribution from channel erosion

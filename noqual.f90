@@ -1,18 +1,22 @@
-subroutine noqual
+!> @file noqual.f90
+!> file containing the subroutine noqual
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs in-stream nutrient calculations. No transformations
-!!    are calculated. New concentrations of the nutrients are calculated based
-!!    on the loading to the reach from upstream.
+!> this subroutine performs in-stream nutrient calculations. No transformations
+!> are calculated. New concentrations of the nutrients are calculated based
+!> on the loading to the reach from upstream.
+!> @param[in] jrch reach number (none)
+subroutine noqual(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch         |none          |reach number
 !!    ai0          |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    algae(:)     |mg alg/L      |algal biomass concentration in reach
 !!    ammonian(:)  |mg N/L        |ammonia concentration in reach
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
-!!    inum1        |none          |reach number
 !!    inum2        |none          |inflow hydrograph storage location number
 !!    nitraten(:)  |mg N/L        |nitrate concentration in reach
 !!    nitriten(:)  |mg N/L        |nitrite concentration in reach
@@ -65,7 +69,6 @@ subroutine noqual
 !!    chlin       |mg chl-a/L    |chlorophyll-a concentration in inflow
 !!    disoxin     |mg O2/L       |dissolved oxygen concentration in inflow
 !!    dispin      |mg P/L        |soluble P concentration in inflow
-!!    jrch        |none          |reach number
 !!    nh3con      |mg N/L        |initial ammonia concentration in reach
 !!    nitratin    |mg N/L        |nitrate concentration in inflow
 !!    nitritin    |mg N/L        |nitrite concentration in inflow
@@ -80,6 +83,7 @@ subroutine noqual
 !!    solpcon     |mg P/L        |initial soluble P concentration in reach
 !!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    wtrtot      |m^3 H2O       |inflow + storage water
+!!    xx          |              |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -87,13 +91,10 @@ subroutine noqual
    use parm
    implicit none
 
-   integer :: jrch
-   real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-   real*8 :: orgpin, dispin, cbodin, disoxin
-   real*8 :: algcon, orgncon, nh3con, no2con, no3con
-   real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot
-
-   jrch = inum1
+   integer, intent(in) :: jrch
+   real*8 :: algcon, algin, ammoin, cbodcon, cbodin, chlin, disoxin, dispin,&
+      &nh3con, nitratin, nitritin, no2con, no3con, o2con, orgncon, orgnin,&
+      &orgpcon, orgpin, solpcon, wtrin, wtrtot, xx
 
    !! initialize water flowing into reach
    wtrin = varoute(2,inum2) * (1. - rnum1)
@@ -102,18 +103,19 @@ subroutine noqual
 !! concentrations
       !! initialize inflow concentrations
       if (varoute(13,inum2) < 1.e-6) varoute(13,inum2) = 0.0
-      chlin = 1000. * varoute(13,inum2) * (1. - rnum1) / wtrin
+      xx = 1000. * (1. - rnum1) / wtrin
+      chlin = varoute(13,inum2) * xx
       algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-      orgnin = 1000. * varoute(4,inum2) * (1. - rnum1) / wtrin
-      ammoin = 1000. * varoute(14,inum2) * (1. - rnum1) / wtrin
-      nitritin = 1000. * varoute(15,inum2) * (1. - rnum1) / wtrin
-      nitratin = 1000. * varoute(6,inum2) * (1. - rnum1) / wtrin
-      orgpin = 1000. * varoute(5,inum2) * (1. - rnum1) / wtrin
-      dispin = 1000. * varoute(7,inum2) * (1. - rnum1) / wtrin
+      orgnin = varoute(4,inum2) * xx
+      ammoin = varoute(14,inum2) * xx
+      nitritin = varoute(15,inum2) * xx
+      nitratin = varoute(6,inum2) * xx
+      orgpin = varoute(5,inum2) * xx
+      dispin = varoute(7,inum2) * xx
       if (varoute(16,inum2) < 1.e-6) varoute(16,inum2) = 0.0
-      cbodin = 1000. * varoute(16,inum2) * (1. - rnum1) / wtrin
+      cbodin = varoute(16,inum2) * xx
       if (varoute(17,inum2) < 1.e-6) varoute(17,inum2) = 0.0
-      disoxin= 1000. * varoute(17,inum2) * (1. - rnum1) / wtrin
+      disoxin = varoute(17,inum2) * xx
 
       !! initialize concentration of nutrient in reach
       if (algae(jrch) < 1.e-6) algae(jrch) = 0.0

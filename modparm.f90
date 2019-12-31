@@ -316,6 +316,7 @@ module parm
    real*8 :: wof_p
 !> average annual amount of NO3 added to soil by rainfall in watershed (kg N/ha)
    real*8 :: wshd_raino3
+!X
 !> average annual amount of phosphorus leached into second soil layer (kg P/ha)
    real*8 :: wshd_plch
    real*8 :: ressedc, basno3f, basorgnf
@@ -332,11 +333,7 @@ module parm
 !> Snow melt base temperature. Mean air temperature at which snow melt will
 !> occur. (deg C)
    real*8 :: smtmp
-!> growth factor for persistent bacteria in soil solution (1/day)
-   real*8 :: wgpq
    real*8 :: basminpf, basorgpf
-!> die-off factor for less persistent bacteria in soil solution (1/day)
-   real*8 :: wdlpq
 !> total amount of suspended sediment in reservoirs in the watershed
 !> (metric tons),\n
 !> or mass balance discrepancy for reservoir sediment expressed as loading per
@@ -355,10 +352,6 @@ module parm
 !> average amount of nitrogen initially in the organic N pool in watershed soil
 !> (kg N/ha)
    real*8 :: basorgni
-!> die-off factor for persistent bacteria adsorbed to soil particles (1/day)
-   real*8 :: wdps
-!> growth factor for less persistent bacteria in soil solution (1/day)
-   real*8 :: wglpq
 !> average amount of phosphorus initially in the organic P pool in watershed
 !> soil (kg P/ha)
    real*8 :: basorgpi
@@ -378,13 +371,11 @@ module parm
    real*8 :: timp
 !> shallow water table depth above the impervious layer (mm H2O)
    real*8 :: wt_shall
-   real*8 :: wtabelo, tilep
    real*8 :: sq_rto
 !> amount of water in drainage tile flow in HRU soil layer for the day (mm H2O)
    real*8 :: qtile
 !> amount of precipitation that infiltrates into soil (enters soil) (mm H2O)
    real*8 :: inflpcp
-   real*8 :: crk !< percolation due to crack flow (mm H2O)
 !> amount of nitrogen added to the plant biomass via fixation on the day in HRU
 !> (kg N/ha)
    real*8 :: fixn
@@ -397,7 +388,7 @@ module parm
 !> amount of water removed from surface runoff via transmission losses on day in
 !> HRU (mm H2O)
    real*8 :: tloss
-   real*8 :: pndloss, wetloss,potloss, lpndloss, lwetloss
+   real*8 :: lpndloss, lwetloss
 !> biomass generated on current day in HRU (kg)
    real*8 :: bioday
 !> total amount of nitrogen applied to soil during continuous fertilizer
@@ -414,12 +405,8 @@ module parm
    real*8 :: sol_rd !< current rooting depth (mm)
 !> sediment transported out of channel during time step (metric tons)
    real*8 :: sedrch
-!> water entering cracks in soil (mm H2O)
-   real*8 :: sepcrk
    real*8 :: sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
    real*8 :: fertorgp
-!> growth factor for persistent bacteria adsorbed to soil particles (1/day)
-   real*8 :: wgps
    real*8 :: qdfr !< fraction of water yield that is surface runoff (none)
 !> total amount of phosphorus applied to soil in HRU on day in fertilizer
 !> application (kg P/ha)
@@ -429,6 +416,7 @@ module parm
 !> amount of phosphorus added to soil in grazing on the day in HRU (kg P/ha)
    real*8 :: grazp
    real*8 :: soxy !< saturation dissolved oxygen concentration (mg/L)
+!X
    real*8 :: rtwtr !< water leaving reach on day (m^3 H2O)
    real*8 :: sdti !< average flow rate in reach for day (m^3/s)
    real*8 :: ressa
@@ -708,7 +696,7 @@ module parm
    real*8 :: ai5
 !> the rate of oxygen uptake per unit of NO2 nitrogen oxidation (mg O2/mg N)
    real*8 :: ai6
-   real*8 :: rhoq !< algal respiration rate (1/day or 1/hr)
+   real*8 :: rhoq !< algal respiration rate at 20 deg C (1/day or 1/hr)
 !> fraction of solar radiation computed in the temperature heat balance that is
 !> photosynthetically active
    real*8 :: tfact
@@ -723,7 +711,8 @@ module parm
    real*8 :: lambda1 !< linear algal self-shading coefficient (1/(m*ug chla/L))
 !> nonlinear algal self-shading coefficient ((1/m)(ug chla/L)**(-2/3))
    real*8 :: lambda2
-   real*8 :: mumax !< maximum specific algal growth rate (1/day or 1/hr)
+!> maximum specific algal growth rate at 20 deg C(1/day or 1/hr)
+   real*8 :: mumax
    real*8 :: p_n !< algal preference factor for ammonia
    real*8 :: rnum1 !< variable to hold value for rnum1s(:) (none)
 !> actual evapotranspiration occuring on day in HRU (mm H2O)
@@ -2281,7 +2270,9 @@ module parm
    real*8, dimension (:), allocatable :: ch_orgn, ch_orgp
 !> amount of pesticide drifting onto main channel in subbasin (kg)
    real*8, dimension (:), allocatable :: drift
-   real*8, dimension (:), allocatable :: rch_dox,rch_bactp
+!> dissolved oxygen concentration in reach (mg O2/L)
+   real*8, dimension (:), allocatable :: rch_dox
+   real*8, dimension (:), allocatable :: rch_bactp
 !> alpha factor for bank storage recession curve (days)
    real*8, dimension (:), allocatable :: alpha_bnk
 !> \f$\exp(-alpha_bnk)\f$ (none)
@@ -2290,13 +2281,24 @@ module parm
    real*8, dimension (:), allocatable :: rchstor
 !> amount of sediment stored in reach (metric tons)
    real*8, dimension (:), allocatable :: sedst
-   real*8, dimension (:), allocatable :: disolvp,algae
-   real*8, dimension (:), allocatable :: organicn,organicp,chlora
+!> algal biomass concentration in reach (mg alg/L)
+   real*8, dimension (:), allocatable :: algae
+!> dissolved phosphorus concentration in reach (mg P/L)
+   real*8, dimension (:), allocatable :: disolvp
+!> chlorophyll-a concentration in reach (mg chl-a/L)
+   real*8, dimension (:), allocatable :: chlora
+!> organic nitrogen concentration in reach (mg N/L)
+   real*8, dimension (:), allocatable :: organicn
+!> organic phosphorus concentration in reach (mg P/L)
+   real*8, dimension (:), allocatable :: organicp
 !> initial length of main channel (km)
    real*8, dimension (:), allocatable :: ch_li
 !> initial slope of main channel (m/m)
    real*8, dimension (:), allocatable :: ch_si
-   real*8, dimension (:), allocatable :: nitraten,nitriten
+!> nitrate concentration in reach (mg N/L)
+   real*8, dimension (:), allocatable :: nitraten
+!> nitrite concentration in reach (mg N/L)
+   real*8, dimension (:), allocatable :: nitriten
 
 !     Sediment parameters added by Balaji for the new routines
 
@@ -2409,7 +2411,9 @@ module parm
    real*8, dimension (:), allocatable :: sedpst_rea
 !> depth of active sediment layer in reach for pesticide (m)
    real*8, dimension (:), allocatable :: sedpst_act
-   real*8, dimension (:), allocatable :: rch_cbod,rch_bactlp
+!> carbonaceous biochemical oxygen demand in reach (mg O2/L)
+   real*8, dimension (:), allocatable :: rch_cbod
+   real*8, dimension (:), allocatable :: rch_bactlp
 !> change in horizontal distance per unit vertical distance (0.0 - 5)\n
 !> 0 = for vertical channel bank\n
 !> 5 = for channel bank with gentl side slope
@@ -2459,6 +2463,7 @@ module parm
    real*8, dimension (:), allocatable :: bc4
 !> decay rate for arbitrary non-conservative constituent in reach (1/day)
    real*8, dimension (:), allocatable :: rk6
+!> ammonia concentration in reach (mg N/L)
    real*8, dimension (:), allocatable :: ammonian
    real*8, dimension (:), allocatable :: orig_sedpstconc
 !> average daily water removal from the reach for the month (10^4 m^3/day)
@@ -3200,6 +3205,8 @@ module parm
 !> varoute(11,:) pesticide in solution (mg pst)\n
 !> varoute(12,:) pesticide sorbed to sediment (mg pst)\n
 !> varoute(13,:) chlorophyll-a (kg)\n
+!> varoute(14,:) ammonium (kg N)\n
+!> varoute(15,:) nitrite (kg N)\n
 !> varoute(16,:) carbonaceous biological oxygen demand (kg)\n
 !> varoute(17,:) dissolved oxygen (kg)\n
 !> varoute(18,:) persistent bacteria (# cfu/100ml)\n
@@ -3207,7 +3214,16 @@ module parm
    real*8, dimension (:,:), allocatable :: varoute
    real*8, dimension (:,:), allocatable :: vartran
 !> routing storage array for hourly time step (varies)\n
-!> hhvaroute(2,:,:) water (m^3 H2O)
+!> hhvaroute(2,:,:) water (m^3 H2O)\n
+!> hhvaroute(4,:,:) organic nitrogen (kg N)\n
+!> hhvaroute(5,:,:) organic posphorus (kg P)\n
+!> hhvaroute(6,:,:) nitrate (kg N)\n
+!> hhvaroute(7,:,:) soluble phosphorus (kg P)\n
+!> hhvaroute(13,:,:) chlorophyll-a (kg)\n
+!> hhvaroute(14,:,:) ammonium (kg N)\n
+!> hhvaroute(15,:,:) nitrite (kg N)\n
+!> hhvaroute(16,:,:) carbonaceous biological oxygen demand (kg)\n
+!> hhvaroute(17,:,:) dissolved oxygen (kg O2)
    real*8, dimension (:,:,:), allocatable :: hhvaroute
 !> routing command code (none):\n
 !> 0 = finish\n

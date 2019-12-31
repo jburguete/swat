@@ -131,6 +131,7 @@ subroutine wetlan(j)
 !!    tpco        |ppb (ug/L)    |concentration of phosphorus in pond water
 !!                               |on day
 !!    vol         |m^3 H2O       |volume of wetland at beginning of day
+!!    wetloss
 !!    wetsa       |ha            |surface area of wetland on current day
 !!    xx          |none          |variable to hold intermediate calculation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -146,8 +147,8 @@ subroutine wetlan(j)
    integer, intent(in) :: j
    real*8 :: chlaco, cla, cnv, finsed, fr_cur, inised, lag, latqi, nitrok,&
       &phosk, qdayi, remsetsed, sag, san, sed, setsed, sil, tpco, vol, wetclai,&
-      &wetclao, wetlagi, wetlago, wetsa, wetsagi, wetsago, wetsani, wetsano,&
-      &wetsili, wetsilo, xx, yy
+      &wetclao, wetlagi, wetlago, wetloss, wetsa, wetsagi, wetsago, wetsani,&
+      &wetsano, wetsili, wetsilo, xx, yy
 
    if (wet_fr(j) > 0.) then
       cnv = hru_ha(j) * 10.               !conversion factor

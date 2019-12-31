@@ -1,11 +1,13 @@
 !> this subroutine simulates channel routing
 !> @param[in] i current day in simulation--loop counter (julian date)
-subroutine route(i)
+!> @param[in] jrch reach number (none)
+subroutine route(i, jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |julian date   |current day in simulation--loop counter
+!!    jrch        |none          |reach number
 !!    alpha_bnke(:)|none         |Exp(-alpha_bnk(:))
 !!    bankst(:)   |m^3 H2O       |bank storage
 !!    ch_eqn      |              |sediment routing methods
@@ -26,7 +28,6 @@ subroutine route(i)
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    irte        |none          |water routing method:
 !!                               |0 variable storage method
@@ -60,25 +61,22 @@ subroutine route(i)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    jrch        |none          |reach number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 !!    Intrinsic: Min
-!!    SWAT: rchinit, rtday, rtmusk, rthvsc, rthmusk, rtsed, rtsed_bagnold,
-!!          rtsed_kodatie, rtsed_Molinas_Wu, rtsed_yangsand, rthsed, watqual2,
-!!          watqual, noqual, hhwatqual, hhnoqual, rtpest, rthpest, rtbact,
-!!          irr_rch, rchuse, rtout
+!!    SWAT: rchinit, rtday, rtmusk, rthvsc, rthmusk, rtsed, rtsed2, rthsed,
+!!          watqual2, watqual, noqual, hhwatqual, hhnoqual, rtpest, rthpest,
+!!          rtbact, irr_rch, rchuse, rtout
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer, intent(in) :: i
-   integer :: jrch, ii, j
+   integer, intent(in) :: i, jrch 
+   integer :: ii, j
    real*8 :: subwtr
 
-   jrch = inum1
    !inum3 is the subbasin for stream-aquifer interaction
    !inum5 is the landscape within the subbasin
    isub = inum3
@@ -159,7 +157,7 @@ subroutine route(i)
 
 !! do not perform sediment routing for headwater subbasins
    !! when i_subhw = 0
-   if (i_subhw == 0 .and. inum1 == inum2) then
+   if (i_subhw == 0 .and. jrch == inum2) then
       if (ievent == 0) then
          if (rtwtr > 0. .and. rchdep > 0.) then
             sedrch  = varoute(3,inum2)  * (1. - rnum1)
@@ -192,7 +190,7 @@ subroutine route(i)
             call rtsed2(jrch)
          end if
       else
-         call rthsed
+         call rthsed(jrch)
          do ii = 1, nstep
             if (hrtwtr(ii) > 0. .and. hdepth(ii) > 0.) then
                sedrch = sedrch + hsedyld(ii)
@@ -205,17 +203,26 @@ subroutine route(i)
 
 !! perform in-stream nutrient calculations
    if (ievent == 0) then
-      if (iwq == 2) call watqual2(jrch)
-      if (iwq == 1) call watqual(i, jrch)
-      if (iwq == 0) call noqual
+      select case (iwq)
+       case (2)
+         call watqual2(jrch)
+       case (1)
+         call watqual(i, jrch)
+       case (0)
+         call noqual(jrch)
+      end select
    else
-      if (iwq == 1) call hhwatqual
-      if (iwq == 0) call hhnoqual
+      select case (iwq)
+       case (1)
+         call hhwatqual(jrch)
+       case (0)
+         call hhnoqual(jrch)
+      end select
    end if
 
 !! perform in-stream pesticide calculations
    if (ievent == 0) then
-      call rtpest
+      call rtpest(jrch)
    else
       call rthpest
    end if

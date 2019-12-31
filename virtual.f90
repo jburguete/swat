@@ -8,13 +8,15 @@
 !> @param[in] i current day in simulation--loop counter (julian date)
 !> @param[in] j HRU number
 !> @param[in] k
-subroutine virtual(i, j, k)
+!> @param[in] sb subbasin number
+subroutine virtual(i, j, k, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i             |julian date   |current day in simulation--loop counter
 !!    j             |none          |HRU number
+!!    sb            |none          |subbasin number
 !!    bactrolp      |# cfu/m^2     |less persistent bacteria transported to main
 !!                                 |channel with surface runoff
 !!    bactrop       |# cfu/m^2     |persistent bacteria transported to main
@@ -47,7 +49,6 @@ subroutine virtual(i, j, k)
 !!                                 |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout         |none          |hydrograph storage location number for
 !!                                 |subbasin
-!!    inum1         |none          |subbasin number
 !!    iprint        |none          |print code:
 !!                                 |0 monthly
 !!                                 |1 daily
@@ -248,7 +249,7 @@ subroutine virtual(i, j, k)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    baseflw     |mm H2O        |difference in total loading and surface runoff
 !!                               |loading
-!!    bf_fr, 
+!!    bf_fr 
 !!    cnv         |none          |conversion factor (mm/ha => m^3)
 !!    ib
 !!    ii          |none          |counter
@@ -257,7 +258,6 @@ subroutine virtual(i, j, k)
 !!    hsd
 !!    kk          |none          |counter
 !!    ratio
-!!    sb          |none          |subbasin number
 !!    sub_ha      |ha            |area of subbasin in hectares
 !!    sub_hwyld(:)|mm H2O        |water yield from subbasin during hour
 !!    wtmp        |deg C         |temperature of water
@@ -274,12 +274,11 @@ subroutine virtual(i, j, k)
    implicit none
 
    real*8 Tair
-   integer, intent(in) :: i, j, k
+   integer, intent(in) :: i, j, k, sb
    real*8 :: hqd(4*nstep), hsd(4*nstep), sub_hwyld(nstep)
    real*8 :: baseflw, bf_fr, cnv, ratio, sub_ha, wtmp
-   integer :: ib, ii, hr, kk, sb
+   integer :: ib, ii, hr, kk
 
-   sb = inum1
    cnv = hru_ha(j) * 10.
 
 !! write daily HRU output

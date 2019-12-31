@@ -182,17 +182,13 @@ subroutine zeroini
    wdlprch = 0.
    wdlpres = 0.
    wdlpf = 0.
-   wdlpq = 0.
    wdlps = 0.
    wdpf = 0.
    wdpq = 0.
    wdprch = 0.
    wdpres = 0.
    wgpf = 0.
-   wgpq = 0.
-   wgps = 0.
    wglpf = 0.
-   wglpq = 0.
    wglps = 0.
    wof_lp = 0.
    wof_p = 0.

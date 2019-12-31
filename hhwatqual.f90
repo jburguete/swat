@@ -1,12 +1,17 @@
-subroutine hhwatqual
+!> @file hhwatqual.f90
+!> file containing the subroutine hhwatqual
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs in-stream nutrient transformations and water
-!!    quality calculations for hourly timestep
+!> this subroutine performs in-stream nutrient transformations and water
+!> quality calculations for hourly timestep
+!> @param[in] jrch reach number (none)
+subroutine hhwatqual(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch             |none          |reach number
 !!    ai0              |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    ai1              |mg N/mg alg   |fraction of algal biomass that is N
 !!    ai2              |mg P/mg alg   |fraction of algal biomass that is P
@@ -56,7 +61,6 @@ subroutine hhwatqual
 !!                                    | u = mumax * fll * Min(fnn, fpp)
 !!                                    |3: harmonic mean
 !!                                    | u = mumax * fll * 2. / ((1/fnn)+(1/fpp))
-!!    inum1            |none          |reach number
 !!    inum2            |none          |inflow hydrograph storage location number
 !!    k_l              |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n              |mg N/L        |michaelis-menton half-saturation constant
@@ -150,7 +154,7 @@ subroutine hhwatqual
 !!    fnn         |none          |algal growth limitation factor for nitrogen
 !!    fpp         |none          |algal growth limitation factor for phosphorus
 !!    gra         |1/hr          |local algal growth rate at 20 deg C
-!!    jrch        |none          |reach number
+!!    ii          |none          |counter
 !!    lambda      |1/m           |light extinction coefficient
 !!    nh3con      |mg N/L        |initial ammonia concentration in reach
 !!    nitratin    |mg N/L        |nitrate concentration in inflow
@@ -195,12 +199,12 @@ subroutine hhwatqual
 !!                               |organic N settling rate
 !!    thrs5       |none          |temperature adjustment factor for local
 !!                               |organic P settling rate
-!!    wtmp        |deg C         |temperature of water in reach
-!!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    uu          |varies        |variable to hold intermediate calculation
 !!                               |result
 !!    vv          |varies        |variable to hold intermediate calculation
 !!                               |result
+!!    wtmp        |deg C         |temperature of water in reach
+!!    wtrin       |m^3 H2O       |water flowing into reach on day
 !!    wtrtot      |m^3 H2O       |inflow + storage water
 !!    ww          |varies        |variable to hold intermediate calculation
 !!                               |result
@@ -213,28 +217,26 @@ subroutine hhwatqual
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Log, Exp, Min
-!!    SWAT: Theta
+!!    Intrinsic: Exp, Log, Min
+!!    SWAT: Theta, Oxygen_saturation
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   real*8 Theta
-   integer :: jrch, ii
-   real*8 :: wtrin, chlin, algin, orgnin, ammoin, nitratin, nitritin
-   real*8 :: orgpin, dispin, cbodin, disoxin, thour, wtmp, fll, gra
-   real*8 :: lambda, fnn, fpp, algi, xx, yy, zz, ww, cinn
-   real*8 :: uu, vv, cordo, f1, algcon, orgncon, nh3con, no2con, no3con
-   real*8 :: orgpcon, solpcon, cbodcon, o2con, wtrtot, bc1mod, bc2mod
-   real*8, parameter :: thgra = 1.047, thrho = 1.047, thrs1 = 1.024,&
-   &thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024,&
-   &thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047, thbc4 = 1.047,&
-   &thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060
-!      real*8 :: thrk5 = 1.047, thrk6 = 1.0, thrs6 = 1.024, thrs7 = 1.0
-
-   jrch = inum1
+   real*8 Theta, Oxygen_saturation
+   integer, intent(in) :: jrch
+   real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047,&
+      &thbc4 = 1.047, thgra = 1.047, thrho = 1.047, thrk1 = 1.047,&
+      &thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060, thrs1 = 1.024,&
+      &thrs2 = 1.074, thrs3 = 1.074, thrs4 = 1.024, thrs5 = 1.024
+   real*8 :: algcon, algi, algin, ammoin, bc1mod, bc2mod, cbodcon, cbodin,&
+      &cinn, chlin, cordo, disoxin, dispin, f1, fll, fnn, fpp, gra, lambda,&
+      &nh3con, nitratin, nitritin, no2con, no3con, o2con, orgncon, orgnin,&
+      &orgpcon, orgpin, solpcon, thour, uu, vv, wtmp, wtrin, wtrtot, ww, xx,&
+      &yy, zz
+   integer :: ii
 
 !! hourly loop
    do ii = 1, nstep
@@ -326,12 +328,7 @@ subroutine hhwatqual
 
          !! calculate saturation concentration for dissolved oxygen
          !! QUAL2E section 3.6.1 equation III-29
-         ww = -139.34410 + (1.575701e05 / (wtmp + 273.15))
-         xx = 6.642308e07 / ((wtmp + 273.15)**2)
-         yy = 1.243800e10 / ((wtmp + 273.15)**3)
-         zz = 8.621949e11 / ((wtmp + 273.15)**4)
-         soxy = Exp(ww - xx + yy - zz)
-         if (soxy < 0.) soxy = 0.
+         soxy = Oxygen_saturation(wtmp)
 !! end initialize concentrations
 
 !! O2 impact calculations
@@ -354,7 +351,7 @@ subroutine hhwatqual
          !! (algal self shading) QUAL2E equation III-12
          if (ai0 * algcon > 1.e-6) then
             lambda = lambda0 + (lambda1 * ai0 * algcon) + lambda2 *&
-            &(ai0 * algcon) ** (.66667)
+               &(ai0 * algcon) ** (.66667)
          else
             lambda = lambda0
          endif
@@ -372,7 +369,7 @@ subroutine hhwatqual
          !! calculate growth attenuation factor for light, based on
          !! hourly light intensity QUAL2E equation III-6a
          fll = (1. / (lambda * hdepth(ii))) *&
-         &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * hdepth(ii)))))
+            &Log((k_l + algi) / (k_l + algi * (Exp(-lambda * hdepth(ii)))))
 
          !! calculcate local algal growth rate
          gra = 0.
@@ -396,8 +393,8 @@ subroutine hhwatqual
          !! (phytoplanktonic algae)
          !! QUAL2E equation III-2
          halgae(ii) = algcon + (Theta(gra,thgra,wtmp) * algcon -&
-         &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
-         &/ hdepth(ii) * algcon) * thour
+            &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
+            &/ hdepth(ii) * algcon) * thour
          if (halgae(ii) < 1.e-6) halgae(ii) = 0.0
 
          !! calculate chlorophyll-a concentration at end of day
@@ -418,7 +415,7 @@ subroutine hhwatqual
          !! end of day QUAL2E section 3.6 equation III-28
          uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
          vv = (ai3 * Theta(gra,thgra,wtmp) - ai4 *&
-         &Theta(rhoq,thrho,wtmp)) * algcon
+            &Theta(rhoq,thrho,wtmp)) * algcon
          ww = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
          xx = Theta(rk4(jrch),thrk4,wtmp) / (hdepth(ii) * 1000.)
          yy = ai5 * Theta(bc1mod,thbc1,wtmp) * nh3con

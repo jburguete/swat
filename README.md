@@ -199,6 +199,10 @@ variables is not possible.
 * In hmeas.f:
   - `rhdbsb` could be used not initialized at line 84
 
+* In hruaa.f:
+  - `pdvas(70) = wtabelo` at line 249 but `wtabelo` is not initialized in any
+    part of code
+
 * In killop.f:
   - `ff1` and `ff2` are used but not initialized at lines 167 and 267.
     They are set in harvkillop.f file (lines 257-258).

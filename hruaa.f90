@@ -250,7 +250,11 @@ subroutine hruaa(years)
 !!      the following two variables are values at the of the year
 !!      they are not summed each day
          pdvas(69) = wtab(j)  !! based on 30 day antecedent climate(mm) (prec,et)
-         pdvas(70) = wtabelo  !! based on depth from soil surface(mm)
+
+! Modified because wtabelo is not initialized
+!         pdvas(70) = wtabelo  !! based on depth from soil surface(mm)
+         pdvas(70) = wat_tbl(j)   !! based on depth from soil surface (mm)
+
 !!      added current snow content in the hru (not summed)
          pdvas(71) = sno_hru(j)
 

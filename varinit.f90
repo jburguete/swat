@@ -55,7 +55,6 @@ subroutine varinit(j)
 !!                               |fertilizer operation on day
 !!    cfertp      |kg P/ha       |amount of phosphorus added to soil in continuous
 !!                               |fertilizer operation on day
-!!    crk         |mm H2O        |percolation due to crack flow
 !!    deepstp     |mm H2O        |depth of water in deep aquifer in HRU
 !!    enratio     |none          |enrichment ratio calculated for day in HRU
 !!    ep_day      |mm H2O        |actual amount of transpiration that occurs on
@@ -218,7 +217,6 @@ subroutine varinit(j)
    canev = 0.
    cfertn = 0.
    cfertp = 0.
-   crk = 0.
    deepstp = deepst(j)
    enratio = 0.
    ep_day = 0.

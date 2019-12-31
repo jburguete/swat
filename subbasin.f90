@@ -414,7 +414,7 @@ subroutine subbasin(i)
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method
-      call virtual(i, j, k)
+      call virtual(i, j, k, inum1)
       aird(j) = 0.
 
       l = l + 1

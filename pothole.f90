@@ -152,6 +152,7 @@ subroutine pothole(i, j)
 !!    pi          |none          |pi
 !!    pot_depth
 !!    potev       |m^3 H2O       |evaporation from impounded water body
+!!    potloss
 !!    potmm       |mm H2O        |volume of water in pothole expressed as depth
 !!                               |over HRU
 !!    potmpao
@@ -195,11 +196,11 @@ subroutine pothole(i, j)
    integer, intent(in) :: i, j
    real*8, parameter :: pi = 3.1416
    real*8 :: claloss, cnv, drcla, drsil, drtot, lagloss, minpaloss, minpsloss,&
-      &no3in, no3loss, orgnloss, orgploss, pot_depth, potev, potmm, potmpao,&
-      &potmpso, potno3o, potorgno, potorgpo, potsa_ini, potsep, potsolpo,&
-      &potvol_ini, potvol_m3, potvol_sep, potvol_tile, qdayi, qin, sagloss,&
-      &sanloss, sedloss, silloss, solp_tileo, solploss, spillo, sumo, tileo,&
-      &xx, yy
+      &no3in, no3loss, orgnloss, orgploss, pot_depth, potev, potloss, potmm,&
+      &potmpao, potmpso, potno3o, potorgno, potorgpo, potsa_ini, potsep,&
+      &potsolpo, potvol_ini, potvol_m3, potvol_sep, potvol_tile, qdayi, qin,&
+      &sagloss, sanloss, sedloss, silloss, solp_tileo, solploss, spillo, sumo,&
+      &tileo, xx, yy
    integer :: ly
 
 !! initialize variables

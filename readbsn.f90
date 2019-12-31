@@ -304,8 +304,6 @@ subroutine readbsn
 !!    vcrit       |              |Critical velocity
 !!    wdlpf       |1/day         |Die-off factor for less persistent bacteria on
 !!                               |foliage.
-!!    wdlpq       |1/day         |Die-off factor for less persistent bacteria in
-!!                               |soil solution.
 !!    wdlprch     |1/day         |Die-off factor for less persistent bacteria
 !!                               |in streams
 !!    wdlpres     |1/day         |Die-off factor for less persistent bacteria
@@ -320,20 +318,12 @@ subroutine readbsn
 !!                               |streams
 !!    wdpres      |1/day         |Die-off factor for persistent bacteria in
 !!                               |reservoirs
-!!    wdps        |1/day         |Die-off factor for persistent bacteria
-!!                               |adsorbed to soil particles.
 !!    wglpf       |1/day         |Growth factor for less persistent bacteria on
 !!                               |foliage
-!!    wglpq       |1/day         |Growth factor for less persistent bacteria in
-!!                               |soil solution.
 !!    wglps       |1/day         |Growth factor for less persistent bacteria
 !!                               |adsorbed to soil particles.
 !!    wgpf        |1/day         |Growth factor for persistent bacteria on
 !!                               |foliage.
-!!    wgpq        |1/day         |Growth factor for persistent bacteria in soil
-!!                               |solution.
-!!    wgps        |1/day         |Growth factor for persistent bacteria
-!!                               |adsorbed to soil particles.
 !!    wof_lp      |none          |Wash off fraction for less persistent
 !!                               |bacteria on foliage during a rainfall event
 !!    wof_p       |none          |Wash off fraction for persistent bacteria on
@@ -363,6 +353,16 @@ subroutine readbsn
 !!    pos
 !!    titldum     |NA            |title line for .bsn file, not used
 !!    tlu
+!!    wdlpq       |1/day         |Die-off factor for less persistent bacteria in
+!!                               |soil solution.
+!!    wdps        |1/day         |Die-off factor for persistent bacteria
+!!                               |adsorbed to soil particles.
+!!    wglpq       |1/day         |Growth factor for less persistent bacteria in
+!!                               |soil solution.
+!!    wgpq        |1/day         |growth factor for persistent bacteria in soil
+!!                               |solution.
+!!    wgps        |1/day         |Growth factor for persistent bacteria
+!!                               |adsorbed to soil particles.
 !!    wwqfile     |NA            |name of watershed water quality file (.wwq)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -379,7 +379,7 @@ subroutine readbsn
    character (len=130) :: tlu
    character (len=80) :: titldum
    character (len=13) :: wwqfile
-   real*8 :: escobsn, epcobsn
+   real*8 :: escobsn, epcobsn, wdlpq, wdps, wglpq, wgpq, wgps
    integer :: eof, numlu, ii, pos
 !!      real*8 :: r2adj_bsn  !D. Moriasi 4/8/2014
 
@@ -387,6 +387,11 @@ subroutine readbsn
    eof = 0
    escobsn = 0.
    epcobsn = 0.
+   wdlpq = 0.
+   wdps = 0.
+   wglpq = 0.
+   wgpq = 0.
+   wgps = 0.
    r2adj_bsn = 0.  !D. Moriasi 4/8/2014
    wwqfile = ""
    numlu=1
