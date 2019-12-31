@@ -403,7 +403,7 @@ module parm
 !> micropore percolation from bottom of the soil layer on day in HRU (mm H2O)
    real*8 :: sepday
    real*8 :: sol_rd !< current rooting depth (mm)
-!> sediment transported out of channel during time step (metric tons)
+!> sediment transported out of channel or reach during time step (metric tons)
    real*8 :: sedrch
    real*8 :: sepcrktot, fertno3, fertnh3, fertorgn, fertsolp
    real*8 :: fertorgp
@@ -416,16 +416,9 @@ module parm
 !> amount of phosphorus added to soil in grazing on the day in HRU (kg P/ha)
    real*8 :: grazp
    real*8 :: soxy !< saturation dissolved oxygen concentration (mg/L)
-!X
    real*8 :: rtwtr !< water leaving reach on day (m^3 H2O)
    real*8 :: sdti !< average flow rate in reach for day (m^3/s)
    real*8 :: ressa
-!> die-off factor for less persistent bacteria absorbed to soil particles
-!> (1/day)
-   real*8 :: wdlps
-!> growth factor for less persistent bacteria adsorbed to soil particles
-!> (1/day)
-   real*8 :: wglps
    real*8 :: da_km !< area of the watershed in square kilometers (km^2)
    real*8 :: rchdep !< depth of flow on day (m)
    real*8 :: rtevp !< evaporation from reach on day (m^3 H2O)
@@ -433,7 +426,7 @@ module parm
    real*8 :: rttlc !< transmission losses from reach on day (m^3 H2O)
    real*8 :: resflwi
    real*8 :: wdprch !< die-off factor for persistent bacteria in streams (1/day)
-   real*8 :: resflwo, respcp, resev, ressep,ressedi,ressedo,dtot
+   real*8 :: resflwo, respcp, resev, ressep, ressedi, ressedo
 !> phosphorus percolation coefficient. Ratio of soluble phosphorus in surface to
 !> soluble phosphorus in percolate
    real*8 :: pperco_bsn
@@ -458,8 +451,6 @@ module parm
 !> layer to solution bacteria in runoff soluble and sorbed phase in surface
 !> runoff.
    real*8 :: bactkdq
-!> die-off factor for persistent bacteria on foliage (1/day)
-   real*8 :: wdpf
 !> amount of water evaporated from canopy storage (mm H2O)
    real*8 :: canev
 !> precipitation, or effective precipitation reaching soil surface, for the
@@ -488,7 +479,7 @@ module parm
 !> persistent bacteria transported with sediment in surface runoff
 !> (# colonies/ha)
    real*8 :: bactsedp
-   real*8 :: wgpf !< growth factor for persistent bacteria on foliage (1/day)
+!X
 !> less persistent bacteria removed from soil surface layer by percolation
 !> (# colonies/ha)
    real*8 :: bactlchlp
@@ -2262,7 +2253,8 @@ module parm
    real*8, dimension (:), allocatable :: flwin
 !> flow out of reach on current day (m^3 H2O)
    real*8, dimension (:), allocatable :: flwout
-   real*8, dimension (:), allocatable :: bankst,ch_wi
+   real*8, dimension (:), allocatable :: bankst !< bank storage (m^3 H2O)
+   real*8, dimension (:), allocatable :: ch_wi
 !> channel organic n concentration (ppm)
    real*8, dimension (:), allocatable :: ch_onco
 !> channel organic p concentration (ppm)
@@ -2474,7 +2466,7 @@ module parm
    integer, dimension (:), allocatable :: icanal
    integer, dimension (:), allocatable :: itb
 !> revap coeff: this variable controls the amount of water moving from bank
-!> storage to the root zone as a result of soil moisture depletion(none)
+!> storage to the root zone as a result of soil moisture depletion (none)
    real*8, dimension (:), allocatable :: ch_revap
    real*8, dimension (:), allocatable :: dep_chan
 !> coefficient related to radiation used in hargreaves eq
@@ -3214,21 +3206,31 @@ module parm
 !> varoute(17,:) dissolved oxygen (kg)\n
 !> varoute(18,:) persistent bacteria (# cfu/100ml)\n
 !> varoute(19,:) less persistent bacteria (# cfu/100ml)
+!> varoute(20,:) conservative metal #1 (kg)
+!> varoute(21,:) conservative metal #2 (kg)
+!> varoute(22,:) conservative metal #3 (kg)
    real*8, dimension (:,:), allocatable :: varoute
    real*8, dimension (:,:), allocatable :: vartran
 !> routing storage array for hourly time step (varies)\n
+!> hhvaroute(1,:,:) temperature (deg C)\n
 !> hhvaroute(2,:,:) water (m^3 H2O)\n
+!> hhvaroute(3,:,:) sediment or suspended solid load (metric tons)\n
 !> hhvaroute(4,:,:) organic nitrogen (kg N)\n
 !> hhvaroute(5,:,:) organic posphorus (kg P)\n
 !> hhvaroute(6,:,:) nitrate (kg N)\n
-!> hhvaroute(7,:,:) soluble phosphorus (kg P)\n
+!> hhvaroute(7,:,:) soluble mineral phosphorus (kg P)\n
+!> hhvaroute(11,:,:) pesticide in solution (mg pst)\n
+!> hhvaroute(12,:,:) pesticide sorbed to sediment (mg pst)\n
 !> hhvaroute(13,:,:) chlorophyll-a (kg)\n
 !> hhvaroute(14,:,:) ammonium (kg N)\n
 !> hhvaroute(15,:,:) nitrite (kg N)\n
 !> hhvaroute(16,:,:) carbonaceous biological oxygen demand (kg)\n
 !> hhvaroute(17,:,:) dissolved oxygen (kg O2)\n
 !> hhvaroute(18,:,:) persistent bacteria (# cfu/100ml)\n
-!> hhvaroute(19,:,:) less persistent bacteria (# cfu/100ml)
+!> hhvaroute(19,:,:) less persistent bacteria (# cfu/100ml)\n
+!> hhvaroute(20,:,:) conservative metal #1 (kg)\n
+!> hhvaroute(21,:,:) conservative metal #2 (kg)\n
+!> hhvaroute(22,:,:) conservative metal #3 (kg)
    real*8, dimension (:,:,:), allocatable :: hhvaroute
 !> routing command code (none):\n
 !> 0 = finish\n
@@ -4417,9 +4419,28 @@ module parm
    real*8, dimension (:), allocatable :: hsdti
 !> water stored in reach at beginning of hour (m^3 H2O)
    real*8, dimension (:), allocatable :: hrchwtr
-   real*8, dimension (:), allocatable :: halgae,horgn,hnh4
-   real*8, dimension (:), allocatable :: hno2,hno3,horgp,hsolp,hbod
-   real*8, dimension (:), allocatable :: hdisox,hchla,hsedyld,hsedst
+!> ammonia concentration in reach at end of hour (mg N/L)
+   real*8, dimension (:), allocatable :: hnh4
+!> organic nitrogen concentration in reach at end of hour (mg N/L)
+   real*8, dimension (:), allocatable :: horgn
+   real*8, dimension (:), allocatable :: halgae
+!> carbonaceous biochemical oxygen demand in reach at end of hour (mg O2/L)
+   real*8, dimension (:), allocatable :: hbod
+!> nitrite concentration in reach at end of hour (mg N/L)
+   real*8, dimension (:), allocatable :: hno2
+!> nitrate concentration in reach at end of hour (mg N/L)
+   real*8, dimension (:), allocatable :: hno3
+!> organic phosphorus concentration in reach at end of hour (mg P/L)
+   real*8, dimension (:), allocatable :: horgp
+!> dissolved phosphorus concentration in reach at end of hour (mg P/L)
+   real*8, dimension (:), allocatable :: hsolp
+!> chlorophyll-a concentration in reach at end of hour (mg chl-a/L)
+   real*8, dimension (:), allocatable :: hchla
+!> dissolved oxygen concentration in reach at end of hour (mg O2/L)
+   real*8, dimension (:), allocatable :: hdisox
+!> sediment transported out of reach during hour (metric tons)
+   real*8, dimension (:), allocatable :: hsedyld
+   real*8, dimension (:), allocatable :: hsedst
 !> cross-sectional area of flow (m^2)
    real*8, dimension (:), allocatable :: hharea
 !> soluble pesticide concentration in outflow on day (mg pst/m^3)
@@ -4502,6 +4523,7 @@ module parm
    real*8 :: abstinit,abstmax
 !> sediment yield from HRU drung a time step applied to HRU (tons)
    real*8, dimension(:,:), allocatable :: hhsedy
+!> precipitation for time step in subbasin (mm H2O)
    real*8, dimension(:,:), allocatable :: sub_subp_dt
 !> sediment yield for the time step in subbasin (metric tons)
    real*8, dimension(:,:), allocatable :: sub_hhsedy
@@ -4640,11 +4662,11 @@ module parm
 
 !> the distance between spillway levels (m)
    real*8, dimension(:,:), allocatable :: dtp_addon
-!> discharge coeffieicne for weir/orifice flow (none)
+!> discharge coefficient for weir/orifice flow at different stages (none)
    real*8, dimension(:,:), allocatable :: dtp_cdis
 !> depth of rectangular weir at different stages (m)
    real*8, dimension(:,:), allocatable :: dtp_depweir
-!> diameter of orifice hole at different stages (m)
+!> diameter of circular weir at different stages (m)
    real*8, dimension(:,:), allocatable :: dtp_diaweir
 !> maximum discharge from each stage of the weir/hole (m^3/s)
    real*8, dimension(:,:), allocatable :: dtp_flowrate
@@ -4652,7 +4674,7 @@ module parm
    real*8, dimension(:,:), allocatable :: dtp_pcpret
 !> return period at different stages (years)
    real*8, dimension(:,:), allocatable :: dtp_retperd
-!> width depth ratio of rectangular weirs (none)
+!> width depth ratio of rectangular weirs at different stages (none)
    real*8, dimension(:,:), allocatable :: dtp_wdratio
    real*8, dimension(:,:), allocatable :: dtp_wrwid
 
@@ -4670,8 +4692,12 @@ module parm
    !wet pond
    integer, dimension(:), allocatable :: wtp_subnum,wtp_onoff,wtp_imo,&
       &wtp_iyr,wtp_dim,wtp_stagdis,wtp_sdtype
-   real*8, dimension(:), allocatable :: wtp_pvol,wtp_pdepth,wtp_sdslope,&
-      &wtp_lenwdth,wtp_extdepth,wtp_hydeff,wtp_evrsv,wtp_sdintc,&
+!> detention pond evaporation coefficient (none)
+   real*8, dimension(:), allocatable :: wtp_evrsv
+!> volume of permanent pool including forebay (m^3 H2O)
+   real*8, dimension(:), allocatable :: wtp_pvol
+   real*8, dimension(:), allocatable :: wtp_pdepth,wtp_sdslope,&
+      &wtp_lenwdth,wtp_extdepth,wtp_hydeff,wtp_sdintc,&
       &wtp_sdexp,wtp_sdc1,wtp_sdc2,wtp_sdc3,wtp_pdia,wtp_plen,&
       &wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi
 

@@ -1,3 +1,8 @@
+!> @file route.f90
+!> file containing the subroutine route
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine simulates channel routing
 !> @param[in] i current day in simulation--loop counter (julian date)
 !> @param[in] jrch reach number (none)
@@ -61,6 +66,8 @@ subroutine route(i, jrch)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
+!!    rnum1i      |none          |1 - rnum1
+!!    subwtr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -74,8 +81,8 @@ subroutine route(i, jrch)
    implicit none
 
    integer, intent(in) :: i, jrch 
-   integer :: ii, j
-   real*8 :: subwtr
+   real*8 :: rnum1i, subwtr
+   integer :: ii
 
    !inum3 is the subbasin for stream-aquifer interaction
    !inum5 is the landscape within the subbasin
@@ -112,8 +119,8 @@ subroutine route(i, jrch)
       bankst(jrch) = bankst(jrch) + rttlc * (1. - trnsrch)
       if (da_ha > 1.e-9) then
          subwtr = rttlc * trnsrch / (da_ha * sub_fr(jrch) * 10.)
-         do j = hru1(jrch), hru1(jrch) + hrutot(jrch) - 1
-            deepst(j) = deepst(j) + subwtr
+         do ii = hru1(jrch), hru1(jrch) + hrutot(jrch) - 1
+            deepst(ii) = deepst(ii) + subwtr
          end do
       end if
    end if
@@ -158,20 +165,21 @@ subroutine route(i, jrch)
 !! do not perform sediment routing for headwater subbasins
    !! when i_subhw = 0
    if (i_subhw == 0 .and. jrch == inum2) then
+      rnum1i = 1. - rnum1
       if (ievent == 0) then
          if (rtwtr > 0. .and. rchdep > 0.) then
-            sedrch  = varoute(3,inum2)  * (1. - rnum1)
-            rch_san = varoute(23,inum2) * (1. - rnum1)
-            rch_sil = varoute(24,inum2) * (1. - rnum1)
-            rch_cla = varoute(25,inum2) * (1. - rnum1)
-            rch_sag = varoute(26,inum2) * (1. - rnum1)
-            rch_lag = varoute(27,inum2) * (1. - rnum1)
-            rch_gra = varoute(28,inum2) * (1. - rnum1)
+            sedrch  = varoute(3,inum2)  * rnum1i
+            rch_san = varoute(23,inum2) * rnum1i
+            rch_sil = varoute(24,inum2) * rnum1i
+            rch_cla = varoute(25,inum2) * rnum1i
+            rch_sag = varoute(26,inum2) * rnum1i
+            rch_lag = varoute(27,inum2) * rnum1i
+            rch_gra = varoute(28,inum2) * rnum1i
          end if
       else
          do ii = 1, nstep
             if (hrtwtr(ii) > 0. .and. hdepth(ii) > 0.) then
-               hsedyld(ii) = hhvaroute(3,inum2,ii) * (1. - rnum1)
+               hsedyld(ii) = hhvaroute(3,inum2,ii) * rnum1i
                sedrch = sedrch + hsedyld(ii)
                rch_san = 0.
                rch_sil = rch_sil + hsedyld(ii)  !!All are assumed to be silt type particles
@@ -234,10 +242,10 @@ subroutine route(i, jrch)
    call irr_rch(jrch)
 
 !! remove water from reach for consumptive water use
-   call rchuse
+   call rchuse(jrch)
 
 !! summarize output/determine loadings to next routing unit
-   call rtout
+   call rtout(jrch)
 
    return
 end

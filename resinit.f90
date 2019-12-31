@@ -1,14 +1,12 @@
-subroutine resinit
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initializes variables for the daily simulation of the
-!!    channel routing command loop
+!> this subroutine initializes variables for the daily simulation of the
+!> channel routing command loop
+subroutine resinit(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jres         |none         |reservoir number
 !!    ihout        |none         |outflow hydrograph storage location number
-!!    inum1        |none         |reservoir number
 !!    inum2        |none         |inflow hydrograph storage location number
 !!    mvaro        |none         |max number of variables routed through the
 !!                               |reach
@@ -67,7 +65,6 @@ subroutine resinit
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    jres        |none          |reservoir number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -75,9 +72,8 @@ subroutine resinit
    use parm
    implicit none
 
-   integer :: ii, jres
-
-   jres = inum1
+   integer, intent(in) :: jres
+   integer :: ii
 
 !! add transfer amounts
    do ii = 2, mvaro

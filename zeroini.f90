@@ -46,7 +46,6 @@ subroutine zeroini
    cswat = 0        !(CB 8/24/09)
    da_ha = 0.
    da_km = 0.
-   dtot = 0.0
    eo_30d = 0.        !(CB 8/24/09)
    evlai = 0.
    evrch = 0.
@@ -182,14 +181,10 @@ subroutine zeroini
    wdlprch = 0.
    wdlpres = 0.
    wdlpf = 0.
-   wdlps = 0.
-   wdpf = 0.
    wdpq = 0.
    wdprch = 0.
    wdpres = 0.
-   wgpf = 0.
    wglpf = 0.
-   wglps = 0.
    wof_lp = 0.
    wof_p = 0.
    wlpq20 = 0.

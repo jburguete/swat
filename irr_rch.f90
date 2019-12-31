@@ -1,3 +1,8 @@
+!> @file irr_rch.f90
+!> file containing the subroutine irr_rch
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine performs the irrigation operation when the water
 !> source is a reach
 !> @param[in] jrch reach number (none)
@@ -16,7 +21,6 @@ subroutine irr_rch(jrch)
 !!                                   |positive the units are mm H2O; when the
 !!                                   |value is negative, the units are (10**4
 !!                                   |m^3 H2O
-!!    flag                           |1 = manual 2 = auto
 !!    flowfr(:)       |none          |fraction of available flow in reach that
 !!                                   |is allowed to be applied to the HRU
 !!    flowmin(:)      |m**3/s        |minimum instream flow for irrigation

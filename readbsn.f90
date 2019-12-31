@@ -308,10 +308,6 @@ subroutine readbsn
 !!                               |in streams
 !!    wdlpres     |1/day         |Die-off factor for less persistent bacteria
 !!                               |in reservoirs
-!!    wdlps       |1/day         |Die-off factor for less persistent bacteria
-!!                               |absorbed to soil particles.
-!!    wdpf        |1/day         |Die-off factor for persistent bacteria on
-!!                               |foliage.
 !!    wdpq        |1/day         |Die-off factor for persistent bacteria in
 !!                               |soil solution.
 !!    wdprch      |1/day         |Die-off factor for persistent bacteria in
@@ -320,10 +316,6 @@ subroutine readbsn
 !!                               |reservoirs
 !!    wglpf       |1/day         |Growth factor for less persistent bacteria on
 !!                               |foliage
-!!    wglps       |1/day         |Growth factor for less persistent bacteria
-!!                               |adsorbed to soil particles.
-!!    wgpf        |1/day         |Growth factor for persistent bacteria on
-!!                               |foliage.
 !!    wof_lp      |none          |Wash off fraction for less persistent
 !!                               |bacteria on foliage during a rainfall event
 !!    wof_p       |none          |Wash off fraction for persistent bacteria on
@@ -355,10 +347,18 @@ subroutine readbsn
 !!    tlu
 !!    wdlpq       |1/day         |Die-off factor for less persistent bacteria in
 !!                               |soil solution.
+!!    wdlps       |1/day         |Die-off factor for less persistent bacteria
+!!                               |absorbed to soil particles.
+!!    wdpf        |1/day         |Die-off factor for persistent bacteria on
+!!                               |foliage.
 !!    wdps        |1/day         |Die-off factor for persistent bacteria
 !!                               |adsorbed to soil particles.
 !!    wglpq       |1/day         |Growth factor for less persistent bacteria in
 !!                               |soil solution.
+!!    wglps       |1/day         |Growth factor for less persistent bacteria
+!!                               |adsorbed to soil particles.
+!!    wgpf        |1/day         |Growth factor for persistent bacteria on
+!!                               |foliage.
 !!    wgpq        |1/day         |growth factor for persistent bacteria in soil
 !!                               |solution.
 !!    wgps        |1/day         |Growth factor for persistent bacteria
@@ -379,7 +379,7 @@ subroutine readbsn
    character (len=130) :: tlu
    character (len=80) :: titldum
    character (len=13) :: wwqfile
-   real*8 :: escobsn, epcobsn, wdlpq, wdps, wglpq, wgpq, wgps
+   real*8 :: escobsn, epcobsn, wdlpq, wdlps, wdpf, wdps, wglpq, wglps, wgpf, wgpq, wgps
    integer :: eof, numlu, ii, pos
 !!      real*8 :: r2adj_bsn  !D. Moriasi 4/8/2014
 
@@ -388,8 +388,12 @@ subroutine readbsn
    escobsn = 0.
    epcobsn = 0.
    wdlpq = 0.
+   wdlps = 0.
+   wdpf = 0.
    wdps = 0.
    wglpq = 0.
+   wglps = 0.
+   wgpf = 0.
    wgpq = 0.
    wgps = 0.
    r2adj_bsn = 0.  !D. Moriasi 4/8/2014

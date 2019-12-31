@@ -97,7 +97,6 @@ subroutine rewind_init
    iyr = ivar_orig(1)
 
 !! summation/counter variables
-   dtot = 0.0
    immo = 0
    ndmo = 0
 

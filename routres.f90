@@ -1,11 +1,11 @@
-subroutine routres
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs reservoir routing
+!> this subroutine performs reservoir routing
+!> @param[in] jres reservoir number (none)
+subroutine routres(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jres        |none          |reservoir number
 !!    bury        |mg pst        |loss of pesticide from active sediment layer
 !!                               |by burial
 !!    curyr       |none          |current year of simulation
@@ -14,7 +14,6 @@ subroutine routres
 !!                               |water
 !!    iida        |julian date   |day being simulated (current julian date)
 !!    ihout       |none          |outflow hydrograph storage location number
-!!    inum1       |none          |reservoir number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    iprint      |none          |print code:
 !!                               |0 monthly
@@ -164,12 +163,7 @@ subroutine routres
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
-!!    jres        |none          |reservoir number
 !!    k           |none          |counter
-!!    sedcon      |mg/L          |sediment concentration in reservoir water
-!!                               |during day
-!!    sepmm       |mm H2O        |depth of reservoir seepage over subbasin
-!!                               |area
 !!    resnh3c     |mg N/L        |concentration of ammonia in reservoir
 !!                               |on day
 !!    resno2c     |mg N/L        |concentration of nitrite in reservoir
@@ -182,45 +176,74 @@ subroutine routres
 !!                               |on day
 !!    ressolpc    |mg P/L        |concentration of soluble P in reservoir
 !!                               |on day
+!!    sedcon      |mg/L          |sediment concentration in reservoir water
+!!                               |during day
+!!    sepmm       |mm H2O        |depth of reservoir seepage over subbasin
+!!                               |area
+!!    zz
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    SWAT: resinit, irr_res, res, resnut, lakeq
+!!    SWAT: resinit, irr_res, res, reshr, resnut, lakeq
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jres, k, ii, ires_code
-   real*8 :: sepmm, resorgpc, ressolpc, sedcon, resorgnc, resno3c
-   real*8 :: resno2c, resnh3c,zz
-
-   jres = inum1
-!!    ires_code = 0 do not turn off reservoirs
-!!    ires_code = 1 turn off reservoirs for santhi
-
-   ires_code = 0
+   integer, intent(in) :: jres
+   real*8 :: resnh3c, resno2c, resno3c, resorgnc, resorgpc, ressolpc, sedcon,&
+      &sepmm, zz
+   integer :: ii, k
 
    !! initialize variables for reservoir daily simulation
-   call resinit
-   if (ires_code == 1) then
+   call resinit(jres)
 
+   if (iyr > iyres(jres) .or.&
+      &(i_mo >= mores(jres) .and. iyr == iyres(jres))) then
+
+      !! Adjust Reservoir Storage for Irrigation Diversions
+      call irr_res
+      zz=varoute(19,inum2)
+      !! perform reservoir water/sediment balance
+      if(ievent == 0) then  !! urban modeling by J.Jeong
+         call res
+      else
+         call reshr
+      endif
+
+      !! perform reservoir nutrient balance
+      call resnut
+
+      !! perform reservoir pesticide transformations
+      call lakeq
+
+      !! add reservoir seepage to shallow aquifer convert from m^3 to mm
+      if (ressep > 0.) then
+         sepmm = ressep / (da_ha * sub_fr(res_sub(jres)) * 10.)
+         do k = 1, nhru
+            if (hru_sub(k) == res_sub(jres)) then
+               shallst(k) = shallst(k) + sepmm
+            end if
+         end do
+      end if
+
+      !! set values for routing variables
       varoute(1,ihout) = 0.           !!undefined
-      varoute(2,ihout) = varoute(2,inum2)
-      varoute(3,ihout) = varoute(3,inum2)
-      varoute(4,ihout) = varoute(4,inum2)
-      varoute(5,ihout) = varoute(5,inum2)
-      varoute(6,ihout) = varoute(6,inum2)
-      varoute(7,ihout) = varoute(7,inum2)
+      varoute(2,ihout) = resflwo
+      varoute(3,ihout) = ressedo
+      varoute(4,ihout) = resorgno
+      varoute(5,ihout) = resorgpo
+      varoute(6,ihout) = resno3o
+      varoute(7,ihout) = ressolpo
       varoute(8,ihout) = 0.           !!undefined
       varoute(9,ihout) = 0.           !!undefined
       varoute(10,ihout) = 0.          !!undefined
-      varoute(11,ihout) = varoute(11,inum2)
-      varoute(12,ihout) = varoute(12,inum2)
-      varoute(13,ihout) = varoute(13,inum2)
-      varoute(14,ihout) = varoute(14,inum2)
-      varoute(15,ihout) = varoute(15,inum2)
+      varoute(11,ihout) = solpesto
+      varoute(12,ihout) = sorpesto
+      varoute(13,ihout) = reschlao
+      varoute(14,ihout) = resnh3o
+      varoute(15,ihout) = resno2o
       varoute(16,ihout) = 0.          !!CBOD
       varoute(17,ihout) = 0.          !!dis O2
       varoute(18,ihout) = varoute(18,inum2)  !!persistent bact
@@ -228,158 +251,102 @@ subroutine routres
       varoute(20,ihout) = varoute(20,inum2)  !!conservative metal #1
       varoute(21,ihout) = varoute(21,inum2)  !!conservative metal #2
       varoute(22,ihout) = varoute(22,inum2)  !!conservative metal #3
-   else
+
+      if (ievent > 0) then
+         do ii = 1, nstep
+            hhvaroute(1,ihout,ii) = 0.           !!undefined
+            hhvaroute(2,ihout,ii) = hhresflwo(ii)
+            hhvaroute(3,ihout,ii) = hhressedo(ii)
+            hhvaroute(4,ihout,ii) = resorgno / dfloat(nstep)
+            hhvaroute(5,ihout,ii) = resorgpo / dfloat(nstep)
+            hhvaroute(6,ihout,ii) = resno3o / dfloat(nstep)
+            hhvaroute(7,ihout,ii) = ressolpo / dfloat(nstep)
+            hhvaroute(8,ihout,ii) = 0.           !!undefined
+            hhvaroute(9,ihout,ii) = 0.           !!undefined
+            hhvaroute(10,ihout,ii) = 0.          !!undefined
+            hhvaroute(11,ihout,ii) = solpesto / dfloat(nstep)
+            hhvaroute(12,ihout,ii) = sorpesto / dfloat(nstep)
+            hhvaroute(13,ihout,ii) = reschlao / dfloat(nstep)
+            hhvaroute(14,ihout,ii) = resnh3o / dfloat(nstep)
+            hhvaroute(15,ihout,ii) = resno2o / dfloat(nstep)
+            hhvaroute(16,ihout,ii) = 0.          !!CBOD
+            hhvaroute(17,ihout,ii) = 0.          !!dis O2
+            hhvaroute(18,ihout,ii) = hhvaroute(18,inum2,ii) !!persistent bact
+            hhvaroute(19,ihout,ii) = hhvaroute(19,inum2,ii)  !!less persist bact
+            hhvaroute(20,ihout,ii) = varoute(20,inum2) / dfloat(nstep) !!cons metal #1
+            hhvaroute(21,ihout,ii) = varoute(21,inum2) / dfloat(nstep) !!cons metal #2
+            hhvaroute(22,ihout,ii) = varoute(22,inum2) / dfloat(nstep) !!cons metal #3
+
+            hhvaroute(23,ihout,ii) = varoute(23,inum2) / dfloat(nstep) !!Sand out
+            hhvaroute(24,ihout,ii) = varoute(24,inum2) / dfloat(nstep) !!Silt out
+            hhvaroute(25,ihout,ii) = varoute(25,inum2) / dfloat(nstep) !!clay out
+            hhvaroute(26,ihout,ii) = varoute(26,inum2) / dfloat(nstep) !!Small agg out
+            hhvaroute(27,ihout,ii) = varoute(27,inum2) / dfloat(nstep) !!Large agg out
+            hhvaroute(28,ihout,ii) = varoute(28,inum2) / dfloat(nstep) !!Gravel out
+
+         end do
+      end if
+
+      !! summarization calculations
+      if (curyr > nyskip) then
+         !!calculate concentrations
+         resorgnc = res_orgn(jres) / (res_vol(jres)+.1) * 1000.
+         resno3c = res_no3(jres) / (res_vol(jres)+.1) * 1000.
+         resno2c = res_no2(jres) / (res_vol(jres)+.1) * 1000.
+         resnh3c = res_nh3(jres) / (res_vol(jres)+.1) * 1000.
+         resorgpc = res_orgp(jres) / (res_vol(jres)+.1) * 1000.
+         ressolpc = res_solp(jres) / (res_vol(jres)+.1) * 1000.
+         sedcon = res_sed(jres) * 1.e6
+
+         resoutm(1,jres) = resoutm(1,jres) + resflwi / 86400.
+         resoutm(2,jres) = resoutm(2,jres) + resflwo / 86400.
+         resoutm(3,jres) = resoutm(3,jres) + ressedi
+         resoutm(4,jres) = resoutm(4,jres) + ressedo
+         resoutm(5,jres) = resoutm(5,jres) + sedcon
+         resoutm(6,jres) = resoutm(6,jres) + respesti
+         resoutm(7,jres) = resoutm(7,jres) + reactw
+         resoutm(8,jres) = resoutm(8,jres) + volatpst
+         resoutm(9,jres) = resoutm(8,jres) + setlpst
+         resoutm(10,jres) = resoutm(10,jres) + resuspst
+         resoutm(11,jres) = resoutm(11,jres) - difus
+         resoutm(12,jres) = resoutm(12,jres) + reactb
+         resoutm(13,jres) = resoutm(13,jres) + bury
+         resoutm(14,jres) = resoutm(14,jres) + solpesto + sorpesto
+         resoutm(15,jres) = resoutm(15,jres) + lkpst_conc(jres)
+         resoutm(16,jres) = resoutm(16,jres) + lkspst_conc(jres)
+         resoutm(17,jres) = resoutm(17,jres) + resev
+         resoutm(18,jres) = resoutm(18,jres) + ressep
+         resoutm(19,jres) = resoutm(19,jres) + respcp
+         resoutm(20,jres) = resoutm(20,jres) + resflwi
+         resoutm(21,jres) = resoutm(21,jres) + resflwo
+         resoutm(22,jres) = resoutm(22,jres) + varoute(4,inum2)
+         resoutm(23,jres) = resoutm(23,jres) + resorgno
+         resoutm(24,jres) = resoutm(24,jres) + varoute(5,inum2)
+         resoutm(25,jres) = resoutm(25,jres) + resorgpo
+         resoutm(26,jres) = resoutm(26,jres) + varoute(6,inum2)
+         resoutm(27,jres) = resoutm(27,jres) + resno3o
+         resoutm(28,jres) = resoutm(28,jres) + varoute(15,inum2)
+         resoutm(29,jres) = resoutm(29,jres) + resno2o
+         resoutm(30,jres) = resoutm(30,jres) + varoute(14,inum2)
+         resoutm(31,jres) = resoutm(31,jres) + resnh3o
+         resoutm(32,jres) = resoutm(32,jres) + varoute(7,inum2)
+         resoutm(33,jres) = resoutm(33,jres) + ressolpo
+         resoutm(34,jres) = resoutm(34,jres) + varoute(13,inum2)
+         resoutm(35,jres) = resoutm(35,jres) + reschlao
+         resoutm(36,jres) = resoutm(36,jres) + resorgpc
+         resoutm(37,jres) = resoutm(37,jres) + ressolpc
+         resoutm(38,jres) = resoutm(38,jres) + resorgnc
+         resoutm(39,jres) = resoutm(39,jres) + resno3c
+         resoutm(40,jres) = resoutm(40,jres) + resno2c
+         resoutm(41,jres) = resoutm(41,jres) + resnh3c
+         wshddayo(11) = wshddayo(11) + ressedc
+         wshddayo(34) = wshddayo(34) + resflwi - resflwo
+      end if
 
 
-      if (iyr > iyres(jres) .or.&
-      &(i_mo >= mores(jres) .and. iyr == iyres(jres))) then
-
-      !! Adjust Reservoir Storage for Irrigation Diversions
-         call irr_res
-         zz=varoute(19,inum2)
-         !! perform reservoir water/sediment balance
-         if(ievent == 0) then  !! urban modeling by J.Jeong
-            call res
-         else
-            call reshr
-         endif
-         !!      call res
-
-         !! perform reservoir nutrient balance
-         call resnut
-
-         !! perform reservoir pesticide transformations
-         call lakeq
-
-         !! add reservoir seepage to shallow aquifer convert from m^3 to mm
-         if (ressep > 0.) then
-            sepmm = ressep / (da_ha * sub_fr(res_sub(jres)) * 10.)
-            do k = 1, nhru
-               if (hru_sub(k) == res_sub(jres)) then
-                  shallst(k) = shallst(k) + sepmm
-               end if
-            end do
-         end if
-
-         !! set values for routing variables
-         varoute(1,ihout) = 0.           !!undefined
-         varoute(2,ihout) = resflwo
-         varoute(3,ihout) = ressedo
-         varoute(4,ihout) = resorgno
-         varoute(5,ihout) = resorgpo
-         varoute(6,ihout) = resno3o
-         varoute(7,ihout) = ressolpo
-         varoute(8,ihout) = 0.           !!undefined
-         varoute(9,ihout) = 0.           !!undefined
-         varoute(10,ihout) = 0.          !!undefined
-         varoute(11,ihout) = solpesto
-         varoute(12,ihout) = sorpesto
-         varoute(13,ihout) = reschlao
-         varoute(14,ihout) = resnh3o
-         varoute(15,ihout) = resno2o
-         varoute(16,ihout) = 0.          !!CBOD
-         varoute(17,ihout) = 0.          !!dis O2
-         varoute(18,ihout) = varoute(18,inum2)  !!persistent bact
-         varoute(19,ihout) = varoute(19,inum2)  !!less persistent bact
-         varoute(20,ihout) = varoute(20,inum2)  !!conservative metal #1
-         varoute(21,ihout) = varoute(21,inum2)  !!conservative metal #2
-         varoute(22,ihout) = varoute(22,inum2)  !!conservative metal #3
-
-         if (ievent > 0) then
-            do ii = 1, nstep
-               hhvaroute(1,ihout,ii) = 0.           !!undefined
-               hhvaroute(2,ihout,ii) = hhresflwo(ii)
-               hhvaroute(3,ihout,ii) = hhressedo(ii)
-               hhvaroute(4,ihout,ii) = resorgno / dfloat(nstep)
-               hhvaroute(5,ihout,ii) = resorgpo / dfloat(nstep)
-               hhvaroute(6,ihout,ii) = resno3o / dfloat(nstep)
-               hhvaroute(7,ihout,ii) = ressolpo / dfloat(nstep)
-               hhvaroute(8,ihout,ii) = 0.           !!undefined
-               hhvaroute(9,ihout,ii) = 0.           !!undefined
-               hhvaroute(10,ihout,ii) = 0.          !!undefined
-               hhvaroute(11,ihout,ii) = solpesto / dfloat(nstep)
-               hhvaroute(12,ihout,ii) = sorpesto / dfloat(nstep)
-               hhvaroute(13,ihout,ii) = reschlao / dfloat(nstep)
-               hhvaroute(14,ihout,ii) = resnh3o / dfloat(nstep)
-               hhvaroute(15,ihout,ii) = resno2o / dfloat(nstep)
-               hhvaroute(16,ihout,ii) = 0.          !!CBOD
-               hhvaroute(17,ihout,ii) = 0.          !!dis O2
-               hhvaroute(18,ihout,ii) = hhvaroute(18,inum2,ii) !!persistent bact
-               hhvaroute(19,ihout,ii) = hhvaroute(19,inum2,ii)  !!less persist bact
-               hhvaroute(20,ihout,ii) = varoute(20,inum2) / dfloat(nstep) !!cons metal #1
-               hhvaroute(21,ihout,ii) = varoute(21,inum2) / dfloat(nstep) !!cons metal #2
-               hhvaroute(22,ihout,ii) = varoute(22,inum2) / dfloat(nstep) !!cons metal #3
-
-               hhvaroute(23,ihout,ii) = varoute(23,inum2) / dfloat(nstep) !!Sand out
-               hhvaroute(24,ihout,ii) = varoute(24,inum2) / dfloat(nstep) !!Silt out
-               hhvaroute(25,ihout,ii) = varoute(25,inum2) / dfloat(nstep) !!clay out
-               hhvaroute(26,ihout,ii) = varoute(26,inum2) / dfloat(nstep) !!Small agg out
-               hhvaroute(27,ihout,ii) = varoute(27,inum2) / dfloat(nstep) !!Large agg out
-               hhvaroute(28,ihout,ii) = varoute(28,inum2) / dfloat(nstep) !!Gravel out
-
-            end do
-         end if
-
-         !! summarization calculations
-         if (curyr > nyskip) then
-            !!calculate concentrations
-            resorgnc = res_orgn(jres) / (res_vol(jres)+.1) * 1000.
-            resno3c = res_no3(jres) / (res_vol(jres)+.1) * 1000.
-            resno2c = res_no2(jres) / (res_vol(jres)+.1) * 1000.
-            resnh3c = res_nh3(jres) / (res_vol(jres)+.1) * 1000.
-            resorgpc = res_orgp(jres) / (res_vol(jres)+.1) * 1000.
-            ressolpc = res_solp(jres) / (res_vol(jres)+.1) * 1000.
-            sedcon = res_sed(jres) * 1.e6
-
-            resoutm(1,jres) = resoutm(1,jres) + resflwi / 86400.
-            resoutm(2,jres) = resoutm(2,jres) + resflwo / 86400.
-            resoutm(3,jres) = resoutm(3,jres) + ressedi
-            resoutm(4,jres) = resoutm(4,jres) + ressedo
-            resoutm(5,jres) = resoutm(5,jres) + sedcon
-            resoutm(6,jres) = resoutm(6,jres) + respesti
-            resoutm(7,jres) = resoutm(7,jres) + reactw
-            resoutm(8,jres) = resoutm(8,jres) + volatpst
-            resoutm(9,jres) = resoutm(8,jres) + setlpst
-            resoutm(10,jres) = resoutm(10,jres) + resuspst
-            resoutm(11,jres) = resoutm(11,jres) - difus
-            resoutm(12,jres) = resoutm(12,jres) + reactb
-            resoutm(13,jres) = resoutm(13,jres) + bury
-            resoutm(14,jres) = resoutm(14,jres) + solpesto + sorpesto
-            resoutm(15,jres) = resoutm(15,jres) + lkpst_conc(jres)
-            resoutm(16,jres) = resoutm(16,jres) + lkspst_conc(jres)
-            resoutm(17,jres) = resoutm(17,jres) + resev
-            resoutm(18,jres) = resoutm(18,jres) + ressep
-            resoutm(19,jres) = resoutm(19,jres) + respcp
-            resoutm(20,jres) = resoutm(20,jres) + resflwi
-            resoutm(21,jres) = resoutm(21,jres) + resflwo
-            resoutm(22,jres) = resoutm(22,jres) + varoute(4,inum2)
-            resoutm(23,jres) = resoutm(23,jres) + resorgno
-            resoutm(24,jres) = resoutm(24,jres) + varoute(5,inum2)
-            resoutm(25,jres) = resoutm(25,jres) + resorgpo
-            resoutm(26,jres) = resoutm(26,jres) + varoute(6,inum2)
-            resoutm(27,jres) = resoutm(27,jres) + resno3o
-            resoutm(28,jres) = resoutm(28,jres) + varoute(15,inum2)
-            resoutm(29,jres) = resoutm(29,jres) + resno2o
-            resoutm(30,jres) = resoutm(30,jres) + varoute(14,inum2)
-            resoutm(31,jres) = resoutm(31,jres) + resnh3o
-            resoutm(32,jres) = resoutm(32,jres) + varoute(7,inum2)
-            resoutm(33,jres) = resoutm(33,jres) + ressolpo
-            resoutm(34,jres) = resoutm(34,jres) + varoute(13,inum2)
-            resoutm(35,jres) = resoutm(35,jres) + reschlao
-            resoutm(36,jres) = resoutm(36,jres) + resorgpc
-            resoutm(37,jres) = resoutm(37,jres) + ressolpc
-            resoutm(38,jres) = resoutm(38,jres) + resorgnc
-            resoutm(39,jres) = resoutm(39,jres) + resno3c
-            resoutm(40,jres) = resoutm(40,jres) + resno2c
-            resoutm(41,jres) = resoutm(41,jres) + resnh3c
-            wshddayo(11) = wshddayo(11) + ressedc
-            wshddayo(34) = wshddayo(34) + resflwi - resflwo
-         end if
-
-
-         if (iprint == 1 .and. curyr > nyskip) then
-            if (iscen == 1.and. isproj == 0) then
-               write (8,5000) jres, iida, res_vol(jres), resflwi / 86400.,&
+      if (iprint == 1 .and. curyr > nyskip) then
+         if (iscen == 1.and. isproj == 0) then
+            write (8,5000) jres, iida, res_vol(jres), resflwi / 86400.,&
                &(resflwo / 86400.), respcp, resev, ressep, ressedi, ressedo,&
                &sedcon, varoute(4,inum2), resorgno, resorgnc,&
                &varoute(5,inum2), resorgpo, resorgpc, varoute(6,inum2),&
@@ -389,8 +356,8 @@ subroutine routres
                &res_seci(jres), respesti, reactw, volatpst, setlpst, resuspst,&
                &difus, reactb, bury, solpesto + sorpesto, lkpst_conc(jres),&
                &lkspst_conc(jres),iyr
-            else if (isproj == 1) then
-               write (22,5000) jres, iida, res_vol(jres), resflwi / 86400.,&
+         else if (isproj == 1) then
+            write (22,5000) jres, iida, res_vol(jres), resflwi / 86400.,&
                &(resflwo / 86400.), respcp, resev, ressep, ressedi, ressedo,&
                &sedcon, varoute(4,inum2), resorgno, resorgnc,&
                &varoute(5,inum2), resorgpo, resorgpc, varoute(6,inum2),&
@@ -400,8 +367,8 @@ subroutine routres
                &res_seci(jres), respesti, reactw, volatpst, setlpst, resuspst,&
                &difus, reactb, bury, solpesto + sorpesto, lkpst_conc(jres),&
                &lkspst_conc(jres),iyr
-            else if (iscen == 1 .and. isproj == 2) then
-               write (8,6000) jres, iida, res_vol(jres), resflwi / 86400.,&
+         else if (iscen == 1 .and. isproj == 2) then
+            write (8,6000) jres, iida, res_vol(jres), resflwi / 86400.,&
                &(resflwo / 86400.), respcp, resev, ressep, ressedi, ressedo,&
                &sedcon, varoute(4,inum2), resorgno, resorgnc,&
                &varoute(5,inum2), resorgpo, resorgpc, varoute(6,inum2),&
@@ -411,15 +378,14 @@ subroutine routres
                &res_seci(jres), respesti, reactw, volatpst, setlpst, resuspst,&
                &difus, reactb, bury, solpesto + sorpesto, lkpst_conc(jres),&
                &lkspst_conc(jres), iyr
-            endif
          endif
-      else
-         !! reservoir has not been constructed yet
-         do ii = 1, mvaro
-            varoute(ii,ihout) = varoute(ii,inum2)
-         end do
-      end if
-   endif
+      endif
+   else
+      !! reservoir has not been constructed yet
+      do ii = 1, mvaro
+         varoute(ii,ihout) = varoute(ii,inum2)
+      end do
+   end if
 
    return
 5000 format ('RES   ',i8,1x,i4,41e12.4,1x,i4)

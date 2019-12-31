@@ -1,12 +1,16 @@
-subroutine rchuse
+!> @file rchuse.f90
+!> file containing the subroutine rchuse
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine removes water from reach for consumptive water use
+!> this subroutine removes water from reach for consumptive water use
+!> @param[in] jrch reach number (none)
+subroutine rchuse(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    inum1       |none          |reach number
+!!    jrch        |none          |HRU number
 !!    i_mo        |none          |month of simulation
 !!    rtwtr       |m^3 H2O       |water leaving reach on day
 !!    sedrch      |metric tons   |sediment transported out of reach on day
@@ -24,20 +28,21 @@ subroutine rchuse
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    jrch        |none          |HRU number
 !!    wtrin       |m^3 H2O       |water outflow from reach prior to
 !!                               |subtracting irrigation diversions
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Dfloat
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jrch, ii
+   integer, intent(in) :: jrch
    real*8 :: wtrin
-
-   jrch = inum1
+   integer :: ii
 
    wtrin = rtwtr
 
@@ -46,7 +51,7 @@ subroutine rchuse
 
    if (ievent > 0) then
       do ii = 1, nstep
-         hrtwtr(ii) = hrtwtr(ii) - wurch(i_mo,jrch) * 10000. / dfloat(nstep)
+         hrtwtr(ii) = hrtwtr(ii) - wurch(i_mo,jrch) * 10000. / Dfloat(nstep)
          if (hrtwtr(ii) < 0.) hrtwtr(ii) = 0.
       end do
    end if

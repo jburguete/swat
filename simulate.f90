@@ -229,7 +229,6 @@ subroutine simulate
             end do
          end if
 
-         dtot = dtot + 1.
          nd_30 = nd_30 + 1
          if (nd_30 > 30) nd_30 = 1
 
