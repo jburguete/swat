@@ -88,10 +88,6 @@ subroutine bacteria(j)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlchlp   |# cfu/m^2     |less persistent bacteria removed from soil
-!!                               |surface layer by percolation
-!!    bactlchp    |# cfu/m^2     |persistent bacteria removed from soil surface
-!!                               |layer by percolation
 !!    bactlp_plt(:)|# cfu/m^2    |less persistent bacteria on foliage
 !!    bactlpq(:)  |# cfu/m^2     |less persistent bacteria in soil solution
 !!    bactlps(:)  |# cfu/m^2     |less persistent bacteria attached to soil
@@ -129,6 +125,10 @@ subroutine bacteria(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    bactlchlp   |# cfu/m^2     |less persistent bacteria removed from soil
+!!                               |surface layer by percolation
+!!    bactlchp    |# cfu/m^2     |persistent bacteria removed from soil surface
+!!                               |layer by percolation
 !!    blpq        |# cfu/m^2     |less persistent bacteria in soil solution at
 !!                               |beginning of day
 !!    blps        |# cfu/m^2     |less persistent bacteria attached to soil
@@ -153,7 +153,7 @@ subroutine bacteria(j)
 
    real*8 Theta
    integer, intent(in) :: j
-   real*8 :: blpq, blps, bpq, bps, cbact, wt1, xx
+   real*8 :: bactlchlp, bactlchp, blpq, blps, bpq, bps, cbact, wt1, xx
 
    if (bactlps(j) < 1.e-6) bactlps(j) = 0.0
    if (bactlpq(j) < 1.e-6) bactlpq(j) = 0.0

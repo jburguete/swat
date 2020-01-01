@@ -205,8 +205,6 @@ subroutine varinit(j)
    albday = 0.
    auton = 0.
    autop = 0.
-   bactlchlp = 0.
-   bactlchp = 0.
    bactrolp = 0.
    bactrop = 0.
    bactsedlp = 0.

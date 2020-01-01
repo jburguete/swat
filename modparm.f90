@@ -316,7 +316,6 @@ module parm
    real*8 :: wof_p
 !> average annual amount of NO3 added to soil by rainfall in watershed (kg N/ha)
    real*8 :: wshd_raino3
-!X
 !> average annual amount of phosphorus leached into second soil layer (kg P/ha)
    real*8 :: wshd_plch
    real*8 :: ressedc, basno3f, basorgnf
@@ -480,12 +479,6 @@ module parm
 !> (# colonies/ha)
    real*8 :: bactsedp
 !X
-!> less persistent bacteria removed from soil surface layer by percolation
-!> (# colonies/ha)
-   real*8 :: bactlchlp
-!> persistent bacteria removed from soil surface layer by percolation
-!> (# colonies/ha)
-   real*8 :: bactlchp
 !> enrichment ratio calculated for current day in HRU (none)
    real*8 :: enratio
    real*8 :: pndpcp !< precipitation on pond during day (m^3 H2O)
