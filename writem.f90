@@ -158,7 +158,6 @@ subroutine writem(i)
 !!    hrupstm(:,:,:)|varies      |HRU monthly pesticide output array
 !!    hrupsty(:,:,:)|varies      |HRU annual pesticide output array
 !!    hruyro(:,:) |varies        |HRU annual output array
-!!    idlast      |none          |number of days simulated in month
 !!    immo        |none          |current cumulative month of simulation
 !!    rchmono(:,:)|varies        |reach monthly output array
 !!    rchyro(:,:) |varies        |reach annual output array
@@ -191,12 +190,15 @@ subroutine writem(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    fidlast     |none          |number of days simulated in month (float)
+!!    idlast      |none          |number of days simulated in month
 !!    j           |none          |counter
 !!    k           |none          |counter
 !!    sum1        |mg            |total pesticide loading
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Dfloat
 !!    SWAT: hrumon, impndmon, submon, rchmon, rsedmon, writea
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -205,8 +207,8 @@ subroutine writem(i)
    implicit none
 
    integer, intent(in) :: i
-   real*8 :: sum1
-   integer :: j, k
+   real*8 :: fidlast, sum1
+   integer :: idlast, j, k
 
 !! if last day of month or last day in last year
 
@@ -228,9 +230,10 @@ subroutine writem(i)
       end if
 
       !! calculate average temperature for month in watershed
+      fidlast = Dfloat(idlast)
       if (idlast > 0.) then
-         wshdmono(8) = wshdmono(8) / dfloat(idlast)
-         wshdmono(9) = wshdmono(9) / dfloat(idlast)
+         wshdmono(8) = wshdmono(8) / fidlast
+         wshdmono(9) = wshdmono(9) / fidlast
       else
          wshdmono(8) = 0.
          wshdmono(9) = 0.
@@ -277,73 +280,73 @@ subroutine writem(i)
                   &(mo_chk >= mores(j) .and. iyr == iyres(j))) then
                   if (iscen == 1 .and. isproj == 0) then
                      write (8,5800) j, mo_chk, res_vol(j),&
-                        &resoutm(1,j) / dfloat(idlast),&
-                        &resoutm(2,j) / dfloat(idlast),&
+                        &resoutm(1,j) / fidlast,&
+                        &resoutm(2,j) / fidlast,&
                         &resoutm(19,j), resoutm(17,j), resoutm(18,j),&
                         &resoutm(3,j), resoutm(4,j),&
-                        &resoutm(5,j) / dfloat(idlast),&
+                        &resoutm(5,j) / fidlast,&
                         &(resoutm(k,j), k = 22, 23),&
-                        &resoutm(38,j) / dfloat(idlast),&
+                        &resoutm(38,j) / fidlast,&
                         &(resoutm(k,j), k = 24, 25),&
-                        &resoutm(36,j) / dfloat(idlast),&
+                        &resoutm(36,j) / fidlast,&
                         &(resoutm(k,j), k = 26, 27),&
-                        &resoutm(39,j) / dfloat(idlast),&
+                        &resoutm(39,j) / fidlast,&
                         &(resoutm(k,j), k = 28, 29),&
-                        &resoutm(40,j) / dfloat(idlast),&
+                        &resoutm(40,j) / fidlast,&
                         &(resoutm(k,j), k = 30, 31),&
-                        &resoutm(41,j) / dfloat(idlast),&
+                        &resoutm(41,j) / fidlast,&
                         &(resoutm(k,j), k = 32, 33),&
-                        &resoutm(37,j) / dfloat(idlast),&
+                        &resoutm(37,j) / fidlast,&
                         &(resoutm(k,j), k = 34, 35), res_seci(j),&
                         &(resoutm(k,j), k = 6, 14),&
-                        &resoutm(15,j) / dfloat(idlast),&
-                        &resoutm(16,j) / dfloat(idlast)
+                        &resoutm(15,j) / fidlast,&
+                        &resoutm(16,j) / fidlast
                   else if (isproj == 1) then
                      write (22,5800) j, mo_chk, res_vol(j),&
-                        &resoutm(1,j) / dfloat(idlast),&
-                        &resoutm(2,j) / dfloat(idlast),&
+                        &resoutm(1,j) / fidlast,&
+                        &resoutm(2,j) / fidlast,&
                         &resoutm(19,j), resoutm(17,j), resoutm(18,j),&
                         &resoutm(3,j), resoutm(4,j),&
-                        &resoutm(5,j) / dfloat(idlast),&
+                        &resoutm(5,j) / fidlast,&
                         &(resoutm(k,j), k = 22, 23),&
-                        &resoutm(38,j) / dfloat(idlast),&
+                        &resoutm(38,j) / fidlast,&
                         &(resoutm(k,j), k = 24, 25),&
-                        &resoutm(36,j) / dfloat(idlast),&
+                        &resoutm(36,j) / fidlast,&
                         &(resoutm(k,j), k = 26, 27),&
-                        &resoutm(39,j) / dfloat(idlast),&
+                        &resoutm(39,j) / fidlast,&
                         &(resoutm(k,j), k = 28, 29),&
-                        &resoutm(40,j) / dfloat(idlast),&
+                        &resoutm(40,j) / fidlast,&
                         &(resoutm(k,j), k = 30, 31),&
-                        &resoutm(41,j) / dfloat(idlast),&
+                        &resoutm(41,j) / fidlast,&
                         &(resoutm(k,j), k = 32, 33),&
-                        &resoutm(37,j) / dfloat(idlast),&
+                        &resoutm(37,j) / fidlast,&
                         &(resoutm(k,j), k = 34, 35), res_seci(j),&
                         &(resoutm(k,j), k = 6, 14),&
-                        &resoutm(15,j) / dfloat(idlast),&
-                        &resoutm(16,j) / dfloat(idlast)
+                        &resoutm(15,j) / fidlast,&
+                        &resoutm(16,j) / fidlast
                   else if (iscen == 1 .and. isproj == 2) then
                      write (8,6800) j, mo_chk, res_vol(j),&
-                        &resoutm(1,j) / dfloat(idlast),&
-                        &resoutm(2,j) / dfloat(idlast),&
+                        &resoutm(1,j) / fidlast,&
+                        &resoutm(2,j) / fidlast,&
                         &resoutm(19,j), resoutm(17,j), resoutm(18,j),&
                         &resoutm(3,j), resoutm(4,j),&
-                        &resoutm(5,j) / dfloat(idlast),&
+                        &resoutm(5,j) / fidlast,&
                         &(resoutm(k,j), k = 22, 23),&
-                        &resoutm(38,j) / dfloat(idlast),&
+                        &resoutm(38,j) / fidlast,&
                         &(resoutm(k,j), k = 24, 25),&
-                        &resoutm(36,j) / dfloat(idlast),&
+                        &resoutm(36,j) / fidlast,&
                         &(resoutm(k,j), k = 26, 27),&
-                        &resoutm(39,j) / dfloat(idlast),&
+                        &resoutm(39,j) / fidlast,&
                         &(resoutm(k,j), k = 28, 29),&
-                        &resoutm(40,j) / dfloat(idlast),&
+                        &resoutm(40,j) / fidlast,&
                         &(resoutm(k,j), k = 30, 31),&
-                        &resoutm(41,j) / dfloat(idlast),&
+                        &resoutm(41,j) / fidlast,&
                         &(resoutm(k,j), k = 32, 33),&
-                        &resoutm(37,j) / dfloat(idlast),&
+                        &resoutm(37,j) / fidlast,&
                         &(resoutm(k,j), k = 34, 35), res_seci(j),&
                         &(resoutm(k,j), k = 6, 14),&
-                        &resoutm(15,j) / dfloat(idlast),&
-                        &resoutm(16,j) / dfloat(idlast), iyr
+                        &resoutm(15,j) / fidlast,&
+                        &resoutm(16,j) / fidlast, iyr
                   endif
                end if
 

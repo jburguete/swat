@@ -178,6 +178,8 @@ subroutine writea(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    fidlast     |none          |number of days simulated in month (float)
+!!    idlast      |none          |number of days simulated in month
 !!    j           |none          |counter
 !!    k           |none          |counter
 !!    sum1        |mg pst        |total pesticide loading for year
@@ -193,8 +195,8 @@ subroutine writea(i)
    implicit none
 
    integer, intent(in) :: i
-   real*8 :: sum1
-   integer :: j, k
+   real*8 :: fidlast, sum1
+   integer :: idlast, j, k
 
    if (i_mo <= mo_chk .or. (curyr == nbyr .and. i == idal)) then
       !! calculate average annual max and min temperature
@@ -247,24 +249,25 @@ subroutine writea(i)
          call subyr
 
          !! annual write--reach output (.rch)
-         call rchyr(i)
+         idlast = i - (id1 - 1)
+         call rchyr(idlast)
 
 !         !! annual write--sediment routing (.sed)
-         call rsedyr
+         call rsedyr(idlast)
 
-         idlast = i - (id1 - 1)
+         fidlast = Dfloat(idlast)
          do j = 1, nres
-            resouty(1,j) = resouty(1,j) / dfloat(idlast)
-            resouty(2,j) = resouty(2,j) / dfloat(idlast)
-            resouty(5,j) = resouty(5,j) / dfloat(idlast)
-            resouty(15,j) = resouty(15,j) / dfloat(idlast)
-            resouty(16,j) = resouty(16,j) / dfloat(idlast)
-            resouty(36,j) = resouty(36,j) / dfloat(idlast)
-            resouty(37,j) = resouty(37,j) / dfloat(idlast)
-            resouty(38,j) = resouty(38,j) / dfloat(idlast)
-            resouty(39,j) = resouty(39,j) / dfloat(idlast)
-            resouty(40,j) = resouty(40,j) / dfloat(idlast)
-            resouty(41,j) = resouty(41,j) / dfloat(idlast)
+            resouty(1,j) = resouty(1,j) / fidlast
+            resouty(2,j) = resouty(2,j) / fidlast
+            resouty(5,j) = resouty(5,j) / fidlast
+            resouty(15,j) = resouty(15,j) / fidlast
+            resouty(16,j) = resouty(16,j) / fidlast
+            resouty(36,j) = resouty(36,j) / fidlast
+            resouty(37,j) = resouty(37,j) / fidlast
+            resouty(38,j) = resouty(38,j) / fidlast
+            resouty(39,j) = resouty(39,j) / fidlast
+            resouty(40,j) = resouty(40,j) / fidlast
+            resouty(41,j) = resouty(41,j) / fidlast
             if (iyr >= iyres(j)) then
                if (iscen == 1 .and. isproj == 0) then
                   write (8,5800) j, iyr, res_vol(j), resouty(1,j),&

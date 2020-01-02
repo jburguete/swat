@@ -1,16 +1,21 @@
-subroutine save
+!> @file save.f90
+!> file containing the subroutine save
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes daily records of loadings from a particular
-!!    hydrograph storage location in the event output file. The save command
-!!    is used when a watershed is broken into several individual runs and
-!!    outflow from an upstream watershed needs to be stored for reading into
-!!    a simulation of the downstream portion of the watershed. The recday
-!!    command is used to read in the data.
+!> this subroutine writes daily records of loadings from a particular
+!> hydrograph storage location in the event output file. The save command
+!> is used when a watershed is broken into several individual runs and
+!> outflow from an upstream watershed needs to be stored for reading into
+!> a simulation of the downstream portion of the watershed. The recday
+!> command is used to read in the data.
+!> @param[in] j file number (none)
+subroutine save(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j             |none         |file number
 !!    iida          |julian date  |current day of simulation
 !!    ihout         |none         |hydrograph storage location number for data
 !!                                |to be printed to event file
@@ -41,14 +46,15 @@ subroutine save
    use parm
    implicit none
 
+   integer, intent(in) :: j
    integer :: ii
 
-   if (inum1 <= 10 .and. inum1 > 0) then
+   if (j <= 10 .and. j > 0) then
       if (ievent == 1 .and. inum2 == 1) then
          !! Write subdaily values
          do ii = 1, nstep
             if (inum3 == 0) then
-               write (40+inum1,5000) iida, iyr, ii-1,&
+               write (40+j,5000) iida, iyr, ii-1,&
                &hhvaroute(2,ihout,ii),&
                &hhvaroute(3,ihout,ii),&
                &hhvaroute(4,ihout,ii),&
@@ -69,7 +75,7 @@ subroutine save
                &hhvaroute(22,ihout,ii),&
                &hhvaroute(1,ihout,ii)
             else
-               write (40+inum1,5000)&
+               write (40+j,5000)&
                &hhvaroute(2,ihout,ii),&
                &hhvaroute(3,ihout,ii),&
                &hhvaroute(4,ihout,ii),&
@@ -93,7 +99,7 @@ subroutine save
          end do
       else
          if (inum3 == 0) then
-            write (40+inum1,5002) iida, iyr,&
+            write (40+j,5002) iida, iyr,&
             &varoute(2,ihout),&
             &varoute(3,ihout),&
             &varoute(4,ihout),&
@@ -114,7 +120,7 @@ subroutine save
             &varoute(22,ihout),&
             &varoute(1,ihout)
          else
-            write (40+inum1,5003)&
+            write (40+j,5003)&
             &varoute(2,ihout),&
             &varoute(3,ihout),&
             &varoute(4,ihout),&

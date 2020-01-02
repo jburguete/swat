@@ -1,26 +1,24 @@
-subroutine recday
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine inputs measured loadings to the stream network for
-!!    routing through the watershed where the records are summarized on a
-!!    daily basis
+!> this subroutine inputs measured loadings to the stream network for
+!> routing through the watershed where the records are summarized on a
+!> daily basis
+!> @param[in] k reach number or file number (none)
+subroutine recday(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k           |none          |reach number or file number
 !!    id1         |julian date   |first day of simulation in year
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    inum1       |none          |reach number
 !!    ifirstr(:)  |none          |measured data search code
 !!                               |0 first day of measured data located in file
 !!                               |1 first day of measured data not located in
 !!                               |file
 !!    ihout       |none          |hydrograph storage location number
-!!    inum1       |none          |file number
 !!    iyr         |year          |current year of simulation (actual year)
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
@@ -85,6 +83,7 @@ subroutine recday
 !!                               |on day
 !!    disoxday    |kg            |dissolved oxygen loading to reach on day
 !!    floday      |m^3 H2O       |water loading to reach on day
+!!    fn          |none          |number of time steps (float)
 !!    idap        |julian date   |julian date of record
 !!    ii          |none          |counter
 !!    iyp         |year          |year of record
@@ -96,17 +95,23 @@ subroutine recday
 !!    orgnday     |kg N          |organic N loading to reach on day
 !!    orgpday     |kg P          |organic P loading to reach on day
 !!    sedday      |metric tons   |sediment loading to reach on day
+!!    solpstday
+!!    sorbpstday
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Dfloat
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   real*8 :: floday, sedday, orgnday, orgpday, no3day, minpday
-   real*8 :: nh3day, no2day, cmtl1day, cmtl2day, cmtl3day, solpstday
-   real*8 :: bactpday, bactlpday, chladay, disoxday, cbodday, srbpstday
-   integer :: idap, iyp, ii, j
+   integer, intent(in) :: k
+   real*8 :: bactlpday, bactpday, cbodday, chladay, cmtl1day, cmtl2day,&
+      &cmtl3day, disoxday, fn, floday, minpday, nh3day, no2day, no3day,&
+      &orgnday, orgpday, sedday, solpstday, srbpstday
+   integer :: idap, ii, iyp, j
 
 !! initialize variables
    floday = 0.
@@ -136,15 +141,15 @@ subroutine recday
       end do
    end do
 
-   if (ifirstr(inum1) == 0) then
-      read (555+inum1,*) idap, iyp, floday, sedday, orgnday,&
+   if (ifirstr(k) == 0) then
+      read (555+k,*) idap, iyp, floday, sedday, orgnday,&
       &orgpday, no3day, nh3day, no2day, minpday, cbodday,&
       &disoxday, chladay, solpstday, srbpstday, bactpday,&
       &bactlpday, cmtl1day, cmtl2day, cmtl3day
    else
-      ifirstr(inum1) = 0
+      ifirstr(k) = 0
       do
-         read (555+inum1,*) idap, iyp, floday, sedday, orgnday,&
+         read (555+k,*) idap, iyp, floday, sedday, orgnday,&
          &orgpday, no3day, nh3day, no2day, minpday, cbodday,&
          &disoxday, chladay, solpstday, srbpstday, bactpday,&
          &bactlpday, cmtl1day, cmtl2day, cmtl3day
@@ -181,25 +186,26 @@ subroutine recday
    varoute(28,ihout) = 0.            ! gravel
 
    if (ievent > 0) then
+      fn = Dfloat(nstep)
       do ii = 1, nstep
-         hhvaroute(2,ihout,ii) = floday / dfloat(nstep)
-         hhvaroute(3,ihout,ii) = sedday / dfloat(nstep)
-         hhvaroute(4,ihout,ii) = orgnday / dfloat(nstep)
-         hhvaroute(5,ihout,ii) = orgpday / dfloat(nstep)
-         hhvaroute(6,ihout,ii) = no3day / dfloat(nstep)
-         hhvaroute(7,ihout,ii) = minpday / dfloat(nstep)
-         hhvaroute(11,ihout,ii) = solpstday / dfloat(nstep)
-         hhvaroute(12,ihout,ii) = srbpstday / dfloat(nstep)
-         hhvaroute(13,ihout,ii) = chladay / dfloat(nstep)
-         hhvaroute(14,ihout,ii) = nh3day / dfloat(nstep)
-         hhvaroute(15,ihout,ii) = no2day / dfloat(nstep)
-         hhvaroute(16,ihout,ii) = cbodday / dfloat(nstep)
-         hhvaroute(17,ihout,ii) = disoxday / dfloat(nstep)
-         hhvaroute(18,ihout,ii) = bactpday / dfloat(nstep)
-         hhvaroute(19,ihout,ii) = bactlpday / dfloat(nstep)
-         hhvaroute(20,ihout,ii) = cmtl1day / dfloat(nstep)
-         hhvaroute(21,ihout,ii) = cmtl2day / dfloat(nstep)
-         hhvaroute(22,ihout,ii) = cmtl3day / dfloat(nstep)
+         hhvaroute(2,ihout,ii) = floday / fn
+         hhvaroute(3,ihout,ii) = sedday / fn
+         hhvaroute(4,ihout,ii) = orgnday / fn
+         hhvaroute(5,ihout,ii) = orgpday / fn
+         hhvaroute(6,ihout,ii) = no3day / fn
+         hhvaroute(7,ihout,ii) = minpday / fn
+         hhvaroute(11,ihout,ii) = solpstday / fn
+         hhvaroute(12,ihout,ii) = srbpstday / fn
+         hhvaroute(13,ihout,ii) = chladay / fn
+         hhvaroute(14,ihout,ii) = nh3day / fn
+         hhvaroute(15,ihout,ii) = no2day / fn
+         hhvaroute(16,ihout,ii) = cbodday / fn
+         hhvaroute(17,ihout,ii) = disoxday / fn
+         hhvaroute(18,ihout,ii) = bactpday / fn
+         hhvaroute(19,ihout,ii) = bactlpday / fn
+         hhvaroute(20,ihout,ii) = cmtl1day / fn
+         hhvaroute(21,ihout,ii) = cmtl2day / fn
+         hhvaroute(22,ihout,ii) = cmtl3day / fn
       end do
    end if
 

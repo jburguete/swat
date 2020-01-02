@@ -1,13 +1,18 @@
-subroutine reccnst
+!> @file reccnst.f90
+!> file containing the subroutine reccnst
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine inputs measured loadings to the stream network
-!!    for routing through the watershed where the records are averaged
-!!    over the entire period of record
+!> this subroutine inputs measured loadings to the stream network
+!> for routing through the watershed where the records are averaged
+!> over the entire period of record
+!> @param[in] k file number (none)
+subroutine reccnst(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k           |none          |file number
 !!    bactlpcnst(:)|# cfu/100ml  |average daily less persistent bacteria
 !!                               |loading to reach
 !!    bactpcnst(:)|# cfu/100ml   |average daily persistent bacteria loading
@@ -25,7 +30,6 @@ subroutine reccnst
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout       |none          |hydrograph storage location number
-!!    inum1       |none          |file number
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
 !!    minpcnst(:) |kg P/day      |average daily soluble P loading to reach
@@ -77,15 +81,21 @@ subroutine reccnst
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    fn          |none          |number of time steps (float)
 !!    ii          |none          |counter
 !!    j           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Dfloat
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   integer, intent(in) :: k
+   real*8 :: fn
    integer :: ii, j
 
 !! zero flow out variables
@@ -98,53 +108,54 @@ subroutine reccnst
       endif
    end do
 
-   varoute(2,ihout) = flocnst(inum1)
-   varoute(3,ihout) = sedcnst(inum1)
-   varoute(4,ihout) = orgncnst(inum1)
-   varoute(5,ihout) = orgpcnst(inum1)
-   varoute(6,ihout) = no3cnst(inum1)
-   varoute(7,ihout) = minpcnst(inum1)
-   varoute(11,ihout) = solpstcnst(inum1)
-   varoute(12,ihout) = srbpstcnst(inum1)
-   varoute(13,ihout) = chlacnst(inum1)
-   varoute(14,ihout) = nh3cnst(inum1)
-   varoute(15,ihout) = no2cnst(inum1)
-   varoute(16,ihout) = cbodcnst(inum1)
-   varoute(17,ihout) = disoxcnst(inum1)
-   varoute(18,ihout) = bactpcnst(inum1)
-   varoute(19,ihout) = bactlpcnst(inum1)
-   varoute(20,ihout) = cmtl1cnst(inum1)
-   varoute(21,ihout) = cmtl2cnst(inum1)
-   varoute(22,ihout) = cmtl3cnst(inum1)
+   varoute(2,ihout) = flocnst(k)
+   varoute(3,ihout) = sedcnst(k)
+   varoute(4,ihout) = orgncnst(k)
+   varoute(5,ihout) = orgpcnst(k)
+   varoute(6,ihout) = no3cnst(k)
+   varoute(7,ihout) = minpcnst(k)
+   varoute(11,ihout) = solpstcnst(k)
+   varoute(12,ihout) = srbpstcnst(k)
+   varoute(13,ihout) = chlacnst(k)
+   varoute(14,ihout) = nh3cnst(k)
+   varoute(15,ihout) = no2cnst(k)
+   varoute(16,ihout) = cbodcnst(k)
+   varoute(17,ihout) = disoxcnst(k)
+   varoute(18,ihout) = bactpcnst(k)
+   varoute(19,ihout) = bactlpcnst(k)
+   varoute(20,ihout) = cmtl1cnst(k)
+   varoute(21,ihout) = cmtl2cnst(k)
+   varoute(22,ihout) = cmtl3cnst(k)
 
    !! Assumed equal distribution of sediment
-   varoute(23,ihout) = sedcnst(inum1) * 0.   ! sand
-   varoute(24,ihout) = sedcnst(inum1) * 1.   ! silt
-   varoute(25,ihout) = sedcnst(inum1) * 0.   ! cla
-   varoute(26,ihout) = sedcnst(inum1) * 0.   ! sag
-   varoute(27,ihout) = sedcnst(inum1) * 0.   ! lag
+   varoute(23,ihout) = sedcnst(k) * 0.   ! sand
+   varoute(24,ihout) = sedcnst(k) * 1.   ! silt
+   varoute(25,ihout) = sedcnst(k) * 0.   ! cla
+   varoute(26,ihout) = sedcnst(k) * 0.   ! sag
+   varoute(27,ihout) = sedcnst(k) * 0.   ! lag
    varoute(28,ihout) = 0.                    ! gravel
 
    if (ievent > 0) then
+      fn = Dfloat(nstep)
       do ii = 1,nstep
-         hhvaroute(2,ihout,ii) = flocnst(inum1) / dfloat(nstep)
-         hhvaroute(3,ihout,ii) = sedcnst(inum1) / dfloat(nstep)
-         hhvaroute(4,ihout,ii) = orgncnst(inum1) / dfloat(nstep)
-         hhvaroute(5,ihout,ii) = orgpcnst(inum1) / dfloat(nstep)
-         hhvaroute(6,ihout,ii) = no3cnst(inum1) / dfloat(nstep)
-         hhvaroute(7,ihout,ii) = minpcnst(inum1) / dfloat(nstep)
-         hhvaroute(11,ihout,ii) = solpstcnst(inum1) / dfloat(nstep)
-         hhvaroute(12,ihout,ii) = srbpstcnst(inum1) / dfloat(nstep)
-         hhvaroute(13,ihout,ii) = chlacnst(inum1) / dfloat(nstep)
-         hhvaroute(14,ihout,ii) = nh3cnst(inum1) / dfloat(nstep)
-         hhvaroute(15,ihout,ii) = no2cnst(inum1) / dfloat(nstep)
-         hhvaroute(16,ihout,ii) = cbodcnst(inum1) / dfloat(nstep)
-         hhvaroute(17,ihout,ii) = disoxcnst(inum1) / dfloat(nstep)
-         hhvaroute(18,ihout,ii) = bactpcnst(inum1) / dfloat(nstep)
-         hhvaroute(19,ihout,ii) = bactlpcnst(inum1) / dfloat(nstep)
-         hhvaroute(20,ihout,ii) = cmtl1cnst(inum1) / dfloat(nstep)
-         hhvaroute(21,ihout,ii) = cmtl2cnst(inum1) / dfloat(nstep)
-         hhvaroute(22,ihout,ii) = cmtl3cnst(inum1) / dfloat(nstep)
+         hhvaroute(2,ihout,ii) = flocnst(k) / fn
+         hhvaroute(3,ihout,ii) = sedcnst(k) / fn
+         hhvaroute(4,ihout,ii) = orgncnst(k) / fn
+         hhvaroute(5,ihout,ii) = orgpcnst(k) / fn
+         hhvaroute(6,ihout,ii) = no3cnst(k) / fn
+         hhvaroute(7,ihout,ii) = minpcnst(k) / fn
+         hhvaroute(11,ihout,ii) = solpstcnst(k) / fn
+         hhvaroute(12,ihout,ii) = srbpstcnst(k) / fn
+         hhvaroute(13,ihout,ii) = chlacnst(k) / fn
+         hhvaroute(14,ihout,ii) = nh3cnst(k) / fn
+         hhvaroute(15,ihout,ii) = no2cnst(k) / fn
+         hhvaroute(16,ihout,ii) = cbodcnst(k) / fn
+         hhvaroute(17,ihout,ii) = disoxcnst(k) / fn
+         hhvaroute(18,ihout,ii) = bactpcnst(k) / fn
+         hhvaroute(19,ihout,ii) = bactlpcnst(k) / fn
+         hhvaroute(20,ihout,ii) = cmtl1cnst(k) / fn
+         hhvaroute(21,ihout,ii) = cmtl2cnst(k) / fn
+         hhvaroute(22,ihout,ii) = cmtl3cnst(k) / fn
       end do
    end if
 

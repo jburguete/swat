@@ -1,3 +1,267 @@
+!!    hrupsta(1,:,:)|mg pst       |amount of pesticide type in surface runoff
+!!                                |contribution to stream from HRU during
+!!                                |simulation (in solution)
+!!    hrupsta(2,:,:)|mg pst       |amount of pesticide type in surface runoff
+!!                                |contribution to stream from HRU during
+!!                                |simulation (sorbed to sediment)
+!!    icodes(:)     |none         |routing command code:
+!!                                |0 = finish       9 = save
+!!                                |1 = subbasin    10 = recday
+!!                                |2 = route       11 = reccnst
+!!                                |3 = routres     12 = structure
+!!                                |4 = transfer    13 =
+!!                                |5 = add         14 = saveconc
+!!                                |6 = rechour     15 =
+!!                                |7 = recmon
+!!                                |8 = recyear
+!!    idaf         |julian date   |beginning day of simulation
+!!    idal         |julian date   |ending day of simulation
+!!    ihouts(:)    |none          |For ICODES equal to
+!!                                |0: not used
+!!                                |1,2,3,5,7,8,10,11: hydrograph storage
+!!                                |                     location number
+!!                                |4: water source type
+!!                                |   (1=reach)
+!!                                |   (2=reservoir)
+!!                                |9: hydrograph storage location of data to
+!!                                |   be printed to event file
+!!                                |14:hydrograph storage location of data to
+!!                                |   be printed to saveconc file
+!!    inum1s(:)    |none          |For ICODES equal to
+!!                                |0: not used
+!!                                |1: HRU number
+!!                                |2: reach number
+!!                                |3: reservoir number
+!!                                |4: reach or res # flow is diverted from
+!!                                |5: hydrograph storage location of 1st
+!!                                |   dataset to be added
+!!                                |7,8,9,10,11,14: file number
+!!    inum2s(:)    |none          |For ICODES equal to
+!!                                |0,1,7,8,10,11: not used
+!!                                |2,3: inflow hydrograph storage location
+!!                                |4: destination type
+!!                                |   (1=reach)
+!!                                |   (2=reservoir)
+!!                                |5: hydrograph storage location of 2nd
+!!                                |   dataset to be added
+!!                                |9,14:print frequency
+!!                                |   (0=daily)
+!!                                |   (1=hourly)
+!!    inum3s(:)    |none          |For ICODES equal to
+!!                                |0,1,2,3,5,7,8,10,11: not used
+!!                                |4: destination number. Reach or
+!!                                |   reservoir receiving water
+!!                                |9: print format
+!!                                |   (0=normal, fixed format)
+!!                                |   (1=txt format for AV interface,recday)
+!!    iprp         |none          |print code for output.pst file
+!!                                |0 do not print pesticide output
+!!                                |1 print pesticide output
+!!    irn(:)       |none          |average annual number of irrigation
+!!                                |applications in HRU
+!!    lai_aamx(:)  |none          |average annual maximum leaf area index in
+!!                                |HRU
+!!    leapyr       |none          |leap year flag:
+!!                                |0  leap year
+!!                                |1  regular year
+!!    mcr          |none          |max number of crops grown per year
+!!    nbyr         |none          |number of calendar years simulated
+!!    ncrops(:,:,:)|
+!!    ndays(:)     |julian date   |julian date for last day of preceding
+!!                                |month (where the array location is the
+!!                                |number of the month). The dates are for
+!!                                |leap years
+!!    ndmo(:)      |days          |cumulative number of days accrued in the
+!!                                |month since the simulation began where the
+!!                                |array location number is the number of the
+!!                                |month
+!!    nhru         |none          |number of HRUs in watershed
+!!    npmx         |none          |number of different pesticides used in
+!!                                |the simulation
+!!    nres         |none          |number of reservoirs in watershed
+!!    nrot(:)      |none          |number of years of rotation
+!!    nyskip       |none          |number of years to skip output
+!!                                |summarization and printing
+!!    rchaao       |varies        |reach average annual output array
+!!    resouta(3,:) |metric tons   |sediment entering reservoir during simulation
+!!    resouta(4,:) |metric tons   |sediment leaving reservoir during simulation
+!!    resouta(17,:)|m^3 H2O       |evaporation from reservoir during simulation
+!!    resouta(18,:)|m^3 H2O       |seepage from reservoir during simulation
+!!    resouta(19,:)|m^3 H2O       |precipitation on reservoir during simulation
+!!    resouta(20,:)|m^3 H2O       |water flowing into reservoir during
+!!                                |simulation
+!!    resouta(21,:)|m^3 H2O       |water flowing out of reservoir during
+!!                                |simulation
+!!    sbactlchlp   |# colonies/ha |average annual number of less persistent
+!!                                |bacteria lost from soil surface layer by
+!!                                |percolation
+!!    sbactlchp    |# colonies/ha |average annual number of persistent bacteria
+!!                                |lost from soil surface layer by percolation
+!!    sbactrolp    |# colonies/ha |average annual number of less persistent
+!!                                |bacteria transported to main channel
+!!                                |with surface runoff in solution
+!!    sbactrop     |# colonies/ha |average annual number of persistent bacteria
+!!                                |transported to main channel with surface
+!!                                |runoff in solution
+!!    sbactsedlp   |# colonies/ha |average annual number of less persistent
+!!                                |bacteria transported with sediment in
+!!                                |surface runoff
+!!    sbactsedp    |# colonies/ha |average annual number of persistent bacteria
+!!                                |transported with sediment in surface runoff
+!!    sdiegrolpq   |# colonies/ha |average annual change in the number of
+!!                                |less persistent bacteria colonies in soil
+!!                                |solution in watershed
+!!    sdiegrolps   |# colonies/ha |average annual change in the number of
+!!                                |less persistent bacteria colonies on soil
+!!                                |particles in watershed
+!!    sdiegropq    |# colonies/ha |average annual change in the number of
+!!                                |persistent bacteria colonies in soil solution
+!!                                |in watershed
+!!    sdiegrops    |# colonies/ha |average annual change in the number of
+!!                                |persistent bacteria colonies on soil particles
+!!                                |in watershed
+!!    shyd(1,:)    |m^3 H2O       |water
+!!    shyd(2,:)    |metric tons   |sediment or suspended solid load
+!!    shyd(3,:)    |kg N          |organic nitrogen
+!!    shyd(4,:)    |kg P          |organic phosphorus
+!!    shyd(5,:)    |kg N          |nitrate
+!!    shyd(6,:)    |kg P          |soluble phosphorus
+!!    shyd(7,:)    |mg pst        |soluble pesticide
+!!    shyd(8,:)    |mg pst        |sorbed pesticide
+!!    sno3up       |kg N/ha       |amount of nitrate moving upward in the soil
+!!                                |profile in watershed
+!!    sol_actp(:,:)|kg P/ha       |amount of phosphorus stored in the
+!!                                |active mineral phosphorus pool
+!!    sol_aorgn(:,:)|kg N/ha      |amount of nitrogen stored in the active
+!!                                |organic (humic) nitrogen pool
+!!    sol_fon(:,:) |kg N/ha       |amount of nitrogen stored in the fresh
+!!                                |organic (residue) pool
+!!    sol_fop(:,:) |kg P/ha       |amount of phosphorus stored in the fresh
+!!                                |organic (residue) pool
+!!    sol_nly(:)   |none          |number of layers in soil profile
+!!    sol_no3(:,:) |kg N/ha       |amount of nitrogen stored in the
+!!                                |nitrate pool.
+!!    sol_orgn(:,:)|kg N/ha       |amount of nitrogen stored in the stable
+!!                                |organic N pool
+!!    sol_orgp(:,:)|kg P/ha       |amount of phosphorus stored in the organic
+!!                                |P pool
+!!    sol_solp(:,:)|kg P/ha       |amount of phosohorus stored in solution
+!!    sol_stap(:,:)|kg P/ha       |amount of phosphorus in the soil layer
+!!                                |stored in the stable mineral phosphorus pool
+!!    spadyev      |mm H2O        |average annual amount of water removed
+!!                                |from potholes by evaporation in watershed
+!!    spadyo       |mm H2O        |average annual amount of water released to
+!!                                |main channel from potholes in watershed
+!!    spadyrfv     |mm H2O        |average annual amount of precipitation on
+!!                                |potholes in watershed
+!!    spadysp      |mm H2O        |average annual amount of water removed
+!!                                |from potholes by seepage in watershed
+!!    subaao       |varies        |subbasin average annual output array
+!!    sumix(:)     |none          |sum of mixing efficiencies in HRU
+!!    wshd_aamon(:,:)|varies      |array of watershed monthly average values
+!!    wshd_dnit    |kg N/ha       |average annual amount of nitrogen lost from
+!!                                |nitrate pool due to denitrification in
+!!                                |watershed
+!!    wshd_fixn    |kg N/ha       |average annual amount of nitrogen added to
+!!                                |plant biomass via fixation
+!!    wshd_fminp   |kg P/ha       |average annual amount of mineral P applied
+!!                                |in watershed
+!!    wshd_fnh3    |kg N/ha       |average annual amount of NH3-N applied in
+!!                                |watershed
+!!    wshd_fno3    |kg N/ha       |average annual amount of NO3-N applied in
+!!                                |watershed
+!!    wshd_forgn   |kg N/ha       |average annual amount of organic N applied
+!!                                |in watershed
+!!    wshd_forgp   |kg P/ha       |average annual amount of organic P applied
+!!                                |in watershed
+!!    wshd_ftotn   |kg N/ha       |average annual amount of N (mineral &
+!!                                |organic) applied in watershed
+!!    wshd_ftotp   |kg P/ha       |average annual amount of P (mineral &
+!!                                |organic) applied in watershed
+!!    wshd_hmn     |kg N/ha       |average annual amount of nitrogen moving
+!!                                |from active organic to nitrate pool in
+!!                                |watershed
+!!    wshd_hmp     |kg P/ha       |average annual amount of phosphorus moving
+!!                                |from organic to labile pool in watershed
+!!    wshd_nitn    |kg N/ha       |average annual amount of nitrogen moving
+!!                                |from the NH3 to the NO3 pool by
+!!                                |nitrification in the watershed
+!!    wshd_nstrs   |stress units  |average annual number of nitrogen stress
+!!                                |units in watershed
+!!    wshd_pal     |kg P/ha       |average annual amount of phosphorus moving
+!!                                |from labile mineral to active mineral pool
+!!                                |in watershed
+!!    wshd_pas     |kg P/ha       |average annual amount of phosphorus moving
+!!                                |from active mineral to stable mineral pool
+!!                                |in watershed
+!!    wshd_plch    |kg P/ha       |average annual amount of phosphorus leached
+!!                                |into second soil layer
+!!    wshd_pstap(:)|kg pst/ha     |total amount of pesticide type applied in
+!!                                |watershed during simulation
+!!    wshd_pstdg(:)|kg pst/ha     |amount of pesticide lost through degradation
+!!                                |in watershed
+!!    wshd_pstrs   |stress units  |average annual number of phosphorus stress
+!!                                |units in watershed
+!!    wshd_pup     |kg P/ha       |average annual amount of plant uptake of
+!!                                |phosphorus
+!!    wshd_raino3  |kg N/ha       |average annual amount of NO3 added to soil
+!!                                |by rainfall in watershed
+!!    wshd_rmn     |kg N/ha       |average annual amount of nitrogen moving
+!!                                |from fresh organic (residue) to nitrate
+!!                                |and active organic pools in watershed
+!!    wshd_rmp     |kg P/ha       |average annual amount of phosphorus moving
+!!                                |from fresh organic (residue) to labile
+!!                                |and organic pools in watershed
+!!    wshd_rwn     |kg N/ha       |average annual amount of nitrogen moving
+!!                                |from active organic to stable organic pool
+!!                                |in watershed
+!!    wshd_tstrs   |stress units  |average annual number of temperature stress
+!!                                |units in watershed
+!!    wshd_voln    |kg N/ha       |average annual amount if nitrogen lost by
+!!                                |ammonia volatilization in watershed
+!!    wshd_wstrs   |stress units  |average annual number of water stress units
+!!                                |in watershed
+!!    wshd_yldn    |kg N/ha       |amount of nitrogen removed from soil in
+!!                                |watershed in the yield
+!!    wshd_yldp    |kg P/ha       |amount of phosphorus removed from soil in
+!!                                |watershed in the yield
+!!    wshdaao      |varies        |watershed average annual output array
+!!    wtraa(:,:)   |varies        |HRU impoundment average annual output array
+!!    yldaa(:)     |metric tons/ha|average annual yield (dry weight) in HRU
+!!    yldkg(:,:,:) |kg/ha         |yield (dry weight) by crop type in the HRU
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
+!!    name        |units         |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    basminpf    |kg P/ha       |final average amount of phosphorus in
+!!                               |the mineral P pool in watershed soil
+!!    basno3f     |kg N/ha       |final average amount of nitrogen in the
+!!                               |nitrate pool in watershed soil
+!!    basorgnf    |kg N/ha       |final average amount of nitrogen in the
+!!                               |organic N pool in watershed soil
+!!    basorgpf    |kg P/ha       |final average amount of phosphorus in
+!!                               |the organic P pool in watershed soil
+!!    bio_aahv(:,:,:)|kg/ha      |harvested biomass of plant
+!!    resdata(1)  |mm H2O        |average annual evaporation from reservoirs
+!!                               |in watershed
+!!    resdata(2)  |mm H2O        |average annual seepage from reservoirs in
+!!                               |watershed
+!!    resdata(3)  |mm H2O        |average annual precipitation on reservoirs
+!!                               |in watershed
+!!    resdata(4)  |mm H2O        |average annual amount of water transported
+!!                               |into reservoirs in watershed
+!!    resdata(5)  |metric tons/ha|average annual amount of sediment transported
+!!                               |into reservoirs in watershed
+!!    resdata(6)  |mm H2O        |average annual amount of water transported
+!!                               |out of reservoirs in watershed
+!!    resdata(7)  |metric tons/ha|average annual amount of sediment transported
+!!                               |out of reservoirs in watershed
+!!    wshd_pstap(:)|kg pst/ha    |average annual amount of pesticide type
+!!                               |applied in watershed during simulation
+!!    wshd_pstdg(:)|kg pst/ha    |average annual amount of pesticide lost
+!!                               |through degradation in watershed
+!!    yldn(:,:,:) |kg/ha         |average value for yield of crop
 !> @file modparm.f90
 !> file containing the module parm
 !> @author
@@ -142,6 +406,21 @@ module parm
       &ndays_leap = (/0,31,60,91,121,152,182,213,244,274,305,335,366/)
    integer, dimension (13), parameter ::&
       &ndays_noleap = (/0,31,59,90,120,151,181,212,243,273,304,334,365/)
+
+!! THESE VARIABLES ARE NOT CALCULATED!
+
+!> drainage tile flow in soil layer for day in HRU (mm H2O)
+   real*8, parameter :: lyrtile = 0.
+!> volume of water evaporated from pothole expressed as depth over HRU (mm H2O)
+   real*8, parameter :: potevmm = 0.
+!> volume of water released to main channel from pothole expressed as depth
+!> over HRU (mm H2O)
+   real*8, parameter :: potflwo = 0.
+!> precipitation falling on pothole water body expressed as depth over HRU
+!> (mm H2O)
+   real*8, parameter :: potpcpmm = 0.
+!> seepage from pothole expressed as depth over HRU (mm H2O)
+   real*8, parameter :: potsepmm = 0.
 
 !> code for writing out calendar day or julian day to output.rch, .sub, .hru
 !> files;\n
@@ -318,7 +597,9 @@ module parm
    real*8 :: wshd_raino3
 !> average annual amount of phosphorus leached into second soil layer (kg P/ha)
    real*8 :: wshd_plch
-   real*8 :: ressedc, basno3f, basorgnf
+!> net change in sediment in reservoir during day (metric tons)
+   real*8 :: ressedc
+   real*8 :: basno3f, basorgnf
    real*8 :: wshd_pinlet, wshd_ptile
    real*8 :: sftmp !< Snowfall temperature (deg C)
 !> Minimum melt rate for snow during year (Dec. 21) where deg C refers to the
@@ -417,15 +698,22 @@ module parm
    real*8 :: soxy !< saturation dissolved oxygen concentration (mg/L)
    real*8 :: rtwtr !< water leaving reach on day (m^3 H2O)
    real*8 :: sdti !< average flow rate in reach for day (m^3/s)
-   real*8 :: ressa
+   real*8 :: ressa !< surface area of reservoir on day (ha)
    real*8 :: da_km !< area of the watershed in square kilometers (km^2)
    real*8 :: rchdep !< depth of flow on day (m)
    real*8 :: rtevp !< evaporation from reach on day (m^3 H2O)
    real*8 :: rttime !< reach travel time (hour)
    real*8 :: rttlc !< transmission losses from reach on day (m^3 H2O)
-   real*8 :: resflwi
+   real*8 :: resflwi !< water entering reservoir on day (m^3 H2O)
    real*8 :: wdprch !< die-off factor for persistent bacteria in streams (1/day)
-   real*8 :: resflwo, respcp, resev, ressep, ressedi, ressedo
+   real*8 :: resev !< evaporation from reservoir on day (m^3 H2O)
+   real*8 :: resflwo !< water leaving reservoir on day (m^3 H2O)
+   real*8 :: respcp !< precipitation on reservoir for day (m^3 H2O)
+!> sediment entering reservoir during time step (metric tons)
+   real*8 :: ressedi
+!> sediment leaving reservoir during time step (metric tons)
+   real*8 :: ressedo
+   real*8 :: ressep !< seepage from reservoir on day (m^3 H2O)
 !> phosphorus percolation coefficient. Ratio of soluble phosphorus in surface to
 !> soluble phosphorus in percolate
    real*8 :: pperco_bsn
@@ -478,7 +766,6 @@ module parm
 !> persistent bacteria transported with sediment in surface runoff
 !> (# colonies/ha)
    real*8 :: bactsedp
-!X
 !> enrichment ratio calculated for current day in HRU (none)
    real*8 :: enratio
    real*8 :: pndpcp !< precipitation on pond during day (m^3 H2O)
@@ -505,8 +792,6 @@ module parm
 !> by EVRCH. This variable was created to limit the evaporation predicted in
 !> arid regions.
    real*8 :: evrch
-!> die-off factor for less persistent bacteria on foliage (1/day)
-   real*8 :: wdlpf
 !> actual amount of transpiration that occurs on day in HRU (mm H2O)
    real*8 :: ep_day
 !> potential evapotranspiration on current day in HRU (mm H2O)
@@ -546,7 +831,8 @@ module parm
    real*8 :: snoev
 !> amount of nitrate moving upward in the soil profile in watershed (kg N/ha)
    real*8 :: sno3up
-!> amount of pesticide in reach that is lost through reactions (mg pst)
+!> amount of pesticide in lake water of reach that is lost through reactions
+!> (mg pst)
    real*8 :: reactw
 !> actual amount of evaporation (soil et) that occurs on day in HRU (mm H2O)
    real*8 :: es_day
@@ -620,7 +906,7 @@ module parm
 !> USLE rainfall erosion index on day for HRU (100(ft-tn in)/(acre-hr))
    real*8 :: usle_ei
    real*8 :: rcharea !< cross-sectional area of flow (m^2)
-!> amount of pesticide lost from reach by volatilization (mg pst)
+!> amount of pesticide lost from lake water of reach by volatilization (mg pst)
    real*8 :: volatpst
 !> water uptake distribution parameter. This parameter controls the amount of
 !> water removed from the different soil layers by the plant. In particular,
@@ -642,11 +928,9 @@ module parm
 !> uptake so that the model can easily verify that uptake from the different
 !> soil layers sums to 1.0
    real*8 :: uobw
-!> growth factor for less persistent bacteria on foliage (1/day)
-   real*8 :: wglpf
 !> net change in sediment in wetland during day (metric tons)
    real*8 :: wetsedc
-   real*8 :: respesti
+   real*8 :: respesti !< pesticide entering reservoir on day (mg pst)
 !> correction coefficient for generated rainfall to ensure that the annual
 !> means for generated and observed values are comparable (needed only if
 !> IDIST=1)
@@ -664,11 +948,6 @@ module parm
 !> water content is less than SNOCOVMX, then a certain percentage of the ground
 !> will be bare (mm H2O)
    real*8 :: snocovmx
-   real*8 :: lyrtile !< drainage tile flow in soil layer for day in HRU (mm H2O)
-   real*8 :: lyrtilex
-!> Fraction of SNOCOVMX that corresponds to 50% snow cover. SWAT assumes a
-!> nonlinear relationship between snow water and snow cover
-   real*8 :: sno50cov
    real*8 :: ai0 !< ratio of chlorophyll-a to algal biomass (ug chla/mg alg)
    real*8 :: ai1 !< fraction of algal biomass that is nitrogen (mg N/mg alg)
    real*8 :: ai2 !< fraction of algal biomass that is phosphorus (mg P/mg alg)
@@ -737,7 +1016,7 @@ module parm
 !> amount of nitrogen lost from nitrate pool by denitrification in soil profile
 !> on current day in HRU (kg N/ha)
    real*8 :: wdntl
-   real*8 :: cmn_bsn,reswtr
+   real*8 :: cmn_bsn
 !> die-off factor for less persistent bacteria in streams (1/day)
    real*8 :: wdlprch
 !> die-off factor for persistent bacteria in reservoirs (1/day)
@@ -746,7 +1025,7 @@ module parm
    real*8 :: petmeas
 !> loss of pesticide from active sediment layer by burial (mg pst)
    real*8 :: bury
-!> diffusion of pesticide from sediment to reach (mg pst)
+!> diffusion of pesticide from sediment to reach lake water (mg pst)
    real*8 :: difus
 !> amount of pesticide in sediment that is lost through reactions (mg pst)
    real*8 :: reactb
@@ -756,7 +1035,9 @@ module parm
    real*8 :: wdlpres
 !> sorbed pesticide concentration in outflow on day (mg pst/m^3)
    real*8 :: sorpesto
-   real*8 :: spcon_bsn, spexp_bsn, solpesti, sorpesti
+   real*8 :: solpesti !< soluble pesticide entering reservoir (mg pst)
+   real*8 :: sorpesti !< sorbed pesticide entering reservoir (mg pst)
+   real*8 :: spcon_bsn, spexp_bsn
 !> calibration coefficient to control impact of the storage time constant for
 !> the reach at bankfull depth (phi(10,:) upon the storage time constant for the
 !> reach used in the Muskingum flow method
@@ -772,19 +1053,14 @@ module parm
 !> amount of water stored in soil profile in the HRU on the previous day
 !> (mm H2O)
    real*8 :: swprev
-   real*8 :: ressolpo, resorgno, resorgpo, resno3o, reschlao, resno2o
-!> volume of water evaporated from pothole expressed as depth over HRU (mm H2O)
-   real*8 :: potevmm
-!> volume of water released to main channel from pothole expressed as depth
-!> over HRU (mm H2O)
-   real*8 :: potflwo
-!> precipitation falling on pothole water body expressed as depth over HRU
-!> (mm H2O)
-   real*8 :: potpcpmm
-!> seepage from pothole expressed as depth over HRU (mm H2O)
-   real*8 :: potsepmm
-   real*8 :: qdbank !< streamflow contribution from bank storage (m^3 H2O)
-   real*8 :: resnh3o
+!> amount of chlorophyll-a leaving reservoir on day (kg chl-a)
+   real*8 :: reschlao
+   real*8 :: resno2o !< amount of nitrite leaving reservoir on day (kg N)
+   real*8 :: resno3o !< amount of nitrate leaving reservoir on day (kg N)
+   real*8 :: resorgno !< amount of organic N leaving reservoir on day (kg N)
+   real*8 :: resorgpo !< amount of organic P leaving reservoir on day (kg P)
+   real*8 :: ressolpo !< amount of soluble P leaving reservoir on day (kg P)
+   real*8 :: resnh3o !< amount of ammonia leaving reservoir on day (kg N)
 !> Threshold detection level for less persistent bacteria. When bacteria levels
 !> drop to this amount the model considers bacteria in the soil to be
 !> insignificant and sets the levels to zero (cfu/m^2)
@@ -808,7 +1084,7 @@ module parm
    real*8 :: cncoef !< plant ET curve number coefficient
 !> overall rate change for less persistent bacteria on foliage (1/day)
    real*8 :: wp20lp_plt
-   real*8 :: cdn_bsn,sdnco_bsn,bactmin
+   real*8 :: cdn_bsn,sdnco_bsn
    real*8 :: cn_froz !< drainge coefficient (mm day -1)
    real*8 :: dorm_hr !< time threshold used to define dormant (hours)
    real*8 :: smxco !< adjustment factor for max curve number s factor (0-1)
@@ -818,8 +1094,6 @@ module parm
 !> watershed (mm)
    real*8 :: depimp_bsn
    real*8 :: ddrain_bsn !< depth to the sub-surface drain (mm)
-   real*8 :: tdrain_bsn !< time to drain soil to field capacity (hours)
-   real*8 :: gdrain_bsn
    real*8 :: rch_san, rch_sil, rch_cla, rch_sag, rch_lag, rch_gra
 
    real*8 :: hlife_ngw_bsn !< Half-life of nitrogen in groundwater? (days) 
@@ -831,7 +1105,6 @@ module parm
 
 !> water table based on depth from soil surface (mm)
    real*8, dimension (:), allocatable :: wat_tbl
-   real*8, dimension (:), allocatable :: sol_swpwt
    real*8, dimension (:,:), allocatable :: vwt
    real*8 :: re_bsn !< Effective radius of drains (range 3.0 - 40.0) (mm)
 !> Distance bewtween two drain or tile tubes (range 7600.0 - 30000.0) (mm)
@@ -840,24 +1113,21 @@ module parm
 !> Drainage coeffcient (range 10.0 - 51.0) (mm-day-1)
    real*8 :: drain_co_bsn
 !> Multiplication factor to determine lateral ksat from SWAT ksat input value
-!>for HRU (range 0.01 - 4.0)
+!> for HRU (range 0.01 - 4.0)
    real*8 :: latksatf_bsn
 !> Pump capacity (def val = 1.042 mm h-1 or 25 mm day-1) (mm h-1)
    real*8 :: pc_bsn
-   integer :: idlast !< number of days simulated in month (none)
-   integer :: i_subhw, imgt, iwtr, ifrttyp, mo_atmo, mo_atmo1
-   integer :: ifirstatmo, iyr_atmo, iyr_atmo1, matmo
+   integer :: i_subhw, imgt, iwtr, mo_atmo, mo_atmo1
+   integer :: iyr_atmo1, matmo
    integer :: mch !< maximum number of channels
    integer :: mcr !< maximum number of crops grown per year
 !> maximum number of crops/landcover in database file (crop.dat)
    integer :: mcrdb
-   integer :: mfcst !< maximum number of forecast stations
    integer :: mfdb !< maximum number of fertilizers in fert.dat
    integer :: mhru !< maximum number of HRUs in watershed
    integer :: mhyd !< maximum number of hydrograph nodes
    integer :: mpdb !< maximum number of pesticides in pest.dat
    integer :: mrg !< maximum number of rainfall/temp gages (none)
-   integer :: mcut !< maximum number of cuttings per year
    integer :: mgr !< maximum number of grazings per year
    integer :: mnr !< maximum number of years of rotation
    integer :: myr !< maximum number of years of simulation
@@ -882,12 +1152,10 @@ module parm
 !> current month being simulated or month of next day of simulation (none)
    integer :: i_mo
    integer :: immo !< current cumulative month of simulation (none)
-   integer :: mo
 !> wind speed input code (noen)\n
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: wndsim
-   integer :: icode !< variable to hold value for icodes(:) (none)
    integer :: ihout !< variable to hold value for ihouts(:) (none)
 !> variable to hold value for inum1s(:) (subbasin number) (none)
    integer :: inum1
@@ -921,9 +1189,6 @@ module parm
 !> 2: limiting nutrient \f\[u=mumax\,fll\,\min(fnn,\,fpp)\f\]
 !> 3: harmonic mean \f\[u=mumax\,fll\,\frac2{\frac1{fnn}+\frac1{fpp}}\f\]
    integer :: igropt
-!> Qual2E light averaging option. Qual2E defines four light averaging options. 
-!> The only option currently available in SWAT is #2.
-   integer :: lao
 !> number of different pesticides used in the simulation (none)
    integer :: npmx
    integer :: curyr !< current year in simulation (sequence) (none)
@@ -968,8 +1233,9 @@ module parm
    integer :: ideg
 !> rainfall/runoff code (none)\n
 !> 0 daily rainfall/curve number technique
-!> 1 sub-daily rainfall/Green&Ampt/hourly routing
-!> 3 sub-daily rainfall/Green&Ampt/hourly routing
+!> 1 daily rainfall/curve number technique/ daily routing
+!> 2 sub-daily rainfall /Green&Ampt technique/ daily routing
+!> 3 sub-daily rainfall /Green&Ampt technique/ hourly routing
    integer :: ievent
 !> code for potential ET method (none)\n
 !> 0 Priestley-Taylor method\n
@@ -1005,7 +1271,6 @@ module parm
 !> 0 first day of wind speed data located in file\n
 !> 1 first day of wind speed data not located in file
    integer :: ifirstw
-   integer :: icst
 !> streamflow print code (none)\n
 !> 0 print streamflow in reach\n
 !> 1 print Log10 streamflow in reach
@@ -1033,7 +1298,7 @@ module parm
 !> 1 measured data read for each subbasin\n
 !> 2 data simulated for each subbasin
    integer :: pcpsim
-   integer :: nd_30,iops,iphr,isto,isol
+   integer :: nd_30,iphr,isto,isol
 !> number of times forecast period is simulated (using different weather
 !> generator seeds each time)
    integer :: fcstcycles
@@ -1041,8 +1306,8 @@ module parm
    integer :: fcstyr !< beginning year of forecast period
    integer :: iscen !< scenarios counter
    integer :: subtot !< number of subbasins in watershed (none)
+!> random number generator seed code (none)
    integer :: ogen
-   integer :: mapp !< maximum number of applications
    integer :: mlyr !< maximum number of soil layers
    integer :: mpst !< max number of pesticides used in wshed
    integer :: mres !< maximum number of reservoirs
@@ -1063,35 +1328,26 @@ module parm
 !> 0 generate max half-hour rainfall fraction from triangular distribution\n
 !> 1 use monthly mean max half-hour rainfall fraction
    integer :: ised_det
-   integer :: fcstcnt, mtran, idtill
+   integer :: fcstcnt, idtill
    integer, dimension(100) :: ida_lup, iyr_lup
-   integer :: no_lup, no_up, nostep
-!  routing 5/3/2010 gsm per jga
-! date
-!> date simulation is performed where leftmost eight characters are set to a
-!> value of yyyymmdd, where yyyy is the year, mm is the month and dd is the day
-   character(len=8) :: date
-!> time simulation is performed where leftmost ten characters are set to a value
-!> of hhmmss.sss, where hh is the hour, mm is the minutes and ss.sss is the
-!> seconds and milliseconds
-   character(len=10) :: time
-!> time difference with respect to Coordinated Universal Time (ie Greenwich Mean
-!> Time)
-   character(len=5) :: zone
-!> name of file containing calibration parameters
-   character(len=13) :: calfile
+   integer :: no_lup, nostep
    character(len=13) :: rhfile !< relative humidity file name (.hmd)
    character(len=13) :: slrfile !< solar radiation file name (.slr)
    character(len=13) :: wndfile !< wind speed file name (.wnd)
    character(len=13) :: petfile !< potential ET file name (.pet)
-   character(len=13) :: atmofile, lucfile
+   character(len=13) :: atmofile
 !> name of septic tank database file (septwq1.dat)
    character(len=13) :: septdb
-   character(len=13) :: dpd_file, wpd_file, rib_file, sfb_file,&
-      &lid_file
 !> array location of random number seed used for a given process
    integer, dimension (9) :: idg
-   integer, dimension (:), allocatable :: ifirstr, ifirsthr
+!> measured data search code (none)\n
+!> 0 first day of measured data located in file\n
+!> 1 first day of measured data not located in file
+   integer, dimension (:), allocatable :: ifirsthr
+!> measured data search code (none)\n
+!> 0 first day of measured data located in file\n
+!> 1 first day of measured data not located in file
+   integer, dimension (:), allocatable :: ifirstr
 !> values(1): year simulation is performed\n
 !> values(2): month simulation is performed\n
 !> values(3): day in month simulation is performed\n
@@ -1106,31 +1362,23 @@ module parm
 !> number of the month). The dates are for leap years (julian date)
    integer, dimension (13) :: ndays
    integer :: mapex
-   real*8, dimension (:), allocatable :: flodaya, seddaya, orgndaya
-   real*8, dimension (:), allocatable :: orgpdaya, no3daya, minpdaya
 !> harvest index target of cover defined at planting ((kg/ha)/(kg/ha))
    real*8, dimension (:), allocatable :: hi_targ
    real*8, dimension (:), allocatable :: bio_targ !< biomass target (kg/ha)
 !> modifier for autofertilization target nitrogen content for plant
 !> (kg N/kg yield)
    real*8, dimension (:), allocatable :: tnyld
-   integer, dimension (:), allocatable :: idapa, iypa, ifirsta
+   integer, dimension (:), allocatable :: ifirsta
    integer, dimension (100) :: mo_transb, mo_transe
    integer, dimension (100) :: ih_tran
-!     apex/command output files
-!  septic inputs
-!! septic change added iseptic 1/28/09 gsm
    integer :: msdb !< maximum number of sept wq data database (none)
    integer :: iseptic
 !> flow rate of the septic tank effluent per capita (m3/d)
    real*8, dimension (:), allocatable :: sptqs
-   real*8, dimension (:), allocatable :: percp
 !> Biological Oxygen Demand of the septic tank effluent (mg/l)
    real*8, dimension (:), allocatable :: sptbodconcs
 !> concentration of total suspended solid in the septic tank effluent (mg/l)
    real*8, dimension (:), allocatable :: spttssconcs
-!> concentration of total nitrogen in the septic tank effluent (mg/l)
-   real*8, dimension (:), allocatable :: spttnconcs
 !> concentration of total phosphorus of the septic tank effluent (mg/l)
    real*8, dimension (:), allocatable :: sptnh4concs
 !> concentration of nitrate in the septic tank effluent (mg/l)
@@ -1139,8 +1387,6 @@ module parm
    real*8, dimension (:), allocatable :: sptno2concs
 !> concentration of organic nitrogen in the septic tank effluent (mg/l)
    real*8, dimension (:), allocatable :: sptorgnconcs
-!> concentration of total phosphorus in the septic tank effluent (mg/l)
-   real*8, dimension (:), allocatable :: spttpconcs
 !> concentration of mineral phosphorus in the septic tank effluent (mg/l)
    real*8, dimension (:), allocatable :: sptminps
 !> concentration of organic phosphorus in the septic tank effluent (mg/l)
@@ -1154,13 +1400,10 @@ module parm
    real*8, dimension (:), allocatable :: biom
 !> daily change in biomass of live bacteria (kg/ha)
    real*8, dimension (:), allocatable :: rbiom
-   real*8, dimension (:), allocatable :: bio_amn
 !> concentration of the fecal coliform in the biozone septic tank effluent
 !> (cfu/100ml)
    real*8, dimension (:), allocatable :: fcoli
-   real*8, dimension (:), allocatable :: bio_ntr, bz_perc
-!> number of permanent residents in the hourse (none)
-   real*8, dimension (:), allocatable :: sep_cap
+   real*8, dimension (:), allocatable :: bz_perc
    real*8, dimension (:), allocatable :: plqm !< plaque in biozone (kg/ha)
    real*8, dimension (:), allocatable :: bz_area
    real*8, dimension (:), allocatable :: bz_z !< depth of biozone layer (mm)
@@ -1205,7 +1448,6 @@ module parm
    integer, dimension (:), allocatable :: isep_opt
    integer, dimension (:), allocatable :: sep_tsincefail
    integer, dimension (:), allocatable :: isep_tfail,isep_iyr
-   integer, dimension (:), allocatable :: sep_strm_dist,sep_den
 
    !!   change per JGA 9/8/2011 gsm for output.mgt
    real*8, dimension (:), allocatable :: sol_sumno3, sol_sumsolp
@@ -1214,26 +1456,19 @@ module parm
    real*8, dimension (:), allocatable :: strsa_sum
 
 
-!! New pothole variables
-   real*8, dimension (:), allocatable :: spill_hru,tile_out,hru_in
-   real*8, dimension (:), allocatable :: spill_precip,pot_seep
-   real*8, dimension (:), allocatable :: pot_evap,pot_sedin
+   real*8, dimension (:), allocatable :: pot_seep
 !> soluble P loss rate in the pothole (.01 - 0.5) (1/d)
    real*8, dimension (:), allocatable :: pot_solp
-   real*8, dimension (:), allocatable :: pot_solpi
 !> amount of organic P in pothole water body (kg P)
    real*8, dimension (:), allocatable :: pot_orgp
-   real*8, dimension (:), allocatable :: pot_orgpi
 !> amount of organic N in pothole water body (kg N)
    real*8, dimension (:), allocatable :: pot_orgn
-   real*8, dimension (:), allocatable :: pot_orgni
 !> amount of stable mineral pool P in pothole water body (kg N)
    real*8, dimension (:), allocatable :: pot_mps
-   real*8, dimension (:), allocatable :: pot_mpsi
 !> amount of active mineral pool P in pothole water body (kg N)
    real*8, dimension (:), allocatable :: pot_mpa
-   real*8, dimension (:), allocatable :: pot_mpai
-   real*8, dimension (:), allocatable :: pot_no3i,precip_in
+!X
+   real*8, dimension (:), allocatable :: precip_in
    real*8, dimension (:), allocatable :: tile_sedo,tile_no3o
    real*8, dimension (:), allocatable :: tile_solpo,tile_orgno
    real*8, dimension (:), allocatable :: tile_orgpo,tile_minpso
@@ -1260,6 +1495,8 @@ module parm
 !> wshddayo(7) actual evapotranspiration in watershed for day (mm H20)\n
 !> wshddayo(8) average maximum temperature in watershed for the day (deg C)\n
 !> wshddayo(9) average minimum temperature in watershed for the day (deg C)\n
+!> wshddayo(11) net change in sediment of reservoirs in watershed for day
+!> (metric tons)\n
 !> wshddayo(12) sediment yield from HRUs in watershed for day
 !> (metric tons or metric tons/ha)\n
 !> wshddayo(13) sediment loading to ponds in watershed for day (metric tons)\n
@@ -1284,6 +1521,8 @@ module parm
 !> (m^3 H2O)\n
 !> wshddayo(28) volume of water leaving wetlands on day in watershed (m^3 H2O)\n
 !> wshddayo(33) net change in water volume of ponds in watershed for day
+!> (m^3 H2O)\n
+!> wshddayo(34) net change in water volume of reservoirs in watershed for day
 !> (m^3 H2O)\n
 !> wshddayo(35) amount of water stored in soil profile in watershed at end of
 !> day (mm H20)\n
@@ -2021,6 +2260,8 @@ module parm
 !> resoutm(17,:) evaporation from reservoir during month (m^3 H2O)\n
 !> resoutm(18,:) seepage from reservoir during month (m^3 H2O)\n
 !> resoutm(19,:) precipitation on reservoir during month (m^3 H2O)\n
+!> resoutm(20,:) water flowing into reservoir during month (m^3 H2O)\n
+!> resoutm(21,:) water flowing out of reservoir during month (m^3 H2O)\n
 !> resoutm(22,:) organic N entering reservoir during month (kg N)\n
 !> resoutm(23,:) organic N leaving reservoir during month (kg N)\n
 !> resoutm(24,:) organic P entering reservoir during month (kg P)\n
@@ -2885,8 +3126,8 @@ module parm
    real*8, dimension (:), allocatable :: res_orgp
 !> amount of soluble P in reservoir (kg P)
    real*8, dimension (:), allocatable :: res_solp
-!> secchi-disk depth (m)
-   real*8, dimension (:), allocatable :: res_seci
+   real*8, dimension (:), allocatable :: res_seci !< secchi-disk depth (m)
+!> amount of chlorophyll-a in reservoir (kg chl-a)
    real*8, dimension (:), allocatable :: res_chla
 !> reservoir surface area when reservoir is filled to emergency spillway (ha)
    real*8, dimension (:), allocatable :: res_esa
@@ -3189,7 +3430,7 @@ module parm
 !> varoute(4,:) organic nitrogen (kg N)\n
 !> varoute(5,:) organic phosphorus (kg P)\n
 !> varoute(6,:) nitrate (kg N)\n
-!> varoute(7,:) mineral phosphorus (kg P)\n
+!> varoute(7,:) soluble mineral phosphorus (kg P)\n
 !> varoute(11,:) pesticide in solution (mg pst)\n
 !> varoute(12,:) pesticide sorbed to sediment (mg pst)\n
 !> varoute(13,:) chlorophyll-a (kg)\n
@@ -3247,7 +3488,7 @@ module parm
    integer, dimension (:), allocatable :: icodes
 !> For ICODES equal to (none)\n
 !> 0: not used\n
-!> 1,2,3,5,7,8,10,11: hydrograph storage location number\n
+!> 1,2,3,5,6,7,8,10,11: hydrograph storage location number\n
 !> 4: departure type (1=reach, 2=reservoir)\n
 !> 9: hydrograph storage location of data to be printed to event file\n
 !> 14:hydrograph storage location of data to be printed to saveconc file
@@ -3259,7 +3500,7 @@ module parm
 !> 3: reservoir number\n
 !> 4: reach or res # flow is diverted from\n
 !> 5: hydrograph storage location of 1st dataset to be added\n
-!> 7,8,9,10,11,14: file number
+!> 6,7,8,9,10,11,14: file number
    integer, dimension (:), allocatable :: inum1s
 !> For ICODES equal to (none)\n
 !> 0,1,7,8,10,11: not used\n
@@ -4280,24 +4521,30 @@ module parm
    character(len=4) :: title(60) !< description lines in file.cio (1st 3 lines)
    character(len=4) :: cpnm(5000) !< four character code to represent crop name
    character(len=17), dimension(50) :: fname
-!> average daily water loading for month (m^3/day)
+!> average amount of water loaded to stream on a given day in the month
+!> (m^3/day)
    real*8, dimension (:,:,:), allocatable :: flomon
 !> average daily soluble pesticide loading for month (mg pst/day)
    real*8, dimension (:,:,:), allocatable :: solpstmon
 !> average daily sorbed pesticide loading for month (mg pst/day)
    real*8, dimension (:,:,:), allocatable :: srbpstmon
-!> average daily organic N loading for month (kg N/day)
+!> average amount of organic N loaded to stream on a given day in the month
+!> (kg N/day)
    real*8, dimension (:,:,:), allocatable :: orgnmon
-!> average daily organic P loading for month (kg P/day)
+!> average amount of organic P loaded to stream on a given day in the month
+!> (kg P/day)
    real*8, dimension (:,:,:), allocatable :: orgpmon
-!> average daily sediment loading for month (metric tons/day)
+!> average amount of sediment loaded to stream on a given day in the month
+!> (metric tons/d)
    real*8, dimension (:,:,:), allocatable :: sedmon
-!> average daily mineral P loading for month (kg P/day)
+!> average amount of soluble P loaded to stream on a given day in the month
+!> (kg P/day)
    real*8, dimension (:,:,:), allocatable :: minpmon
 !> average amount of NH3-N loaded to stream on a given day in the month
 !> (kg N/day)
    real*8, dimension (:,:,:), allocatable :: nh3mon
-!> average daily NO3-N loading for month (kg N/day)
+!> average amount of NO3-N loaded to stream on a given day in the month
+!> (kg N/day)
    real*8, dimension (:,:,:), allocatable :: no3mon
 !> average amount of less persistent bacteria loaded to stream on a given day in
 !> the month (# bact/day)
@@ -4317,11 +4564,13 @@ module parm
 !> average amount of conservative metal #3 loaded to stream on a given day in
 !> the month (# bact/day)
    real*8, dimension (:,:,:), allocatable :: cmtl3mon
-!> average daily loading of CBOD in month (kg/day)
+!> average amount of CBOD loaded to stream on a given day in the month (kg/day)
    real*8, dimension (:,:,:), allocatable :: cbodmon
-!> average daily loading of chlorophyll-a in month (kg/day)
+!> average amount of chlorophyll a loaded to stream on a given day in the month
+!> (kg/day)
    real*8, dimension (:,:,:), allocatable :: chlamon
-!> average daily loading of dissolved O2 in month (kg/day)
+!> average amount of dissolved oxygen loaded to stream on a given day in the
+!> month (kg/day)
    real*8, dimension (:,:,:), allocatable :: disoxmon
 !> average daily water loading for year (m^3/day)
    real*8, dimension (:,:), allocatable :: floyr
@@ -4360,7 +4609,7 @@ module parm
 !> average daily sorbed pesticide loading for year (mg pst/day)
    real*8, dimension (:,:), allocatable :: srbpstyr
    real*8, dimension (:,:), allocatable :: sol_mc,sol_mn,sol_mp
-!average daily water loading to reach (m^3 H2O/day)
+!> average daily water loading to reach (m^3 H2O/day)
    real*8, dimension (:), allocatable :: flocnst
 !> average daily organic N loading to reach (kg N/day)
    real*8, dimension (:), allocatable :: orgncnst
@@ -4384,11 +4633,11 @@ module parm
    real*8, dimension (:), allocatable :: cmtl1cnst
 !> average daily conservative metal #2 loading (kg/day)
    real*8, dimension (:), allocatable :: cmtl2cnst
-!> average daily loading of chlorophyll-a (kg/day)
+!> average daily chlorophyll-a loading to reach (kg/day)
    real*8, dimension (:), allocatable :: chlacnst
 !> average daily conservative metal #3 loading (kg/day)
    real*8, dimension (:), allocatable :: cmtl3cnst
-!> average daily loading of dissolved O2 (kg/day)
+!> average daily dissolved oxygen loading to reach (kg/day)
    real*8, dimension (:), allocatable :: disoxcnst
 !> average daily loading of CBOD to reach (kg/day)
    real*8, dimension (:), allocatable :: cbodcnst

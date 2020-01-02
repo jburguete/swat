@@ -48,9 +48,6 @@ subroutine readwwq
 !!    lambda1     |1/(m*ug chla/L)|linear algal self-shading coefficient
 !!    lambda2     |(1/m)(ug chla/L)**(-2/3)
 !!                               |nonlinear algal self-shading coefficient
-!!    lao         |NA            |Qual2E light averaging option. Qual2E defines
-!!                               |four light averaging options. The only option
-!!                               |currently available in SWAT is #2.
 !!    mumax       |1/day or 1/hr |maximum specific algal growth rate
 !!    p_n         |none          |algal preference factor for ammonia
 !!    rhoq        |1/day or 1/hr |algal respiration rate
@@ -65,6 +62,9 @@ subroutine readwwq
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    titldum     |NA            |title line for .wwq file, not used
 !!    eof         |none          |end of file flag
+!!    lao         |NA            |Qual2E light averaging option. Qual2E defines
+!!                               |four light averaging options. The only option
+!!                               |currently available in SWAT is #2 (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -73,7 +73,7 @@ subroutine readwwq
    implicit none
 
    character (len=80) :: titldum
-   integer :: eof
+   integer :: eof, lao
 
 !!    initialize variables
    eof = 0
@@ -127,7 +127,7 @@ subroutine readwwq
 
 !!    set default values for undefined parameters
 
-   if (lao <= 0) lao = 2
+!   if (lao <= 0) lao = 2 ! not used
    if (igropt <= 0) igropt = 2
    if (ai0 <= 0.) ai0 = 50.
    if (ai1 <= 0.) ai1 = 0.08
@@ -151,7 +151,7 @@ subroutine readwwq
 
 !!    currently, only one of the four light averaging options is coded
 !!    lao must be set to this value
-   lao = 2
+!   lao = 2 ! not used
 
 !! convert units on k_l:read in as kJ/(m2*min), use as MJ/(m2*hr)
    k_l = k_l * 1.e-3 * 60.

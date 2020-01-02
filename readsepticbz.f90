@@ -33,13 +33,15 @@ subroutine readsepticbz(j)
 !!    coeff_rsp(:)     |none          |respiration rate coefficient
 !!    coeff_slg1(:)    |none          |slough-off calibration parameter
 !!    coeff_slg2(:)    |none          |slough-off calibration parameter
-!!    sep_cap(:)       |none          |Number of permanent residents in the hourse
 !!    isep_typ(:)      |none          |Septic system type
 !!    isep_opt(:)      |none          |Septic system operation flag (1=active,2=failing,3=not operated)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    eof              |none          |end of file flag (=-1 if eof, else =0)
+!!    sep_cap(:)       |none          |number of permanent residents in the hourse
+!!    sep_den
+!!    sep_strm_dist
 !!    titldum          |NA            |title line of file (not used)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -51,13 +53,15 @@ subroutine readsepticbz(j)
 
    integer, intent(in) :: j
    character (len=80) :: titldum
-   integer :: eof
+   real*8 :: sep_cap
+   integer :: eof, sep_den, sep_strm_dist
 
 !!    initialize variables
    eof = 0
 
 
 !! read septic parameters
+   sep_cap = 0.
    do
       read (172,1000) titldum
       read (172,*,iostat=eof) isep_typ(j)
@@ -67,7 +71,7 @@ subroutine readsepticbz(j)
       if (eof < 0) exit
       read (172,*,iostat=eof) isep_opt(j)
       if (eof < 0) exit
-      read (172,*,iostat=eof) sep_cap(j)
+      read (172,*,iostat=eof) sep_cap
       if (eof < 0) exit
       read (172,*,iostat=eof) bz_area(j)
       if (eof < 0) exit
@@ -77,9 +81,9 @@ subroutine readsepticbz(j)
       if (eof < 0) exit
       read (172,*,iostat=eof) bz_thk(j)
       if (eof < 0) exit
-      read (172,*,iostat=eof) sep_strm_dist(j)
+      read (172,*,iostat=eof) sep_strm_dist
       if (eof < 0) exit
-      read (172,*,iostat=eof) sep_den(j)
+      read (172,*,iostat=eof) sep_den
       if (eof < 0) exit
       read (172,*,iostat=eof) bio_bd(j)
       if (eof < 0) exit
@@ -124,7 +128,7 @@ subroutine readsepticbz(j)
    coeff_denitr(j) = 0.01 * coeff_denitr(j)
 
    !!Convert QSTE from volume to depth unit, mm
-   qstemm(j) = sptqs(isep_typ(j)) * sep_cap(j) / bz_area(j) * 1000.
+   qstemm(j) = sptqs(isep_typ(j)) * sep_cap / bz_area(j) * 1000.
 
 !!    set default values for undefined parameters
    if (isep_iyr(j)==0) isep_iyr(j) = iyr

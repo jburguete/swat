@@ -1,23 +1,27 @@
-subroutine res
+!> @file res.f90
+!> file containing the subroutine res
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes water and sediment through reservoirs
-!!    computes evaporation and seepage from the reservoir.
+!> this subroutine routes water and sediment through reservoirs
+!> computes evaporation and seepage from the reservoir.
+!> @param[in] jres reservoir number (none)
+subroutine res(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jres         |none          |reservoir number
 !!    br1(:)       |none          |1st shape parameter for reservoir surface
 !!                                |area equation
 !!    br2(:)       |none          |2nd shape parameter for reservoir surface
 !!                                |area equation
 !!    curyr        |none          |current year of simulation
 !!    evrsv(:)     |none          |lake evaporation coefficient
-!!    iflodr(1,:)   |none          |beginning month of non-flood season
+!!    iflodr(1,:)  |none          |beginning month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    iflodr(2,:)   |none          |ending month of non-flood season
+!!    iflodr(2,:)  |none          |ending month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    inum1        |none          |reservoir number
 !!    iresco(:)    |none          |outflow simulation code:
 !!                                |0 compute outflow for uncontrolled reservoir
 !!                                |  with average annual release rate
@@ -45,7 +49,7 @@ subroutine res
 !!    res_sub(:)   |none          |number of subbasin reservoir is in
 !!    res_vol(:)   |m^3 H2O       |reservoir volume
 !!    resflwi      |m^3 H2O       |water entering reservoir on day
-!!    res_out(:,:,:)|m**3/day      |measured average daily outflow from the
+!!    res_out(:,:,:)|m**3/day     |measured average daily outflow from the
 !!                                |reservoir for the month
 !!    ressedi      |metric tons   |sediment entering reservoir during time step
 !!    sub_subp(:)  |mm H2O        |precipitation for day in subbasin
@@ -76,33 +80,49 @@ subroutine res
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    cla
+!!    gra
+!!    finsed
 !!    flw         |m^3/s         |reservoir outflow for day
-!!    jres        |none          |reservoir number
+!!    inised
+!!    jj          |none          |counter
+!!    lag
+!!    ndespill
+!!    remsetsed
+!!    res_h
+!!    res_h1
+!!    res_qi
+!!    sag
+!!    san
 !!    sed         |kg/L          |concentration of sediment in reservoir at
 !!                               |beginning of day
+!!    setsed
+!!    sil
+!!    susp
 !!    targ        |m^3 H2O       |target reservoir volume for day
+!!    trapres
+!!    velofl
 !!    vol         |m^3 H2O       |volume of water stored in reservoir at
 !!                               |beginning of day
 !!    vvr         |m^3 H2O       |maximum controlled water release for day
+!!    x1
 !!    xx          |none          |variable to hold intermediate calculation
 !!                               |result
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Min, Max
+!!    Intrinsic: Min, Sqrt, Max
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jres, jj
-   real*8 :: vol, sed, vvr, targ, xx, flw
-   real*8 :: san,sil,cla,sag,lag,gra,ndespill
-   real*8 :: inised, finsed, setsed, remsetsed
-   real*8 :: res_h, res_h1, res_qi, susp, trapres, velofl, x1
-
-   jres = inum1
+   integer, intent(in) :: jres
+   real*8 :: cla, gra, finsed, flw, inised, lag, ndespill, remsetsed, res_h,&
+      &res_h1, res_qi, sag, san, sed, setsed, sil, susp, targ, trapres, velofl,&
+      &vol, vvr, x1, xx
+   integer :: jj
 
 !! store initial values
 
@@ -170,7 +190,7 @@ subroutine res
             else
                xx = Min(sub_sw(res_sub(jres)) /sub_sumfc(res_sub(jres)), 1.)
                targ = res_pvol(jres) + .5 * (1. - xx) *&
-               &(res_evol(jres) - res_pvol(jres))
+                  &(res_evol(jres) - res_pvol(jres))
             end if
          else
             if (i_mo > iflodr(1,jres) .or. i_mo < iflodr(2,jres)) then
@@ -178,7 +198,7 @@ subroutine res
             else
                xx = Min(sub_sw(res_sub(jres)) /sub_sumfc(res_sub(jres)), 1.)
                targ = res_pvol(jres) + .5 * (1. - xx) *&
-               &(res_evol(jres) - res_pvol(jres))
+                  &(res_evol(jres) - res_pvol(jres))
             end if
          end if
       endif
@@ -208,11 +228,11 @@ subroutine res
          !! solve quadratic to find new depth
          !testing relationship res_vol(jres) = float(jj) * .1 * res_pvol(jres)
          x1 = bcoef(jres) ** 2 + 4. * ccoef(jres) * (1. -&
-         &res_vol(jres) / res_pvol(jres))
+            &res_vol(jres) / res_pvol(jres))
          if (x1 < 1.e-6) then
             res_h = 0.
          else
-            res_h1 = (-bcoef(jres) - sqrt(x1)) / (2. * ccoef(jres))
+            res_h1 = (-bcoef(jres) - Sqrt(x1)) / (2. * ccoef(jres))
             res_h = res_h1 + bcoef(jres)
          end if
 
@@ -230,7 +250,7 @@ subroutine res
          end  if
          resflwo = resflwo + res_qi
          res_vol(jres) = res_vol(jres) + (respcp + resflwi - resev&
-         &- ressep) / nostep
+            &- ressep) / nostep
          res_vol(jres) = res_vol(jres) - res_qi
       enddo
 
@@ -322,7 +342,7 @@ subroutine res
       if (res_sed(jres) > res_nsed(jres)) then
          inised = res_sed(jres)
          res_sed(jres) = (res_sed(jres) - res_nsed(jres)) *&
-         &sed_stlr(jres) + res_nsed(jres)
+            &sed_stlr(jres) + res_nsed(jres)
          finsed = res_sed(jres)
          setsed = inised - finsed
 

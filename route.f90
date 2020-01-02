@@ -66,6 +66,7 @@ subroutine route(i, jrch)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
+!!    qdbank      |m^3 H2O       |streamflow contribution from bank storage
 !!    rnum1i      |none          |1 - rnum1
 !!    subwtr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -81,7 +82,7 @@ subroutine route(i, jrch)
    implicit none
 
    integer, intent(in) :: i, jrch 
-   real*8 :: rnum1i, subwtr
+   real*8 :: qdbank, rnum1i, subwtr
    integer :: ii
 
    !inum3 is the subbasin for stream-aquifer interaction
@@ -90,18 +91,18 @@ subroutine route(i, jrch)
    iru = inum5
 
 !! initialize variables for route command loop
-   call rchinit
+   call rchinit(jrch)
 
    vel_chan(jrch) = 0.
    dep_chan(jrch) = 0.
 
 !! route water through reach
    if (ievent == 0) then
-      if (irte == 0) call rtday
-      if (irte == 1) call rtmusk(i)
+      if (irte == 0) call rtday(jrch)
+      if (irte == 1) call rtmusk(i, jrch)
    else
-      if (irte == 0) call rthvsc
-      if (irte == 1) call rthmusk(i)
+      if (irte == 0) call rthvsc(jrch)
+      if (irte == 1) call rthmusk(i, jrch)
    endif
 
 !! average daily water depth for sandi doty 09/26/07

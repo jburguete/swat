@@ -9,11 +9,6 @@ subroutine zeroini
    use parm
    implicit none
 
-   lid_file = ""
-   dpd_file = ""
-   wpd_file = ""
-   rib_file = ""
-   sfb_file = ""
    ai0 = 0.
    ai1 = 0.
    ai2 = 0.
@@ -38,7 +33,6 @@ subroutine zeroini
    basorgni = 0.
    basorgpf = 0.
    basorgpi = 0.
-   calfile = ""
    chla_subco = 0.       !CB 12/2/09
    cmn = 0.
    cncoef = 0.
@@ -94,8 +88,6 @@ subroutine zeroini
    lambda0 = 0.
    lambda1 = 0.
    lambda2 = 0.
-   lao = 0
-!     lucfile = ""
    msk_co1 = 0.
    msk_co2 = 0.
    msk_x = 0.
@@ -151,7 +143,6 @@ subroutine zeroini
    smtmp = 0.
    smxco = 0.      !CB 12/2/09
    sno3up = 0.
-   sno50cov = 0.
    snocov1 = 0.
    snocov2 = 0.
    snocovmx = 0.
@@ -180,11 +171,9 @@ subroutine zeroini
    volcrmin = 0.
    wdlprch = 0.
    wdlpres = 0.
-   wdlpf = 0.
    wdpq = 0.
    wdprch = 0.
    wdpres = 0.
-   wglpf = 0.
    wof_lp = 0.
    wof_p = 0.
    wlpq20 = 0.

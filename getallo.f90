@@ -11,12 +11,9 @@ subroutine getallo
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    dthy        |hr          |time interval for subdaily routing
-!!    mapp        |none        |maximum number of applications
 !!    mch         |none        |maximum number of channels
 !!    mcr         |none        |maximum number of crops grown per year
 !!    mcrdb       |none        |max number of lu/lc defined in crop.dat
-!!    mcut        |none        |maximum number of cuttings per year
-!!    mfcst       |none        |maximum number of forecast stations
 !!    mfdb        |none        |max number of fertilizers in fert.dat
 !!    mgr         |none        |maximum number of grazings per year
 !!    mhru        |none        |maximum number of HRUs in watershed
@@ -81,6 +78,9 @@ subroutine getallo
 !!    iunum       |none        |number of urban land type in database file
 !!    j           |none        |counter
 !!    k           |none        |counter
+!!    mapp        |none        |maximum number of applications
+!!    mcut        |none        |maximum number of cuttings per year (unused)
+!!    mfcst       |none        |maximum number of forecast stations
 !!    nlines      |none        |counter
 !!    numhru      |none        |number of HRUs listed in subbasin file
 !!    pestdb      |NA          |name of pesticide database input file(pest.dat)
@@ -106,7 +106,7 @@ subroutine getallo
    character (len=13) :: bsnfile, fertdb, fcstfile, figfile, pestdb, plantdb,&
       &subfile, tilldb, urbandb
    integer :: eof, fcsttot, ic, icd, ifcst, ifnum, iht, inm1, inm2, inm3,&
-      &ipnum, isnum, itnum, iunum, j, k, nlines, numhru
+      &ipnum, isnum, itnum, iunum, j, k, mfcst, mtran, nlines, numhru
    character (len=1) ::  a
 
 !!    initialize variables
@@ -236,9 +236,9 @@ subroutine getallo
    mlyr = 0
    mpst = 0
    mcr = 0
-   mapp = 0
+!   mapp = 0 ! not used
    mgr = 0
-   mcut = 0
+!   mcut = 0 ! not used
    mnr = 0
    mapex = 0
    mrecc = 0
@@ -436,8 +436,6 @@ subroutine getallo
       mru = Max(mru,2*msub)
    end if
 
-!      mhyd = mhyd + mrecc + mrecd + mrech + mrecm + mrecy + nsave
-!     &                                                       + mtran + 1
    if (mhru <= 0) mhru = 1
    if (msub <= 0) msub = 1
    if (mch <= 0) mch = 1
@@ -460,9 +458,9 @@ subroutine getallo
 
    mcr = mcr + 1
    mcr = Max(2,mcr)
-   mapp = mapp + 1
+!   mapp = mapp + 1 ! not used
    mgr = mgr + 1
-   mcut = mcut + 1
+!   mcut = mcut + 1 ! not used
    mnr = mnr + 1
    mpst = Sum(pstflg) + 1
 

@@ -1,7 +1,5 @@
+!> this subroutine writes average annual output
 subroutine writeaa
-
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes average annual output
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
@@ -176,7 +174,7 @@ subroutine writeaa
 !!                                |from potholes by seepage in watershed
 !!    subaao       |varies        |subbasin average annual output array
 !!    sumix(:)     |none          |sum of mixing efficiencies in HRU
-!!    wshd_aamon(:,:)|varies        |array of watershed monthly average values
+!!    wshd_aamon(:,:)|varies      |array of watershed monthly average values
 !!    wshd_dnit    |kg N/ha       |average annual amount of nitrogen lost from
 !!                                |nitrate pool due to denitrification in
 !!                                |watershed
@@ -260,7 +258,7 @@ subroutine writeaa
 !!                               |organic N pool in watershed soil
 !!    basorgpf    |kg P/ha       |final average amount of phosphorus in
 !!                               |the organic P pool in watershed soil
-!!    bio_aahv(:,:,:)|kg/ha         |harvested biomass of plant
+!!    bio_aahv(:,:,:)|kg/ha      |harvested biomass of plant
 !!    resdata(1)  |mm H2O        |average annual evaporation from reservoirs
 !!                               |in watershed
 !!    resdata(2)  |mm H2O        |average annual seepage from reservoirs in
@@ -275,9 +273,9 @@ subroutine writeaa
 !!                               |out of reservoirs in watershed
 !!    resdata(7)  |metric tons/ha|average annual amount of sediment transported
 !!                               |out of reservoirs in watershed
-!!    wshd_pstap(:)|kg pst/ha     |average annual amount of pesticide type
+!!    wshd_pstap(:)|kg pst/ha    |average annual amount of pesticide type
 !!                               |applied in watershed during simulation
-!!    wshd_pstdg(:)|kg pst/ha     |average annual amount of pesticide lost
+!!    wshd_pstdg(:)|kg pst/ha    |average annual amount of pesticide lost
 !!                               |through degradation in watershed
 !!    yldn(:,:,:) |kg/ha         |average value for yield of crop
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~

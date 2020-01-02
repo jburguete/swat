@@ -177,8 +177,6 @@ subroutine readops(k)
 
    close (111)
 
-   iops = j
-
 999 return
 5000 format (a)
 5200 format (1x,i2,1x,i2,5x,i4,1x,i2,1x,i4,1x,i3,1x,f6.2,1x,f12.5,1x,&

@@ -1,14 +1,18 @@
-subroutine recmon
+!> @file recmon.f90
+!> file containing the subroutine recmon
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine inputs measured loadings to the stream network
-!!    for routing through the watershed where the records are summarized
-!!    on a monthly basis
-
+!> this subroutine inputs measured loadings to the stream network
+!> for routing through the watershed where the records are summarized
+!> on a monthly basis
+!> @param[in] k file number (none)
+subroutine recmon(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k             |none         |file number
 !!    bactlpmon(:,:,:)|# cfu/100ml|average amount of less persistent bacteria
 !!                                |loaded to stream on a given day in the
 !!                                |month
@@ -31,13 +35,12 @@ subroutine recmon
 !!    curyr         |none         |year of simulation
 !!    disoxmon(:,:,:)|kg/day      |average amount of dissolved oxygen loaded to
 !!                                |stream on a given day in the month
-!!    ievent      |none          |rainfall/runoff code
-!!                               |0 daily rainfall/curve number technique
-!!                               |1 sub-daily rainfall/Green&Ampt/hourly
-!!                               |  routing
-!!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
+!!    ievent        |none         |rainfall/runoff code
+!!                                |0 daily rainfall/curve number technique
+!!                                |1 sub-daily rainfall/Green&Ampt/hourly
+!!                                |  routing
+!!                                |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout         |none         |hydrograph storage location number
-!!    inum1         |none         |file number
 !!    flomon(:,:,:) |m^3/day      |average amount of water loaded to stream
 !!                                |on a given day in the month
 !!    minpmon(:,:,:)|kg P/day     |average amount of soluble P loaded to
@@ -99,9 +102,13 @@ subroutine recmon
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name       |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    fn         |none          |number of time steps (float)
 !!    ii         |none          |counter
 !!    j          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Dfloat
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -109,6 +116,8 @@ subroutine recmon
    use parm
    implicit none
 
+   integer, intent(in) :: k
+   real*8 :: fn
    integer :: ii, j
 
 !! zero flow out variables
@@ -119,53 +128,54 @@ subroutine recmon
       end do
    end do
 
-   varoute(2,ihout) = flomon(inum1,curyr,i_mo)
-   varoute(3,ihout) = sedmon(inum1,curyr,i_mo)
-   varoute(4,ihout) = orgnmon(inum1,curyr,i_mo)
-   varoute(5,ihout) = orgpmon(inum1,curyr,i_mo)
-   varoute(6,ihout) = no3mon(inum1,curyr,i_mo)
-   varoute(7,ihout) = minpmon(inum1,curyr,i_mo)
-   varoute(11,ihout) = solpstmon(inum1,curyr,i_mo)
-   varoute(12,ihout) = srbpstmon(inum1,curyr,i_mo)
-   varoute(13,ihout) = chlamon(inum1,curyr,i_mo)
-   varoute(14,ihout) = nh3mon(inum1,curyr,i_mo)
-   varoute(15,ihout) = no2mon(inum1,curyr,i_mo)
-   varoute(16,ihout) = cbodmon(inum1,curyr,i_mo)
-   varoute(17,ihout) = disoxmon(inum1,curyr,i_mo)
-   varoute(18,ihout) = bactpmon(inum1,curyr,i_mo)
-   varoute(19,ihout) = bactlpmon(inum1,curyr,i_mo)
-   varoute(20,ihout) = cmtl1mon(inum1,curyr,i_mo)
-   varoute(21,ihout) = cmtl2mon(inum1,curyr,i_mo)
-   varoute(22,ihout) = cmtl3mon(inum1,curyr,i_mo)
+   varoute(2,ihout) = flomon(k,curyr,i_mo)
+   varoute(3,ihout) = sedmon(k,curyr,i_mo)
+   varoute(4,ihout) = orgnmon(k,curyr,i_mo)
+   varoute(5,ihout) = orgpmon(k,curyr,i_mo)
+   varoute(6,ihout) = no3mon(k,curyr,i_mo)
+   varoute(7,ihout) = minpmon(k,curyr,i_mo)
+   varoute(11,ihout) = solpstmon(k,curyr,i_mo)
+   varoute(12,ihout) = srbpstmon(k,curyr,i_mo)
+   varoute(13,ihout) = chlamon(k,curyr,i_mo)
+   varoute(14,ihout) = nh3mon(k,curyr,i_mo)
+   varoute(15,ihout) = no2mon(k,curyr,i_mo)
+   varoute(16,ihout) = cbodmon(k,curyr,i_mo)
+   varoute(17,ihout) = disoxmon(k,curyr,i_mo)
+   varoute(18,ihout) = bactpmon(k,curyr,i_mo)
+   varoute(19,ihout) = bactlpmon(k,curyr,i_mo)
+   varoute(20,ihout) = cmtl1mon(k,curyr,i_mo)
+   varoute(21,ihout) = cmtl2mon(k,curyr,i_mo)
+   varoute(22,ihout) = cmtl3mon(k,curyr,i_mo)
 
    !! Assumed equal distribution of sediment
-   varoute(23,ihout) = sedmon(inum1,curyr,i_mo) * 0.   ! sand
-   varoute(24,ihout) = sedmon(inum1,curyr,i_mo) * 1.   ! silt
-   varoute(25,ihout) = sedmon(inum1,curyr,i_mo) * 0.   ! cla
-   varoute(26,ihout) = sedmon(inum1,curyr,i_mo) * 0.   ! sag
-   varoute(27,ihout) = sedmon(inum1,curyr,i_mo) * 0.   ! lag
+   varoute(23,ihout) = sedmon(k,curyr,i_mo) * 0.   ! sand
+   varoute(24,ihout) = sedmon(k,curyr,i_mo) * 1.   ! silt
+   varoute(25,ihout) = sedmon(k,curyr,i_mo) * 0.   ! cla
+   varoute(26,ihout) = sedmon(k,curyr,i_mo) * 0.   ! sag
+   varoute(27,ihout) = sedmon(k,curyr,i_mo) * 0.   ! lag
    varoute(28,ihout) = 0.                    ! gravel
 
    if (ievent > 0) then
+      fn = Dfloat(nstep)
       do ii = 1, nstep
-         hhvaroute(2,ihout,ii) = flomon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(3,ihout,ii) = sedmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(4,ihout,ii) = orgnmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(5,ihout,ii) = orgpmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(6,ihout,ii) = no3mon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(7,ihout,ii) = minpmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(11,ihout,ii) = solpstmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(12,ihout,ii) = srbpstmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(13,ihout,ii) = chlamon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(14,ihout,ii) = nh3mon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(15,ihout,ii) = no2mon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(16,ihout,ii) = cbodmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(17,ihout,ii) = disoxmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(18,ihout,ii) = bactpmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(19,ihout,ii) = bactlpmon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(20,ihout,ii) = cmtl1mon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(21,ihout,ii) = cmtl2mon(inum1,curyr,i_mo) / dfloat(nstep)
-         hhvaroute(22,ihout,ii) = cmtl3mon(inum1,curyr,i_mo) / dfloat(nstep)
+         hhvaroute(2,ihout,ii) = flomon(k,curyr,i_mo) / fn
+         hhvaroute(3,ihout,ii) = sedmon(k,curyr,i_mo) / fn
+         hhvaroute(4,ihout,ii) = orgnmon(k,curyr,i_mo) / fn
+         hhvaroute(5,ihout,ii) = orgpmon(k,curyr,i_mo) / fn
+         hhvaroute(6,ihout,ii) = no3mon(k,curyr,i_mo) / fn
+         hhvaroute(7,ihout,ii) = minpmon(k,curyr,i_mo) / fn
+         hhvaroute(11,ihout,ii) = solpstmon(k,curyr,i_mo) / fn
+         hhvaroute(12,ihout,ii) = srbpstmon(k,curyr,i_mo) / fn
+         hhvaroute(13,ihout,ii) = chlamon(k,curyr,i_mo) / fn
+         hhvaroute(14,ihout,ii) = nh3mon(k,curyr,i_mo) / fn
+         hhvaroute(15,ihout,ii) = no2mon(k,curyr,i_mo) / fn
+         hhvaroute(16,ihout,ii) = cbodmon(k,curyr,i_mo) / fn
+         hhvaroute(17,ihout,ii) = disoxmon(k,curyr,i_mo) / fn
+         hhvaroute(18,ihout,ii) = bactpmon(k,curyr,i_mo) / fn
+         hhvaroute(19,ihout,ii) = bactlpmon(k,curyr,i_mo) / fn
+         hhvaroute(20,ihout,ii) = cmtl1mon(k,curyr,i_mo) / fn
+         hhvaroute(21,ihout,ii) = cmtl2mon(k,curyr,i_mo) / fn
+         hhvaroute(22,ihout,ii) = cmtl3mon(k,curyr,i_mo) / fn
       end do
    end if
 

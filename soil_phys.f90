@@ -187,19 +187,9 @@ subroutine soil_phys(ii)
       volcr(j,ii) = crdep(j,ii) * (sol_fc(j,ii) - sol_st(j,ii)) / (sol_fc(j,ii))
       xx = sol_z(j,ii)
    end do
-   !! initialize water table depth and soil water for Daniel
-!      sol_swpwt(ii) = sol_sw(ii)
-!      if (ffc(ii) > 1.) then
-!        wat_tbl(ii) = (sol_sumul(ii) - ffc(ii) * sol_sumfc(ii)) /
-!     &                                                      sol_z(nly,ii)
-!      else
-!        wat_tbl(ii) = 0.
-!      end if
-   !!Initializing water table depth and soil water revised by D. Moriasi 4/8/2014
    do j = 1, nly
       sol_stpwt(j,ii) = sol_st(j,ii)
    end do
-   sol_swpwt(ii) = sol_sw(ii)
    wat_tbl(ii) = dep_imp(ii)- (shallst(ii)/sol_por(nly,ii))
 
    !!Initializing water table depth and soil water revised by D. Moriasi 4/8/2014

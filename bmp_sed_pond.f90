@@ -5,15 +5,17 @@
 
 !> this subroutine routes water and sediment through a sedimentation pond in
 !> the subbasin
+!> param[in] sb subbasin or reach number
 !> param[in] kk filter id number in the subbasin
 !> param[inout] flw stormwater runoff coming in/out of pond at a time step
 !> param[inout] sed overland flow sediment coming in/out of pond at a time
 !> step
-subroutine bmp_sed_pond(kk, flw, sed)
+subroutine bmp_sed_pond(sb, kk, flw, sed)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    sb          |none          |subbasin or reach number
 !!    kk          |none          |filter id number in the subbasin
 !!    hru_sub(:)  |none          |subbasin in which HRU/reach is located
 !!    i_mo        |none          |current month of simulation
@@ -47,7 +49,6 @@ subroutine bmp_sed_pond(kk, flw, sed)
 !!    qpndi
 !!    qtrns
 !!    qweir
-!!    sb          |none          |subbasin or reach number
 !!    sedconcweir
 !!    sedpnde
 !!    sedpndi
@@ -69,14 +70,13 @@ subroutine bmp_sed_pond(kk, flw, sed)
    implicit none
 
    real*8 Pipeflow
-   integer, intent(in) :: kk
+   integer, intent(in) :: sb, kk
    real*8, dimension(4,0:nstep), intent(inout) :: flw, sed
    real*8 :: dp, hpnd, hweir, ksat, ksed, mxh, mxvol, pdia, phead, qevap, qin,&
       &qout, qpipe, qpnd, qpndi, qtrns, qweir, sedconcweir, sedpnde, sedpndi,&
       &splw, spndconc, sub_ha, sweir, td, tsa
-   integer :: ii, sb
+   integer :: ii
 
-   sb = inum1
    sub_ha = da_ha * sub_fr(sb)
    qin = 0.; qout = 0.; sedpndi = 0.; sedpnde = 0.
    flw(2,:) = 0.; sed(2,:) = 0.

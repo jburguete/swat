@@ -11,7 +11,6 @@ subroutine resbact
 !!    res_bactlp(:)    |# cfu/100ml |less persistent bacteria stored in
 !!                                  |reservoir
 !!    res_bactp(:)     |# cfu/100ml |persistent bacteria stored in reservoir
-!!    reswtr           |m^3 H2O     |initial reservoir volume
 !!    thbact           |none        |temperature adjustment factor for bacteria
 !!                                  |die-off/growth
 !!    tmpav(:)         |deg C       |average air temperature on current day
@@ -39,6 +38,7 @@ subroutine resbact
 !!    jres        |none          |reservoir number
 !!    netwtr      |m^3 H2O       |net amount of water in reservoir during
 !!                               |time step
+!!    reswtr      |m^3 H2O       |initial reservoir volume
 !!    totbactlp   |10^4 cfu      |mass less persistent bacteria
 !!    totbactp    |10^4 cfu      |mass persistent bacteria
 !!    wtmp        |deg C         |temperature of water in reach
@@ -54,6 +54,7 @@ subroutine resbact
    implicit none
 
    real*8 Theta
+   real*8, parameter :: reswtr = 0.
    integer :: jres
    real*8 :: totbactp, totbactlp, netwtr
    real*8 :: wtmp

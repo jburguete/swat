@@ -20,20 +20,9 @@ subroutine zero0
    rg_sarea = 0.
    !co_p = .1 !not used
 
-   ifirstatmo = 1
    mo_atmo = 0
 
    ires_nut = 0
-!!    apex command initialize
-   idapa = 0
-   iypa = 0
-   flodaya = 0.
-   seddaya = 0.
-   orgndaya = 0.
-   orgpdaya = 0.
-   no3daya = 0.
-   minpdaya = 0.
-!!    apex command initialize
 
    lat_orgn = 0.
    lat_orgp = 0.
@@ -257,7 +246,6 @@ subroutine zero0
    ftmpstdmn = 0.
    ftmpstdmx = 0.
    gdrain = 0.
-   gdrain_bsn = 0.
 !    Drainmod tile equations  01/2006
 !    Drainmod tile equations  01/2006
    gsi = 0.
@@ -316,7 +304,6 @@ subroutine zero0
    ifld = 0
    iflod = 0
    ifrt_freq = 0
-   ifrttyp = 0
    irelh = 1
    manure_id = 0
    no_lup = 1
@@ -455,7 +442,6 @@ subroutine zero0
    rch_dox = 0.
    rchrg_n = 0.
    rcn_sub = 0.
-   rcn_sub_bsn = 0.
    reccnstps = '          '
    recmonps = '          '
    rammo_mo = 0.
@@ -477,7 +463,6 @@ subroutine zero0
    drain_co = 0.
 
    !New water table depth parameters D. Moriasi 4/8/2014
-   sol_swpwt = 0.
    sol_stpwt = 0.
    vwt = 0.
    wat_tbl = 0.
@@ -524,7 +509,6 @@ subroutine zero0
    subgis = 0
    tb_adj = 0.
    tdrain = 0.
-   tdrain_bsn = 0.
    tileq = 0.
    tile_ttime = 0.
    uh = 0.

@@ -142,12 +142,12 @@ subroutine readseptwq
          sptqs(ist) = sptq
          sptbodconcs(ist) = sptbodin
          spttssconcs(ist) = spttssconc
-         spttnconcs(ist) = spttnconc
+!         spttnconcs(ist) = spttnconc ! not used
          sptnh4concs(ist) = sptnh4conc
          sptno3concs(ist) = sptno3conc
          sptno2concs(ist) = sptno2conc
          sptorgnconcs(ist) = sptorgnconc
-         spttpconcs(ist) = spttpconc
+!         spttpconcs(ist) = spttpconc ! not used
          sptminps(ist) = sptminp
          sptorgps(ist) = sptorgp
          sptfcolis(ist) = sptfcoli

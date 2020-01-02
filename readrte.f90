@@ -79,6 +79,7 @@ subroutine readrte
 !!    banksize
 !!    eof         |none          |end of file flag
 !!    j           |none          |counter
+!!    mo
 !!    SC
 !!    sumerod
 !!    titldum     |NA            |title line of .rte file (not used elsewhere)
@@ -95,7 +96,7 @@ subroutine readrte
 
    character (len=80) :: titldum
    real*8 :: bedsize, bnksize, SC, sumerod
-   integer :: eof, j
+   integer :: eof, j, mo
 
    eof = 0
    j = irch
@@ -152,8 +153,6 @@ subroutine readrte
    end do
 
 !!    set default values for parameters
-!!     if (tc_bnk(j) <= 1.e-6) tc_bnk(j) = 0.001
-!!     if (tc_bed(j) <= 1.e-6) tc_bed(j) = 0.001
    if (ch_s(2,j) <= 0.) ch_s(2,j) = .0001
    if (ch_n(2,j) <= 0.01) ch_n(2,j) = .01
    if (ch_n(2,j) >= 0.70) ch_n(2,j) = 0.70

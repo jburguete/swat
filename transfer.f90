@@ -1,11 +1,17 @@
-subroutine transfer
+!> @file transfer.f90
+!> file containing the subroutine transfer
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine transfers water
+!> this subroutine transfers water
+!> @param[in] j reach or reservoir # from which water is removed (none)
+subroutine transfer(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    j           |none          |reach or reservoir # from which water is
+!!                               |removed
 !!    icodes(:)   |none          |routing command code:
 !!                               |0 = finish       9 = save
 !!                               |1 = subbasin    10 = recday
@@ -30,8 +36,6 @@ subroutine transfer
 !!                               |   be printed to event file
 !!                               |14:hydrograph storage location of data to
 !!                               |   be printed to saveconc file
-!!    inum1       |none          |reach or reservoir # from which water is
-!!                               |removed
 !!    inum1s(:)   |none          |For ICODES equal to
 !!                               |0: not used
 !!                               |1: subbasin number
@@ -111,9 +115,12 @@ subroutine transfer
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
+!!    nhyd_tr
 !!    ratio       |none          |fraction of reach outflow diverted
+!!    ratio1      |none          |1-ratio
 !!    tranmx      |m^3 H2O       |maximum amount of water to be transferred
 !!    volum       |m^3 H2O       |volume of water in source
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -122,8 +129,9 @@ subroutine transfer
    use parm
    implicit none
 
+   integer, intent(in) :: j
+   real*8 :: ratio, ratio1, tranmx, volum, xx
    integer :: ii, nhyd_tr
-   real*8 :: volum, tranmx, ratio, ratio1, xx
 
 !! check beg/end months summer or winter
    if (mo_transb(inum5) < mo_transe(inum5)) then
@@ -133,9 +141,9 @@ subroutine transfer
    end if
 !! compute volume of water in source
    if (ihout == 2) then
-      volum = res_vol(inum1)
+      volum = res_vol(j)
    else
-      volum = rchdy(2,inum1) * 86400.
+      volum = rchdy(2,j) * 86400.
    end if
    if (volum <= 0.) return
 
@@ -158,28 +166,12 @@ subroutine transfer
    ratio1 = 1.
    if (tranmx > 0.) then
 
-      !! TRANSFER WATER TO DESTINATION
-!        select case (inum2)
-!          case (1)          !! TRANSFER WATER TO A CHANNEL
-!            rchstor(inum3) = rchstor(inum3) + tranmx
-!
-!          case (2)          !! TRANSFER WATER TO A RESERVOIR
-!            res_vol(inum3) = res_vol(inum3) + tranmx
-!        end select
-
       !! SUBTRACT AMOUNT TRANSFERED FROM SOURCE
       xx = 0.
       if (ihout == 2) then
-         res_vol(inum1) = res_vol(inum1) - tranmx
+         res_vol(j) = res_vol(j) - tranmx
       else
          xx = tranmx
-!          if (xx > rchstor(inum1)) then
-!            xx = tranmx - rchstor(inum1)
-!            rchstor(inum1) = 0.
-!          else
-!            rchstor(inum1) = rchstor(inum1) - xx
-!            xx = 0.
-!          end if
 
          if (xx > varoute(2,nhyd_tr)) then
             xx = tranmx - varoute(2,nhyd_tr)
@@ -190,47 +182,47 @@ subroutine transfer
          end if
 
          ratio = 0.
-         if (rchdy(2,inum1) > 1.e-6) then
+         if (rchdy(2,j) > 1.e-6) then
             xx = tranmx - xx
-            ratio = 1. - xx / (rchdy(2,inum1) * 86400.)
+            ratio = 1. - xx / (rchdy(2,j) * 86400.)
          end if
 
          ratio1 = 1. - ratio
-         rchmono(2,inum1) = rchmono(2,inum1) - rchdy(2,inum1) * ratio1  !!flow out
-         rchmono(6,inum1) = rchmono(6,inum1) - rchdy(8,inum1) * ratio1  !!org N out
-         rchmono(9,inum1) = rchmono(9,inum1) - rchdy(11,inum1) * ratio1 !!org P out
-         rchmono(11,inum1)=rchmono(11,inum1) - rchdy(4,inum1) * ratio1  !!transmission losses from reach
-         rchmono(13,inum1)=rchmono(13,inum1) - rchdy(41,inum1) * ratio1 !!conservative metal #2 out
-         rchmono(15,inum1)=rchmono(15,inum1) - rchdy(12,inum1) * ratio1 !!nitrate transported into reach
-         rchmono(17,inum1)=rchmono(17,inum1) - rchdy(18,inum1) * ratio1 !!soluble P transported into reach
-         rchmono(19,inum1)=rchmono(19,inum1) - rchdy(26,inum1) * ratio1 !!soluble pesticide transported into reach
-         rchmono(21,inum1)=rchmono(21,inum1) - rchdy(28,inum1) * ratio1 !!sorbed pesticide transported into reach
-         rchmono(23,inum1)=rchmono(23,inum1) - rchdy(30,inum1) * ratio1 !!amount of pesticide lost through reactions
-         rchmono(25,inum1)=rchmono(25,inum1) - rchdy(32,inum1) * ratio1 !!amount of pesticide settling out of reach
-         rchmono(27,inum1)=rchmono(27,inum1) - rchdy(34,inum1) * ratio1 !!amount of pesticide diffusing from reach
-         rchmono(29,inum1)=rchmono(29,inum1) - rchdy(36,inum1) * ratio1 !!amount of pesticide in sediment layer
-         rchmono(38,inum1)=rchmono(38,inum1) - rchdy(24,inum1) * ratio1 !!dissolved oxygen transported into reach
-         rchmono(39,inum1)=rchmono(39,inum1) - rchdy(25,inum1) * ratio1 !!dissolved osygen transported out of reach
-         rchmono(40,inum1)=rchmono(40,inum1) - rchdy(38,inum1) * ratio1 !!persistent bacteria transported out of reach
-         rchmono(41,inum1)=rchmono(41,inum1) - rchdy(39,inum1) * ratio1 !!less persistent bacteria transported out of reach
+         rchmono(2,j) = rchmono(2,j) - rchdy(2,j) * ratio1  !!flow out
+         rchmono(6,j) = rchmono(6,j) - rchdy(8,j) * ratio1  !!org N out
+         rchmono(9,j) = rchmono(9,j) - rchdy(11,j) * ratio1 !!org P out
+         rchmono(11,j)=rchmono(11,j) - rchdy(4,j) * ratio1  !!transmission losses from reach
+         rchmono(13,j)=rchmono(13,j) - rchdy(41,j) * ratio1 !!conservative metal #2 out
+         rchmono(15,j)=rchmono(15,j) - rchdy(12,j) * ratio1 !!nitrate transported into reach
+         rchmono(17,j)=rchmono(17,j) - rchdy(18,j) * ratio1 !!soluble P transported into reach
+         rchmono(19,j)=rchmono(19,j) - rchdy(26,j) * ratio1 !!soluble pesticide transported into reach
+         rchmono(21,j)=rchmono(21,j) - rchdy(28,j) * ratio1 !!sorbed pesticide transported into reach
+         rchmono(23,j)=rchmono(23,j) - rchdy(30,j) * ratio1 !!amount of pesticide lost through reactions
+         rchmono(25,j)=rchmono(25,j) - rchdy(32,j) * ratio1 !!amount of pesticide settling out of reach
+         rchmono(27,j)=rchmono(27,j) - rchdy(34,j) * ratio1 !!amount of pesticide diffusing from reach
+         rchmono(29,j)=rchmono(29,j) - rchdy(36,j) * ratio1 !!amount of pesticide in sediment layer
+         rchmono(38,j)=rchmono(38,j) - rchdy(24,j) * ratio1 !!dissolved oxygen transported into reach
+         rchmono(39,j)=rchmono(39,j) - rchdy(25,j) * ratio1 !!dissolved osygen transported out of reach
+         rchmono(40,j)=rchmono(40,j) - rchdy(38,j) * ratio1 !!persistent bacteria transported out of reach
+         rchmono(41,j)=rchmono(41,j) - rchdy(39,j) * ratio1 !!less persistent bacteria transported out of reach
 
-         rchdy(2,inum1) = rchdy(2,inum1) * ratio
-         rchdy(8,inum1) = rchdy(8,inum1) * ratio
-         rchdy(11,inum1) = rchdy(11,inum1) * ratio
-         rchdy(4,inum1) = rchdy(4,inum1) * ratio
-         rchdy(41,inum1) = rchdy(41,inum1) * ratio
-         rchdy(12,inum1) = rchdy(12,inum1) * ratio
-         rchdy(18,inum1) = rchdy(18,inum1) * ratio
-         rchdy(26,inum1) = rchdy(26,inum1) * ratio
-         rchdy(28,inum1) = rchdy(28,inum1) * ratio
-         rchdy(30,inum1) = rchdy(30,inum1) * ratio
-         rchdy(32,inum1) = rchdy(32,inum1) * ratio
-         rchdy(34,inum1) = rchdy(34,inum1) * ratio
-         rchdy(36,inum1) = rchdy(36,inum1) * ratio
-         rchdy(24,inum1) = rchdy(24,inum1) * ratio
-         rchdy(25,inum1) = rchdy(25,inum1) * ratio
-         rchdy(38,inum1) = rchdy(38,inum1) * ratio
-         rchdy(39,inum1) = rchdy(39,inum1) * ratio
+         rchdy(2,j) = rchdy(2,j) * ratio
+         rchdy(8,j) = rchdy(8,j) * ratio
+         rchdy(11,j) = rchdy(11,j) * ratio
+         rchdy(4,j) = rchdy(4,j) * ratio
+         rchdy(41,j) = rchdy(41,j) * ratio
+         rchdy(12,j) = rchdy(12,j) * ratio
+         rchdy(18,j) = rchdy(18,j) * ratio
+         rchdy(26,j) = rchdy(26,j) * ratio
+         rchdy(28,j) = rchdy(28,j) * ratio
+         rchdy(30,j) = rchdy(30,j) * ratio
+         rchdy(32,j) = rchdy(32,j) * ratio
+         rchdy(34,j) = rchdy(34,j) * ratio
+         rchdy(36,j) = rchdy(36,j) * ratio
+         rchdy(24,j) = rchdy(24,j) * ratio
+         rchdy(25,j) = rchdy(25,j) * ratio
+         rchdy(38,j) = rchdy(38,j) * ratio
+         rchdy(39,j) = rchdy(39,j) * ratio
       end if
 
       !!subtract from source

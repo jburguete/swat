@@ -108,10 +108,11 @@ subroutine simulate
    implicit none
 
    real*8 :: xx
-   integer :: eof, i, ic, idap, idlst, ii, isb, iyp, iyr_at, j, k, l, ly,&
-      &mo_at, mon
+   integer :: eof, i, ic, idap, idlst, ifirstatmo, ii, isb, iyp, iyr_at, j, k,&
+      &l, ly, mo_at, mon
 
    eof = 0
+   ifirstatmo = 1
 
    do curyr = 1, nbyr
       write (*,1234) curyr
@@ -285,14 +286,14 @@ subroutine simulate
             call xmon
          endif
 
-         IF(ievent>0)THEN
+         if (ievent>0)then
             QHY(:,:,IHX(1))=0.
             II=IHX(1)
-            DO K=2,4
+            do K=2,4
                IHX(K-1)=IHX(K)
-            END DO
+            end do
             IHX(4)=II
-         END IF
+         end if
 
 
       end do                                        !! end daily loop

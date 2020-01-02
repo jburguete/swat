@@ -20,6 +20,7 @@ subroutine schedule_ops(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    b
+!!    iops
 !!    jj          |none          |counter
 !!    sin_sl
 !!    tch
@@ -38,7 +39,7 @@ subroutine schedule_ops(j)
 
    integer, intent(in) :: j
    real*8 :: b, sin_sl, tch, tover, xm
-   integer :: jj
+   integer :: iops, jj
  
    iops = ioper(j)
 

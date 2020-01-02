@@ -17,7 +17,6 @@ subroutine biozone(j)
 !!    j                |none          |HRU number
 !!    bio_bd(:)        |kg/m^3        |density of biomass
 !!    bio_bod(:)       |kg/ha         |BOD concentration in biozone
-!!    biom(:)          |kg/ha         |biomass of live bacteria in biozone
 !!    bz_thk(:)        |mm            |thickness of biozone
 !!    coeff_bod_conv(:)|none          |BOD to live bacteria biomass conversion factor
 !!    coeff_bod_dc(:)  |m^3/day       |BOD decay rate coefficient
@@ -38,7 +37,6 @@ subroutine biozone(j)
 !!    isep_typ(:)      |none          |Septic system type
 !!    isep_opt(:)      |none          |Septic system operation flag (1=active,2=failing,0=not operated)
 !!    plqm             |kg/ha         |plaque in biozone
-!!    rbiom(:)         |kg/ha         |daily change in biomass of live bacteria
 !!    sepday           |mm H2O        |percolation from soil layer
 !!    sol_bd(:,:)      |Mg/m**3       |bulk density of the soil
 !!    sol_fc(:,:)      |mm H2O        |amount of water available to plants in soil
@@ -104,6 +102,7 @@ subroutine biozone(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    biom(:)          |kg/ha         |biomass of live bacteria in biozone
 !!    bod_rt           |1/day         |BOD reaction rate
 !!    bode
 !!    bodi
@@ -129,6 +128,7 @@ subroutine biozone(j)
 !!    qin
 !!    qlyr
 !!    qout
+!!    rbiom(:)         |kg/ha         |daily change in biomass of live bacteria
 !!    rbod             |mg/l          |daily change in bod concentration
 !!    rdenit           |kg/ha         |denitrification during the day
 !!    rfcoli           |cfu/100ml     |daily change in fecal coliform

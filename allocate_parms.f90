@@ -9,11 +9,9 @@ subroutine allocate_parms
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    mapp        |none          |max number of applications
 !!    mch         |none          |max number of channels
 !!    mcr         |none          |max number of crops grown per year
 !!    mcrdb       |none          |max nunber of crops in crop.dat
-!!    mcut        |none          |max number of cuttings per year
 !!    mfdb        |none          |max number of fertilizers in fert.dat
 !!    mgr         |none          |max number of grazings per year
 !!    mhru        |none          |max number of HRUs
@@ -98,48 +96,28 @@ subroutine allocate_parms
 
 !!    apex/command variables
    allocate (ifirsta(mapex))
-   allocate (iypa(mapex))
-   allocate (idapa(mapex))
-   allocate (flodaya(mapex))
-   allocate (seddaya(mapex))
-   allocate (orgndaya(mapex))
-   allocate (orgpdaya(mapex))
-   allocate (no3daya(mapex))
-   allocate (minpdaya(mapex))
 
 !! septic inputs
    allocate (isep_hru(mhru))
    allocate (sptqs(msdb+1))
    allocate (sptbodconcs(msdb+1))
    allocate (spttssconcs(msdb+1))
-   allocate (spttnconcs(msdb+1))
+!   allocate (spttnconcs(msdb+1)) ! not used
    allocate (sptnh4concs(msdb+1))
    allocate (sptno3concs(msdb+1))
    allocate (sptno2concs(msdb+1))
    allocate (sptorgnconcs(msdb+1))
-   allocate (spttpconcs(msdb+1))
+!   allocate (spttpconcs(msdb+1)) ! not used
    allocate (sptminps(msdb+1))
    allocate (sptorgps(msdb+1))
    allocate (sptfcolis(msdb+1))
 !! pothole changes for srini
-   allocate (spill_hru(mhru))
-   allocate (spill_precip(mhru))
-   allocate (tile_out(mhru))
    allocate (pot_seep(mhru))
-   allocate (pot_sedin(mhru))
-   allocate (pot_evap(mhru))
-   allocate (hru_in(mhru))
    allocate (pot_solp(mhru))
-   allocate (pot_solpi(mhru))
    allocate (pot_orgp(mhru))
-   allocate (pot_orgpi(mhru))
    allocate (pot_orgn(mhru))
-   allocate (pot_orgni(mhru))
    allocate (pot_mps(mhru))
-   allocate (pot_mpsi(mhru))
    allocate (pot_mpa(mhru))
-   allocate (pot_mpai(mhru))
-   allocate (pot_no3i(mhru))
    allocate (precip_in(mhru))
    allocate (tile_sedo(mhru))
    allocate (tile_no3o(mhru))
@@ -149,20 +127,16 @@ subroutine allocate_parms
    allocate (tile_minpso(mhru))
    allocate (tile_minpao(mhru))
 !! septic changes added 1/28/09 gsm
-   allocate (percp(mhru))
    allocate (i_sep(mhru))
    allocate (sep_tsincefail(mhru))
    allocate (isep_tfail(mhru))
    allocate (failyr(mhru))
    allocate (qstemm(mhru))
-   allocate (sep_cap(mhru))
    allocate (bz_area(mhru))
-   allocate (bio_amn(mhru))
    allocate (bio_bod(mhru))
    allocate (biom(mhru))
    allocate (rbiom(mhru))
    allocate (fcoli(mhru))
-   allocate (bio_ntr(mhru))
    allocate (bz_perc(mhru))
    allocate (bz_z(mhru))
    allocate (bz_thk(mhru))
@@ -191,8 +165,6 @@ subroutine allocate_parms
    allocate (coeff_solpslp(mhru))
    allocate (coeff_solpintc(mhru))
    allocate (isep_iyr(mhru))
-   allocate (sep_strm_dist(mhru))
-   allocate (sep_den(mhru))
 
 !! septic changes added 1/28/09 gsm
    allocate (qird(mhru))
@@ -483,7 +455,6 @@ subroutine allocate_parms
 !    Drainmod tile equations  01/2006
    allocate (vwt(mlyr,mhru))
    allocate (wat_tbl(mhru))
-   allocate (sol_swpwt(mhru))
    allocate (conk(mlyr,mhru))
    allocate (r2adj(mhru))
    allocate (sol_stpwt(mlyr,mhru)) !Moriasi 4/8/2014

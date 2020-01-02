@@ -4,7 +4,8 @@
 !> modified by Javier Burguete
 
 !> this subroutine calls routines for urban BMPs in the subbasin
-subroutine distributed_bmps
+!> param[in] sb subbasin or reach number
+subroutine distributed_bmps(sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -54,12 +55,12 @@ subroutine distributed_bmps
    implicit none
 
    !dimensions: 1=inflow/outflow, 2=pond id, 3=time step
+   integer, intent(in) :: sb
    real*8, dimension(4,0:nstep) :: ftqm3, ftsed, ri_totalflw, ri_totaltss,&
       &riflw, riqm3, rised, sf_totalflw, sf_totaltss, sfflw, sfsed, spqm3, spsed
    real*8 :: bmpfr, sub_ha
-   integer :: ii, kk, sb
+   integer :: ii, kk
 
-   sb = inum1
    sub_ha = da_ha * sub_fr(sb)
    sf_totalflw = 0.; sf_totaltss = 0.
    ri_totalflw = 0.; ri_totaltss = 0.
@@ -84,7 +85,7 @@ subroutine distributed_bmps
          if (iyr>sf_iy(sb,kk) .or.&
             &(iyr==sf_iy(sb,kk).and.i_mo>=sf_im(sb,kk))) then
             if(sf_typ(sb,kk)==2) then !partial scale
-               call bmp_sand_filter(kk,sfflw,sfsed)
+               call bmp_sand_filter(sb, kk, sfflw, sfsed)
                spqm3(:,:) = 0.
                spsed(:,:) = 0.
                ftqm3(:,:) = sfflw(:,:) * ((sub_ha - ft_sa(sb,kk)&  !m3
@@ -98,7 +99,7 @@ subroutine distributed_bmps
                   &+ ftsed(3,:) !tons
             elseif(sf_typ(sb,kk)==1) then !full scale
                !first route through sedimentation pond
-               call bmp_sed_pond(kk,sfflw,sfsed)
+               call bmp_sed_pond(sb, kk, sfflw, sfsed)
 
                spqm3(:,:) = sfflw(:,:) * ((sub_ha - sp_sa(sb,kk)&
                   &/ 10000.) *10.)
@@ -113,7 +114,7 @@ subroutine distributed_bmps
                sfsed(1,:) = sfsed(2,:)
 
                ! then the outflow from sed pond goes to sand filter
-               call bmp_sand_filter(kk,sfflw,sfsed)
+               call bmp_sand_filter(sb, kk, sfflw, sfsed)
 
                ftqm3(:,:) = sfflw(:,:) *  ((sub_ha - ft_sa(sb,kk)&
                   &/ 10000.) *10.) !m3
@@ -126,7 +127,7 @@ subroutine distributed_bmps
                   &+ sfsed(2,:) !tons
 
             else !sedimentation pond only
-               call bmp_sed_pond(kk,sfflw,sfsed)
+               call bmp_sed_pond(sb, kk, sfflw, sfsed)
 
                ftqm3(:,:) = 0.
                ftsed(:,:)=0.
@@ -182,7 +183,7 @@ subroutine distributed_bmps
          if (iyr>ri_iy(sb,kk) .or.&
             &(iyr==ri_iy(sb,kk).and.i_mo>=ri_im(sb,kk))) then
 
-            call bmp_ri_pond(kk,riflw,rised)
+            call bmp_ri_pond(sb, kk, riflw, rised)
 
             riqm3(:,:) = riflw(:,:)* ((sub_ha - sp_sa(sb,kk)&
                &/ 10000.) *10.)

@@ -112,18 +112,22 @@ subroutine readpnd(i)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    dummy       |none          |dummy array to read unused data
+!!    dpd_file
 !!    eof         |none          |end of file flag
 !!    evpnd       |none          |pond evaporation coefficient
 !!    ii
 !!    j           |none          |counter
 !!    k
 !!    l           |none          |HRU number
+!!    lid_file
 !!    lus
 !!    pnd_d50
 !!    pnd_d50mm
 !!    pndevcoeff
+!!    rib_file
 !!    schla       |none          |value for CHLA used in subbasin
 !!    schlaw      |none          |value for CHLAW used in subbasin
+!!    sfb_file
 !!    sifld1      |none          |value for IFLOD1 used in subbasin
 !!    sifld2      |none          |value for IFLOD2 used in subbasin
 !!    sn1         |m/year        |value for NSETL1 used in subbasin
@@ -184,6 +188,7 @@ subroutine readpnd(i)
    real*8, dimension(mudb) :: dummy
    character (len=200) :: lus
    character (len=80) :: titldum
+   character(len=13) :: dpd_file, lid_file, rib_file, sfb_file, wpd_file
    real*8 :: pnd_d50, pnd_d50mm, pndevcoeff, schla, schlaw, sn1, sn2,&
       &snw1, snw2, sp1, sp2, spndesa, spndev, spndfr, spndk, spndns, spndpsa,&
       &spndpv, spnds, spndv, spno3, sporgn, sporgp, spsolp, sseci, sseciw,&
@@ -192,6 +197,11 @@ subroutine readpnd(i)
       &wetevcoeff
    integer :: eof, ii, j, k, l, sifld1, sifld2, sndt, spnd1, spnd2
 
+   dpd_file = ""
+   lid_file = ""
+   rib_file = ""
+   sfb_file = ""
+   wpd_file = ""
    eof = 0
    spndfr = 0.
    spndpsa = 0.

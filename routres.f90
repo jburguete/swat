@@ -1,3 +1,8 @@
+!> @file routres.f90
+!> file containing the subroutine routres
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine performs reservoir routing
 !> @param[in] jres reservoir number (none)
 subroutine routres(jres)
@@ -180,10 +185,11 @@ subroutine routres(jres)
 !!                               |during day
 !!    sepmm       |mm H2O        |depth of reservoir seepage over subbasin
 !!                               |area
-!!    zz
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    INTRINSIC: Dfloat
 !!    SWAT: resinit, irr_res, res, reshr, resnut, lakeq
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -193,7 +199,7 @@ subroutine routres(jres)
 
    integer, intent(in) :: jres
    real*8 :: resnh3c, resno2c, resno3c, resorgnc, resorgpc, ressolpc, sedcon,&
-      &sepmm, zz
+      &sepmm, xx
    integer :: ii, k
 
    !! initialize variables for reservoir daily simulation
@@ -203,20 +209,19 @@ subroutine routres(jres)
       &(i_mo >= mores(jres) .and. iyr == iyres(jres))) then
 
       !! Adjust Reservoir Storage for Irrigation Diversions
-      call irr_res
-      zz=varoute(19,inum2)
+      call irr_res(jres)
       !! perform reservoir water/sediment balance
-      if(ievent == 0) then  !! urban modeling by J.Jeong
-         call res
+      if (ievent == 0) then  !! urban modeling by J.Jeong
+         call res(jres)
       else
-         call reshr
+         call reshr(jres)
       endif
 
       !! perform reservoir nutrient balance
-      call resnut
+      call resnut(jres)
 
       !! perform reservoir pesticide transformations
-      call lakeq
+      call lakeq(jres)
 
       !! add reservoir seepage to shallow aquifer convert from m^3 to mm
       if (ressep > 0.) then
@@ -253,36 +258,37 @@ subroutine routres(jres)
       varoute(22,ihout) = varoute(22,inum2)  !!conservative metal #3
 
       if (ievent > 0) then
+         xx = Dfloat(nstep)
          do ii = 1, nstep
             hhvaroute(1,ihout,ii) = 0.           !!undefined
             hhvaroute(2,ihout,ii) = hhresflwo(ii)
             hhvaroute(3,ihout,ii) = hhressedo(ii)
-            hhvaroute(4,ihout,ii) = resorgno / dfloat(nstep)
-            hhvaroute(5,ihout,ii) = resorgpo / dfloat(nstep)
-            hhvaroute(6,ihout,ii) = resno3o / dfloat(nstep)
-            hhvaroute(7,ihout,ii) = ressolpo / dfloat(nstep)
+            hhvaroute(4,ihout,ii) = resorgno / xx
+            hhvaroute(5,ihout,ii) = resorgpo / xx
+            hhvaroute(6,ihout,ii) = resno3o / xx
+            hhvaroute(7,ihout,ii) = ressolpo / xx
             hhvaroute(8,ihout,ii) = 0.           !!undefined
             hhvaroute(9,ihout,ii) = 0.           !!undefined
             hhvaroute(10,ihout,ii) = 0.          !!undefined
-            hhvaroute(11,ihout,ii) = solpesto / dfloat(nstep)
-            hhvaroute(12,ihout,ii) = sorpesto / dfloat(nstep)
-            hhvaroute(13,ihout,ii) = reschlao / dfloat(nstep)
-            hhvaroute(14,ihout,ii) = resnh3o / dfloat(nstep)
-            hhvaroute(15,ihout,ii) = resno2o / dfloat(nstep)
+            hhvaroute(11,ihout,ii) = solpesto / xx
+            hhvaroute(12,ihout,ii) = sorpesto / xx
+            hhvaroute(13,ihout,ii) = reschlao / xx
+            hhvaroute(14,ihout,ii) = resnh3o / xx
+            hhvaroute(15,ihout,ii) = resno2o / xx
             hhvaroute(16,ihout,ii) = 0.          !!CBOD
             hhvaroute(17,ihout,ii) = 0.          !!dis O2
             hhvaroute(18,ihout,ii) = hhvaroute(18,inum2,ii) !!persistent bact
             hhvaroute(19,ihout,ii) = hhvaroute(19,inum2,ii)  !!less persist bact
-            hhvaroute(20,ihout,ii) = varoute(20,inum2) / dfloat(nstep) !!cons metal #1
-            hhvaroute(21,ihout,ii) = varoute(21,inum2) / dfloat(nstep) !!cons metal #2
-            hhvaroute(22,ihout,ii) = varoute(22,inum2) / dfloat(nstep) !!cons metal #3
+            hhvaroute(20,ihout,ii) = varoute(20,inum2) / xx !!cons metal #1
+            hhvaroute(21,ihout,ii) = varoute(21,inum2) / xx !!cons metal #2
+            hhvaroute(22,ihout,ii) = varoute(22,inum2) / xx !!cons metal #3
 
-            hhvaroute(23,ihout,ii) = varoute(23,inum2) / dfloat(nstep) !!Sand out
-            hhvaroute(24,ihout,ii) = varoute(24,inum2) / dfloat(nstep) !!Silt out
-            hhvaroute(25,ihout,ii) = varoute(25,inum2) / dfloat(nstep) !!clay out
-            hhvaroute(26,ihout,ii) = varoute(26,inum2) / dfloat(nstep) !!Small agg out
-            hhvaroute(27,ihout,ii) = varoute(27,inum2) / dfloat(nstep) !!Large agg out
-            hhvaroute(28,ihout,ii) = varoute(28,inum2) / dfloat(nstep) !!Gravel out
+            hhvaroute(23,ihout,ii) = varoute(23,inum2) / xx !!Sand out
+            hhvaroute(24,ihout,ii) = varoute(24,inum2) / xx !!Silt out
+            hhvaroute(25,ihout,ii) = varoute(25,inum2) / xx !!clay out
+            hhvaroute(26,ihout,ii) = varoute(26,inum2) / xx !!Small agg out
+            hhvaroute(27,ihout,ii) = varoute(27,inum2) / xx !!Large agg out
+            hhvaroute(28,ihout,ii) = varoute(28,inum2) / xx !!Gravel out
 
          end do
       end if
@@ -290,12 +296,13 @@ subroutine routres(jres)
       !! summarization calculations
       if (curyr > nyskip) then
          !!calculate concentrations
-         resorgnc = res_orgn(jres) / (res_vol(jres)+.1) * 1000.
-         resno3c = res_no3(jres) / (res_vol(jres)+.1) * 1000.
-         resno2c = res_no2(jres) / (res_vol(jres)+.1) * 1000.
-         resnh3c = res_nh3(jres) / (res_vol(jres)+.1) * 1000.
-         resorgpc = res_orgp(jres) / (res_vol(jres)+.1) * 1000.
-         ressolpc = res_solp(jres) / (res_vol(jres)+.1) * 1000.
+         xx = 1000. / (res_vol(jres) + .1)
+         resorgnc = res_orgn(jres) * xx
+         resno3c = res_no3(jres) * xx
+         resno2c = res_no2(jres) * xx
+         resnh3c = res_nh3(jres) * xx
+         resorgpc = res_orgp(jres) * xx
+         ressolpc = res_solp(jres) * xx
          sedcon = res_sed(jres) * 1.e6
 
          resoutm(1,jres) = resoutm(1,jres) + resflwi / 86400.

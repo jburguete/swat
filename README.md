@@ -248,6 +248,10 @@ variables is not possible.
 * In readsepticbz.f:
   - at line 135 `4. e-8` seems to be `4.e-8`
 
+* In resbact.f:
+  - `reswtr` is used at lines 78, 79 and 89 but it is not initialized in any
+    part of code
+
 * In rewind\_init.f:
   - `orig_tnylda` is used but not initialized at line 174
 

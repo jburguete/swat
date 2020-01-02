@@ -173,13 +173,6 @@ subroutine sat_excess(j1, j)
                   pot_vol(j) = pot_vol(j) + ul_excess
                end if
             end do
-            !compute tile flow again after saturation redistribution
-!         if (ldrain(j) > 0.) then
-!           ul_excess = sol_st(ldrain(j),j) - sol_fc(ldrain(j),j)
-!           if (ul_excess > 0.) then
-!             lyrtilex = ul_excess * (1. - Exp(-24. / tdrain(j)))
-!           end if
-!         end if
          end if
       end if
    end if

@@ -231,7 +231,7 @@ subroutine subbasin(i)
          else if (icn == 2) then
             sci(j) = sci(j) + pet_day*Exp(-cncoef_sub(hru_sub(j))*sci(j)/&
                &smx(j)) - precipday + qday + latq(j) + sepbtm(j) + qtile
-            sci(j) = Dmin1(sci(j),smxco * smx(j))
+            sci(j) = Dmin1(sci(j), smxco * smx(j))
          end if
 
          !! apply fertilizer/manure in continuous fert operation
@@ -429,7 +429,7 @@ subroutine subbasin(i)
       ihout = ihout1                      ! outflow hyd number
       inum1 = 1                           ! landscape unit number
       inum2 = isub                        ! subbasin number
-      call routeunit                      ! hillslope unit
+      call routeunit(inum1)               ! hillslope unit
       call sumhyd
       inum1s(ihout) = inum1
       inum2s(ihout) = inum2
@@ -443,7 +443,7 @@ subroutine subbasin(i)
          sumdaru = sumdaru + hru_km(j)
       end do
       daru_km(inum2,inum1) = sumdaru
-      call routeunit                      ! valley bottom unit
+      call routeunit(inum1)               ! valley bottom unit
       call sumhyd
       inum1s(ihout) = inum1
       inum2s(ihout) = inum2
@@ -482,7 +482,7 @@ subroutine subbasin(i)
       inum1 = ihout                       ! hyd from routed
       inum2 = ihout - 1                   ! hyd from loading
       ihout = ihout + 1                   ! outflow hyd number
-      call addh                           ! add hyd's
+      call addh(inum1)                    ! add hyd's
       call sumhyd
       inum1s(ihout) = inum1
       inum2s(ihout) = inum2

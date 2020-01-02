@@ -209,10 +209,10 @@ subroutine pothole(i, j)
    spillo = 0.
    potsep = 0.
    sumo = 0.
-   potpcpmm = 0.
-   potevmm = 0.
-   potsepmm = 0.
-   potflwo = 0.
+   ! potpcpmm = 0. ! not used
+   ! potevmm = 0. ! not used
+   ! potsepmm = 0. ! not used
+   ! potflwo = 0. ! not used
    potsedo = 0.
    potsano = 0.
    potsilo = 0.
@@ -296,14 +296,6 @@ subroutine pothole(i, j)
    pot_orgp(j) = pot_orgp(j) + sedorgp(j) * xx
    pot_mps(j) = pot_mps(j) + sedminps(j) * xx
    pot_mpa(j) = pot_mpa(j) + sedminpa(j) * xx
-!       track incoming loads
-   pot_sedin(j)= pot_sedin(j) + sedyld(j) * pot_fr(j)
-   pot_no3i(j) = pot_no3i(j) + no3in * xx
-   pot_solpi(j) = pot_solpi(j) + surqsolp(j) * xx
-   pot_orgni(j) = pot_orgni(j) + sedorgn(j) * xx
-   pot_orgpi(j) = pot_orgpi(j) + sedorgp(j) * xx
-   pot_mpsi(j) = pot_mpsi(j) + sedminps(j) * xx
-   pot_mpai(j) = pot_mpai(j) + sedminpa(j) * xx
 
 !       update forms of N and P in surface runoff
    yy = 1. - pot_fr(j)
@@ -411,7 +403,7 @@ subroutine pothole(i, j)
       qdr(j) = qdr(j) + tileo
       tileq(j) = tileq(j) + tileo
       sumo = sumo + tileo
-      tile_out(j) = tile_out(j) + tileo
+!      tile_out(j) = tile_out(j) + tileo ! not used
 
 !       limit seepage into soil if profile is near field capacity
       if (pot_k(j) > 0.) then
@@ -438,7 +430,7 @@ subroutine pothole(i, j)
          potev = (1. - laiday(j) / evlai) * pet_day
          potev = Min(potev, pot_vol(j))
          pot_vol(j) = pot_vol(j) - potev
-         pot_evap(j)= pot_evap(j) + potev
+         ! pot_evap(j)= pot_evap(j) + potev ! not used
       endif
 
       if (potvol_tile > 1.e-6) then

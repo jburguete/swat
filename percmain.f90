@@ -172,8 +172,7 @@ subroutine percmain(j)
       !! initialize variables for current layer
       sepday = 0.
       latlyr = 0.
-      lyrtile = 0.
-      lyrtilex = 0.
+      !lyrtile = 0. ! not used
 
       if (sw_excess > 1.e-5) then
          !! calculate tile flow (lyrtile), lateral flow (latlyr) and
@@ -244,7 +243,6 @@ subroutine percmain(j)
             if(wat_tbl(j) < 0.0) wat_tbl(j) = 0.0
             if(wat_tbl(j) > dep_imp(j)) wat_tbl(j) = dep_imp(j)
             wt_shall = dep_imp(j) - wat_tbl(j)
-            sol_swpwt(j) = sol_sw(j)
             sol_stpwt(j1,j) = sol_st(j1,j)
          end do
       end if

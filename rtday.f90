@@ -5,11 +5,13 @@
 
 !> this subroutine routes the daily flow through the reach using a
 !> variable storage coefficient
-subroutine rtday
+!> @param[in] jrch reach number
+subroutine rtday(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch        |none          |reach number
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
@@ -24,7 +26,6 @@ subroutine rtday
 !!                               |Evaporation from the reach is multiplied by
 !!                               |EVRCH. This variable was created to limit the
 !!                               |evaporation predicted in arid regions.
-!!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    pet_day     |mm H2O        |potential evapotranspiration
 !!    phi(1,:)    |m^2           |cross-sectional area of flow in channel at
@@ -57,7 +58,6 @@ subroutine rtday
 !!    addp
 !!    c           |none          |inverse of channel side slope
 !!    det         |hr            |time step (24 hours)
-!!    jrch        |none          |reach number
 !!    maxrt
 !!    p           |m             |wetted perimeter
 !!    rh          |m             |hydraulic radius
@@ -87,11 +87,9 @@ subroutine rtday
    implicit none
 
    real*8 Qman
+   integer, intent(in) :: jrch
    real*8 :: addarea, aaa, adddep, addp, c, det, maxrt, p, rh, rtevp1, rtevp2,&
       &rttlc1, rttlc2, scoef, topw, vc, vol, volrt, wtrin
-   integer :: jrch
-
-   jrch = inum1
 
    wtrin = varoute(2,inum2) * (1. - rnum1)
 

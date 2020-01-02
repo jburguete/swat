@@ -1,21 +1,24 @@
-subroutine rechour
+!> @file rechour.f90
+!> file containing the subroutine rechour
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine inputs measured loadings to the stream network for
-!!    routing through the watershed where the records are summarized on a
-!!    hourly basis
+!> this subroutine inputs measured loadings to the stream network for
+!> routing through the watershed where the records are summarized on a
+!> hourly basis
+!> @param[in] k reach number or file number (none)
+subroutine rechour(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k           |none          |reach number or file number
 !!    id1         |julian date   |first day of simulation in year
-!!    inum1       |none          |reach number
 !!    ifirsthr(:) |none          |measured data search code
 !!                               |0 first day of measured data located in file
 !!                               |1 first day of measured data not located in
 !!                               |file
 !!    ihout       |none          |hydrograph storage location number
-!!    inum1       |none          |file number
 !!    iyr         |year          |current year of simulation (actual year)
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
@@ -92,6 +95,8 @@ subroutine rechour
 !!    orgnhr      |kg N          |organic N loading to reach in hour
 !!    orgphr      |kg P          |organic P loading to reach in hour
 !!    sedhr       |metric tons   |sediment loading to reach in hour
+!!    solpsthr
+!!    srbpsthr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -99,10 +104,11 @@ subroutine rechour
    use parm
    implicit none
 
-   real*8 :: flohr, sedhr, orgnhr, orgphr, no3hr, minphr, solpsthr
-   real*8 :: nh3hr, no2hr, cmtl1hr, cmtl2hr, cmtl3hr, srbpsthr
-   real*8 :: bactphr, bactlphr, chlahr, disoxhr, cbodhr
-   integer :: idap, iyp, ii, j, ihr
+   integer, intent(in) :: k
+   real*8 :: bactlphr, bactphr, cbodhr, chlahr, cmtl1hr, cmtl2hr, cmtl3hr,&
+      &disoxhr, flohr, minphr, nh3hr, no2hr, no3hr, orgnhr, orgphr, sedhr,&
+      &solpsthr, srbpsthr
+   integer :: idap, ihr, ii, iyp, j
 
 !! initialize variables
    idap = 0
@@ -133,18 +139,18 @@ subroutine rechour
       cbodhr = 0.
       solpsthr = 0.
       srbpsthr = 0.
-      if (ifirsthr(inum1) == 0) then
-         read (200+inum1,*) idap, iyp, ihr, flohr, sedhr, orgnhr,&
-         &orgphr, no3hr, nh3hr, no2hr, minphr, cbodhr, disoxhr,&
-         &chlahr, solpsthr, srbpsthr, bactphr, bactlphr, cmtl1hr,&
-         &cmtl2hr, cmtl3hr
-      else
-         ifirsthr(inum1) = 0
-         do
-            read (200+inum1,*) idap, iyp, ihr, flohr, sedhr, orgnhr,&
+      if (ifirsthr(k) == 0) then
+         read (200+k,*) idap, iyp, ihr, flohr, sedhr, orgnhr,&
             &orgphr, no3hr, nh3hr, no2hr, minphr, cbodhr, disoxhr,&
             &chlahr, solpsthr, srbpsthr, bactphr, bactlphr, cmtl1hr,&
             &cmtl2hr, cmtl3hr
+      else
+         ifirsthr(k) = 0
+         do
+            read (200+k,*) idap, iyp, ihr, flohr, sedhr, orgnhr,&
+               &orgphr, no3hr, nh3hr, no2hr, minphr, cbodhr, disoxhr,&
+               &chlahr, solpsthr, srbpsthr, bactphr, bactlphr, cmtl1hr,&
+               &cmtl2hr, cmtl3hr
             if (iyp + idap <= 0) exit
             if (iyp == iyr .and. idap == id1) exit
          end do

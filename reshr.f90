@@ -1,22 +1,26 @@
-subroutine reshr
+!> @file reshr.f90
+!> file containing the subroutine reshr
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes water and sediment through reservoirs
-!!    computes evaporation and seepage from the reservoir.
+!> this subroutine routes water and sediment through reservoirs
+!> computes evaporation and seepage from the reservoir.
+!> @param[in] jres reservoir number (none)
+subroutine reshr(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jres         |none          |reservoir number
 !!    br1(:)       |none          |1st shape parameter for reservoir surface
 !!                                |area equation
 !!    br2(:)       |none          |2nd shape parameter for reservoir surface
 !!                                |area equation
 !!    curyr        |none          |current year of simulation
-!!    iflodr(1,:)   |none          |beginning month of non-flood season
+!!    iflodr(1,:)  |none          |beginning month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    iflodr(2,:)   |none          |ending month of non-flood season
+!!    iflodr(2,:)  |none          |ending month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    inum1        |none          |reservoir number
 !!    inum2        |none          |inflow hydrograph location number
 !!    iresco(:)    |none          |outflow simulation code:
 !!                                |0 compute outflow for uncontrolled reservoir
@@ -44,7 +48,7 @@ subroutine reshr
 !!    res_sub(:)   |none          |number of subbasin reservoir is in
 !!    res_vol(:)   |m^3 H2O       |reservoir volume
 !!    resflwi      |m^3 H2O       |water entering reservoir on day
-!!    res_out(:,:,:)|m**3/day      |measured average daily outflow from the
+!!    res_out(:,:,:)|m**3/day     |measured average daily outflow from the
 !!                                |reservoir for the month
 !!    ressedi      |metric tons   |sediment entering reservoir during time step
 !!    sub_subp(:)  |mm H2O        |precipitation for day in subbasin
@@ -78,7 +82,7 @@ subroutine reshr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    flw         |m^3/s         |reservoir outflow for day
 !!    inhyd       |none          |inflow hydrograph location number
-!!    jres        |none          |reservoir number
+!!    k           |none          |counter
 !!    sed         |kg/L          |concentration of sediment in reservoir at
 !!                               |beginning of day
 !!    targ        |m^3 H2O       |target reservoir volume for day
@@ -90,17 +94,17 @@ subroutine reshr
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Min
+!!    Intrinsic: Max, Min, Sum
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jres, inhyd, k
-   real*8 :: vol, sed, vvr, targ, xx, flw
+   integer, intent(in) :: jres
+   real*8 :: flw, sed, targ, vol, vvr, xx
+   integer :: inhyd, k
 
-   jres = inum1
    inhyd = inum2
 
 !! store initial values
@@ -182,18 +186,18 @@ subroutine reshr
                      targ = res_evol(jres)
                   else
                      xx = Min(sub_sw(res_sub(jres)) /&
-                     &sub_sumfc(res_sub(jres)),1.)
+                        &sub_sumfc(res_sub(jres)),1.)
                      targ = res_pvol(jres) + .5 * (1. - xx) *&
-                     &(res_evol(jres) - res_pvol(jres))
+                        &(res_evol(jres) - res_pvol(jres))
                   end if
                else
                   if (i_mo > iflodr(1,jres) .or. i_mo < iflodr(2,jres)) then
                      targ = res_evol(jres)
                   else
                      xx = Min(sub_sw(res_sub(jres)) /&
-                     &sub_sumfc(res_sub(jres)),1.)
+                        &sub_sumfc(res_sub(jres)),1.)
                      targ = res_pvol(jres) + .5 * (1. - xx) *&
-                     &(res_evol(jres) - res_pvol(jres))
+                        &(res_evol(jres) - res_pvol(jres))
                   end if
                end if
             endif
@@ -213,7 +217,7 @@ subroutine reshr
             resflwo = oflowmn(i_mo,jres) * 86400. / nstep
          end if
          if (hhresflwo(k)>oflowmx(i_mo,jres)*86400./nstep.and.&
-         &oflowmx(i_mo,jres)>0.) then
+            &oflowmx(i_mo,jres)>0.) then
             hhresflwo(k) = oflowmx(i_mo,jres) * 86400. / nstep
          endif
 
@@ -237,7 +241,7 @@ subroutine reshr
          !! compute change in sediment concentration due to settling
          if (res_sed(jres) > res_nsed(jres)) then
             res_sed(jres) = (res_sed(jres) - res_nsed(jres)) *&
-            &sed_stlr(jres) + res_nsed(jres)
+               &sed_stlr(jres) + res_nsed(jres)
          end if
 
          !! compute sediment leaving reservoir
@@ -245,17 +249,17 @@ subroutine reshr
 
          !! net change in amount of sediment in reservoir for day
          ressedc = vol * sed + hhressedi(k) - hhressedo(k)&
-         &- res_sed(jres) * res_vol(jres)
+            &- res_sed(jres) * res_vol(jres)
 
       end if
    end do
 !!    update surface area for day
    ressa = br1(jres) * res_vol(jres) ** br2(jres)
 !!    daily total amount
-   resflwi = sum(hhresflwi)
-   resflwo = sum(hhresflwo)
-   ressedi = sum(hhressedi)
-   ressedo = sum(hhressedo)
+   resflwi = Sum(hhresflwi)
+   resflwo = Sum(hhresflwo)
+   ressedi = Sum(hhressedi)
+   ressedo = Sum(hhressedo)
    return
 5000 format (f8.2)
 end

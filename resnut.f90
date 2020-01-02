@@ -1,14 +1,19 @@
-subroutine resnut
+!> @file resnut.f90
+!> file containing the subroutine resnut
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine routes soluble nitrogen and soluble phosphorus through reservoirs
+!> this subroutine routes soluble nitrogen and soluble phosphorus through
+!> reservoirs
+!> @param[in] jres reservoir number (none)
+subroutine resnut(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jres        |none          |reservior number
 !!    chlar(:)    |none          |chlorophyll-a production coefficient for
 !!                               |reservoir
-!!    inum1       |none          |reservoir number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    ires1(:)    |none          |beginning of mid-year nutrient settling
 !!                               |"season"
@@ -61,14 +66,20 @@ subroutine resnut
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    chlaco      |ppb (ug/L)    |chlorophyll-a concentration
-!!    jres        |none          |reservior number
+!!    conc_n
+!!    conc_p
 !!    nitrok      |none          |fraction of nitrogen in reservoir removed by
 !!                               |settling
 !!    phosk       |none          |fraction of phosphorus in reservoir removed
 !!                               |by settling
 !!    tpco        |ppb (ug/L)    |concentration of phosphorus in water
 !!                               |on day
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Max, Min
+!!    SWAT: Theta
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -76,10 +87,8 @@ subroutine resnut
    implicit none
 
    real*8 Theta
-   integer :: jres
-   real*8 :: nitrok, phosk, tpco, chlaco, conc_p, conc_n, xx
-
-   jres = inum1
+   integer, intent(in) :: jres
+   real*8 :: chlaco, conc_n, conc_p, nitrok, phosk, tpco, xx
 
 !! if reservoir volume less than 1 m^3, set all nutrient levels to
 !! zero and perform no nutrient calculations
@@ -122,8 +131,8 @@ subroutine resnut
 !! ires_nut = 1 new equations 0 = old equations (Ikenberry)
    if (ires_nut == 1) then
       xx = ressa * 10000. * (conc_p - con_pirr(jres))
-      phosk = xx * theta(phosk, theta_p(jres), tmpav(res_sub(jres)))
-      nitrok = xx * theta(nitrok, theta_n(jres), tmpav(res_sub(jres)))
+      phosk = xx * Theta(phosk, theta_p(jres), tmpav(res_sub(jres)))
+      nitrok = xx * Theta(nitrok, theta_n(jres), tmpav(res_sub(jres)))
    else
       xx = ressa * 10000. / (res_vol(jres) + resflwo)
       phosk = phosk * xx

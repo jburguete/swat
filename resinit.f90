@@ -1,5 +1,11 @@
+!> @file resinit.f90
+!> file containing the subroutine resinit
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine initializes variables for the daily simulation of the
 !> channel routing command loop
+!> @param[in] jres reservoir number
 subroutine resinit(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
@@ -39,7 +45,7 @@ subroutine resinit(jres)
 !!    resno2o     |kg N          |nitrite leaving reservoir on day
 !!    resno3o     |kg N          |nitrate leaving reservoir on day
 !!    resorgno    |kg N          |organic N leaving reservoir on day
-!!    resorgpo    |kg P          |orgainc P leaving reservoir on day
+!!    resorgpo    |kg P          |organic P leaving reservoir on day
 !!    respcp      |m^3 H2O       |precipitation on reservoir for day
 !!    respesti    |mg pst        |pesticide entering reservoir on day
 !!    ressa       |ha            |surface area of reservoir on day

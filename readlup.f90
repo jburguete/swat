@@ -29,6 +29,8 @@ subroutine readlup
 !!    fnam
 !!    iday
 !!    iyear
+!!    mo
+!!    no_up
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -38,9 +40,10 @@ subroutine readlup
 
    use parm
    implicit none
-   character*13 fnam
-   integer :: eof, iday, iyear
+
    integer :: Jdt
+   character*13 fnam
+   integer :: eof, iday, iyear, mo, no_up
 
 !!    read lup file
    do

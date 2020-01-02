@@ -118,7 +118,7 @@ subroutine solp(j)
          end if
       endif
    end do
-   percp(j) = vap
+   ! percp(j) = vap ! not used
 
    !! summary calculation
    if (curyr > nyskip) then

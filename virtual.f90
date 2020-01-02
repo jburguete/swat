@@ -443,7 +443,7 @@ subroutine virtual(i, j, k, sb)
 
          !----------------------------------------------------
          ! Simulate distributed urban BMPs in the subbasin
-         call distributed_bmps
+         call distributed_bmps(sb)
          !----------------------------------------------------
 
          !add urban runoff and non-urban runoff

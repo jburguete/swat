@@ -233,7 +233,7 @@ subroutine varinit(j)
    inflpcp = 0.
    lat_pst = 0.
    latlyr = 0.
-   lyrtile = 0.
+   !lyrtile = 0. ! not used
    no3pcp = 0.
    peakr = 0.
    pet_day = 0.
@@ -257,9 +257,9 @@ subroutine varinit(j)
    pndlago = 0.
 
    pndsep = 0.
-   potevmm = 0.
-   potflwo = 0.
-   potpcpmm = 0.
+   ! potevmm = 0. ! not used
+   ! potflwo = 0. ! not used
+   ! potpcpmm = 0. ! not used
    potsedo = 0.
 
    potsano = 0.
@@ -268,7 +268,7 @@ subroutine varinit(j)
    potsago = 0.
    potlago = 0.
 
-   potsepmm = 0.
+   ! potsepmm = 0. ! not used
    precipday = subp(j)
    precipdt = 0.
    if (nstep > 0) then

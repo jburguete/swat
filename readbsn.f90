@@ -237,9 +237,6 @@ subroutine readbsn
 !!                               |Mean air temperature at which snow melt will
 !!                               |occur.
 !!    smxco       |              |adjustment factor for max curve number s factor (0-1)
-!!    sno50cov    |none          |Fraction of SNOCOVMX that corresponds to 50%
-!!                               |snow cover. SWAT assumes a nonlinear relation-
-!!                               |ship between snow water and snow cover.
 !!    snocov1     |none          |1st shape parameter for snow cover equation
 !!                               |This parameter is determined by solving the
 !!                               |equation for 50% snow cover
@@ -262,7 +259,6 @@ subroutine readbsn
 !!                               |longer than 1 day to reach the subbasin outlet
 !!    tb_adj      |none          |adjustment factor for subdaily unit hydrograph
 !!                               |basetime
-!!    tdrain_bsn  |hours         |time to drain soil to field capacity
 !!    thbact      |none          |temperature adjustment factor for bacteria
 !!                               |die-off/growth
 !!    timp        |none          |Snow pack temperature lag factor (0-1)
@@ -302,8 +298,6 @@ subroutine readbsn
 !!                               |that the model can easily verify that uptake
 !!                               |from the different soil layers sums to 1.0
 !!    vcrit       |              |Critical velocity
-!!    wdlpf       |1/day         |Die-off factor for less persistent bacteria on
-!!                               |foliage.
 !!    wdlprch     |1/day         |Die-off factor for less persistent bacteria
 !!                               |in streams
 !!    wdlpres     |1/day         |Die-off factor for less persistent bacteria
@@ -314,8 +308,6 @@ subroutine readbsn
 !!                               |streams
 !!    wdpres      |1/day         |Die-off factor for persistent bacteria in
 !!                               |reservoirs
-!!    wglpf       |1/day         |Growth factor for less persistent bacteria on
-!!                               |foliage
 !!    wof_lp      |none          |Wash off fraction for less persistent
 !!                               |bacteria on foliage during a rainfall event
 !!    wof_p       |none          |Wash off fraction for persistent bacteria on
@@ -340,11 +332,18 @@ subroutine readbsn
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    epcobsn     |none          |plant water uptake compensation factor (0-1)
 !!    escobsn     |none          |soil evaporation compensation factor (0-1)
+!!    gdrain_bsn
 !!    ii
 !!    numlu
 !!    pos
+!!    sno50cov    |none          |Fraction of SNOCOVMX that corresponds to 50%
+!!                               |snow cover. SWAT assumes a nonlinear relation-
+!!                               |ship between snow water and snow cover.
+!!    tdrain_bsn  |hours         |time to drain soil to field capacity
 !!    titldum     |NA            |title line for .bsn file, not used
 !!    tlu
+!!    wdlpf       |1/day         |Die-off factor for less persistent bacteria on
+!!                               |foliage.
 !!    wdlpq       |1/day         |Die-off factor for less persistent bacteria in
 !!                               |soil solution.
 !!    wdlps       |1/day         |Die-off factor for less persistent bacteria
@@ -353,6 +352,8 @@ subroutine readbsn
 !!                               |foliage.
 !!    wdps        |1/day         |Die-off factor for persistent bacteria
 !!                               |adsorbed to soil particles.
+!!    wglpf       |1/day         |Growth factor for less persistent bacteria on
+!!                               |foliage
 !!    wglpq       |1/day         |Growth factor for less persistent bacteria in
 !!                               |soil solution.
 !!    wglps       |1/day         |Growth factor for less persistent bacteria
@@ -379,18 +380,24 @@ subroutine readbsn
    character (len=130) :: tlu
    character (len=80) :: titldum
    character (len=13) :: wwqfile
-   real*8 :: escobsn, epcobsn, wdlpq, wdlps, wdpf, wdps, wglpq, wglps, wgpf, wgpq, wgps
-   integer :: eof, numlu, ii, pos
+   real*8 :: escobsn, epcobsn, gdrain_bsn, sno50cov, tdrain_bsn, wdlpf, wdlpq,&
+      &wdlps, wdpf, wdps, wglpf, wglpq, wglps, wgpf, wgpq, wgps
+   integer :: eof, ii, numlu, pos
 !!      real*8 :: r2adj_bsn  !D. Moriasi 4/8/2014
 
 !!    initialize variables
    eof = 0
    escobsn = 0.
    epcobsn = 0.
+   ! gdrain_bsn = 0. ! not used
+   sno50cov = 0.
+   ! tdrain_bsn = 0. ! not used
+   wdlpf = 0.
    wdlpq = 0.
    wdlps = 0.
    wdpf = 0.
    wdps = 0.
+   wglpf = 0.
    wglpq = 0.
    wglps = 0.
    wgpf = 0.

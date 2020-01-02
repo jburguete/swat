@@ -3,7 +3,8 @@
 !> @author
 !> modified by Javier Burguete
 
-subroutine routeunit
+!> @param[in] j reach number (none)
+subroutine routeunit(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -35,17 +36,20 @@ subroutine routeunit
 
    use parm
    implicit none
-   integer :: jj, kk
+
+   integer, intent(in) :: j
    real*8 :: sumc, sumeiq, xx
+   integer :: jj, kk
+
    varoute(:,ihout) = 0.
    sumc = 0.
    sumeiq = 0.
    do kk = 1, hrutot(inum2)
-      xx = hru_rufr(inum1,kk)* daru_km(inum2,inum1) * 100.      !!km2*100 = ha
+      xx = hru_rufr(j,kk)* daru_km(inum2,j) * 100.      !!km2*100 = ha
       if (xx > 1.e-9) then
          jj= hru1(inum2) + kk - 1
-         sumc = sumc + usle_cfac(jj) * hru_rufr(inum1,kk)
-         sumeiq = sumeiq + usle_eifac(jj) * qdayout(jj) * hru_rufr(inum1,kk)
+         sumc = sumc + usle_cfac(jj) * hru_rufr(j,kk)
+         sumeiq = sumeiq + usle_eifac(jj) * qdayout(jj) * hru_rufr(j,kk)
          varoute(1,ihout) = 5.0 + 0.75 * tmpav(jj)
          varoute(2,ihout) = varoute(2,ihout) + qdr(jj) * xx * 10.     !! mm*ha*10 = m3
          varoute(3,ihout) = varoute(3,ihout) + sedyld(jj)             !! t
@@ -74,7 +78,7 @@ subroutine routeunit
       end if
    end do
 
-   ru_c(inum2,inum1) = sumc
-   ru_eiq(inum2,inum1) = sumeiq
+   ru_c(inum2,j) = sumc
+   ru_eiq(inum2,j) = sumeiq
    return
 end

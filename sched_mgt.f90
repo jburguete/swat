@@ -23,6 +23,7 @@ subroutine sched_mgt(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    biomass
 !!    husc
+!!    ifrt
 !!    n
 !!    ncrp
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -39,7 +40,7 @@ subroutine sched_mgt(j)
 
    integer, intent(in) :: j
    real*8 :: biomass, husc
-   integer :: n, ncrp
+   integer :: ifrt, n, ncrp
 
    n = nop(j)
 
@@ -100,16 +101,16 @@ subroutine sched_mgt(j)
 
 
     case (3)   !! fertilizer operation
-      ifrttyp = mgt1iop(n,j)
+      ifrt = mgt1iop(n,j)
       frt_kg = mgt4op(n,j)
       frt_surface = mgt5op(n,j)
       if (frt_surface <= 1.e-6) frt_surface = 0.2
 
-      call fert(j)
+      call fert(j, ifrt)
 
       if (imgt ==1) then
          write (143, 1004) subnum(j), hruno(j), iyr, i_mo, iida,&
-            &hru_km(j), fertnm(ifrttyp),&
+            &hru_km(j), fertnm(ifrt),&
             &"   FERT", phubase(j), phuacc(j), sol_sw(j),bio_ms(j),&
             &sol_rsd(1,j), sol_sumno3(j),sol_sumsolp(j),frt_kg,&
             &fertno3, fertnh3, fertorgn, fertsolp, fertorgp

@@ -4,11 +4,13 @@
 !> modified by Javier Burguete
 
 !> this subroutine writes the yearly reach output to the .sed file
-subroutine rsedyr
+!> @param[in] idlast number of days simulated in month (none)
+subroutine rsedyr(idlast)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    idlast       |none         |number of days simulated in month
 !!    rch_dakm(:)  |km**2        |total drainage area contributing to flow at
 !!                               |the outlet (pour point) of the reach in
 !!                               |square kilometers
@@ -31,6 +33,7 @@ subroutine rsedyr
    use parm
    implicit none
 
+   integer, intent(in) :: idlast
    integer :: ii, j
 
    do j = 1, subtot

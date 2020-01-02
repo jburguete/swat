@@ -5,11 +5,13 @@
 
 !> this subroutine initializes variables for the daily simulation of the
 !> channel routing command loop
-subroutine rchinit
+!> @param[in] jrch reach number
+subroutine rchinit(jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jrch        |none          |reach number
 !!    hru_sub(:)  |none          |subbasin in whic HRU/reach is located
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
@@ -17,7 +19,6 @@ subroutine rchinit
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout       |none          |outflow hydrograph storage location number
-!!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
@@ -41,7 +42,6 @@ subroutine rchinit
 !!    hsdti(:)    |m^3/s         |flow rate in reach for hour
 !!    peakr       |m^3/s         |peak rate of flow in channel
 !!    pet_day     |mm H2O        |potential evapotranspiration on day
-!!    qdbank      |m^3 H2O       |streamflow contribution from bank storage
 !!    rcharea     |m^2           |cross-sectional area of flow
 !!    rchdep      |m             |depth of flow on day
 !!    rchwtr      |m^3 H2O       |water stored in reach at beginning of day
@@ -77,7 +77,6 @@ subroutine rchinit
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ii          |none          |counter
 !!    kk          |none          |counter
-!!    jrch        |none          |reach number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -85,9 +84,8 @@ subroutine rchinit
    use parm
    implicit none
 
-   integer :: ii, jrch, kk
-
-   jrch = inum1
+   integer, intent(in) :: jrch
+   integer :: ii, kk
 
 !! add transfer amounts
    do ii = 2, mvaro
@@ -132,7 +130,6 @@ subroutine rchinit
    hsorpst = 0.
    peakr = 0.
    pet_day = sub_pet(jrch)
-   qdbank = 0.
    rcharea = 0.
    rchdep = 0.
    rchwtr = rchstor(jrch)

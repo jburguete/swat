@@ -44,11 +44,8 @@ subroutine zero1
 
 
 !!  septic changes 6/07/10  jaehak
-   bio_amn = 0.
    bio_bod = 0.
    fcoli = 0.
-   bio_ntr = 0.
-   bio_ntr = 0.
    biom = 0.
    rbiom = 0.
    bz_perc = 0.
@@ -56,8 +53,7 @@ subroutine zero1
    failyr = 0
    qstemm = 0
    i_sep = 0
-   percp = 0
-   sep_cap = 0
+!   percp = 0 ! not used
    bz_area = 0
 !!    isep_typ = 1
    isep_typ = 0
@@ -82,12 +78,12 @@ subroutine zero1
    sptqs = 0
    sptbodconcs = 0
    spttssconcs = 0
-   spttnconcs = 0
+!   spttnconcs = 0 ! not used
    sptnh4concs = 0
    sptno3concs = 0
    sptno2concs = 0
    sptorgnconcs = 0
-   spttpconcs = 0
+!   spttpconcs = 0 ! not used
    sptminps = 0
    sptorgps = 0
    sptfcolis = 0
@@ -96,8 +92,6 @@ subroutine zero1
    bio_bd = 0
    isep_iyr = 0
    isep_opt = 0
-   sep_strm_dist = 0
-   sep_den = 0
 !!  septic changes 6/07/10  jaehak
 
    cont_cn = 0.
@@ -173,9 +167,6 @@ subroutine zero1
    phu_op = 0.
    phutot = 0.
    plaps = 0.
-!!  septic changes 1/29/09
-   plqm = 0.
-!!  septic changes 1/29/09
    plt_pst = 0.
    pname = ""
    pnd_esa = 0.

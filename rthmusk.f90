@@ -8,12 +8,15 @@
 
 !> this subroutine routes flow through a reach using the
 !> Muskingum method at a given time step
-subroutine rthmusk(i)
+!> @param[in] i current day of simulation (none)
+!> @param[in] jrch reach number
+subroutine rthmusk(i, jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |current day of simulation
+!!    jrch        |none          |reach number
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
@@ -33,7 +36,6 @@ subroutine rthmusk(i)
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    id1         |none          |first day of simulation in year
 !!    idt         |minutes       |operational time step
-!!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    msk_co1     |none          |calibration coefficient to control impact
 !!                               |of the storage time constant for the
@@ -98,7 +100,6 @@ subroutine rthmusk(i)
 !!    c4          |m^3 H2O       |
 !!    det         |hr            |time step
 !!    ii          |none          |counter (Number of operational step during day)
-!!    jrch        |none          |reach number
 !!    p           |m             |wetted perimeter
 !!    nstep       |none          |number of steps in a day
 !!    topw        |m             |top width of main channel
@@ -120,11 +121,9 @@ subroutine rthmusk(i)
    implicit none
 
    real*8 Qman
-   integer, intent(in) :: i
-   integer :: ii, jrch
+   integer, intent(in) :: i, jrch
    real*8 :: c, c1, c2, c3, c4, det, p, topw, vol, wtrin, xkm, yy
-
-   jrch = inum1
+   integer :: ii
 
    !! Compute storage time constant for reach
    xkm = phi(10,jrch) * msk_co1 + phi(13,jrch) * msk_co2

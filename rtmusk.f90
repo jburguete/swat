@@ -6,12 +6,14 @@
 !> this subroutine routes a daily flow through a reach using the
 !> Muskingum method
 !> @param[in] i current day of simulation (none)
-subroutine rtmusk(i)
+!> @param[in] jrch reach number
+subroutine rtmusk(i, jrch)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |current day of simulation
+!!    jrch        |none          |reach number
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
@@ -30,7 +32,6 @@ subroutine rtmusk(i)
 !!    flwin(:)    |m^3 H2O       |flow into reach on previous day
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    id1         |none          |first day of simulation in year
-!!    inum1       |none          |reach number
 !!    inum2       |none          |inflow hydrograph storage location number
 !!    msk_co1     |none          |calibration coefficient to control impact
 !!                               |of the storage time constant for the
@@ -91,7 +92,6 @@ subroutine rtmusk(i)
 !!    detmax
 !!    detmin
 !!    ii
-!!    jrch        |none          |reach number
 !!    maxrt
 !!    nn          |              |number of subdaily computation points for stable
 !!                               |routing in the muskingum routing method
@@ -129,13 +129,12 @@ subroutine rtmusk(i)
    implicit none
 
    real*8 Qman
-   integer, intent(in) :: i
+   integer, intent(in) :: i, jrch
    real*8 :: aaa, addarea, adddep, addp, c, c1, c2, c3, det, detmax, detmin,&
       &maxrt, p, qoutday, rh, rtevp1, rtevp2, rttlc1, rttlc2, topw, vc, vol,&
       &volrt, wtrin, xkm, yy
-   integer :: ii, jrch, nn
+   integer :: ii, nn
 
-   jrch = inum1
    qoutday = 0
 
    det = 24.

@@ -4,13 +4,13 @@
 !> modified by Javier Burguete
 
 !> this subroutine writes the annual reach output to the .rch file
-!> @param[in] current day of simulation (julian date)
-subroutine rchyr(i)
+!> @param[in] idlast number of days simulated in month (none)
+subroutine rchyr(idlast)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    i            |julian date  |current day of simulation
+!!    idlast       |none         |number of days simulated in month
 !!    id1          |julian date  |first day of simulation in current year
 !!    ilog         |none         |streamflow print code
 !!                               |0 print streamflow in reach
@@ -98,6 +98,7 @@ subroutine rchyr(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    fidlast     |none          |number of days simulated in month (float)
 !!    ii          |none          |counter
 !!    j           |none          |(counter) reach number
 !!    pdvar(:)    |varies        |array of default reach output values
@@ -113,22 +114,21 @@ subroutine rchyr(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
+   integer, intent(in) :: idlast
    real*8, dimension (mrcho) :: pdvar, pdvr
    real*8, dimension (2) :: srch_av
+   real*8 :: fidlast
    integer :: ii, j
 
-   idlast = i - (id1 - 1)
-
-
+   fidlast = Dfloat(idlast)
    do j = 1, subtot
 
       !! calculate annual averages where applicable
-      rchyro(1,j) = rchyro(1,j) / dfloat(idlast)
-      rchyro(2,j) = rchyro(2,j) / dfloat(idlast)
-      rchyro(5,j) = rchyro(5,j) / dfloat(idlast)
-      rchyro(10,j) = rchyro(10,j) / dfloat(idlast)
-      rchyro(11,j) = rchyro(11,j) / dfloat(idlast)
+      rchyro(1,j) = rchyro(1,j) / fidlast
+      rchyro(2,j) = rchyro(2,j) / fidlast
+      rchyro(5,j) = rchyro(5,j) / fidlast
+      rchyro(10,j) = rchyro(10,j) / fidlast
+      rchyro(11,j) = rchyro(11,j) / fidlast
 
       !! take log10 of annual inflow/outflow for graphing
       srch_av(1) = rchyro(1,j)

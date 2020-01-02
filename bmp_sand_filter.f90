@@ -5,15 +5,17 @@
 
 !> this subroutine routes water and sediment through sand filters in the
 !> subbasin
+!> param[in] sb subbasin or reach number
 !> param[in] kk filter id number in the subbasin
 !> param[inout] flw stormwater runoff coming in/out of pond at a time step
 !> param[inout] sed overland flow sediment coming in/out of pond at a time
 !> step
-subroutine bmp_sand_filter(kk, flw, sed)
+subroutine bmp_sand_filter(sb, kk, flw, sed)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    sb          |none          |subbasin or reach number
 !!    kk          |none          |filter id number in the subbasin
 !!    hru_sub(:)  |none          |subbasin in which HRU/reach is located
 !!    i_mo        |none          |current month of simulation
@@ -62,7 +64,6 @@ subroutine bmp_sand_filter(kk, flw, sed)
 !!    qpndi
 !!    qrchg
 !!    qsw
-!!    sb          |none          |subbasin or reach number
 !!    sed_removed
 !!    sedconc
 !!    sedoutc
@@ -90,7 +91,7 @@ subroutine bmp_sand_filter(kk, flw, sed)
    implicit none
 
    real*8 Pipeflow, Log_normal
-   integer, intent(in) :: kk
+   integer, intent(in) :: sb, kk
    real*8, dimension(4,0:nstep), intent(inout) :: flw, sed
    real*8,  dimension(0:nstep) :: f, fc, qin, qout, qpnd, qsw
    real*8 :: alp, dc, dp, dt, effbr, effct, effg, effl, hpnd, hrd, kb, ksat,&
@@ -98,9 +99,8 @@ subroutine bmp_sand_filter(kk, flw, sed)
       &qpipe, qpnde, qpndi, qrchg, sed_removed, sedconc, sedoutc, sedpnd,&
       &sedrmeff, sloss, splw, spndconc, sub_ha, tmpw, tsa, tst, vfiltr, wetfsh,&
       &whd
-   integer :: ii, sb
+   integer :: ii
 
-   sb = inum1
    sub_ha = da_ha * sub_fr(sb)
    dt = dfloat(idt) / 60. !time interval in hours
    qin = 0.; qout = 0.;qevap=0

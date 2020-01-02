@@ -18,7 +18,6 @@ subroutine readfile
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    calfile     |NA          |name of file containing calibration parameters
 !!    fcstcycles  |none        |number of times forecast period is simulated
 !!                             |(using different weather generator seeds each
 !!                             |time)
@@ -103,6 +102,7 @@ subroutine readfile
 !!    name        |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    bsnfile     |NA          |name of basin input file (.bsn)
+!!    calfile     |NA          |name of file containing calibration parameters
 !!    eof         |none        |end of file flag
 !!    fcstfile    |NA          |name of weather forecast data file (.cst
 !!    fertdb      |NA          |name of fertilizer database file (fert.dat)
@@ -127,14 +127,15 @@ subroutine readfile
 
    real*8 Aunif
    character (len=80) :: titldum
-   character (len=13) :: bsnfile, fcstfile, fertdb, figfile, pestdb, plantdb,&
-      &tilldb, urbandb
+   character (len=13) :: bsnfile, calfile, fcstfile, fertdb, figfile, pestdb,&
+      &plantdb, tilldb, urbandb
    real*8 :: sumv, xx
    integer :: eof, j, rn
 
    eof = 0
 
    bsnfile = ""
+   calfile = ""
    fcstfile = ""
    plantdb = ""
    fertdb = ""

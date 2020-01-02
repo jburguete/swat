@@ -1,27 +1,31 @@
-subroutine apex_day(i)
+!> @file apex_day.f90
+!> file containing the subroutine apex_day
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine inputs measured loadings to the stream network for
-!!    routing through the watershed where the records are summarized on a
-!!    daily basis
+!> this subroutine inputs measured loadings to the stream network for
+!> routing through the watershed where the records are summarized on a
+!> daily basis
+!> @param[in] i current day in simulation--loop counter (julian date)
+!> @param[in] k reach number or file number (none)
+subroutine apex_day(i, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |julian date   |current day in simulation--loop counter
+!!    k           |none          |reach number or file number
 !!    id1         |julian date   |first day of simulation in year
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    inum1       |none          |reach number
 !!    ifirstr(:)  |none          |measured data search code
 !!                               |0 first day of measured data located in file
 !!                               |1 first day of measured data not located in
 !!                               |file
 !!    ihout       |none          |hydrograph storage location number
-!!    inum1       |none          |file number
 !!    iyr         |year          |current year of simulation (actual year)
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
@@ -72,31 +76,17 @@ subroutine apex_day(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    bactlpday   |# cfu/100ml   |loading of less persistent bacteria to
-!!                               |reach on day
-!!    bactpday    |# cfu/100ml   |loading of persistent bacteria to reach
-!!                               |on day
-!!    cbodday     |kg            |CBOD loading to reach on day
-!!    chladay     |kg            |chlorophyll a loading to reach on day
-!!    cmtl1day    |kg            |loading of conservative metal #1 to reach
-!!                               |on day
-!!    cmtl2day    |kg            |loading of conservative metal #2 to reach
-!!                               |on day
-!!    cmtl3day    |kg            |loading of conservative metal #3 to reach
-!!                               |on day
-!!    disoxday    |kg            |dissolved oxygen loading to reach on day
-!!    floday      |m^3 H2O       |water loading to reach on day
-!!    idap        |julian date   |julian date of record
+!!    flodaya     |m^3 H2O       |water loading to reach on day
+!!    fn          |none          |number of time steps (float)
+!!    idapa       |julian date   |julian date of record
 !!    ii          |none          |counter
-!!    iyp         |year          |year of record
+!!    iypa        |year          |year of record
 !!    j           |none          |counter
-!!    minpday     |kg P          |soluble P loading to reach on day
-!!    nh3day      |kg N          |ammonia loading to reach on day
-!!    no2day      |kg N          |nitrite loading to reach on day
-!!    no3day      |kg N          |nitrate loading to reach on day
-!!    orgnday     |kg N          |organic N loading to reach on day
-!!    orgpday     |kg P          |organic P loading to reach on day
-!!    sedday      |metric tons   |sediment loading to reach on day
+!!    minpdaya    |kg N          |nitrite loading to reach on day
+!!    no3daya     |kg N          |nitrate loading to reach on day
+!!    orgndaya    |kg N          |organic N loading to reach on day
+!!    orgpdaya    |kg P          |organic P loading to reach on day
+!!    seddaya     |metric tons   |sediment loading to reach on day
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -104,8 +94,21 @@ subroutine apex_day(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
+   integer, intent(in) :: i, k
+   real*8, dimension (mapex) :: flodaya, minpdaya, no3daya, orgndaya, orgpdaya,&
+      &seddaya
+   integer, dimension (mapex) :: idapa, iypa 
+   real*8 :: fn
    integer :: ii, j
+
+   flodaya = 0.
+   minpdaya = 0.
+   no3daya = 0.
+   orgndaya = 0.
+   orgpdaya = 0.
+   seddaya = 0.
+   idapa = 0
+   iypa = 0
 
    do j = 1, mvaro
       varoute(j,ihout) = 0.
@@ -120,23 +123,23 @@ subroutine apex_day(i)
 !!   check if idap/iyp are same
 
 !!    changes for Mike Winchell if apex.swt files has a different start date than the SWAT run
-   if (ifirsta(inum1) == 1) then
+   if (ifirsta(k) == 1) then
       do
-         read (112+inum1,*) idapa(inum1), iypa(inum1), flodaya(inum1),&
-         &seddaya(inum1), orgndaya(inum1), orgpdaya(inum1), no3daya(inum1),&
-         &minpdaya(inum1)
-         if(idapa(inum1) == id1 .and. iypa(inum1) == iyr) exit
+         read (112+k,*) idapa(k), iypa(k), flodaya(k),&
+            &seddaya(k), orgndaya(k), orgpdaya(k), no3daya(k),&
+            &minpdaya(k)
+         if(idapa(k) == id1 .and. iypa(k) == iyr) exit
       end do
-      ifirsta(inum1) = 0
+      ifirsta(k) = 0
    endif
 
-   if (iypa(inum1) == iyr .and. idapa(inum1) == i) then
-      varoute(2,ihout) = flodaya(inum1)
-      varoute(3,ihout) = seddaya(inum1)
-      varoute(4,ihout) = orgndaya(inum1)
-      varoute(5,ihout) = orgpdaya(inum1)
-      varoute(6,ihout) = no3daya(inum1)
-      varoute(7,ihout) = minpdaya(inum1)
+   if (iypa(k) == iyr .and. idapa(k) == i) then
+      varoute(2,ihout) = flodaya(k)
+      varoute(3,ihout) = seddaya(k)
+      varoute(4,ihout) = orgndaya(k)
+      varoute(5,ihout) = orgpdaya(k)
+      varoute(6,ihout) = no3daya(k)
+      varoute(7,ihout) = minpdaya(k)
       varoute(14,ihout) = 0.0
       varoute(15,ihout) = 0.0
       varoute(11,ihout) = 0.0
@@ -152,9 +155,9 @@ subroutine apex_day(i)
       varoute(21,ihout) = 0.0
       varoute(22,ihout) = 0.0
       if (curyr /= nbyr .and. iida /= idal) then
-         read (112+inum1,*) idapa(inum1), iypa(inum1), flodaya(inum1),&
-         &seddaya(inum1), orgndaya(inum1), orgpdaya(inum1), no3daya(inum1),&
-         &minpdaya(inum1)
+         read (112+k,*) idapa(k), iypa(k), flodaya(k),&
+            &seddaya(k), orgndaya(k), orgpdaya(k), no3daya(k),&
+            &minpdaya(k)
       endif
    else
       varoute(2,ihout) = 0.0
@@ -180,13 +183,14 @@ subroutine apex_day(i)
    endif
 
    if (ievent > 0) then
+      fn = Dfloat(nstep)
       do ii = 1, nstep
-         hhvaroute(2,ihout,ii) = flodaya(inum1) / dfloat(nstep)
-         hhvaroute(3,ihout,ii) = seddaya(inum1) / dfloat(nstep)
-         hhvaroute(4,ihout,ii) = orgndaya(inum1) / dfloat(nstep)
-         hhvaroute(5,ihout,ii) = orgpdaya(inum1) / dfloat(nstep)
-         hhvaroute(6,ihout,ii) = no3daya(inum1) / dfloat(nstep)
-         hhvaroute(7,ihout,ii) = minpdaya(inum1) / dfloat(nstep)
+         hhvaroute(2,ihout,ii) = flodaya(k) / fn
+         hhvaroute(3,ihout,ii) = seddaya(k) / fn
+         hhvaroute(4,ihout,ii) = orgndaya(k) / fn
+         hhvaroute(5,ihout,ii) = orgpdaya(k) / fn
+         hhvaroute(6,ihout,ii) = no3daya(k) / fn
+         hhvaroute(7,ihout,ii) = minpdaya(k) / fn
 
       end do
    end if

@@ -13,7 +13,6 @@ subroutine hruallo
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    mapp        |none        |max number of applications
 !!    mcr         |none        |max number of crops grown per year
-!!    mcut        |none        |max number of cuttings per year
 !!    mgr         |none        |max number of grazings per year
 !!    mlyr        |none        |max number of soil layers
 !!    mnr         |none        |max number of years of rotation

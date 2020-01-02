@@ -5,15 +5,17 @@
 
 !> this subroutine routes water through a retention irrigation pond in the
 !> subbasin
+!> param[in] sb subbasin or reach number
 !> param[in] kk pond id number in the subbasin
 !> param[inout] riflw stormwater runoff coming in/out of pond at a time step
 !> param[inout] rised overland flow sediment coming in/out of pond at a time
 !> step
-subroutine bmp_ri_pond(kk, riflw, rised)
+subroutine bmp_ri_pond(sb, kk, riflw, rised)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    sb          |none          |subbasin or reach number
 !!    kk          |none          |pond id number in the subbasin
 !!    riflw(:,:)  |mm            |stormwater runoff coming in/out of pond at a time step
 !!    rised(:,:)  |mm            |overland flow sediment coming in/out of pond at a time step
@@ -47,7 +49,6 @@ subroutine bmp_ri_pond(kk, riflw, rised)
 !!    qpnd
 !!    qpump
 !!    qseep
-!!    sb          |none          |subbasin or reach number
 !!    sedconc
 !!    sedpnde
 !!    sedpndi
@@ -65,14 +66,13 @@ subroutine bmp_ri_pond(kk, riflw, rised)
    use parm
    implicit none
 
-   integer, intent(in) :: kk
+   integer, intent(in) :: sb, kk
    real*8, dimension(4,0:nstep), intent(inout) :: riflw, rised
    real*8, dimension(0:nstep) :: inflw, insed, outflw, outsed
    real*8 :: hpnd, ksat, ksed, mxh, mxvol, qet, qin, qout, qpnd, qpump, qseep,&
       &sedconc, sedpnde, sedpndi, sedpump, sub_ha, td, tsa
-   integer :: ii, sb
+   integer :: ii
 
-   sb = inum1
    sub_ha = da_ha * sub_fr(sb)
    outflw = 0.; outsed = 0.
    qseep = 0.; qet = 0.;

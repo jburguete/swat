@@ -1,13 +1,18 @@
-subroutine recyear
+!> @file recyear.f90
+!> file containing the subroutine recyear
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine inputs measured loadings to the stream network
-!!    for routing through the watershed where the records are summarized
-!!    on an annual basis
+!> this subroutine inputs measured loadings to the stream network
+!> for routing through the watershed where the records are summarized
+!> on an annual basis
+!> @param[in] k file number (none)
+subroutine recyear(k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    k           |none          |file number
 !!    bactlpyr(:,:)|# cfu/100ml  |average daily loading of less persistent
 !!                               |bacteria for year
 !!    bactpyr(:,:)|# cfu/100ml   |average daily loading of persistent bacteria
@@ -25,7 +30,6 @@ subroutine recyear
 !!                               |year
 !!    floyr(:,:)  |m**3/d        |average daily water loading for year
 !!    ihout       |none          |hydrograph storage location number
-!!    inum1       |none          |file number
 !!    minpyr(:,:) |kg P/day      |average daily mineral P loading for year
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
@@ -77,15 +81,21 @@ subroutine recyear
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    fn          |none          |number of time steps (float)
 !!    ii          |none          |counter
 !!    j           |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    Intrinsic: Dfloat
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
+   integer, intent(in) :: k
+   real*8 :: fn
    integer :: ii, j
 
 !! zero flow out variables
@@ -97,53 +107,54 @@ subroutine recyear
    end do
 
 
-   varoute(2,ihout) = floyr(inum1,curyr)
-   varoute(3,ihout) = sedyr(inum1,curyr)
-   varoute(4,ihout) = orgnyr(inum1,curyr)
-   varoute(5,ihout) = orgpyr(inum1,curyr)
-   varoute(6,ihout) = no3yr(inum1,curyr)
-   varoute(7,ihout) = minpyr(inum1,curyr)
-   varoute(11,ihout) = solpstyr(inum1,curyr)
-   varoute(12,ihout) = srbpstyr(inum1,curyr)
-   varoute(13,ihout) = chlayr(inum1,curyr)
-   varoute(14,ihout) = nh3yr(inum1,curyr)
-   varoute(15,ihout) = no2yr(inum1,curyr)
-   varoute(16,ihout) = cbodyr(inum1,curyr)
-   varoute(17,ihout) = disoxyr(inum1,curyr)
-   varoute(18,ihout) = bactpyr(inum1,curyr)
-   varoute(19,ihout) = bactlpyr(inum1,curyr)
-   varoute(20,ihout) = cmtl1yr(inum1,curyr)
-   varoute(21,ihout) = cmtl2yr(inum1,curyr)
-   varoute(22,ihout) = cmtl3yr(inum1,curyr)
+   varoute(2,ihout) = floyr(k,curyr)
+   varoute(3,ihout) = sedyr(k,curyr)
+   varoute(4,ihout) = orgnyr(k,curyr)
+   varoute(5,ihout) = orgpyr(k,curyr)
+   varoute(6,ihout) = no3yr(k,curyr)
+   varoute(7,ihout) = minpyr(k,curyr)
+   varoute(11,ihout) = solpstyr(k,curyr)
+   varoute(12,ihout) = srbpstyr(k,curyr)
+   varoute(13,ihout) = chlayr(k,curyr)
+   varoute(14,ihout) = nh3yr(k,curyr)
+   varoute(15,ihout) = no2yr(k,curyr)
+   varoute(16,ihout) = cbodyr(k,curyr)
+   varoute(17,ihout) = disoxyr(k,curyr)
+   varoute(18,ihout) = bactpyr(k,curyr)
+   varoute(19,ihout) = bactlpyr(k,curyr)
+   varoute(20,ihout) = cmtl1yr(k,curyr)
+   varoute(21,ihout) = cmtl2yr(k,curyr)
+   varoute(22,ihout) = cmtl3yr(k,curyr)
 
    !! Assumed equal distribution of sediment
-   varoute(23,ihout) = sedyr(inum1,curyr) * 0.   ! sand
-   varoute(24,ihout) = sedyr(inum1,curyr) * 1.   ! silt
-   varoute(25,ihout) = sedyr(inum1,curyr) * 0.   ! cla
-   varoute(26,ihout) = sedyr(inum1,curyr) * 0.   ! sag
-   varoute(27,ihout) = sedyr(inum1,curyr) * 0.   ! lag
+   varoute(23,ihout) = sedyr(k,curyr) * 0.   ! sand
+   varoute(24,ihout) = sedyr(k,curyr) * 1.   ! silt
+   varoute(25,ihout) = sedyr(k,curyr) * 0.   ! cla
+   varoute(26,ihout) = sedyr(k,curyr) * 0.   ! sag
+   varoute(27,ihout) = sedyr(k,curyr) * 0.   ! lag
    varoute(28,ihout) = 0.                        ! gravel
 
    if (ievent > 0) then
+      fn = Dfloat(nstep)
       do ii = 1, nstep
-         hhvaroute(2,ihout,ii) = floyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(3,ihout,ii) = sedyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(4,ihout,ii) = orgnyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(5,ihout,ii) = orgpyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(6,ihout,ii) = no3yr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(7,ihout,ii) = minpyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(11,ihout,ii) = solpstyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(12,ihout,ii) = srbpstyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(13,ihout,ii) = chlayr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(14,ihout,ii) = nh3yr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(15,ihout,ii) = no2yr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(16,ihout,ii) = cbodyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(17,ihout,ii) = disoxyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(18,ihout,ii) = bactpyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(19,ihout,ii) = bactlpyr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(20,ihout,ii) = cmtl1yr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(21,ihout,ii) = cmtl2yr(inum1,curyr) / dfloat(nstep)
-         hhvaroute(22,ihout,ii) = cmtl3yr(inum1,curyr) / dfloat(nstep)
+         hhvaroute(2,ihout,ii) = floyr(k,curyr) / fn
+         hhvaroute(3,ihout,ii) = sedyr(k,curyr) / fn
+         hhvaroute(4,ihout,ii) = orgnyr(k,curyr) / fn
+         hhvaroute(5,ihout,ii) = orgpyr(k,curyr) / fn
+         hhvaroute(6,ihout,ii) = no3yr(k,curyr) / fn
+         hhvaroute(7,ihout,ii) = minpyr(k,curyr) / fn
+         hhvaroute(11,ihout,ii) = solpstyr(k,curyr) / fn
+         hhvaroute(12,ihout,ii) = srbpstyr(k,curyr) / fn
+         hhvaroute(13,ihout,ii) = chlayr(k,curyr) / fn
+         hhvaroute(14,ihout,ii) = nh3yr(k,curyr) / fn
+         hhvaroute(15,ihout,ii) = no2yr(k,curyr) / fn
+         hhvaroute(16,ihout,ii) = cbodyr(k,curyr) / fn
+         hhvaroute(17,ihout,ii) = disoxyr(k,curyr) / fn
+         hhvaroute(18,ihout,ii) = bactpyr(k,curyr) / fn
+         hhvaroute(19,ihout,ii) = bactlpyr(k,curyr) / fn
+         hhvaroute(20,ihout,ii) = cmtl1yr(k,curyr) / fn
+         hhvaroute(21,ihout,ii) = cmtl2yr(k,curyr) / fn
+         hhvaroute(22,ihout,ii) = cmtl3yr(k,curyr) / fn
       end do
    end if
 

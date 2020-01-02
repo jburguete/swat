@@ -1,12 +1,17 @@
-subroutine irr_res
+!> @file irr_res.f90
+!> file containing the subroutine irr_res
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine performs the irrigation operation when the water
-!!    source is a reservoir
+!> this subroutine performs the irrigation operation when the water
+!> source is a reservoir
+!> @param[in] jres reservoir number (none)
+subroutine irr_res(jres)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    jres            |none          |reservoir number
 !!    aird(:)         |mm H2O        |amount of water applied to HRU on current
 !!                                   |day
 !!    auto_wstr(:)    |none or mm    |water stress factor which triggers auto
@@ -16,7 +21,6 @@ subroutine irr_res
 !!                                   |1 plant water demand
 !!                                   |2 soil water deficit
 !!    flag                           |1 = manual 2 = auto
-!!    inum1           |none          |reservoir number
 !!    ipot(:)         |none          |number of HRU (in subbasin) that is ponding
 !!                                   |water--the HRU that the surface runoff from
 !!                                   |current HRU drains into. This variable is
@@ -78,7 +82,6 @@ subroutine irr_res
 !!                               |0 no irrigation operation on current day
 !!                               |1 scheduled irrigation
 !!                               |2 auto irrigation
-!!    jres        |none          |reservoir number
 !!    k           |none          |HRU number
 !!    vmm         |mm H2O        |depth of irrigation water over HRU
 !!    vmxi        |mm H2O        |amount of water specified in irrigation
@@ -96,10 +99,9 @@ subroutine irr_res
    use parm
    implicit none
 
-   integer :: jres, k, flag
-   real*8 :: cnv, vmm, vol, vmxi
-
-   jres = inum1
+   integer, intent(in) :: jres
+   real*8 :: cnv, vmm, vmxi, vol
+   integer :: flag, k
 
    do k = 1, nhru
       if (irrsc(k) == 2 .and. irrno(k) == jres) then
@@ -109,7 +111,7 @@ subroutine irr_res
          if (auto_wstr(k) > 0.) then
             if (wstrs_id(k) == 1 .and. strsw(k) < auto_wstr(k)) flag = 2
             if (wstrs_id(k) == 2 .and. sol_sumfc(k) - sol_sw(k) >&
-            &auto_wstr(k)) flag = 2
+               &auto_wstr(k)) flag = 2
          end if
 
          if (flag == 1) then
@@ -143,24 +145,18 @@ subroutine irr_res
             if (vmm > 0.) then
                vol = vmm * cnv
 
-               !!   if (ipot(k) == k) then
-               !if (pot_fr(k) > 1.e-6) then
-               !  pot_vol(k) = pot_vol(k) + vol / (10. * potsa(k))
-               !else
-               call irrigate(k,vmm)
-               !end if
+               call irrigate(k, vmm)
 
                irramt(k) = vmm
                if (imgt == 1) then
                   write (143, 1000) subnum(k), hruno(k), iyr, i_mo, iida,&
-                  &hru_km(k), "         ",  " AUTOIRR", phubase(k), phuacc(k),&
-                  &sol_sw(k), bio_ms(k), sol_rsd(1,k),sol_sumno3(k),&
-                  &sol_sumsolp(k), aird(k), irrsc(k), irrno(k)
+                     &hru_km(k), "         ",  " AUTOIRR", phubase(k),&
+                     &phuacc(k), sol_sw(k), bio_ms(k), sol_rsd(1,k),&
+                     &sol_sumno3(k), sol_sumsolp(k), aird(k), irrsc(k), irrno(k)
 1000              format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,10x,f10.2,70x,&
-                  &i10,10x,i10)
+                     &i10,10x,i10)
                end if
                !! subtract irrigation from reservoir volume
-               !!     if (ipot(k) /= k) then
                if (pot_fr(k) > 1.e-6) then
                   vol = aird(k) * cnv
                end if

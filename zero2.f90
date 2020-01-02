@@ -91,8 +91,8 @@ subroutine zero2
    pot_mpa = 0.
    pot_no3 = 0.
    pot_solp = 0.
-   pot_evap = 0.
-   tile_out = 0.
+!   pot_evap = 0. ! not used
+!   tile_out = 0. ! not used
    tile_sedo = 0.
    tile_no3o = 0.
    tile_solpo = 0.

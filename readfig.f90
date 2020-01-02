@@ -96,6 +96,7 @@ subroutine readfig
 !!     eof          |none          |end of file flag (=-1 at end of file)
 !!     hour_in      |NA            |name of file containing hourly loadings
 !!                                 |to reach (fig command 6)
+!!     icode        |none          |icodes(k)
 !!     ii           |none          |counter
 !!     iijj
 !!     jjii
@@ -126,7 +127,7 @@ subroutine readfig
    character (len=80) :: titldum
    character (len=13) :: annual_in, apex_in, day_in, hour_in, lwqfile,&
       &month_in, resfile, rtefile, rufile, subfile, swqfile, year_in
-   integer :: eof, i, ii, iijj, jjii, k
+   integer :: eof, i, icode, ii, iijj, jjii, k
    character (len=3), dimension (mhyd) :: char6, char7, char8
    character (len=1) :: a
 
@@ -156,6 +157,7 @@ subroutine readfig
                &inum2s(k), inum3s(k), rnum1s(k), inum4s(k),&
                &inum5s(k), char6(k), char7(k), char8(k)
          end if
+         icode = icodes(k)
          mhyd_bsn = mhyd_bsn + 1
 
 !!!!!! inum6s, inum7s and inum8s (integer) read in as char6, char7, char8 (character) and
@@ -189,7 +191,7 @@ subroutine readfig
          end if
 !!!!!! end convert code
 
-         select case(icodes(k))
+         select case(icode)
 
           case (0)  !! icode = 0  FINISH command
             exit
@@ -205,6 +207,7 @@ subroutine readfig
             open (101,file=subfile)
             call readsub(i)
             nhru = nhru + hrutot(i)
+            subdr_km(ihouts(k)) = sub_km(inum1s(k))
 
           case (2)  !! icode = 2  ROUTE CHANNEL command
             nrch = nrch + 1
@@ -222,6 +225,15 @@ subroutine readfig
             open (104,file=swqfile)
             call readrte
             call readswq
+            if (inum1s(k)==inum2s(k)) then
+               subdr_km(ihouts(k)) = subdr_km(inum1s(k))
+               subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))
+            else
+               subdr_km(ihouts(k)) = subdr_km(inum1s(k))&
+                  &+ subdr_km(inum2s(k))
+               subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))&
+                  &+ subdr_ickm(inum2s(k))
+            endif
 
           case (3)  !! icode = 3  ROUTE RESERVOIR command
             nres = nres + 1
@@ -244,6 +256,11 @@ subroutine readfig
             read (102,5004) mo_transb(inum5s(k)),&
                &mo_transe(inum5s(k)), ih_tran(inum5s(k))
 
+          case (5)  !! add
+            subdr_km(ihouts(k)) = subdr_km(inum1s(k))&
+               &+ subdr_km(inum2s(k))
+            subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))&
+               &+ subdr_ickm(inum2s(k))
 
           case (6)  !! icode = 6  RECHOUR command: read in hourly values
             !! with water in m^3 and rest in tons/kgs
@@ -353,38 +370,14 @@ subroutine readfig
             open (113,file=rufile)
             call readru(i)
             close(113)
+            subdr_km(ihouts(k)) = daru_km(inum2s(k),inum1s(k))
 
           case (18)  !! icode = 18  LANDSCAPE ROUTING command
-            !!if (rnum1s(k) < 1.e-9) rnum1s(k) = 1.
-
-         end select
-
-         !! calculate upstream drainage area (km2) and impervious cover (km2)
-         !! in the drainage arae at each subbasin outlet
-         if (icodes(k)==1) then      !subbasin
-            subdr_km(ihouts(k)) = sub_km(inum1s(k))
-         elseif (icodes(k)==17) then !routing unit
-            subdr_km(ihouts(k)) = daru_km(inum2s(k),inum1s(k))
-         elseif (icodes(k)==5) then  !add
-            subdr_km(ihouts(k)) = subdr_km(inum1s(k))&
-               &+ subdr_km(inum2s(k))
-            subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))&
-               &+ subdr_ickm(inum2s(k))
-         elseif (icodes(k)==2) then !route
-            if(inum1s(k)==inum2s(k)) then
-               subdr_km(ihouts(k)) = subdr_km(inum1s(k))
-               subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))
-            else
-               subdr_km(ihouts(k)) = subdr_km(inum1s(k))&
-                  &+ subdr_km(inum2s(k))
-               subdr_ickm(ihouts(k)) = subdr_ickm(inum1s(k))&
-                  &+ subdr_ickm(inum2s(k))
-            endif
-         elseif (icodes(k)==18) then  !routels
             subdr_km(ihouts(k)) = subdr_km(inum2s(k))
             ru_a(inum3s(k),inum1s(k)) = subdr_km(ihouts(k)) *&
                &100. / ru_ovsl(inum3s(k),inum1s(k))
-         end if
+
+         end select
 
       end if
    end do

@@ -94,7 +94,7 @@ program main
       scenario = 2
       call storeinitial
    else if (fcstcycles > 1) then
-      scenario =  fcstcycles
+      scenario = fcstcycles
       call storeinitial
    else
       scenario = 1

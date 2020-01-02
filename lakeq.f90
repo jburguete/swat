@@ -1,11 +1,16 @@
-subroutine lakeq
+!> @file lakeq.f90
+!> file containing the subroutine lakeq
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine computes the lake hydrologic pesticide balance.
+!> this subroutine computes the lake hydrologic pesticide balance.
+!> @param[in] jres reservoir number (none)
+subroutine lakeq(jres)
+
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    inum1         |none          |reservoir number
+!!    jres          |none          |reservoir number
 !!    lkpst_conc(:) |mg/m^3        |pesticide concentration in lake water
 !!    lkpst_koc(:)  |m**3/g        |pesticide partition coefficient between
 !!                                 |water and sediment in lake water
@@ -68,23 +73,20 @@ subroutine lakeq
 !!    fp1         |none          |fraction of pesticide in water that is sorbed
 !!    fp2         |none          |fraction of pesticide in sediment that is
 !!                               |sorbed
-!!    jres        |none          |reservoir number
 !!    tpest1      |mg pst        |amount of pesticide in lake water
 !!    tpest2      |mg pst        |amount of pesticide in lake sediment
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: abs
+!!    Intrinsic: Abs
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer :: jres
-   real*8 :: tpest1, tpest2, fd1, fp1, fd2, dlake, fp2
-
-   jres = inum1
+   integer, intent(in) :: jres
+   real*8 :: dlake, fd1, fd2, fp1, fp2, tpest1, tpest2
 
    tpest1 = lkpst_mass(jres)
    tpest2 = lkspst_mass(jres)
@@ -140,23 +142,23 @@ subroutine lakeq
 
       !! determine pesticide diffusing from sediment to water
       difus = lkpst_mix(jres) *&
-      &(fd2 * tpest2 / lkspst_act(jres) - fd1 * tpest1 / dlake)
+         &(fd2 * tpest2 / lkspst_act(jres) - fd1 * tpest1 / dlake)
       if (difus > 0.) then
          if (difus > tpest2) then
             difus = tpest2
             tpest2 = 0.
          else
-            tpest2 = tpest2 - abs(difus)
+            tpest2 = tpest2 - difus !Abs(difus) (difus>0)
          end if
-         tpest1 = tpest1 + abs(difus)
+         tpest1 = tpest1 + Abs(difus)
       else
-         if (abs(difus) > tpest1) then
+         if (Abs(difus) > tpest1) then
             difus = -tpest1
             tpest1 = 0.
          else
-            tpest1 = tpest1 - abs(difus)
+            tpest1 = tpest1 + difus !- Abs(difus) (difus<0)
          end if
-         tpest2 = tpest2 + abs(difus)
+         tpest2 = tpest2 + Abs(difus)
       end if
 
       !! determine pesticide lost from sediment by reactions

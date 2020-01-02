@@ -84,7 +84,6 @@ subroutine command(i)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    icode       |none          |variable to hold value for icodes(:)
 !!    ihout       |none          |variable to hold value for ihouts(:)
 !!    inum1       |none          |variable to hold value for inum1s(:)
 !!    inum2       |none          |variable to hold value for inum2s(:)
@@ -96,6 +95,7 @@ subroutine command(i)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    icode    |none          |variable to hold value for icodes(:)
 !!    ii       |none          |counter
 !!    j        |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -111,7 +111,7 @@ subroutine command(i)
    implicit none
 
    integer, intent(in) :: i
-   integer :: ii, j
+   integer :: icode, ii, j
 
    j = 0
 
@@ -145,37 +145,37 @@ subroutine command(i)
          call routres(inum1)
          call sumhyd
        case (4)
-         call transfer
+         call transfer(inum1)
        case (5)
-         call addh
+         call addh(inum1)
          call sumhyd
          call print_hyd(i)
        case (6)
-         call rechour
+         call rechour(inum1)
          call sumhyd
          call print_hyd(i)
        case (7)
-         call recmon
+         call recmon(inum1)
          call sumhyd
        case (8)
-         call recyear
+         call recyear(inum1)
          call sumhyd
        case (9)
-         call save
+         call save(inum1)
        case (10)
-         call recday
+         call recday(inum1)
          call sumhyd
        case (11)
-         call reccnst
+         call reccnst(inum1)
          call sumhyd
        case (12)
-         call structure
+         call structure(inum1)
        case (13)
-         call apex_day(i)
+         call apex_day(i, inum1)
        case (14)
-         call saveconc
+         call saveconc(inum1)
        case (17)
-         call routeunit
+         call routeunit(inum1)
          call sumhyd
        case (18)
          inum8 = 1

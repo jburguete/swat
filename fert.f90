@@ -6,7 +6,7 @@
 !> this subroutine applies N and P specified by date and
 !> amount in the management file (.mgt)
 !> @param[in] j HRU number
-subroutine fert(j)
+subroutine fert(j, ifrt)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
@@ -134,7 +134,6 @@ subroutine fert(j)
 !!    frt_t        |
 !!    gc           |
 !!    gc1          |
-!!    ifrt
 !!    l            |none         |counter (soil layer #)
 !!    RLN
 !!    rtof         |none         |weighting factor used to partition the
@@ -160,14 +159,12 @@ subroutine fert(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, ifrt
          !orgc_f is the fraction of organic carbon in fertilizer
          !for most fertilziers this value is set to 0.
    real*8, parameter :: rtof=0.5, orgc_f = 0.0
    real*8 :: frt_t, gc, gc1, RLN, X1, X8, X10, xx, XXX, XZ, YY, YZ, ZZ
-   integer :: l, ifrt
-
-   ifrt = ifrttyp
+   integer :: l
 
    do l = 1, 2
       if (l == 1) then
@@ -195,10 +192,6 @@ subroutine fert(j)
       !!By Zhang for C/N cycling
       !!===========================
       if (cswat == 2) then
-      !sol_fon(l,j) = sol_fon(l,j) + rtof * xx * &
-      !&   frt_kg(nro(j),nfert(j),j) * forgn(ifrt)
-      !sol_aorgn(l,j) = sol_aorgn(l,j) + (1. - rtof) * xx *
-      !&   frt_kg(nro(j),nfert(j),j) * forgn(ifrt)
          sol_fop(l,j) = sol_fop(l,j) + rtof * xx * frt_kg * forgp(ifrt)
          sol_orgp(l,j) = sol_orgp(l,j) + (1. - rtof) * xx * frt_kg * forgp(ifrt)
 
@@ -274,13 +267,6 @@ subroutine fert(j)
       sol_solp(l,j) = sol_solp(l,j) + xx * frt_kg * fminp(ifrt)
 
    end do
-
-!!!    write statement for virgina/mari-vaughn study        !!!
-!      write (1112,1112) (sol_no3(l,j), sol_fon(l,j), sol_aorgn(l,j),    &
-!       &sol_nh3(l,j),  sol_solp(l,j), sol_fop(l,j), sol_orgp(l,j),        &
-!        &l = 1,4)
-!1112  format (200f8.2)
-
 
 !! add bacteria - #cfu/g * t(manure)/ha * 1.e6g/t * ha/10,000m^2 = 100.
 !! calculate ground cover

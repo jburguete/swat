@@ -8,7 +8,7 @@ subroutine rewind_init
    implicit none
 
    character (len=80) :: titldum
-   integer :: ii, j
+   integer :: icode, ii, j
 
 !! reset output arrays/variables
    aairr = 0.
