@@ -135,13 +135,6 @@ subroutine resinit(jres)
    endif
    ressedo = 0.
 
-   ressano = 0.
-   ressilo = 0.
-   resclao = 0.
-   ressago = 0.
-   reslago = 0.
-   resgrao = 0.
-
    ressep = 0.
    ressolpo = 0.
    resuspst = 0.

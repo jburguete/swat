@@ -4,7 +4,7 @@
 !> modified by Javier Burguete
 
 !> this subroutine applies continuous pesticide
-!> @param[in] h HRU number
+!> @param[in] j HRU number
 subroutine conapply(j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
@@ -51,7 +51,6 @@ subroutine conapply(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    gc          |none          |fraction of ground covered by plant foliage
-!!    jj          |none          |subbasin number
 !!    k           |none          |sequence number of pesticide in NPNO(:)
 !!    kk          |none          |pesticide identification number from
 !!                               |pest.dat
@@ -68,7 +67,7 @@ subroutine conapply(j)
 
    integer, intent(in) :: j
    real*8 :: gc, xx
-   integer :: jj, k, kk
+   integer :: k, kk
 
    !! initialize local variables
    kk = 0
@@ -86,8 +85,6 @@ subroutine conapply(j)
       kk = Int(cpst_id(j))
       k = nope(kk)
       xx = cpst_kg(j)
-      jj = inum1
-
       xx = xx * ap_ef(kk)
 
 !! calculate ground cover

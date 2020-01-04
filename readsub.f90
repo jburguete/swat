@@ -148,7 +148,7 @@ subroutine readsub(i)
    real*8, dimension(10) :: ssnoeb
    character (len=13) :: chmfile, gwfile, hrufile, mgtfile, opsfile, pndfile,&
       &sdrfile, septfile, solfile, wgnfile, wusfile
-   real*8 :: ch_ls, sdrift, sno_sub, sumebfr
+   real*8 :: ch_ls, sno_sub, sumebfr
    integer :: eof, ils, j, jj, k, kk, l, mon
 
    wgnfile = ""
@@ -435,7 +435,8 @@ subroutine readsub(i)
    end if
 
 !!    This equation given to us by EPA, in the process of getting reference
-   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) + .2267) / 2.
+!   sdrift = .01 * (10.**(-.00738 * (7.62 * ch_w(1,i)) - 2.5889) + .2267) / 2.
+!   not used
 
 !! assign subbasin values to HRUs where needed
    do j = 1, hrutot(i)
@@ -449,7 +450,7 @@ subroutine readsub(i)
       end do
       sno_hru(l) = sno_sub
       ch_l(1,l) = ch_ls
-      driftco(l) = sdrift
+!      driftco(l) = sdrift ! not used
    end do
 
 !! calculate watershed land area

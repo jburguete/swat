@@ -14,7 +14,7 @@ subroutine tgen(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
 !!    i_mo        |none          |month being simulated
-!!    pr_w3(:,:)  |none          |proportion of wet days in month
+!!    pr_w(3,:,:)  |none          |proportion of wet days in month
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
 !!    tmpmx(:,:)  |deg C         |avg monthly maximum air temperature
@@ -59,7 +59,7 @@ subroutine tgen(j)
 
 
    tamp = (tmpmx(i_mo,hru_sub(j)) - tmpmn(i_mo,hru_sub(j))) / 2
-   txxm = tmpmx(i_mo,hru_sub(j)) + tamp * pr_w3(i_mo,hru_sub(j))
+   txxm = tmpmx(i_mo,hru_sub(j)) + tamp * pr_w(3,i_mo,hru_sub(j))
 
    if (subp(j) > 0.0) txxm = txxm - tamp
 

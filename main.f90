@@ -40,7 +40,7 @@ program main
 !!    Intrinsic: date_and_time
 !!    SWAT: getallo, allocate_parms, readfile, readfig
 !!    SWAT: readbsn, std1, readwwq, readinpt, std2, storeinitial
-!!    SWAT: openwth, headout, simulate, finalbal, writeaa, pestw
+!!    SWAT: openwth, headout, simulate, finalbal, writeaa, pestw, rewind_init
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm

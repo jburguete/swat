@@ -151,15 +151,24 @@ subroutine urbanhr(j)
             twash(j) = twash(j) + idt / 1440.
 
             !! perform street sweeping
-            if (isweep(j) > 0 .and. iida >= isweep(j)) then
-               call sweep(j)
-            else if (phusw(j) > 0.0001) then
+            !! isweep is not initialized in any part, assumed to be 0
+!            if (isweep(j) > 0 .and. iida >= isweep(j)) then
+!               call sweep(j)
+!            else if (phusw(j) > 0.0001) then
+!               if (igro(j) == 0) then
+!                  if (phubase(j) > phusw(j)) call sweep(j)
+!               else
+!                  if (phuacc(j) > phusw(j)) call sweep(j)
+!               end if
+!            end if
+            if (phusw(j) > 0.0001) then
                if (igro(j) == 0) then
                   if (phubase(j) > phusw(j)) call sweep(j)
                else
                   if (phuacc(j) > phusw(j)) call sweep(j)
                end if
             end if
+
          end if
       end select
       sus_sol=0
@@ -171,9 +180,11 @@ subroutine urbanhr(j)
 
    !! perform street sweeping
    if(surfq(j) < 0.1) then
-      if (isweep(j) > 0 .and. iida >= isweep(j)) then
-         call sweep(j)
-      else if (phusw(j) > 0.0001) then
+      !! isweep is not initialized in any part, assumed to be 0
+      !if (isweep(j) > 0 .and. iida >= isweep(j)) then
+      !   call sweep(j)
+      !else if (phusw(j) > 0.0001) then
+      if (phusw(j) > 0.0001) then
          if (igro(j) == 0) then
             if (phubase(j) > phusw(j)) then
                call sweep(j)

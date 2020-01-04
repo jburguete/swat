@@ -6,7 +6,8 @@
 !> this subroutine models surface hydrology at any desired time step
 !> @param[in] i current day in simulation--loop counter (julian date)
 !> @param[in] j HRU number (none)
-subroutine surface(i,j)
+!> @param[in] sb subbasin number (none)
+subroutine surface(i, j, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -48,7 +49,7 @@ subroutine surface(i,j)
    use parm
    implicit none
 
-   integer, intent(in) :: i, j
+   integer, intent(in) :: i, j, sb
    real*8 :: hruvirr, irfr
    integer :: ii, kk
 
@@ -139,7 +140,7 @@ subroutine surface(i,j)
       call eiusle(j)
 
       !! calculate sediment erosion by rainfall and overland flow
-      call ovr_sed(j)
+      call ovr_sed(j, sb)
    end if
 
    call cfactor(j)

@@ -152,9 +152,7 @@ subroutine zero1
    orig_wetsed = 0.
    orig_wetvol = 0.
    opcp_stat = 0.
-   opr_w1 = 0.
-   opr_w2 = 0.
-   opr_w3 = 0.
+   opr_w = 0.
    otmpmx = 0.
    otmpmn = 0.
    otmpstdmn = 0.
@@ -201,9 +199,7 @@ subroutine zero1
 
    pot_tile = 0.
    pot_vol = 0.
-   pr_w1 = 0.
-   pr_w2 = 0.
-   pr_w3 = 0.
+   pr_w = 0.
    pst_enr = 0.
    pst_kg = 0.
    pst_dep = 0.
@@ -220,23 +216,12 @@ subroutine zero1
    rfile = ""
    rfinc = 0.
    rip_fr = 0.
-   rk1 = 0.
-   rk2 = 0.
-   rk3 = 0.
-   rk4 = 0.
-   rk5 = 0.
-   rk6 = 0.
+   rk = 0.
    rnum1s = 0.
 !!  septic changes 1/29/09
 !!  septic changes 1/29/09
    sol_rock = 0.
-   rs1 = 0.
-   rs2 = 0.
-   rs3 = 0.
-   rs4 = 0.
-   rs5 = 0.
-   rs6 = 0.
-   rs7 = 0.
+   rs = 0.
    rsdin = 0.
    rvar_orig = 0.
    sedpst_act = 0.
@@ -261,7 +246,7 @@ subroutine zero1
    sol_crk = 0.
    sol_fon = 0.
    sol_fop = 0.
-   sol_hum = 0.
+   ! sol_hum = 0. ! not used
    sol_k = 0.
    sol_kp = 0.
    sol_nh3 = 0.
@@ -355,8 +340,7 @@ subroutine zero1
 !!  septic changes 1/29/09
    vfsi = 0.    !CB 8/24/09
    vpd2 = 0.
-   wac21 = 0.
-   wac22 = 0.
+   wac2 = 0.
    wavp = 0.
    wet_fr = 0.
    iwetgw = 0
@@ -401,12 +385,8 @@ subroutine zero1
    depfp = 0.
    depprch = 0.
    depprfp = 0.
-   depsanfp = 0.
    depsilfp = 0.
    depclafp = 0.
-   depsagfp = 0.
-   deplagfp = 0.
-   depgrafp = 0.
    depsanch = 0.
    depsilch = 0.
    depclach = 0.

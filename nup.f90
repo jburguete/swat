@@ -12,9 +12,9 @@ subroutine nup(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none           |HRU number
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
-!!    bio_n1(:)   |none           |1st shape parameter for plant N uptake
+!!    bio_n(1,:)   |none           |1st shape parameter for plant N uptake
 !!                                |equation
-!!    bio_n2(:)   |none           |2nd shape parameter for plant N uptake
+!!    bio_n(2,:)   |none           |2nd shape parameter for plant N uptake
 !!                                |equation
 !!    bioday      |kg             |biomass generated on current day in HRU
 !!    fixn        |kg N/ha        |amount of nitrogen added to soil via fixation
@@ -112,7 +112,7 @@ subroutine nup(j)
 
    icrop = idplt(j)
    pltfr_n(j) = (pltnfr1(icrop) - pltnfr3(icrop)) * (1. - phuacc(j)&
-      &/ (phuacc(j) + Exp(bio_n1(icrop) - bio_n2(icrop) *&
+      &/ (phuacc(j) + Exp(bio_n(1,icrop) - bio_n(2,icrop) *&
       &phuacc(j)))) + pltnfr3(icrop)
 
    un2 = pltfr_n(j) * bio_ms(j)

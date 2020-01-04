@@ -6,12 +6,14 @@
 !> this subroutine computes splash erosion by raindrop impact and flow erosion
 !> by overland flow
 !> @param[in] j HRU number (none)
-subroutine ovr_sed(j)
+!> @param[in] sb subbasin number (none)
+subroutine ovr_sed(j, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
+!!    sb          |none          |subbasin number
 !!    cht(:)      |m             |canopy height
 !!    fimp(:)     |fraction      |fraction of HRU area that is
 !!                               |impervious (both directly and
@@ -20,7 +22,6 @@ subroutine ovr_sed(j)
 !!                               |of day in HRU
 !!    hru_km(:)   |km2           |area of HRU in square kilometers
 !!    idt         |minutes       |length of time step used to report
-!!    inum1       |none          |subbasin number
 !!    laiday(:)   |m2/m2         |leaf area index
 !!    rainsub(:,:)|mm H2O        |precipitation for the time step during the
 !!                               |day in HRU
@@ -75,7 +76,7 @@ subroutine ovr_sed(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, sb
    real*8 :: bed_shear, c, canopy_cover, erod_k, ke_direct, ke_leaf, ke_total,&
       &percent_clay, percent_sand, percent_silt, pheff, rain_d50,&
       &rdepth_direct, rdepth_leaf, rdepth_tot, rintnsty, sedov, sedspl
@@ -191,7 +192,7 @@ subroutine ovr_sed(j)
       !! Impervious area of HRU
       if(urblu(j)>0) sedov = sedov * (1.- fimp(urblu(j)))
 
-      hhsedy(j,k) = dratio(inum1) * (sedspl + sedov)
+      hhsedy(j,k) = dratio(sb) * (sedspl + sedov)
       if (hhsedy(j,k) < 1.e-10) hhsedy(j,k) = 0.
 
    end do

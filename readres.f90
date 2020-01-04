@@ -18,9 +18,9 @@ subroutine readres(i)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    br1(:)       |none          |1st shape parameter for reservoir surface area
+!!    br(1,:)       |none          |1st shape parameter for reservoir surface area
 !!                                |equation
-!!    br2(:)       |none          |2nd shape parameter for reservoir surface area
+!!    br(2,:)       |none          |2nd shape parameter for reservoir surface area
 !!                                |equation
 !!    evrsv(:)     |none          |lake evaporation coefficient
 !!    iflodr(1,:)   |none          |beginning month of non-flood season
@@ -46,8 +46,6 @@ subroutine readres(i)
 !!                                |m^3/s and converted to m^3/day)
 !!    oflowmn_fps  |fraction      |minimum reservoir outflow as a fraction of
 !!                                | the principal spillway volume (0-1)
-!!    res_esa(:)   |ha            |reservoir surface area when reservoir is
-!!                                |filled to emergency spillway
 !!    res_evol(:)  |m**3          |volume of water needed to fill the reservoir
 !!                                |to the emergency spillway (read in as 10^4 m^3
 !!                                |and converted to m^3)
@@ -100,6 +98,8 @@ subroutine readres(i)
 !!    titldum     |NA            |title line in .res file (not used in program)
 !!    res_d50     |micrometers   |median particle diameter of sediment
 !!    res_d50mm   |milimeters    |median particle diameter of sediment
+!!    res_esa     |ha            |reservoir surface area when reservoir is
+!!                               |filled to emergency spillway
 !!    resdayo     |NA            |name of daily reservoir outflow file
 !!                               |(needed if IRESCO = 3)
 !!    resdif      |m^3 H2O       |difference in volume held in reservoir at
@@ -123,7 +123,7 @@ subroutine readres(i)
    integer, intent(in) :: i
    character (len=80) :: titldum
    character (len=13) :: resdayo, resmono
-   real*8 :: lnvol, res_d50, res_d50mm, resdif, targ
+   real*8 :: lnvol, res_d50, res_d50mm, res_esa, resdif, targ
    integer :: eof, j, mon
 
 !!    initialize local variables
@@ -131,6 +131,7 @@ subroutine readres(i)
    resmono = ""
    eof = 0
    res_d50 = 0.
+   res_esa = 0.
 
 !!    read in data from .res file
    do
@@ -142,7 +143,7 @@ subroutine readres(i)
       if (eof < 0) exit
       read (105,*,iostat=eof) iyres(i)
       if (eof < 0) exit
-      read (105,*,iostat=eof) res_esa(i)
+      read (105,*,iostat=eof) res_esa
       if (eof < 0) exit
       read (105,*,iostat=eof) res_evol(i)
       if (eof < 0) exit
@@ -252,7 +253,7 @@ subroutine readres(i)
    end if
    if (res_evol(i) <= 0.0) res_evol(i) = 1.11 * res_pvol(i)
    if (res_psa(i) <= 0.0) res_psa(i) = 0.08 * res_pvol(i)
-   if (res_esa(i) <= 0.0) res_esa(i) = 1.5 * res_psa(i)
+   if (res_esa <= 0.0) res_esa = 1.5 * res_psa(i)
    targ = res_pvol(i) + 0.1 * (res_evol(i) - res_pvol(i))
    if (res_vol(i) > targ ) res_vol(i) = targ
    if (evrsv(i) <= 0.) evrsv(i) = 0.6
@@ -304,22 +305,22 @@ subroutine readres(i)
 
 !!    calculate shape parameters for surface area equation
    resdif = res_evol(i) - res_pvol(i)
-   if ((res_esa(i) - res_psa(i)) > 0. .and. resdif > 0.) then
+   if ((res_esa - res_psa(i)) > 0. .and. resdif > 0.) then
       lnvol = Log10(res_evol(i)) - Log10(res_pvol(i))
       if (lnvol > 1.e-4) then
-         br2(i) = (Log10(res_esa(i)) - Log10(res_psa(i))) / lnvol
+         br(2,i) = (Log10(res_esa) - Log10(res_psa(i))) / lnvol
       else
-         br2(i) = (Log10(res_esa(i)) - Log10(res_psa(i))) / 0.001
+         br(2,i) = (Log10(res_esa) - Log10(res_psa(i))) / 0.001
       end if
-      if (br2(i) > 0.9) then
-         br2(i) = 0.9
-         br1(i) = res_psa(i)/(res_pvol(i) ** 0.9)
+      if (br(2,i) > 0.9) then
+         br(2,i) = 0.9
+         br(1,i) = res_psa(i)/(res_pvol(i) ** 0.9)
       else
-         br1(i) = res_esa(i)/(res_evol(i) ** br2(i))
+         br(1,i) = res_esa/(res_evol(i) ** br(2,i))
       end if
    else
-      br2(i) = 0.9
-      br1(i) = res_psa(i)/(res_pvol(i) ** 0.9)
+      br(2,i) = 0.9
+      br(1,i) = res_psa(i)/(res_pvol(i) ** 0.9)
    end if
 
 !! calculate sediment settling rate

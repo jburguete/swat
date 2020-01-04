@@ -119,7 +119,7 @@ subroutine readhru(i, j)
 
    integer, intent(in) :: i, j
    character (len=80) :: titldum
-   real*8 :: epcohru, escohru, sin_sl, xm, xx
+   real*8 :: epcohru, escohru, r2adj, sin_sl, xm, xx
    integer :: eof
 
 
@@ -223,8 +223,11 @@ subroutine readhru(i, j)
       if (eof < 0) exit
       read (108,*,iostat=eof) surlag(j)
       if (eof < 0) exit
-!-------------------------------------------------------Moriasi 4/8/2014
-      read (108,*,iostat=eof) r2adj(j) !Soil retention parameter D. Moriasi 4/8/2014
+
+      read (108,*,iostat=eof) r2adj
+!      read (108,*,iostat=eof) r2adj(j) !Soil retention parameter D. Moriasi 4/8/2014
+! not used
+
       if (eof < 0) exit
       read (108,*,iostat=eof) cmn(j)
       if (eof < 0) exit
@@ -266,8 +269,8 @@ subroutine readhru(i, j)
    if (psp(j) <= 0.) psp(j) = psp_bsn
    if (sdnco(j) <= 0.) sdnco(j) = sdnco_bsn
 !New and modified parameters D. Moriasi 4/8/2014
-   if (r2adj(j) <= 0.) r2adj(j) = r2adj_bsn
-   if (r2adj(j) > 0.95) r2adj(j) = 0.95
+!   if (r2adj(j) <= 0.) r2adj(j) = r2adj_bsn ! not used
+!   if (r2adj(j) > 0.95) r2adj(j) = 0.95 ! not used
 !! comment the following line for the hru_fraction data !!
    if (hru_fr(j) <= 0.) hru_fr(j) = .0000001
    if (slsubbsn(j) <= 0.) slsubbsn(j) = 50.0

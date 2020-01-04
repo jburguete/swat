@@ -1,14 +1,31 @@
+!> @file rewind_init.f90
+!> file containing the subroutine rewind_init
+!> @author
+!> modified by Javier Burguete
+
+!> this subroutine reinitializes values for running different scenarios
 subroutine rewind_init
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine reinitializes values for running different scenarios
-!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
+!!    name        |units         |definition
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    icode
+!!    ii          |none          |counter
+!!    j           |none          |counter
+!!    k           |none          |counter
+!!    titldum     |none          |auxiliar variable to read strings in files
+!!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
+!!    SWAT: curno, ttcoef, gcycl
+
+!!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
 
    use parm
    implicit none
 
    character (len=80) :: titldum
-   integer :: icode, ii, j
+   integer :: icode, ii, j, k
 
 !! reset output arrays/variables
    aairr = 0.
@@ -121,9 +138,7 @@ subroutine rewind_init
    tmpstdmn = otmpstdmn
    tmpstdmx = otmpstdmx
    pcp_stat = opcp_stat
-   pr_w1 = opr_w1
-   pr_w2 = opr_w2
-   pr_w3 = opr_w3
+   pr_w = opr_w
    igen = ogen
 
 !! HRU variables
@@ -239,11 +254,6 @@ subroutine rewind_init
    pot_lag = orig_potsed * 0.
    potflwi = 0.
    potsedi = 0.
-   potsani = 0.
-   potsili = 0.
-   potclai = 0.
-   potsagi = 0.
-   potlagi = 0.
 
    pnd_vol = orig_pndvol
    pnd_sed = orig_pndsed
@@ -326,7 +336,6 @@ subroutine rewind_init
    res_no2 = orig_resno2
    res_nh3 = orig_resnh3
    res_orgn = orig_resorgn
-   res_chla = 0.
    res_seci = 0.
 
 !! reset random number generator seeds
@@ -346,7 +355,7 @@ subroutine rewind_init
    do j = 1, mhyd
       icode = icodes(j)
       ihout = ihouts(j)
-      inum1 = inum1s(j)
+      k = inum1s(j)
       inum2 = inum2s(j)
       inum3 = inum3s(j)
       rnum1 = rnum1s(j)
@@ -354,14 +363,14 @@ subroutine rewind_init
 
       select case (icode)
        case (6)   !!rechour
-         rewind (unit=200+inum1)
+         rewind (unit=200+k)
          do ii = 1, 6
-            read (200+inum1,5000) titldum
+            read (200+k,5000) titldum
          end do
        case (10)  !!recday
-         rewind (unit=555+inum1)
+         rewind (unit=555+k)
          do ii = 1, 6
-            read (555+inum1,5000) titldum
+            read (555+k,5000) titldum
          end do
          !!case (14) !!saveconc
        case default

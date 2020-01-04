@@ -22,8 +22,6 @@ subroutine readpest
 !!                               |degradation of the pesticide on foliage
 !!    decay_s(:)  |none          |exponential of the rate constant for
 !!                               |degradation of the pesticide in soil
-!!    hlife_f(:)  |days          |half-life of pesticide on foliage
-!!    hlife_s(:)  |days          |half-life of pesticide in soil
 !!    pname(:)    |NA            |name of pesticide/toxin
 !!    pst_wof(:)  |none          |fraction of pesticide on foliage which
 !!                               |is washed-off by a rainfall event
@@ -37,8 +35,8 @@ subroutine readpest
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    apefp
 !!    eof         |none          |end of file flag
-!!    hlff
-!!    hlfs
+!!    hlff        |days          |half-life of pesticide on foliage
+!!    hlfs        |days          |half-life of pesticide in soil
 !!    ip          |none          |counter which represents the array
 !!                               |storage number of the pesticide data
 !!                               |the array storage number is used by the
@@ -79,8 +77,6 @@ subroutine readpest
       pname(ip) = pstnm
       skoc(ip) = skocp
       pst_wof(ip) = wofp
-      hlife_f(ip) = hlff
-      hlife_s(ip) = hlfs
       ap_ef(ip) = apefp
       pst_wsol(ip) = pwsol
 
@@ -92,13 +88,13 @@ subroutine readpest
       !! P(t) = P_o*Exp(-kt) is used where P_o is the original amount of
       !! pesticide. k can be calculate with the equation k = 0.693/hlife.
       !! decay_f or decay_s = Exp(-k)
-      if (hlife_f(ip) > 0.) then
-         decay_f(ip) = Exp(-.693/hlife_f(ip))
+      if (hlff > 0.) then
+         decay_f(ip) = Exp(-.693/hlff)
       else
          decay_f(ip) = 0.
       endif
-      if (hlife_s(ip) > 0.) then
-         decay_s(ip) = Exp(-.693/hlife_s(ip))
+      if (hlfs > 0.) then
+         decay_s(ip) = Exp(-.693/hlfs)
       else
          decay_s(ip) = 0.
       endif

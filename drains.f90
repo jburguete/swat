@@ -12,9 +12,6 @@ subroutine drains(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |HRU number
-!!    conk(:,:)   |mm/hr         |lateral saturated hydraulic conductivity for each profile
-!!                               |layer in a give HRU. For example (conk(2,1) is conductivity
-!!                               |of layer from sol_z(1,1) to sol_z(2,1) in HRU1
 !!    curyr       |none          |current year in simulation (sequence)
 !!    drain_co(:) |mm/day        |drainage coefficient
 !!    ddrain(:)   |mm            |depth of drain tube from the soil surface
@@ -47,6 +44,9 @@ subroutine drains(j)
 !!    depth       |mm            |actual depth from surface to impermeable layer
 !!    cone        |mm/hr         |effective saturated lateral conductivity - based
 !!                               |on water table depth and conk/sol_k of layers
+!!    conk(:)     |mm/hr         |lateral saturated hydraulic conductivity for each profile
+!!                               |layer in a give HRU. For example (conk(2,1) is conductivity
+!!                               |of layer from sol_z(1,1) to sol_z(2,1) in HRU1
 !!    ddranp      |mm            |a variable used to indicate distance slightly less
 !!                               |than ddrain. Used to prevent calculating subirrigation
 !!                               |when water table is below drain bottom or when it is empty
@@ -95,6 +95,7 @@ subroutine drains(j)
 
    integer, intent(in) :: j
    real*8, parameter :: pi = 22./7.
+   real*8, dimension(mlyr) :: conk, wnan
    real*8 :: above, ad, ap, cone, ddranp, deep, depth, dflux, dg, dot, em, gee,&
       &gee1, gee2, gee3, hdmin, hdrain, k2, k3, k4, k5, k6, stor, storro, sum1,&
       &x, xx, y1
@@ -128,8 +129,8 @@ subroutine drains(j)
    sum1 = 0.
    deep = 0.
    do j1=1,nlayer
-      conk(j1,j) = sol_k(j1,j) * latksatf(j) !Daniel 2/26/09
-      sum1 = sum1 + wnan(j1) * conk(j1,j)
+      conk(j1) = sol_k(j1,j) * latksatf(j) !Daniel 2/26/09
+      sum1 = sum1 + wnan(j1) * conk(j1)
       deep = deep + wnan(j1)
    end do
    if ((deep <= 0.001).or.(sum1 <= 0.001)) then
@@ -144,7 +145,7 @@ subroutine drains(j)
             dg = sol_z(j1,j) - sol_z(j1-1,j)
          end if
          !! Compute layer depth ! Daniel 10/05/07
-         sum1 = sum1 + conk(j1,j) * dg !Daniel 10/09/07
+         sum1 = sum1 + conk(j1) * dg !Daniel 10/09/07
          deep = deep + dg   !Daniel 10/09/07
       end do
    end if

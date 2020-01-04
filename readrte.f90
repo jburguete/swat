@@ -31,10 +31,10 @@ subroutine readrte
 !!                               | (Peter Allen needs to give more info on this)
 !!    ch_bnk_d50(:) |            |D50(median) particle size diameter of channel
 !!                               |  bank sediment (0.001 - 20)
-!!    ch_cov1(:)    |none        |channel erodibility factor (0.0-1.0)
+!!    ch_cov(1,:)    |none        |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
-!!    ch_cov2(:)    |none        |channel cover factor (0.0-1.0)
+!!    ch_cov(2,:)    |none        |channel cover factor (0.0-1.0)
 !!                               |0 channel is completely protected from
 !!                               |  erosion by cover
 !!                               |1 no vegetative cover on channel
@@ -108,8 +108,8 @@ subroutine readrte
       read (103,*) ch_l(2,j)
       read (103,*) ch_n(2,j)
       read (103,*) ch_k(2,j)
-      read (103,*) ch_cov1(j)
-      read (103,*,iostat=eof) ch_cov2(j)
+      read (103,*) ch_cov(1,j)
+      read (103,*,iostat=eof) ch_cov(2,j)
       if (eof < 0) exit
       read (103,*,iostat=eof) ch_wdr(j)
       if (eof < 0) exit
@@ -167,15 +167,15 @@ subroutine readrte
 
    if (ch_eqn(j) <= 0) then
       ch_eqn(j)=0 !! SWAT Default sediment routing routine
-      if (ch_cov1(j) <= 0.0) ch_cov1(j) = 0.0
-      if (ch_cov2(j) <= 0.0) ch_cov2(j) = 0.0
-      if (ch_cov1(j) >= 1.0) ch_cov1(j) = 1.0
-      if (ch_cov2(j) >= 1.0) ch_cov2(j) = 1.0
+      if (ch_cov(1,j) <= 0.0) ch_cov(1,j) = 0.0
+      if (ch_cov(2,j) <= 0.0) ch_cov(2,j) = 0.0
+      if (ch_cov(1,j) >= 1.0) ch_cov(1,j) = 1.0
+      if (ch_cov(2,j) >= 1.0) ch_cov(2,j) = 1.0
    else
-      if (ch_cov1(j) <= 0.0) ch_cov1(j) = 1.0
-      if (ch_cov2(j) <= 0.0) ch_cov2(j) = 1.0
-      if (ch_cov1(j) >= 25.) ch_cov1(j) = 25.
-      if (ch_cov2(j) >= 25.) ch_cov2(j) = 25.
+      if (ch_cov(1,j) <= 0.0) ch_cov(1,j) = 1.0
+      if (ch_cov(2,j) <= 0.0) ch_cov(2,j) = 1.0
+      if (ch_cov(1,j) >= 25.) ch_cov(1,j) = 25.
+      if (ch_cov(2,j) >= 25.) ch_cov(2,j) = 25.
    end if
 
 
@@ -270,13 +270,13 @@ subroutine readrte
    if  (tc_bnk(j) <= 1.e-6) then
       SC = (ch_bnk_sil(j) + ch_bnk_cla(j)) * 100.
       tc_bnk(j) = (0.1 + (0.1779*SC) + (0.0028*(SC)**2)&
-         &- ((2.34E-05)*(SC)**3)) * ch_cov1(j)
+         &- ((2.34E-05)*(SC)**3)) * ch_cov(1,j)
    end if
 
    if  (tc_bed(j) <= 1.e-6) then
       SC = (ch_bed_sil(j) + ch_bed_cla(j)) * 100.
       tc_bed(j) = (0.1 + (0.1779*SC) + (0.0028*(SC)**2)&
-         &- ((2.34E-05)*(SC)**3)) * ch_cov2(j)
+         &- ((2.34E-05)*(SC)**3)) * ch_cov(2,j)
    end if
 
 !!  An estimate of channel bank erodibility coefficient from jet test if it is not available
@@ -308,7 +308,7 @@ subroutine readrte
 
    if (sumerod < 1.e-6) then
       do mo = 1, 12
-         ch_erodmo(j,mo) = ch_cov1(j)
+         ch_erodmo(j,mo) = ch_cov(1,j)
       end do
    end if
 

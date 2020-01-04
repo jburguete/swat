@@ -1,12 +1,17 @@
-subroutine impndaa(years)
+!> @file impndaa.f90
+!> file containing the subroutine impndaa
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes average annual HRU impondment output to the
-!!    output.wtr file
+!> this subroutine writes average annual HRU impondment output to the
+!> output.wtr file
+!> @param[in] years length of simulation (years)
+subroutine impndaa(years)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    years         |years         |length of simulation
 !!    cpnm(:)       |NA            |four character code to represent crop name
 !!    hru_km(:)     |km^2          |area of HRU in square kilometers
 !!    hru_sub(:)    |none          |subbasin in which HRU is located
@@ -140,7 +145,6 @@ subroutine impndaa(years)
 !!    orgp_ppw    |mg P/L        |organic P concentration in wetland
 !!    pdvas(:)    |varies        |array to hold HRU output values
 !!    sb          |none          |subbasin number
-!!    years       |years         |length of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -149,10 +153,10 @@ subroutine impndaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   real*8 :: orgn_ppm, orgp_ppm, ano3_ppm, minp_ppm, chla_ppm
-   real*8 :: orgn_ppw, orgp_ppw, ano3_ppw, solp_ppw, chla_ppw
-   integer :: j, sb, ii, iflag
    real*8, dimension (40) :: pdvas
+   real*8 :: ano3_ppm, ano3_ppw, chla_ppm, chla_ppw, minp_ppm, orgn_ppm,&
+      &orgn_ppw, orgp_ppm, orgp_ppw, solp_ppw
+   integer :: iflag, ii, j, sb
    character*4 cropname
 
    do j = 1, nhru

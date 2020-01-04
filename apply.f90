@@ -52,7 +52,6 @@ subroutine apply(j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    gc          |none          |fraction of ground covered by plant foliage
-!!    jj          |none          |subbasin number
 !!    k           |none          |sequence number of pesticide in NPNO(:)
 !!    kk          |none          |pesticide identification number from
 !!                               |pest.dat
@@ -68,8 +67,8 @@ subroutine apply(j)
    implicit none
 
    integer, intent(in) :: j
-   integer :: kk, k, jj, nly
-   real*8 :: xx, gc
+   real*8 :: gc, xx
+   integer :: kk, k, nly
 
 !! initialize local variables
 
@@ -79,14 +78,7 @@ subroutine apply(j)
 
    xx = pst_kg
 
-   jj = inum1
-
 !! calculate amount of pesticide drifting onto main channel in subbasin
-!      if (k == irtpest) then
-!        drift(jj) = drift(jj) + xx * hru_km(j) * 100. * driftco(j) *    &
-!     *                                                              1.e6
-!      end if
-!      xx = xx * ap_ef(kk) * (1. - driftco(j))
    xx = xx * ap_ef(kk)
 
 !   added for pesticide incorporation 3/31/08 gsm

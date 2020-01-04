@@ -74,7 +74,7 @@ subroutine sched_mgt(j)
 
     case (2)  !! irrigation operation
       irr_sc(j) = mgt2iop(n,j)     !!NUBZ
-      irr_no(j) = Int(mgt10iop(n,j))
+      irr_no(j) = mgt10iop(n,j)
       irramt(j) = mgt4op(n,j)
       irrsalt(j) = mgt5op(n,j)
       irrefm(j) = mgt6op(n,j)
@@ -228,7 +228,7 @@ subroutine sched_mgt(j)
       irr_mx(j) = mgt6op(n,j)
       irr_asq(j) = mgt7op(n,j)
       irr_sca(j) = mgt2iop(n,j)
-      irr_noa(j) = Int(mgt10iop(n,j))
+      irr_noa(j) = mgt10iop(n,j)
       if (irr_noa(j) <= 0) irr_noa(j) = irrno(j)
       if (irr_noa(j) <= 0) irr_noa(j) = hru_sub(j)
       if (wstrs_id(j) <= 0) wstrs_id(j) = 1
@@ -277,8 +277,6 @@ subroutine sched_mgt(j)
          !if (igrow == 1) then
          if (igro(j) == 1) then
             phusw(j) = husc
-         else
-            phusw_nocrop(j) = husc
          endif
       endif
       sweepeff = mgt4op(n,j)

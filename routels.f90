@@ -3,7 +3,7 @@
 !> @author
 !> modified by Javier Burguete
 
-subroutine routels(iru_sub)
+subroutine routels(iru_sub, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -73,7 +73,7 @@ subroutine routels(iru_sub)
 
    use parm
    implicit none
-   integer, intent(in) :: iru_sub
+   integer, intent(in) :: iru_sub, sb
    integer :: ii, jj, kk, lyr
    real*8 :: cy, dakm, dep, dr, dr_er, dstor, frac, gwqout, gwqrunon, latqlyr,&
       &latqout, latqrunon,  ls_gwq, ls_latq, ls_overq, orgn, orgp, qs, sed,&
@@ -93,11 +93,11 @@ subroutine routels(iru_sub)
 !!    sediment
       sed = varoute(3,inum2) * rnum1
       !! use surface runoff (mm) for eiq - m3/(10 * 100*km2) = mm
-      ru_eiq(inum3,inum1) = ls_overq / (1000. * daru_km(inum3,inum1))
-      trancap = ru_ktc(inum3,inum1) * ru_c(inum3,inum1) *&
-         &ru_eiq(inum3,inum1) * ru_k(inum3,inum1) *&
-         &ru_a(inum3,inum1)**1.4 * ru_ovs(inum3,inum1)**1.4
-      trancap = trancap * daru_km(inum3,inum1) * 100.   !! t/ha -> t
+      ru_eiq(inum3,sb) = ls_overq / (1000. * daru_km(inum3,sb))
+      trancap = ru_ktc(inum3,sb) * ru_c(inum3,sb) *&
+         &ru_eiq(inum3,sb) * ru_k(inum3,sb) *&
+         &ru_a(inum3,sb)**1.4 * ru_ovs(inum3,sb)**1.4
+      trancap = trancap * daru_km(inum3,sb) * 100.   !! t/ha -> t
       if (sed > trancap) then
          varoute(3,ihout) = trancap
          dr = varoute(3,ihout) / sed
@@ -150,8 +150,8 @@ subroutine routels(iru_sub)
                frac = hru_fr(jj)
                dakm = sub_km(inum3)
             else
-               frac = hru_rufr(inum1,kk)
-               dakm = daru_km(inum3,inum1)
+               frac = hru_rufr(sb,kk)
+               dakm = daru_km(inum3,sb)
             end if
             if (frac > 1.e-9) then
                xx = frac * dakm * 100.     !!km2*100 = ha
@@ -171,7 +171,7 @@ subroutine routels(iru_sub)
                   latq(jj) = 0.
                   sepbtm(jj) = 0.
                   qtile = 0.
-                  call percmain(jj)
+                  call percmain(jj, sb)
                   latqout = latqout + latq(jj) * 10. * xx
                   gwqout = gwqout + sepbtm(jj) * 10. * xx
                end if
@@ -196,8 +196,8 @@ subroutine routels(iru_sub)
                frac = hru_fr(jj)
                dakm = sub_km(inum3)
             else
-               frac = hru_rufr(inum1,kk)
-               dakm = daru_km(inum3,inum1)
+               frac = hru_rufr(sb,kk)
+               dakm = daru_km(inum3,sb)
             end if
             if (frac > 1.e-9) then
                xx = frac * dakm * 100.     !!km2*100 = ha
@@ -238,8 +238,8 @@ subroutine routels(iru_sub)
                frac = hru_fr(jj)
                dakm = sub_km(inum3)
             else
-               frac = hru_rufr(inum1,kk)
-               dakm = daru_km(inum3,inum1)
+               frac = hru_rufr(sb,kk)
+               dakm = daru_km(inum3,sb)
             end if
             if (frac > 1.e-9) then
                xx = frac * dakm * 100.     !!km2*100 = ha

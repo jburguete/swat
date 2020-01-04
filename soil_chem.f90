@@ -273,7 +273,7 @@ subroutine soil_chem(ii)
          sol_stap(j,ii) = 4. * sol_actp(j,ii)
       end if
 
-      sol_hum(j,ii) = sol_cbn(j,ii) * wt1 * 17200.
+      ! sol_hum(j,ii) = sol_cbn(j,ii) * wt1 * 17200. ! not used
       xx = sol_z(j,ii)
       summinp = summinp + sol_solp(j,ii) + sol_actp(j,ii) + sol_stap(j,ii)
       sumorgp = sumorgp + sol_orgp(j,ii) + sol_fop(j,ii)

@@ -15,9 +15,9 @@ subroutine resnut(jres)
 !!    chlar(:)    |none          |chlorophyll-a production coefficient for
 !!                               |reservoir
 !!    inum2       |none          |inflow hydrograph storage location number
-!!    ires1(:)    |none          |beginning of mid-year nutrient settling
+!!    ires(1,:)    |none          |beginning of mid-year nutrient settling
 !!                               |"season"
-!!    ires2(:)    |none          |end of mid-year nutrient settling "season"
+!!    ires(2,:)    |none          |end of mid-year nutrient settling "season"
 !!    i_mo        |none          |current month of simulation
 !!    nsetlr(1,:) |m/day         |nitrogen settling rate for 1st season
 !!    nsetlr(2,:) |m/day         |nitrogen settling rate for 2nd season
@@ -44,7 +44,6 @@ subroutine resnut(jres)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    res_chla(:) |kg chl-a      |amount of chlorophyll-a in reservoir
 !!    res_nh3(:)  |kg N          |amount of ammonia in reservoir
 !!    res_no2(:)  |kg N          |amount of nitrite in reservoir
 !!    res_no3(:)  |kg N          |amount of nitrate in reservoir
@@ -72,6 +71,7 @@ subroutine resnut(jres)
 !!                               |settling
 !!    phosk       |none          |fraction of phosphorus in reservoir removed
 !!                               |by settling
+!!    res_chla    |kg chl-a      |amount of chlorophyll-a in reservoir
 !!    tpco        |ppb (ug/L)    |concentration of phosphorus in water
 !!                               |on day
 !!    xx          |none          |auxiliar variable
@@ -88,7 +88,7 @@ subroutine resnut(jres)
 
    real*8 Theta
    integer, intent(in) :: jres
-   real*8 :: chlaco, conc_n, conc_p, nitrok, phosk, tpco, xx
+   real*8 :: chlaco, conc_n, conc_p, nitrok, phosk, res_chla, tpco, xx
 
 !! if reservoir volume less than 1 m^3, set all nutrient levels to
 !! zero and perform no nutrient calculations
@@ -99,13 +99,12 @@ subroutine resnut(jres)
       res_nh3(jres) = 0.
       res_no2(jres) = 0.
       res_solp(jres) = 0.
-      res_chla(jres) = 0.
       res_seci(jres) = 0.
       return
    end if
 
 !! if reservoir volume greater than 1 m^3, perform nutrient calculations
-   if (i_mo >= ires1(jres) .and. i_mo <= ires2(jres)) then
+   if (i_mo >= ires(1,jres) .and. i_mo <= ires(2,jres)) then
       phosk = psetlr(1,jres)
       nitrok = nsetlr(1,jres)
    else
@@ -132,6 +131,7 @@ subroutine resnut(jres)
    if (ires_nut == 1) then
       xx = ressa * 10000. * (conc_p - con_pirr(jres))
       phosk = xx * Theta(phosk, theta_p(jres), tmpav(res_sub(jres)))
+      xx = ressa * 10000. * (conc_n - con_nirr(jres))
       nitrok = xx * Theta(nitrok, theta_n(jres), tmpav(res_sub(jres)))
    else
       xx = ressa * 10000. / (res_vol(jres) + resflwo)
@@ -156,13 +156,13 @@ subroutine resnut(jres)
 
    !! calculate chlorophyll-a and water clarity
    chlaco = 0.
-   res_chla(jres) = 0.
+   res_chla = 0.
    res_seci(jres) = 0.
    tpco = 1.e+6 * (res_solp(jres) + res_orgp(jres)) / (res_vol(jres) + resflwo)
    if (tpco > 1.e-4) then
       !! equation 29.1.6 in SWAT manual
       chlaco = chlar(jres) * 0.551 * (tpco**0.76)
-      res_chla(jres) = chlaco * (res_vol(jres) + resflwo) * 1.e-6
+      res_chla = chlaco * (res_vol(jres) + resflwo) * 1.e-6
    endif
    if (chlaco > 1.e-4) then
       !! equation 29.1.8 in SWAT manual
@@ -174,7 +174,7 @@ subroutine resnut(jres)
    if (res_orgn(jres) < 1.e-4) res_orgn(jres) = 0.0
    if (res_orgp(jres) < 1.e-4) res_orgp(jres) = 0.0
    if (res_solp(jres) < 1.e-4) res_solp(jres) = 0.0
-   if (res_chla(jres) < 1.e-4) res_chla(jres) = 0.0
+   if (res_chla < 1.e-4) res_chla = 0.0
    if (res_nh3(jres) < 1.e-4) res_nh3(jres) = 0.0
    if (res_no2(jres) < 1.e-4) res_no2(jres) = 0.0
    xx = resflwo / (res_vol(jres) + resflwo)
@@ -182,7 +182,7 @@ subroutine resnut(jres)
    resorgno = res_orgn(jres) * xx
    resorgpo = res_orgp(jres) * xx
    ressolpo = res_solp(jres) * xx
-   reschlao = res_chla(jres) * xx
+   reschlao = res_chla * xx
    resnh3o = res_nh3(jres) * xx
    resno2o = res_no2(jres) * xx
    res_orgn(jres) = res_orgn(jres) - resorgno
@@ -191,7 +191,6 @@ subroutine resnut(jres)
    res_nh3(jres) = res_nh3(jres) - resnh3o
    res_no2(jres) = res_no2(jres) - resno2o
    res_solp(jres) = res_solp(jres) - ressolpo
-   res_chla(jres) = res_chla(jres) - reschlao
 
    return
 end

@@ -5,12 +5,14 @@
 
 !> this subroutine stores and lags sediment and nutrients in surface runoff
 !> @param[in] j HRU number (none)
-subroutine surfstor(j)
+!> @param[in] sb subbasin number (none)
+subroutine surfstor(j, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j             |none         |HRU number
+!!    sb            |none         |subbasin number
 !!    bactrolp      |# colonies/ha|less persistent bacteria transported to main
 !!                                |channel with surface runoff
 !!    bactrop       |# colonies/ha|persistent bacteria transported to main
@@ -142,7 +144,7 @@ subroutine surfstor(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, sb
    integer :: k
 
    if (ievent == 0) then
@@ -191,13 +193,11 @@ subroutine surfstor(j)
    if (hrupest(j) == 1) then
       do k = 1, npmx
          !MFW, 3/15/12: Modified to account for decay during lag
-         !pst_lag(1,k,j) = pst_lag(1,k,j) + pst_surq(k,j)
          pst_lag(1,k,j) = (pst_lag(1,k,j) * Exp(-1. *&
-            &chpst_rea(inum1))) + pst_surq(k,j)
+            &chpst_rea(sb))) + pst_surq(k,j)
          if (pst_lag(1,k,j) < 1.e-10) pst_lag(1,k,j) = 0.0
-         !pst_lag(2,k,j) = pst_lag(2,k,j) + pst_sed(k,j)
          pst_lag(2,k,j) = (pst_lag(2,k,j) * Exp(-1. *&
-            &sedpst_rea(inum1))) + pst_sed(k,j)
+            &sedpst_rea(sb))) + pst_sed(k,j)
          if (pst_lag(2,k,j) < 1.e-10) pst_lag(2,k,j) = 0.0
       end do
    end if

@@ -1,7 +1,10 @@
-subroutine stdaa
+!> @file stdaa.f90
+!> file containing the subroutine stdaa
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes average annual output to .std file
+!> this subroutine writes average annual output to .std file
+subroutine stdaa
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -296,7 +299,7 @@ subroutine stdaa
    implicit none
 
    real*8 :: xirr, solpyldjga
-   integer :: j, nicr, k, ncrp
+   integer :: j, k, ncrp, nicr
    character*4 cropname
 
    if (iscen == 1) then

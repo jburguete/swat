@@ -13,7 +13,7 @@ subroutine slrgen(j)
 !!    hru_rmx(:)  |MJ/m^2        |maximum possible radiation for the day in HRU
 !!    j           |none          |HRU number
 !!    i_mo        |none          |month being simulated
-!!    pr_w3(:,:)  |none          |proportion of wet days in a month
+!!    pr_w(3,:,:)  |none          |proportion of wet days in a month
 !!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
 !!    wgncur(3,:) |none          |parameter which predicts impact of precip on
@@ -45,7 +45,7 @@ subroutine slrgen(j)
    integer :: k
 
    k = hru_sub(j)
-   rav = solarav(i_mo,k) / (1. - 0.5 * pr_w3(i_mo,k))
+   rav = solarav(i_mo,k) / (1. - 0.5 * pr_w(3,i_mo,k))
    if (subp(j) > 0.0) rav = 0.5 * rav
    rx = hru_rmx(j) - rav
    hru_ra(j) = rav + wgncur(3,j) * rx / 4.

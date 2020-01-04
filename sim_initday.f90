@@ -1,7 +1,10 @@
-subroutine sim_initday
+!> @file sim_initday.f90
+!> file containing the subroutine sim_initday
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine initialized arrays at the beginning of the day
+!> this subroutine initialized arrays at the beginning of the day
+subroutine sim_initday
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -92,7 +95,6 @@ subroutine sim_initday
    cnday = 0.
    dayl = 0.
    doxq = 0.
-   drift = 0.
    flat = 0.
    frad = 0.
 !      gwq_ru = 0.
@@ -128,7 +130,6 @@ subroutine sim_initday
    clayld = 0.
    sagyld = 0.
    lagyld = 0.
-   grayld = 0.
 
    sepbtm = 0.
    sol_cnsw = 0.
@@ -153,7 +154,6 @@ subroutine sim_initday
    sub_latno3 = 0.
    sub_latq = 0.
    sub_tileq = 0.
-   sub_minp = 0.
    sub_minpa = 0.
    sub_minps = 0.
    sub_no3 = 0.
@@ -161,7 +161,7 @@ subroutine sim_initday
    sub_orgp = 0.
    sub_pet = 0.
    sub_precip = 0.
-   sub_pst = 0.
+   ! sub_pst = 0. ! not used
    sub_qd = 0.
    sub_sedpa = 0.
    sub_sedps = 0.

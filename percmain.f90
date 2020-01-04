@@ -5,7 +5,8 @@
 
 !> this subroutine is the master soil percolation component
 !> @param[in] j HRU number
-subroutine percmain(j)
+!> @param[in] sb subbasin number
+subroutine percmain(j, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -19,13 +20,13 @@ subroutine percmain(j)
 !!    itdrn       |none          |tile drainage equations flag/code
 !!                               |1 simulate tile flow using subroutine drains(wt_shall)
 !!                               |0 simulate tile flow using subroutine origtile(wt_shall,d)
-!!    iwtdn       |none          |water table depth algorithms flag/code
-!!                               |1 simulate wt_shall using subroutine new water table depth routine
-!!                               |0 simulate wt_shall using subroutine original water table depth routine
 !!    ismax       |none          |maximum depressional storage selection flag/code
 !!                               |1 dynamic stmaxd computed as a function of random roughness and rain intensity
 !!                               |by depstor.f
 !!                               |0 static stmaxd read from .bsn for the global value or .sdr for specific hrus
+!!    iwtdn       |none          |water table depth algorithms flag/code
+!!                               |1 simulate wt_shall using subroutine new water table depth routine
+!!                               |0 simulate wt_shall using subroutine original water table depth routine
 !!    sol_fc(:,:) |mm H2O        |amount of water available to plants in soil
 !!                               |layer at field capacity (fc - wp)
 !!    sol_nly(:)  |none          |number of layers in soil profile
@@ -78,7 +79,6 @@ subroutine percmain(j)
 !!    lid_cuminf_total
 !!    por_air
 !!    qvol
-!!    sb
 !!    sumqtile
 !!    swst_del
 !!    wtst_del
@@ -95,15 +95,14 @@ subroutine percmain(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, sb
    real*8, parameter :: por_air = 0.5
    real*8 :: d, hru_mm, lid_cuminf_total, qvol, sumqtile, swst_del, wtst_del,&
       &xx, yy
-   integer :: ii, isp, j1, sb
+   integer :: ii, isp, j1
 
    lid_cuminf_total = 0.
 
-   sb = inum1
    isp = isep_typ(j)     !! J.Jeong 6/25/14
 
    !! initialize water entering first soil layer
@@ -177,13 +176,13 @@ subroutine percmain(j)
       if (sw_excess > 1.e-5) then
          !! calculate tile flow (lyrtile), lateral flow (latlyr) and
          !! percolation (sepday)
-         call percmicro(j1,j)
+         call percmicro(j1, j)
 
          sol_st(j1,j) = sol_st(j1,j) - sepday - latlyr - lyrtile
          sol_st(j1,j) = Max(1.e-6,sol_st(j1,j))
 
          !! redistribute soil water if above field capacity (high water table)
-         call sat_excess(j1)
+         call sat_excess(j1, j)
       end if
 
       !! summary calculations

@@ -283,7 +283,7 @@ subroutine virtual(i, j, k, sb)
 
 !! write daily HRU output
    if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call hruday(i, j)
-   if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call impndday(j)
+   if ((iprint==1.or.iprint==3) .and. curyr > nyskip) call impndday(j, sb)
 
 !! sum HRU results for subbasin
    if (sb > 0) then
@@ -636,11 +636,6 @@ subroutine virtual(i, j, k, sb)
    ovrlnd(j) = 0.
    potflwi(j) = 0.
    potsedi(j) = 0.
-   potsani(j) = 0.
-   potsili(j) = 0.
-   potclai(j) = 0.
-   potsagi(j) = 0.
-   potlagi(j) = 0.
 !! end of day calculations
    tmpavp(j) = tmpav(j)
 

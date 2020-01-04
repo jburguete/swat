@@ -12,10 +12,10 @@ subroutine rtsed(jrch)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch        |none          |reach number
-!!    ch_cov1(:)  |none          |channel erodibility factor (0.0-1.0)
+!!    ch_cov(1,:)  |none          |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
-!!    ch_cov2(:)  |none          |channel cover factor (0.0-1.0)
+!!    ch_cov(2,:)  |none          |channel cover factor (0.0-1.0)
 !!                               |0 channel is completely protected from
 !!                               |  erosion by cover
 !!                               |1 no vegetative cover on channel
@@ -133,7 +133,7 @@ subroutine rtsed(jrch)
             !! First the deposited material will be degraded before channel bed
             if (deg >= depch(jrch)) then
                deg1 = depch(jrch)
-               deg2 = (deg - deg1) * ch_erodmo(jrch,i_mo) * ch_cov2(jrch)
+               deg2 = (deg - deg1) * ch_erodmo(jrch,i_mo) * ch_cov(2,jrch)
             else
                deg1 = deg
                deg2 = 0.
@@ -189,7 +189,7 @@ subroutine rtsed(jrch)
             depdeg = ch_d(jrch) - ch_di(jrch)
             if (depdeg < ch_si(jrch) * ch_li(jrch) * 1000.) then
                if (qdin > 1400000.) then
-                  dat2 =  358.6 * rchdep * ch_s(2,jrch) * ch_cov1(jrch)
+                  dat2 =  358.6 * rchdep * ch_s(2,jrch) * ch_cov(1,jrch)
                   ch_d(jrch) = ch_d(jrch) + dat2
                   ch_w(2,jrch) = ch_wdr(jrch) * ch_d(jrch)
                   ch_s(2,jrch) = ch_s(2,jrch) - dat2 / (ch_l(2,jrch) * 1000.)

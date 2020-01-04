@@ -35,13 +35,13 @@ subroutine readbsn
 !!    bactmx      |none          |bacteria percolation coefficient
 !!                               |Ratio of solution bacteria in surface layer
 !!                               |to solution bacteria in percolate
-!!    bc1(:)           |1/hr          |rate constant for biological oxidation of
+!!    bc(1,:)           |1/hr          |rate constant for biological oxidation of
 !!                                    |NH3 to NO2 in reach at 20 deg C
-!!    bc2(:)           |1/hr          |rate constant for biological oxidation of
+!!    bc(2,:)           |1/hr          |rate constant for biological oxidation of
 !!                                    |NO2 to NO3 in reach at 20 deg C
-!!    bc3(:)           |1/hr          |rate constant for hydrolysis of organic N
+!!    bc(3,:)           |1/hr          |rate constant for hydrolysis of organic N
 !!                                    |to ammonia in reach at 20 deg C
-!!    bc4(:)           |1/hr          |rate constant for the decay of organic P
+!!    bc(4,:)           |1/hr          |rate constant for the decay of organic P
 !!                                    |to dissolved P in reach at 20 deg C
 !!    bf_flag          |
 !!    cdn              |none          |denitrification exponential rate coefficient
@@ -380,10 +380,9 @@ subroutine readbsn
    character (len=130) :: tlu
    character (len=80) :: titldum
    character (len=13) :: wwqfile
-   real*8 :: escobsn, epcobsn, gdrain_bsn, sno50cov, tdrain_bsn, wdlpf, wdlpq,&
-      &wdlps, wdpf, wdps, wglpf, wglpq, wglps, wgpf, wgpq, wgps
+   real*8 :: escobsn, epcobsn, gdrain_bsn, r2adj_bsn, sno50cov, tdrain_bsn,&
+      &wdlpf, wdlpq, wdlps, wdpf, wdps, wglpf, wglpq, wglps, wgpf, wgpq, wgps
    integer :: eof, ii, numlu, pos
-!!      real*8 :: r2adj_bsn  !D. Moriasi 4/8/2014
 
 !!    initialize variables
    eof = 0
@@ -639,7 +638,7 @@ subroutine readbsn
 
 !!    set default values for undefined parameters
 !     if (ievent == 1) nstep = 24
-   if (r2adj_bsn < 1.e-6) r2adj_bsn = 0.
+!   if (r2adj_bsn < 1.e-6) r2adj_bsn = 0. ! not used
    if (drain_co_bsn < 1.e-6) drain_co_bsn = 10.
    !!Parameter variables added D. Moriasi 4/8/2014
    if (sstmaxd_bsn < 1.e-6) sstmaxd_bsn = 20.

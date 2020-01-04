@@ -1,3 +1,8 @@
+!> @file layersplit.f90
+!> file containing the subroutine layersplit
+!> @author
+!> modified by Javier Burguete
+
 subroutine layersplit(dep_new, k)
 
    use parm

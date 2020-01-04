@@ -1,3 +1,8 @@
+!> @file recday.f90
+!> file containing the subroutine recday
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine inputs measured loadings to the stream network for
 !> routing through the watershed where the records are summarized on a
 !> daily basis

@@ -28,13 +28,13 @@ subroutine readplant
 !!                                 |active radiation.
 !!    bio_leaf(:)|none             |fraction of leaf/needle biomass that drops
 !!                                 |during dormancy (for trees only)
-!!    bio_n1(:)  |none             |1st shape parameter for plant N uptake
+!!    bio_n(1,:)  |none             |1st shape parameter for plant N uptake
 !!                                 |equation
-!!    bio_n2(:)  |none             |2nd shape parameter for plant N uptake
+!!    bio_n(2,:)  |none             |2nd shape parameter for plant N uptake
 !!                                 |equation
-!!    bio_p1(:)  |none             |1st shape parameter for plant P uptake
+!!    bio_p(1,:)  |none             |1st shape parameter for plant P uptake
 !!                                 |equation
-!!    bio_p2(:)  |none             |2st shape parameter for plant P uptake
+!!    bio_p(2,:)  |none             |2st shape parameter for plant P uptake
 !!                                 |equation
 !!    blai(:)    |none             |maximum (potential) leaf area index
 !!    bm_dieoff(:) fraction        |fraction above ground biomass that dies
@@ -57,9 +57,9 @@ subroutine readplant
 !!               |                 |5 cold season annual
 !!               |                 |6 perennial
 !!               |                 |7 trees
-!!    leaf1(:)   |none             |1st shape parameter for leaf area
+!!    leaf(1,:)   |none             |1st shape parameter for leaf area
 !!                                 |development equation.
-!!    leaf2(:)   |none             |2nd shape parameter for leaf area
+!!    leaf(2,:)   |none             |2nd shape parameter for leaf area
 !!                                 |development equation.
 !!    pltnfr1(:)|kg N/kg biomass  |nitrogen uptake parameter #1: normal
 !!                                 |fraction of N in crop biomass at emergence
@@ -84,9 +84,9 @@ subroutine readplant
 !!    t_opt(:)   |deg C            |optimal temperature for plant growth
 !!    vpd2(:)    |(m/s)*(1/kPa)    |rate of decline in stomatal conductance per
 !!                                 |unit increase in vapor pressure deficit
-!!    wac21(:)   |none             |1st shape parameter for radiation use
+!!    wac2(1,:)   |none             |1st shape parameter for radiation use
 !!                                 |efficiency equation.
-!!    wac22(:)   |none             |2nd shape parameter for radiation use
+!!    wac2(2,:)   |none             |2nd shape parameter for radiation use
 !!                                 |efficiency equation.
 !!    wavp(:)    |none             |Rate of decline in radiation use efficiency
 !!                                 |as a function of vapor pressure deficit
@@ -298,7 +298,7 @@ subroutine readplant
       if (bio_e(ic) > 0. .and. cpnm(ic) /= 'WATR') then
 
 !!        determine shape parameters for the leaf area development equation
-         call ascrv(laimx1,laimx2,frgrw1,frgrw2,leaf1(ic),leaf2(ic))
+         call ascrv(laimx1,laimx2,frgrw1,frgrw2,leaf(1,ic),leaf(2,ic))
 
 !!        The other point used to determine shape parameters for radiation
 !!        use efficiency is the ambient CO2 level (330 ul/l) and the
@@ -309,7 +309,7 @@ subroutine readplant
 
 
 !!        determine shape parameters for the radiation use efficiency equation
-         call ascrv(b1, b2, c1, co2hi, wac21(ic), wac22(ic))
+         call ascrv(b1, b2, c1, co2hi, wac2(1,ic), wac2(2,ic))
 
          if (usle_c < 1.e-4) usle_c = 0.001
          cvm(ic) = Log(usle_c)
@@ -325,7 +325,7 @@ subroutine readplant
          b2 = 1. - (pltnfr2(ic) - pltnfr3(ic)) / b1
          b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant nitrogen uptake equation
-         call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_n1(ic), bio_n2(ic))
+         call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_n(1,ic), bio_n(2,ic))
 
 
 !!        phosphorus uptake parameters
@@ -338,7 +338,7 @@ subroutine readplant
          b2 = 1. - (pltpfr2(ic) - pltpfr3(ic)) / b1
          b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant phosphorus uptake equation
-         call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_p1(ic), bio_p2(ic))
+         call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_p(1,ic), bio_p(2,ic))
 
 
 !!        calculate slope in stomatal conductance equation

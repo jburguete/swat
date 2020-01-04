@@ -38,8 +38,7 @@ subroutine zero2
    bio_aahv = 0.
    biomix = 0.
    bp = 0.
-   br1 = 0.
-   br2 = 0.
+   br = 0.
    bw = 0.
    ch_l = 0.
    ch_revap = 0.
@@ -93,17 +92,16 @@ subroutine zero2
    pot_solp = 0.
 !   pot_evap = 0. ! not used
 !   tile_out = 0. ! not used
-   tile_sedo = 0.
-   tile_no3o = 0.
+!   tile_sedo = 0. ! not used
+!   tile_no3o = 0. ! not used
    tile_solpo = 0.
-   tile_orgno = 0.
-   tile_orgpo = 0.
-   tile_minpso = 0.
-   tile_minpao = 0.
+!   tile_orgno = 0. ! not used
+!   tile_orgpo = 0. ! not used
+!   tile_minpso = 0. ! not used
+!   tile_minpao = 0. ! not used
 
    imp_trig = 1
-   ires1 = 0
-   ires2 = 0
+   ires = 0
    iresco = 0
    isgage = 0
    iwgage = 0
@@ -194,11 +192,6 @@ subroutine zero2
    pot_volxmm = 0.
    potflwi = 0.
    potsedi = 0.
-   potsani = 0.
-   potsili = 0.
-   potclai = 0.
-   potsagi = 0.
-   potlagi = 0.
 
    psetlp = 0.
    psetlr = 0.
@@ -206,10 +199,6 @@ subroutine zero2
    rchstor = 0.
    rch_bactp = 0.
    rch_bactlp = 0.
-   res_bactlp = 0.
-   res_bactp = 0.
-   res_chla = 0.
-   res_esa = 0.
    res_evol = 0.
    res_k = 0.
    res_nh3 = 0.
@@ -296,7 +285,6 @@ subroutine zero2
    wet_solp = 0.
    wet_solpg = 0.
    wgnold = 0.
-   wlat = 0.
    wpstaao = 0.
    wpstmono = 0.
    wpstyro = 0.

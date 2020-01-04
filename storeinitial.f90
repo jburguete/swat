@@ -22,9 +22,7 @@ subroutine storeinitial
    otmpstdmx = tmpstdmx
    otmpstdmn = tmpstdmn
    opcp_stat = pcp_stat
-   opr_w1 = pr_w1
-   opr_w2 = pr_w2
-   opr_w3 = pr_w3
+   opr_w = pr_w
    ogen = igen
 
 

@@ -1,4 +1,9 @@
-!> the purpose of this program is to read in data from the detention pond
+!> @file bmp_det_pond.f90
+!> file containing the subroutine bmp_det_pond
+!> @author
+!> modified by Javier Burguete
+
+!> the purpose of this subroutine is to read in data from the detention pond
 !> input file (.dtp) and perform computations
 !> @param[in] sb subbasin number (none)
 subroutine bmp_det_pond(sb)

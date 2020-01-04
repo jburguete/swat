@@ -196,11 +196,12 @@ subroutine pothole(i, j)
    integer, intent(in) :: i, j
    real*8, parameter :: pi = 3.1416
    real*8 :: claloss, cnv, drcla, drsil, drtot, lagloss, minpaloss, minpsloss,&
-      &no3in, no3loss, orgnloss, orgploss, pot_depth, potev, potloss, potmm,&
-      &potmpao, potmpso, potno3o, potorgno, potorgpo, potsa_ini, potsep,&
-      &potsolpo, potvol_ini, potvol_m3, potvol_sep, potvol_tile, qdayi, qin,&
-      &sagloss, sanloss, sedloss, silloss, solp_tileo, solploss, spillo, sumo,&
-      &tileo, xx, yy
+      &no3in, no3loss, orgnloss, orgploss, pot_depth, potclai, potclao, potev,&
+      &potlagi, potlago, potloss, potmm, potmpao, potmpso, potno3o, potorgno,&
+      &potorgpo, potsa_ini, potsagi, potsago, potsani, potsano, potsep,&
+      &potsili, potsilo, potsolpo, potvol_ini, potvol_m3, potvol_sep,&
+      &potvol_tile, qdayi, qin, sagloss, sanloss, sedloss, silloss, solp_tileo,&
+      &solploss, spillo, sumo, tileo, xx, yy
    integer :: ly
 
 !! initialize variables
@@ -270,15 +271,15 @@ subroutine pothole(i, j)
    pot_sed(j) = pot_sed(j) + sedyld(j) * pot_fr(j)
    potsedi(j) = pot_sed(j)
    pot_san(j) = pot_san(j) + sanyld(j) * pot_fr(j)
-   potsani(j) = pot_san(j)
+   potsani = pot_san(j)
    pot_sil(j) = pot_sil(j) + silyld(j) * pot_fr(j)
-   potsili(j) = pot_sil(j)
+   potsili = pot_sil(j)
    pot_cla(j) = pot_cla(j) + clayld(j) * pot_fr(j)
-   potclai(j) = pot_cla(j)
+   potclai = pot_cla(j)
    pot_sag(j) = pot_sag(j) + sagyld(j) * pot_fr(j)
-   potsagi(j) = pot_sag(j)
+   potsagi = pot_sag(j)
    pot_lag(j) = pot_lag(j) + lagyld(j) * pot_fr(j)
-   potlagi(j) = pot_lag(j)
+   potlagi = pot_lag(j)
 
    yy = 1. - pot_fr(j)
    sedyld(j) = sedyld(j) * yy
@@ -381,8 +382,8 @@ subroutine pothole(i, j)
 
 !        compute total delivery ratio for pot_sed
       drtot = (pot_cla(j) + pot_sil(j) + pot_san(j) + pot_sag(j) +&
-         &pot_lag(j)) / (potclai(j) + potsili(j) + potsani(j) +&
-         &potsagi(j) + potlagi(j))
+         &pot_lag(j)) / (potclai + potsili + potsani +&
+         &potsagi + potlagi)
       pot_sed(j) = drtot * pot_sed(j)
 
 !        compute organic settling assuming an enrichment ratio of 3 on clay (0.75)
@@ -501,13 +502,13 @@ subroutine pothole(i, j)
 
 
 !         track loadings removed via tile flow
-         tile_sedo(j) = tile_sedo(j) + sedloss
-         tile_no3o(j) = tile_no3o(j) + no3loss
+!         tile_sedo(j) = tile_sedo(j) + sedloss ! not used
+!         tile_no3o(j) = tile_no3o(j) + no3loss ! not used
          tile_solpo(j) = tile_solpo(j) + solploss
-         tile_orgno(j) = tile_orgno(j) + orgnloss
-         tile_orgpo(j) = tile_orgpo(j) + orgploss
-         tile_minpso(j) = tile_minpso(j) + minpsloss
-         tile_minpao(j) = tile_minpao(j) + minpaloss
+!         tile_orgno(j) = tile_orgno(j) + orgnloss ! not used
+!         tile_orgpo(j) = tile_orgpo(j) + orgploss ! not used
+!         tile_minpso(j) = tile_minpso(j) + minpsloss ! not used
+!         tile_minpao(j) = tile_minpao(j) + minpaloss ! not used
       end if
 
       if (potvol_sep > 1.e-6) then

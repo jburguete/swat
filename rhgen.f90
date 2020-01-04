@@ -19,7 +19,7 @@ subroutine rhgen(j)
 !!                               |note:  inputs > 1.0 (dewpoint)
 !!                                       inputs < 1.0 (relative humidity)
 !!    i_mo        |none          |month being simulated
-!!    pr_w3(:,:) |none          |proportion of wet days in a month
+!!    pr_w(3,:,:) |none          |proportion of wet days in a month
 !!    rndseed(:,:)|none          |random number seeds
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
@@ -74,7 +74,7 @@ subroutine rhgen(j)
       rhmo = Ee(dewpt(i_mo,hru_sub(j))) / Ee(tmpmean)
    endif
 
-   yy = 0.9 * pr_w3(i_mo,hru_sub(j))
+   yy = 0.9 * pr_w(3,i_mo,hru_sub(j))
    rhm = (rhmo - yy) / (1.0 - yy)
    if (rhm < 0.05) rhm = 0.5 * rhmo
    if (subp(j) > 0.0) rhm = rhm * 0.1 + 0.9

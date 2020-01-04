@@ -64,9 +64,9 @@ subroutine readwgn(ii)
 !!                               |precipitation
 !!    phutot(:)   |heat unit     |total potential heat units for year (used
 !!                               |when no crop is growing)
-!!    pr_w1(:,:)  |none          |probability of wet day after dry day in month
-!!    pr_w2(:,:)  |none          |probability of wet day after wet day in month
-!!    pr_w3(:,:)  |none          |proportion of wet days in the month
+!!    pr_w(1,:,:)  |none          |probability of wet day after dry day in month
+!!    pr_w(2,:,:)  |none          |probability of wet day after wet day in month
+!!    pr_w(3,:,:)  |none          |proportion of wet days in the month
 !!    solarav(:,:)|MJ/m^2/day    |average daily solar radiation for the month
 !!    tmp_an(:)   |deg C         |average annual air temperature
 !!    tmpmn(:,:)  |deg C         |avg monthly minimum air temperature
@@ -76,8 +76,6 @@ subroutine readwgn(ii)
 !!    tmpstdmx(:,:)|deg C        |standard deviation for avg monthly maximum air
 !!                               |temperature
 !!    welev(:)    |m             |elevation of weather station used to compile
-!!                               |data
-!!    wlat(:)     |degrees       |latitude of weather station used to compile
 !!                               |data
 !!    wndav(:,:) |m/s            |average wind speed for the month
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -120,6 +118,8 @@ subroutine readwgn(ii)
 !!    tmax        |deg C         |maximum average monthly temperature
 !!    tmin        |deg C         |minimum average monthly temperature
 !!    tmpsoil     |deg C         |initial temperature of soil layers
+!!    wlat        |degrees       |latitude of weather station used to compile
+!!                               |data
 !!    x1          |none          |variable to hold calculation results
 !!    x2          |none          |variable to hold calculation results
 !!    x3          |none          |variable to hold calculation results
@@ -142,16 +142,17 @@ subroutine readwgn(ii)
    real*8, dimension (12) :: pcpd, pcpmm, rain_hhsm, rainhhmx
    character (len=80) :: titldum
    real*8 :: dl, lattan, pcp, r6, rain_yrs, rndm1, rnm2, sffc, sum1, summm_p,&
-      &summn_t, summx_t, tav, tmpsoil, x1, x2, x3, xlv, xx
+      &summn_t, summx_t, tav, tmpsoil, wlat, x1, x2, x3, xlv, xx
    integer :: j, k, l, m1, mdays, mon, nda, xrnd
 
 
    pcpd = 0.
    rainhhmx = 0.
    pcpmm = 0.
+   wlat = 0.
 
    read (114,5000) titldum
-   read (114,5100) wlat(ii)
+   read (114,5100) wlat
    read (114,5100) welev(ii)
    read (114,5100) rain_yrs
    read (114,5200) (tmpmx(mon,ii),mon = 1,12)
@@ -161,8 +162,8 @@ subroutine readwgn(ii)
    read (114,5201) (pcpmm(mon),mon = 1,12)
    read (114,5200) (pcp_stat(mon,2,ii),mon = 1,12)  !pcpstd
    read (114,5200) (pcp_stat(mon,3,ii),mon = 1,12)  !pcpskw
-   read (114,5200) (pr_w1(mon,ii),mon = 1,12)
-   read (114,5200) (pr_w2(mon,ii),mon = 1,12)
+   read (114,5200) (pr_w(1,mon,ii),mon = 1,12)
+   read (114,5200) (pr_w(2,mon,ii),mon = 1,12)
    read (114,5200) (pcpd(mon),mon = 1,12)
    read (114,5200) (rainhhmx(mon),mon = 1,12)
    read (114,5200) (solarav(mon,ii),mon = 1,12)
@@ -178,7 +179,7 @@ subroutine readwgn(ii)
 
 !! variables needed for radiation calcs.
    x2 = 0.0
-   if (sub_lat(ii) < 1.e-4) sub_lat(ii) = wlat(ii)
+   if (sub_lat(ii) < 1.e-4) sub_lat(ii) = wlat
    xx = sub_lat(ii) / 57.296
    !!convert degrees to radians (2pi/360=1/57.296)
    latsin(ii) = Sin(xx)
@@ -240,21 +241,21 @@ subroutine readwgn(ii)
       if (tav > 0.) phutot(ii) = phutot(ii) + tav * mdays
 
       !! calculate values for pr_w if missing or bad
-      if (pr_w2(mon,ii) <= pr_w1(mon,ii).or.pr_w1(mon,ii) <= 0.) then
+      if (pr_w(2,mon,ii) <= pr_w(1,mon,ii).or.pr_w(1,mon,ii) <= 0.) then
          if (pcpd(mon) < .1) pcpd(mon) = 0.1
-         pr_w1(mon,ii) = .75 * pcpd(mon) / mdays
-         pr_w2(mon,ii) = .25 + pr_w1(mon,ii)
+         pr_w(1,mon,ii) = .75 * pcpd(mon) / mdays
+         pr_w(2,mon,ii) = .25 + pr_w(1,mon,ii)
       else
          !! if pr_w values good, use calculated pcpd based on these values
          !! using first order Markov chain
-         pcpd(mon) = mdays * pr_w1(mon,ii) /&
-            &(1. - pr_w2(mon,ii) + pr_w1(mon,ii))
+         pcpd(mon) = mdays * pr_w(1,mon,ii) /&
+            &(1. - pr_w(2,mon,ii) + pr_w(1,mon,ii))
 
       end if
 
       !! calculate precipitation-related values
       if (pcpd(mon) <= 0.) pcpd(mon) = .001
-      pr_w3(mon,ii) = pcpd(mon) / mdays
+      pr_w(3,mon,ii) = pcpd(mon) / mdays
       pcp_stat(mon,1,ii) = pcpmm(mon) / pcpd(mon)
       if (pcp_stat(mon,3,ii) < 0.2) pcp_stat(mon,3,ii) = 0.2
       summm_p = summm_p + pcpmm(mon)

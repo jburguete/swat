@@ -215,8 +215,8 @@ subroutine simulate
                   pcp_stat(mon,1,j) = 0.
                   pcp_stat(mon,2,j) = 0.
                   pcp_stat(mon,3,j) = 0.
-                  pr_w1(mon,j) = 0.
-                  pr_w2(mon,j) = 0.
+                  pr_w(1,mon,j) = 0.
+                  pr_w(2,mon,j) = 0.
                   tmpmx(mon,j) = ftmpmx(mon,ii)
                   tmpmn(mon,j) = ftmpmn(mon,ii)
                   tmpstdmx(mon,j) = ftmpstdmx(mon,ii)
@@ -224,8 +224,8 @@ subroutine simulate
                   pcp_stat(mon,1,j) = fpcp_stat(mon,1,ii)
                   pcp_stat(mon,2,j) = fpcp_stat(mon,2,ii)
                   pcp_stat(mon,3,j) = fpcp_stat(mon,3,ii)
-                  pr_w1(mon,j) = fpr_w1(mon,ii)
-                  pr_w2(mon,j) = fpr_w2(mon,ii)
+                  pr_w(1,mon,j) = fpr_w(1,mon,ii)
+                  pr_w(2,mon,j) = fpr_w(2,mon,ii)
                end do
             end do
          end if

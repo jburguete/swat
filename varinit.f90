@@ -262,12 +262,6 @@ subroutine varinit(j)
    ! potpcpmm = 0. ! not used
    potsedo = 0.
 
-   potsano = 0.
-   potsilo = 0.
-   potclao = 0.
-   potsago = 0.
-   potlago = 0.
-
    ! potsepmm = 0. ! not used
    precipday = subp(j)
    precipdt = 0.

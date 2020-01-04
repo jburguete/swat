@@ -1,11 +1,16 @@
-subroutine subaa(years)
+!> @file subaa.f90
+!> file containing the subroutine subaa
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine writes average annual subbasin output to the output.sub file
+!> this subroutine writes average annual subbasin output to the output.sub file
+!> @param[in] years length of simulation (years)
+subroutine subaa(years)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    years         |years         |length of simulation
 !!    ipdvab(:)     |none          |output variable codes for output.sub file
 !!    itotb         |none          |number of output variables printed (output.sub)
 !!    msubo         |none          |max number of variables in output.sub file
@@ -48,7 +53,6 @@ subroutine subaa(years)
 !!    pdvb(:)     |varies        |array of user selected subbasin output
 !!                               |values
 !!    sb          |none          |subbasin number
-!!    years       |years         |length of simulation
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -57,8 +61,8 @@ subroutine subaa(years)
    implicit none
 
    real*8, intent (in) :: years
-   integer :: sb, ii
    real*8, dimension (msubo) :: pdvab, pdvb
+   integer :: sb, ii
 
    do sb = 1, subtot
 

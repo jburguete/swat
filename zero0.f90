@@ -65,7 +65,6 @@ subroutine zero0
    ammonian = 0.
    amp_r = 0.
    ap_ef = 0.
-   atmo_day = 0.
    auto_eff = 0.
    auto_nyr = 0.
    auto_napp = 0.
@@ -76,20 +75,15 @@ subroutine zero0
    bactlpdb = 0.
    bactp_plt = 0.
    bactpdb = 0.
-   bc1 = 0.
-   bc2 = 0.
-   bc3 = 0.
-   bc4 = 0.
+   bc = 0.
    bio_e = 0.
    bio_hv = 0.
    bio_init = 0.
    bio_leaf = 0.
    bio_min = 0.
    bio_ms = 0.
-   bio_n1 = 0.
-   bio_n2 = 0.
-   bio_p1 = 0.
-   bio_p2 = 0.
+   bio_n = 0.
+   bio_p = 0.
    bio_targ = 0.
    blai = 0.
    bio_eat = 0.
@@ -137,8 +131,7 @@ subroutine zero0
    ch_bnk_gra = 0.
    ch_eqn = 0
    ch_erodmo = 0.      !CB 12/2/09
-   ch_cov1 = 0.
-   ch_cov2 = 0.
+   ch_cov = 0.
    chlacnst = 0.
    chlamon = 0.
    chlayr = 0.
@@ -159,9 +152,6 @@ subroutine zero0
    cnop = 0.
    cnyld = 0.
    co2 = 0.
-!    Drainmod tile equations  01/2006
-   conk = 0.
-!    Drainmod tile equations  01/2006
    conv_wt = 0.
    cpst_id = 0
    cpnm = ""
@@ -203,7 +193,7 @@ subroutine zero0
    dormhr = 0.
    dorm_hr = -1.
    dorm_flag = 0
-   driftco = 0.
+!   driftco = 0. ! not used
 !    Drainmod tile equations  01/2006
 !    Drainmod tile equations  01/2006
    drydep_no3 = 0.
@@ -235,9 +225,7 @@ subroutine zero0
    forgn = 0.
    forgp = 0.
    fpcp_stat = 0.
-   fpr_w1 = 0.
-   fpr_w2 = 0.
-   fpr_w3 = 0.
+   fpr_w = 0.
    frac_harvk = 0.
    frt_kg = 0.
    frt_surface = 0.
@@ -263,8 +251,6 @@ subroutine zero0
 !    Drainmod tile equations  01/2006
    hi_ovr = 0.
    hi_targ = 0.
-   hlife_f = 0.
-   hlife_s = 0.
    hqdsave = 0.
    hru_dafr = 0.
    hru_fr = 0.
@@ -366,8 +352,7 @@ subroutine zero0
    lat_ttime = 0.
    latcos = 0.
    latsin = 0.
-   leaf1 = 0.
-   leaf2 = 0.
+   leaf = 0.
    mcr = 1
    mcrhru = 0
    mgtop = 0
@@ -430,8 +415,8 @@ subroutine zero0
    prf_bsn = 0.
    spcon_bsn = 0.
    spexp_bsn = 0.
-   r2adj = 0.
-   r2adj_bsn = 0.
+!   r2adj = 0. ! not used
+!   r2adj_bsn = 0. ! not used
 !----------------------- !Moriasi 4/8/2014
 !! drainmod tile equations   06/2006
    ranrns = 0.

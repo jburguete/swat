@@ -13,9 +13,9 @@ subroutine npup(j)
 !!    j           |none          |HRU number
 !!    curyr       |none           |current year of simulation
 !!    bio_ms(:)   |kg/ha          |land cover/crop biomass (dry weight)
-!!    bio_p1(:)   |none           |1st shape parameter for plant P uptake
+!!    bio_p(1,:)   |none           |1st shape parameter for plant P uptake
 !!                                |equation
-!!    bio_p2(:)   |none           |2st shape parameter for plant P uptake
+!!    bio_p(2,:)   |none           |2st shape parameter for plant P uptake
 !!                                |equation
 !!    bioday      |kg             |biomass generated on current day in HRU
 !!    hru_dafr(:) |km**2/km**2    |fraction of watershed area in HRU
@@ -100,7 +100,7 @@ subroutine npup(j)
 
    icrop = idplt(j)
    pltfr_p(j) = (pltpfr1(icrop) - pltpfr3(icrop)) * (1. - phuacc(j)&
-      &/ (phuacc(j) + Exp(bio_p1(icrop) - bio_p2(icrop) * phuacc(j))))&
+      &/ (phuacc(j) + Exp(bio_p(1,icrop) - bio_p(2,icrop) * phuacc(j))))&
       &+ pltpfr3(icrop)
 
    up2 = pltfr_p(j) * bio_ms(j)

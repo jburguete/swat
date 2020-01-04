@@ -111,7 +111,7 @@ subroutine command(i)
    implicit none
 
    integer, intent(in) :: i
-   integer :: icode, ii, j
+   integer :: icode, ii, inum1, j
 
    j = 0
 
@@ -133,7 +133,7 @@ subroutine command(i)
        case (0)
          return
        case (1)
-         call subbasin(i)
+         call subbasin(i, inum1)
          call print_hyd(i)
        case (2)
          call route(i, inum1)
@@ -179,7 +179,7 @@ subroutine command(i)
          call sumhyd
        case (18)
          inum8 = 1
-         call routels(inum1)
+         call routels(inum1, inum1)
          call sumhyd
       end select
 

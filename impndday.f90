@@ -5,12 +5,14 @@
 
 !> this subroutine writes daily HRU output to the output.wtr file
 !> @param[in] j HRU number (none)
-subroutine impndday(j)
+!> @param[inout] sb subbasin number
+subroutine impndday(j, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j             |none          |HRU number
+!!    sb            |none          |subbasin number
 !!    cpnm(:)       |NA            |four character code to represent crop name
 !!    ep_day        |mm H2O        |actual amount of transpiration that occurs on
 !!                                 |day in HRU
@@ -23,7 +25,6 @@ subroutine impndday(j)
 !!                                 |current year
 !!    iida          |julian date   |current day of simulation
 !!    idplt(:,:,:)  |none          |land cover code from crop.dat
-!!    inum1         |none          |subbasin number
 !!    ipot(:)       |none          |number of HRU (in subbasin) that is ponding
 !!                                 |water--the HRU that the surface runoff from
 !!                                 |current HRU drains into. This variable is
@@ -127,7 +128,6 @@ subroutine impndday(j)
 !!    orgp_ppm    |mg P/L        |organic P concentration in pond
 !!    orgp_ppw    |mg P/L        |organic P concentration in wetland
 !!    pdvas(:)    |varies        |array to hold HRU output values
-!!    sb          |none          |subbasin number
 !!    solp_ppw
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -136,14 +136,12 @@ subroutine impndday(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, sb
    real*8, dimension (40) :: pdvas
    real*8 :: ano3_ppm, ano3_ppw, chla_ppm, chla_ppw, cnv, minp_ppm, orgn_ppm,&
       &orgn_ppw, orgp_ppm, orgp_ppw, solp_ppw
-   integer :: iflag, ii, sb
+   integer :: iflag, ii
    character*4 cropname
-
-   sb = inum1
 
    iflag = 0
    if (pnd_fr(j) >= 0.01) iflag = 1

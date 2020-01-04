@@ -1,3 +1,8 @@
+!> @file writeaa.f90
+!> file containing the subroutine writeaa
+!> @author
+!> modified by Javier Burguete
+
 !> this subroutine writes average annual output
 subroutine writeaa
 

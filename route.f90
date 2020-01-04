@@ -94,7 +94,6 @@ subroutine route(i, jrch)
    call rchinit(jrch)
 
    vel_chan(jrch) = 0.
-   dep_chan(jrch) = 0.
 
 !! route water through reach
    if (ievent == 0) then

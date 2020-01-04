@@ -14,7 +14,8 @@ Objectives
 * Generate a GNU [Make](http://www.gnu.org/software/make) makefile and compile
   with GNU [GFortran](https://gcc.gnu.org/fortran). See the
   gernerate-makefile.pl perl script file (:heavy_check_mark:)
-* Remove non-used variables and format labels (:heavy_check_mark:)
+* Remove non-used local variables and format labels (:heavy_check_mark:)
+* Remove non-used global variables (:construction:)
 * Detect and solve all uninitialized variables (:heavy_check_mark:
   :construction:, some proposed solutions could be incorrect) 
 * Remove unneeded variable initializations (:heavy_check_mark:) as:
@@ -33,7 +34,7 @@ Objectives
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:construction:, a lot of work)
 * Standardize comments by using Doxygen style in order to generate
-  documentation. See at latex/refman.pdf (:construction:, a lot of work)
+  documentation. See at latex/refman.pdf (:heavy_check_mark:)
 
 Required tools
 --------------
@@ -293,6 +294,9 @@ variables is not possible.
 * In transfer.f:
   - `ratio`, `xx` and `ratio1` could be used not initialized at lines 236, 239
     and 241 if `ihout==2`
+
+* In urbanhr.f
+  - `isweep(j)` is used but not initialized at any part of code
 
 * In wmeas.f:
   - `u10bsb` could be used not initialized at line 85

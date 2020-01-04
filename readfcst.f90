@@ -25,9 +25,9 @@ subroutine readfcst
 !!                               |precipitation
 !!    fpcp_stat(:,3,:)|none      |skew coefficient for the average daily
 !!                               |precipitation
-!!    fpr_w1(:,:) |none          |probability of wet day after dry day in month
-!!    fpr_w2(:,:) |none          |probability of wet day after wet day in month
-!!    fpr_w3(:,:) |none          |proportion of wet days in the month
+!!    fpr_w(1,:,:) |none          |probability of wet day after dry day in month
+!!    fpr_w(2,:,:) |none          |probability of wet day after wet day in month
+!!    fpr_w(3,:,:) |none          |proportion of wet days in the month
 !!    ftmpmn(:,:) |deg C         |avg monthly minimum air temperature
 !!    ftmpmx(:,:) |deg C         |avg monthly maximum air temperature
 !!    ftmpstdmn(:,:)|deg C       |standard deviation for avg monthly minimum air
@@ -79,8 +79,8 @@ subroutine readfcst
       read (109,5200) (pcpmm(mon),mon = 1,12)
       read (109,5200) (fpcp_stat(mon,2,i),mon = 1,12)  !pcpstd
       read (109,5200) (fpcp_stat(mon,3,i),mon = 1,12)  !pcpskw
-      read (109,5200) (fpr_w1(mon,i),mon = 1,12)
-      read (109,5200) (fpr_w2(mon,i),mon = 1,12)
+      read (109,5200) (fpr_w(1,mon,i),mon = 1,12)
+      read (109,5200) (fpr_w(2,mon,i),mon = 1,12)
       read (109,5200) (pcpd(mon),mon = 1,12)
 
 
@@ -90,21 +90,21 @@ subroutine readfcst
          mdays = ndays(mon+1) - ndays(mon)
 
          !! calculate values for fpr_w if missing or bad
-         if (fpr_w2(mon,i) <= fpr_w1(mon,i) .or. fpr_w1(mon,i) <= 0.) then
+         if (fpr_w(2,mon,i) <= fpr_w(1,mon,i) .or. fpr_w(1,mon,i) <= 0.) then
             if (pcpd(mon) < .1) pcpd(mon) = 0.1
-            fpr_w1(mon,i) = .75 * pcpd(mon) / mdays
-            fpr_w2(mon,i) = .25 + fpr_w1(mon,i)
+            fpr_w(1,mon,i) = .75 * pcpd(mon) / mdays
+            fpr_w(2,mon,i) = .25 + fpr_w(1,mon,i)
          else
             !! if fpr_w values good, use calculated pcpd based on these values
             !! using first order Markov chain
-            pcpd(mon) = mdays * fpr_w1(mon,i) /&
-               &(1. - fpr_w2(mon,i) + fpr_w1(mon,i))
+            pcpd(mon) = mdays * fpr_w(1,mon,i) /&
+               &(1. - fpr_w(2,mon,i) + fpr_w(1,mon,i))
 
          end if
 
          !! calculate precipitation-related values
          if (pcpd(mon) <= 0.) pcpd(mon) = .001
-         fpr_w3(mon,i) = pcpd(mon) / mdays
+         ! fpr_w(3,mon,i) = pcpd(mon) / mdays ! not used
          fpcp_stat(mon,1,i) = pcpmm(mon) / pcpd(mon)
          if (fpcp_stat(mon,3,i) < 0.2) fpcp_stat(mon,3,i) = 0.2
       end do

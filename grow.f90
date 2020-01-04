@@ -56,9 +56,9 @@ subroutine grow(j)
 !!                                  |HRU
 !!    laiday(:)   |m**2/m**2        |leaf area index
 !!    laimxfr(:)  |
-!!    leaf1(:)    |none             |1st shape parameter for leaf area
+!!    leaf(1,:)    |none             |1st shape parameter for leaf area
 !!                                  |development equation.
-!!    leaf2(:)    |none             |2nd shape parameter for leaf area
+!!    leaf(2,:)    |none             |2nd shape parameter for leaf area
 !!                                  |development equation.
 !!    nro(:)      |none             |sequence number of year in rotation
 !!    nyskip      |none             |number of years output summarization
@@ -87,9 +87,9 @@ subroutine grow(j)
 !!    tmpav(:)    |deg C            |average air temperature on current day in
 !!                                  |HRU
 !!    vpd         |kPa              |vapor pressure deficit
-!!    wac21(:)    |none             |1st shape parameter for radiation use
+!!    wac2(1,:)   |none             |1st shape parameter for radiation use
 !!                                  |efficiency equation.
-!!    wac22(:)    |none             |2nd shape parameter for radiation use
+!!    wac2(2,:)   |none             |2nd shape parameter for radiation use
 !!                                  |efficiency equation.
 !!    wavp(:)     |none             |Rate of decline in radiation use efficiency
 !!                                  |as a function of vapor pressure deficit
@@ -197,7 +197,7 @@ subroutine grow(j)
       !! adjust radiation-use efficiency for CO2
       if (co2(hru_sub(j)) > 330.) then
          beadj = 100. * co2(hru_sub(j)) / (co2(hru_sub(j)) +&
-            &Exp(wac21(idp) - co2(hru_sub(j)) * wac22(idp)))
+            &Exp(wac2(1,idp) - co2(hru_sub(j)) * wac2(2,idp)))
       else
          beadj = bio_e(idp)
       end if
@@ -261,8 +261,8 @@ subroutine grow(j)
       !! calculate fraction of total biomass that is in the roots
       rwt(j) = rsr1(idp) -(rsr1(idp) - rsr2(idp)) * phuacc(j)
 
-      f = phuacc(j) / (phuacc(j) + Exp(leaf1(idp)&
-         &- leaf2(idp) * phuacc(j)))
+      f = phuacc(j) / (phuacc(j) + Exp(leaf(1,idp)&
+         &- leaf(2,idp) * phuacc(j)))
       ff = f - laimxfr(j)
       laimxfr(j) = f
 

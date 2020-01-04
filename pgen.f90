@@ -27,8 +27,8 @@ subroutine pgen(j)
 !!                               |precipitation
 !!    pcp_stat(:,3,:)|none       |skew coefficient for the average daily
 !!                               |precipitation
-!!    pr_w1(:,:)  |none          |probability of wet day after dry day in month
-!!    pr_w2(:,:)  |none          |probability of wet day after wet day in month
+!!    pr_w(1,:,:)  |none          |probability of wet day after dry day in month
+!!    pr_w(2,:,:)  |none          |probability of wet day after wet day in month
 !!    rcor        |none          |correction coefficient for generated rainfall
 !!                               |to ensure that the annual means for generated
 !!                               |and observed values are comparable. (needed
@@ -77,9 +77,9 @@ subroutine pgen(j)
 
    k = hru_sub(j)
    if (npcp(j) == 1) then
-      xx = pr_w1(i_mo,k)
+      xx = pr_w(1,i_mo,k)
    else
-      xx = pr_w2(i_mo,k)
+      xx = pr_w(2,i_mo,k)
    end if
    vv = Aunif(rndseed(idg(1),j))
    if (vv > xx) then

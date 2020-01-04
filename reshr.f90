@@ -12,9 +12,9 @@ subroutine reshr(jres)
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jres         |none          |reservoir number
-!!    br1(:)       |none          |1st shape parameter for reservoir surface
+!!    br(1,:)       |none          |1st shape parameter for reservoir surface
 !!                                |area equation
-!!    br2(:)       |none          |2nd shape parameter for reservoir surface
+!!    br(2,:)       |none          |2nd shape parameter for reservoir surface
 !!                                |area equation
 !!    curyr        |none          |current year of simulation
 !!    iflodr(1,:)  |none          |beginning month of non-flood season
@@ -124,7 +124,7 @@ subroutine reshr(jres)
       hhressedi(k) = hhvaroute(3,inhyd,k)
 
 !! calculate surface area for day (ha)
-      ressa = br1(jres) * res_vol(jres) ** br2(jres)
+      ressa = br(1,jres) * res_vol(jres) ** br(2,jres)
 
 !! calculate water balance for day
       resev = 6. * pet_day * ressa / nstep  !! urban modeling by J.Jeong
@@ -254,7 +254,7 @@ subroutine reshr(jres)
       end if
    end do
 !!    update surface area for day
-   ressa = br1(jres) * res_vol(jres) ** br2(jres)
+   ressa = br(1,jres) * res_vol(jres) ** br(2,jres)
 !!    daily total amount
    resflwi = Sum(hhresflwi)
    resflwo = Sum(hhresflwo)

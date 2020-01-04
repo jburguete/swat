@@ -12,9 +12,9 @@ subroutine res(jres)
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jres         |none          |reservoir number
-!!    br1(:)       |none          |1st shape parameter for reservoir surface
+!!    br(1,:)       |none          |1st shape parameter for reservoir surface
 !!                                |area equation
-!!    br2(:)       |none          |2nd shape parameter for reservoir surface
+!!    br(2,:)       |none          |2nd shape parameter for reservoir surface
 !!                                |area equation
 !!    curyr        |none          |current year of simulation
 !!    evrsv(:)     |none          |lake evaporation coefficient
@@ -138,7 +138,7 @@ subroutine res(jres)
    gra = res_gra(jres)
 
 !! calculate surface area for day
-   ressa = br1(jres) * res_vol(jres) ** br2(jres)
+   ressa = br(1,jres) * res_vol(jres) ** br(2,jres)
 
 !! calculate water balance for day
    resev = 10. * evrsv(jres) * pet_day * ressa
@@ -386,12 +386,6 @@ subroutine res(jres)
 
       !! compute sediment leaving reservoir
       ressedo = res_sed(jres) * resflwo
-      ressano = res_san(jres) * resflwo
-      ressilo = res_sil(jres) * resflwo
-      resclao = res_cla(jres) * resflwo
-      ressago = res_sag(jres) * resflwo
-      reslago = res_lag(jres) * resflwo
-      resgrao = res_gra(jres) * resflwo
 
       !! net change in amount of sediment in reservoir for day
       ressedc = vol * sed + ressedi - ressedo - res_sed(jres) * res_vol(jres)
@@ -402,7 +396,7 @@ subroutine res(jres)
    end if
 
 !!    update surface area for day
-   ressa = br1(jres) * res_vol(jres) ** br2(jres)
+   ressa = br(1,jres) * res_vol(jres) ** br(2,jres)
 
    return
 5000 format (f8.2)

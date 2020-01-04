@@ -1,9 +1,11 @@
+!> @file sub_subbasin.f90
+!> file containing the subroutine sub_subbasin
+!> @author
+!> modified by Javier Burguete
+
+!> this was split out from subbasin.f. Comments should be updated
+!> @param[in] j HRU number
 subroutine sub_subbasin(j)
-!!!!!!!!!!!!!!!!!!!!!This was split out from subbasin.f 01-13-2012 nubz
-!!!!!!!!!!!!!!!!!!!!!comments should be updated
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this subroutine controls the simulation of the land phase of the
-!!    hydrologic cycle
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
@@ -29,7 +31,6 @@ subroutine sub_subbasin(j)
 !!    igro(:)        |none          |land cover status code
 !!                                  |0 no land cover currently growing
 !!                                  |1 land cover growing
-!!    inum1          |none          |subbasin number
 !!    imp_trig(:)    |none          |release/impound action code:
 !!                                  |0 begin impounding water
 !!                                  |1 release impounded water
@@ -127,7 +128,7 @@ subroutine sub_subbasin(j)
    integer, intent(in) :: j
 
    real*8 :: hvol(10)
-   integer :: sb, ii, kk
+   integer :: ii, kk, sb
 
    sb = hru_sub(j)
    ri_pmpvol = 0; ri_totpvol = 0

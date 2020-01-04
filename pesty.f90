@@ -73,7 +73,8 @@ subroutine pesty(iwave, j)
          if (iwave <= 0) then
             xx = sol_pst(k,j,1)
          else
-            xx = sub_pst(kk,iwave)
+            ! xx = sub_pst(kk,iwave) ! sub_pst is 0
+            xx = 0.
          end if
 
          if (xx >= .0001) then

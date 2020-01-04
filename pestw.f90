@@ -1,7 +1,10 @@
-subroutine pestw
+!> @file pestw.f90
+!> file containing the subroutine pestw
+!> @author
+!> modified by Javier Burguete
 
-!!    ~ ~ ~ PURPOSE ~ ~ ~
-!!    this suroutine writes summary information on pesticide fate in watershed
+!> this suroutine writes summary information on pesticide fate in watershed
+subroutine pestw
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -27,9 +30,9 @@ subroutine pestw
 !!    wpstaao(4,:)|kg pst/ha     |amount of pesticide type in lateral flow
 !!                               |contribution to stream in watershed -
 !!                               |average annual
-!!    wshd_pstap(:)|kg pst/ha     |average annual amount of pesticide type
+!!    wshd_pstap(:)|kg pst/ha    |average annual amount of pesticide type
 !!                               |applied in watershed during simulation
-!!    wshd_pstdg(:)|kg pst/ha     |average annual amount of pesticide lost
+!!    wshd_pstdg(:)|kg pst/ha    |average annual amount of pesticide lost
 !!                               |through degradation in watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -40,9 +43,9 @@ subroutine pestw
 !!                               |profile in watershed on day
 !!    wpstaao(4,:)|mg pst/ha     |amount of pesticide type in lateral flow
 !!                               |contribution to stream in watershed on day
-!!    wshd_pstap(:)|mg pst/ha     |average annual  amount of pesticide type
+!!    wshd_pstap(:)|mg pst/ha    |average annual  amount of pesticide type
 !!                               |applied in watershed during simulation
-!!    wshd_pstdg(:)|mg pst/ha     |average annual amount of pesticide lost
+!!    wshd_pstdg(:)|mg pst/ha    |average annual amount of pesticide lost
 !!                               |through degradation in watershed
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -65,8 +68,8 @@ subroutine pestw
    use parm
    implicit none
 
-   integer :: k, kk, j, l
-   real*8 :: pfp, pfg
+   real*8 :: pfg, pfp
+   integer :: j, k, kk, l
 
    do k = 1, npmx
       kk = npno(k)
@@ -79,10 +82,10 @@ subroutine pestw
 
       if (iscen == 1) then
          write (26,5000) kk, pname(kk), wshd_pstap(k), wshd_pstdg(k),&
-         &wpstaao(1,k), wpstaao(2,k), wpstaao(3,k), wpstaao(4,k)
+            &wpstaao(1,k), wpstaao(2,k), wpstaao(3,k), wpstaao(4,k)
       else if (isproj == 1) then
          write (19,5000) kk, pname(kk), wshd_pstap(k), wshd_pstdg(k),&
-         &wpstaao(1,k), wpstaao(2,k), wpstaao(3,k), wpstaao(4,k)
+            &wpstaao(1,k), wpstaao(2,k), wpstaao(3,k), wpstaao(4,k)
       endif
 
       !!calculate pesticide levels on plants/in soil at end of simulation

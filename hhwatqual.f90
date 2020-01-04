@@ -25,13 +25,13 @@ subroutine hhwatqual(jrch)
 !!                                    |nitrogen oxidation
 !!    algae(:)         |mg alg/L      |algal biomass concentration in reach
 !!    ammonian(:)      |mg N/L        |ammonia concentration in reach
-!!    bc1(:)           |1/hr          |rate constant for biological oxidation of
+!!    bc(1,:)           |1/hr          |rate constant for biological oxidation of
 !!                                    |NH3 to NO2 in reach at 20 deg C
-!!    bc2(:)           |1/hr          |rate constant for biological oxidation of
+!!    bc(2,:)           |1/hr          |rate constant for biological oxidation of
 !!                                    |NO2 to NO3 in reach at 20 deg C
-!!    bc3(:)           |1/hr          |rate constant for hydrolysis of organic N
+!!    bc(3,:)           |1/hr          |rate constant for hydrolysis of organic N
 !!                                    |to ammonia in reach at 20 deg C
-!!    bc4(:)           |1/hr          |rate constant for the decay of organic P
+!!    bc(4,:)           |1/hr          |rate constant for the decay of organic P
 !!                                    |to dissolved P in reach at 20 deg C
 !!    chlora(:)        |mg chl-a/L    |chlorophyll-a concentration in reach
 !!    dayl(:)          |hours         |day length for current day
@@ -83,24 +83,24 @@ subroutine hhwatqual(jrch)
 !!                                    |reach
 !!    rch_dox(:)       |mg O2/L       |dissolved oxygen concentration in reach
 !!    rhoq             |1/hr          |algal respiration rate at 20 deg C
-!!    rk1(:)           |1/hr          |CBOD deoxygenation rate coefficient in
+!!    rk(1,:)           |1/hr          |CBOD deoxygenation rate coefficient in
 !!                                    |reach at 20 deg C
-!!    rk2(:)           |1/hr          |reaeration rate in accordance with Fickian
+!!    rk(2,:)           |1/hr          |reaeration rate in accordance with Fickian
 !!                                    |diffusion in reach at 20 deg C
-!!    rk3(:)           |1/hr          |rate of loss of CBOD due to settling in
+!!    rk(3,:)           |1/hr          |rate of loss of CBOD due to settling in
 !!                                    |reach at 20 deg C
-!!    rk4(:)           |mg O2/        |sediment oxygen demand rate in reach
+!!    rk(4,:)           |mg O2/        |sediment oxygen demand rate in reach
 !!                     |  ((m**2)*hr) |at 20 deg C
 !!    rnum1            |none          |fraction of overland flow
-!!    rs1(:)           |m/hr          |local algal settling rate in reach at
+!!    rs(1,:)           |m/hr          |local algal settling rate in reach at
 !!                                    |20 deg C
-!!    rs2(:)           |(mg disP-P)/  |benthos source rate for dissolved P
+!!    rs(2,:)           |(mg disP-P)/  |benthos source rate for dissolved P
 !!                     |  ((m**2)*hr) |in reach at 20 deg C
-!!    rs3(:)           |(mg NH4-N)/   |benthos source rate for ammonia nitrogen
+!!    rs(3,:)           |(mg NH4-N)/   |benthos source rate for ammonia nitrogen
 !!                     |  ((m**2)*hr) |in reach at 20 deg C
-!!    rs4(:)           |1/hr          |rate coefficient for organic nitrogen
+!!    rs(4,:)           |1/hr          |rate coefficient for organic nitrogen
 !!                                    |settling in reach at 20 deg C
-!!    rs5(:)           |1/hr          |organic phosphorus settling rate in reach
+!!    rs(5,:)           |1/hr          |organic phosphorus settling rate in reach
 !!                                    |at 20 deg C
 !!    rttime           |hr            |reach travel time
 !!    tfact            |none          |fraction of solar radiation that is
@@ -337,8 +337,8 @@ subroutine hhwatqual(jrch)
          cordo = 1.0 - Exp(-0.6 * o2con)
          !! modify ammonia and nitrite oxidation rates to account for
          !! low oxygen
-         bc1mod = bc1(jrch) * cordo
-         bc2mod = bc2(jrch) * cordo
+         bc1mod = bc(1,jrch) * cordo
+         bc2mod = bc(2,jrch) * cordo
 !! end O2 impact calculations
 
          !! calculate flow duration
@@ -393,7 +393,7 @@ subroutine hhwatqual(jrch)
          !! (phytoplanktonic algae)
          !! QUAL2E equation III-2
          halgae(ii) = algcon + (Theta(gra,thgra,wtmp) * algcon -&
-            &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs1(jrch),thrs1,wtmp)&
+            &Theta(rhoq,thrho,wtmp) * algcon - Theta(rs(1,jrch),thrs1,wtmp)&
             &/ hdepth(ii) * algcon) * thour
          if (halgae(ii) < 1.e-6) halgae(ii) = 0.0
 
@@ -406,18 +406,18 @@ subroutine hhwatqual(jrch)
 !! oxygen calculations
          !! calculate carbonaceous biological oxygen demand at end
          !! of day QUAL2E section 3.5 equation III-26
-         yy = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
-         zz = Theta(rk3(jrch),thrk3,wtmp) * cbodcon
+         yy = Theta(rk(1,jrch),thrk1,wtmp) * cbodcon
+         zz = Theta(rk(3,jrch),thrk3,wtmp) * cbodcon
          hbod(ii) = cbodcon - (yy + zz) * thour
          if (hbod(ii) < 1.e-6) hbod(ii) = 0.0
 
          !! calculate dissolved oxygen concentration if reach at
          !! end of day QUAL2E section 3.6 equation III-28
-         uu = Theta(rk2(jrch),thrk2,wtmp) * (soxy - o2con)
+         uu = Theta(rk(2,jrch),thrk2,wtmp) * (soxy - o2con)
          vv = (ai3 * Theta(gra,thgra,wtmp) - ai4 *&
             &Theta(rhoq,thrho,wtmp)) * algcon
-         ww = Theta(rk1(jrch),thrk1,wtmp) * cbodcon
-         xx = Theta(rk4(jrch),thrk4,wtmp) / (hdepth(ii) * 1000.)
+         ww = Theta(rk(1,jrch),thrk1,wtmp) * cbodcon
+         xx = Theta(rk(4,jrch),thrk4,wtmp) / (hdepth(ii) * 1000.)
          yy = ai5 * Theta(bc1mod,thbc1,wtmp) * nh3con
          zz = ai6 * Theta(bc2mod,thbc2,wtmp) * no2con
          hdisox(ii) = o2con + (uu + vv - ww - xx - yy - zz) * thour
@@ -428,8 +428,8 @@ subroutine hhwatqual(jrch)
          !! calculate organic N concentration at end of day
          !! QUAL2E section 3.3.1 equation III-16
          xx = ai1 * Theta(rhoq,thrho,wtmp) * algcon
-         yy = Theta(bc3(jrch),thbc3,wtmp) * orgncon
-         zz = Theta(rs4(jrch),thrs4,wtmp) * orgncon
+         yy = Theta(bc(3,jrch),thbc3,wtmp) * orgncon
+         zz = Theta(rs(4,jrch),thrs4,wtmp) * orgncon
          horgn(ii) = orgncon + (xx - yy - zz) * thour
          if (horgn(ii) < 1.e-6) horgn(ii) = 0.0
 
@@ -439,9 +439,9 @@ subroutine hhwatqual(jrch)
 
          !! calculate ammonia nitrogen concentration at end of day
          !! QUAL2E section 3.3.2 equation III-17
-         ww = Theta(bc3(jrch),thbc3,wtmp) * orgncon
+         ww = Theta(bc(3,jrch),thbc3,wtmp) * orgncon
          xx = Theta(bc1mod,thbc1,wtmp) * nh3con
-         yy = Theta(rs3(jrch),thrs3,wtmp) / (hdepth(ii) * 1000.)
+         yy = Theta(rs(3,jrch),thrs3,wtmp) / (hdepth(ii) * 1000.)
          zz = f1 * ai1 * algcon * Theta(gra,thgra,wtmp)
          hnh4(ii) = nh3con + (ww - xx + yy - zz) * thour
          if (hnh4(ii) < 1.e-6) hnh4(ii) = 0.0
@@ -465,15 +465,15 @@ subroutine hhwatqual(jrch)
          !! calculate organic phosphorus concentration at end of
          !! day QUAL2E section 3.3.6 equation III-24
          xx = ai2 * Theta(rhoq,thrho,wtmp) * algcon
-         yy = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
-         zz = Theta(rs5(jrch),thrs5,wtmp) * orgpcon
+         yy = Theta(bc(4,jrch),thbc4,wtmp) * orgpcon
+         zz = Theta(rs(5,jrch),thrs5,wtmp) * orgpcon
          horgp(ii) = orgpcon + (xx - yy - zz) * thour
          if (horgp(ii) < 1.e-6) horgp(ii) = 0.0
 
          !! calculate dissolved phosphorus concentration at end
          !! of day QUAL2E section 3.4.2 equation III-25
-         xx = Theta(bc4(jrch),thbc4,wtmp) * orgpcon
-         yy = Theta(rs2(jrch),thrs2,wtmp) / (hdepth(ii) * 1000.)
+         xx = Theta(bc(4,jrch),thbc4,wtmp) * orgpcon
+         yy = Theta(rs(2,jrch),thrs2,wtmp) / (hdepth(ii) * 1000.)
          zz = ai2 * Theta(gra,thgra,wtmp) * algcon
          hsolp(ii) = solpcon + (xx + yy - zz) * thour
          if (hsolp(ii) < 1.e-6) hsolp(ii) = 0.0

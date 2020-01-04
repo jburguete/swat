@@ -23,9 +23,9 @@ subroutine readlwq(ii)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    chlar(:)      |none          |chlorophyll-a production coefficient for
 !!                                 |reservoir
-!!    ires1(:)      |none          |beginning of mid-year nutrient settling
+!!    ires(1,:)      |none          |beginning of mid-year nutrient settling
 !!                                 |"season"
-!!    ires2(:)      |none          |end of mid-year nutrient settling "season"
+!!    ires(2,:)      |none          |end of mid-year nutrient settling "season"
 !!    lkpst_conc(:) |mg/m**3       |pesticide concentration in lake water
 !!    lkpst_koc(:)  |m**3/g        |pesticide partition coefficient between
 !!                                 |water and sediment in lake water
@@ -108,9 +108,9 @@ subroutine readlwq(ii)
       if (eof < 0) exit
       read (106,1000,iostat=eof) titldum
       if (eof < 0) exit
-      read (106,*,iostat=eof) ires1(ii)
+      read (106,*,iostat=eof) ires(1,ii)
       if (eof < 0) exit
-      read (106,*,iostat=eof) ires2(ii)
+      read (106,*,iostat=eof) ires(2,ii)
       if (eof < 0) exit
       read (106,*,iostat=eof) psetlr(1,ii)
       if (eof < 0) exit
@@ -187,7 +187,7 @@ subroutine readlwq(ii)
 
 !!    lake pesticide mass
    lkpst_mass(ii) = lkpst_conc(ii) * res_vol(ii)
-   lkarea = br1(ii) * res_vol(ii) ** br2(ii)
+   lkarea = br(1,ii) * res_vol(ii) ** br(2,ii)
    lkspst_mass(ii) = lkspst_conc(ii) * lkspst_act(ii) * lkarea * 10000.
 
    close (106)

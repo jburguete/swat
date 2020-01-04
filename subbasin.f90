@@ -6,12 +6,14 @@
 !> this subroutine controls the simulation of the land phase of the
 !> hydrologic cycle
 !> @param[in] i current day in simulation--loop counter (julian date)
-subroutine subbasin(i)
+!> @param[inout] sb subbasin number
+subroutine subbasin(i, sb)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i              |julian date   |current day in simulation--loop counter
+!!    sb             |none          |subbasin number
 !!    auto_wstr(:)   |none          |water stress factor which triggers auto
 !!                                  |irrigation
 !!    bio_e(:)       |(kg/ha)/      |biomass-energy ratio
@@ -32,7 +34,6 @@ subroutine subbasin(i)
 !!    igro(:)        |none          |land cover status code
 !!                                  |0 no land cover currently growing
 !!                                  |1 land cover growing
-!!    inum1          |none          |subbasin number
 !!    imp_trig(:)    |none          |release/impound action code:
 !!                                  |0 begin impounding water
 !!                                  |1 release impounded water
@@ -145,15 +146,16 @@ subroutine subbasin(i)
    implicit none
 
    integer, intent(in) :: i
+   integer, intent(inout) :: sb
    integer, parameter :: iru_sub = 1 ! route across landscape unit
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
    integer :: i_wtrhru, ihout1, j, k, l
 
-   l = hru1(inum1)
+   l = hru1(sb)
 
    call sub_subbasin(l)
 
-   do k = 1, hrutot(inum1)
+   do k = 1, hrutot(sb)
 
       j = l
 
@@ -204,7 +206,7 @@ subroutine subbasin(i)
 
          !! calculate surface runoff if HRU is not impounded or an
          !! undrained depression--
-         call surface(i,j)
+         call surface(i, j , sb)
 
          !! compute effective rainfall (amount that percs into soil)
          inflpcp = Max(0.,precipday - surfq(j))
@@ -215,7 +217,7 @@ subroutine subbasin(i)
          if (auto_wstr(j) > 1.e-6 .and. irrsc(j) > 2) call autoirr(j)
 
          !! perform soil water routing
-         call percmain(j)
+         call percmain(j, sb)
 
          !! compute evapotranspiration
          call etpot(j)
@@ -316,7 +318,7 @@ subroutine subbasin(i)
                   call orgncswat2(0, j)
                end select
 
-               call psed(0, j)
+               call psed(0, j, sb)
             end if
          end if
 
@@ -349,7 +351,7 @@ subroutine subbasin(i)
          call gw_no3
 
          !! lag nutrients and sediment in surface runoff
-         call surfstor(j)
+         call surfstor(j, sb)
 
          !! lag subsurface flow and nitrate in subsurface flow
          call substor(j)
@@ -414,44 +416,44 @@ subroutine subbasin(i)
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method
-      call virtual(i, j, k, inum1)
+      call virtual(i, j, k, sb)
       aird(j) = 0.
 
       l = l + 1
    end do
 
    !! route 2 landscape units
-   if (ils2flag(inum1) > 0) then
-      isub = inum1                        ! save the subbasin number
+   if (ils2flag(sb) > 0) then
+      isub = sb                        ! save the subbasin number
 
       !! calculate outputs from hillslope
-      ihout1 = mhyd_bsn + (inum1 - 1) * 4 ! first outflow hyd number
+      ihout1 = mhyd_bsn + (sb - 1) * 4 ! first outflow hyd number
       ihout = ihout1                      ! outflow hyd number
-      inum1 = 1                           ! landscape unit number
+      sb = 1                           ! landscape unit number
       inum2 = isub                        ! subbasin number
-      call routeunit(inum1)               ! hillslope unit
+      call routeunit(sb)               ! hillslope unit
       call sumhyd
-      inum1s(ihout) = inum1
+      inum1s(ihout) = sb
       inum2s(ihout) = inum2
       ihouts(ihout) = ihout
 
       !! calculate outputs from valley bottom
-      inum1 = 2                           ! landscape unit number
+      sb = 2                              ! landscape unit number
       ihout = ihout + 1                   ! outflow hyd number
       sumdaru = 0.
       do j = 1, hrutot(isub)
          sumdaru = sumdaru + hru_km(j)
       end do
-      daru_km(inum2,inum1) = sumdaru
-      call routeunit(inum1)               ! valley bottom unit
+      daru_km(inum2,sb) = sumdaru
+      call routeunit(sb)               ! valley bottom unit
       call sumhyd
-      inum1s(ihout) = inum1
+      inum1s(ihout) = sb
       inum2s(ihout) = inum2
       ihouts(ihout) = ihout
 
       !! route output from hillslope across valley bottom
       ihout = ihout + 1                   ! outflow hyd number
-      inum1 = 2                           ! valley bottom landscape unit
+      !sb = 2                             ! valley bottom landscape unit
       inum2 = ihout1                      ! inflow hyd=outlfow from hillslope
       inum3 = isub                        ! subbasin number
       rnum1 = 1.                          ! fraction overland flow
@@ -460,31 +462,31 @@ subroutine subbasin(i)
       ovsl = 0.
       ovs = 0.
       do j = 1, hrutot(isub)
-         sumk = sumk + usle_k(j) * hru_rufr(inum1,j)
+         sumk = sumk + usle_k(j) * hru_rufr(sb,j)
          ovsl = ovsl + slsubbsn(j)
          ovs = ovs + hru_slp(j)
       end do
       ovsl = ovsl / hrutot(isub)
       ovs = ovs / hrutot(isub)
-      ru_k(isub,inum1) = sumk
-      ru_ovsl(isub,inum1) = ovsl
-      ru_ovs(isub,inum1) = ovs
-      ru_ktc(isub,inum1) = 50.
-      ru_a(isub,inum1) = daru_km(isub,1) / ru_ovsl(isub,inum1)
-      call routels(iru_sub)               ! route across valley bottom
+      ru_k(isub,sb) = sumk
+      ru_ovsl(isub,sb) = ovsl
+      ru_ovs(isub,sb) = ovs
+      ru_ktc(isub,sb) = 50.
+      ru_a(isub,sb) = daru_km(isub,1) / ru_ovsl(isub,sb)
+      call routels(iru_sub, sb)               ! route across valley bottom
       call sumhyd
-      inum1s(ihout) = inum1
+      inum1s(ihout) = sb
       inum2s(ihout) = inum2
       inum3s(ihout) = inum3
       ihouts(ihout) = ihout
 
       !! add routed with valley bottom loading
-      inum1 = ihout                       ! hyd from routed
+      sb = ihout                       ! hyd from routed
       inum2 = ihout - 1                   ! hyd from loading
       ihout = ihout + 1                   ! outflow hyd number
-      call addh(inum1)                    ! add hyd's
+      call addh(sb)                    ! add hyd's
       call sumhyd
-      inum1s(ihout) = inum1
+      inum1s(ihout) = sb
       inum2s(ihout) = inum2
       ihouts(ihout) = ihout
 

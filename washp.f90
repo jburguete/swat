@@ -1,5 +1,5 @@
-!> @file modparm.f90
-!> file containing the module parm
+!> @file washp.f90
+!> file containing the subroutine washp
 !> @author
 !> modified by Javier Burguete Tolosa
 
