@@ -151,6 +151,7 @@ subroutine readsub(i)
    real*8 :: ch_ls, sno_sub, sumebfr
    integer :: eof, ils, j, jj, k, kk, l, mon
 
+   lu_nodrain = "    "
    wgnfile = ""
    pndfile = ""
    wusfile = ""
@@ -215,7 +216,7 @@ subroutine readsub(i)
    call caps(wusfile)
    open (105,file=wusfile)
    read (101,5100) snofile
-   if(snofile /='             ' .or. snofile /= 'Climate Change')then
+   if (snofile /='             ' .or. snofile /= 'Climate Change')then
       if (snofile /='             ') then
          if (snofile /= 'Climate Change') then
             open (113,file=snofile)
@@ -342,7 +343,7 @@ subroutine readsub(i)
 
       ! HRU selection criteria for Irrigation by retention-irrigation basins
       if (num_ri(i)>0) then
-         if(sol_z(sol_nly(l),l)>300& !!    - soil thickness > 12 inches
+         if (sol_z(sol_nly(l),l)>300& !!    - soil thickness > 12 inches
             &.AND.sol_k(1,l)>0.76&       !    - permeability > 0.03 inches/hr (=0.76mm/hr)
             &.AND.hru_slp(l)<0.1&        !!    - hru slope < 10%
             &.AND.urblu(l)>0) then !urban LU
@@ -466,7 +467,7 @@ subroutine readsub(i)
 
 !! sediment delivery ration for the subbasin..... urban modeling by J.Jeong
    dratio(i) = 0.42 * sub_km(i) ** (-0.125)
-   if(dratio(i)>0.9) dratio(i) = 0.9
+   if (dratio(i) > 0.9) dratio(i) = 0.9
 
    close (101)
    return

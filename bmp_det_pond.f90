@@ -173,17 +173,17 @@ subroutine bmp_det_pond(sb)
          if (dtp_stagdis(sb)==1) then
             select case(dtp_reltype(sb))
              case(1) !! 1 is exponential function
-               qout = dtp_coef1(sb) * Exp(dtp_expont(sb) * qdepth) +&
+               qout = dtp_coef(1,sb) * Exp(dtp_expont(sb) * qdepth) +&
                   &dtp_intcept(sb)
              case(2) !! 2 is Linear function
-               qout = dtp_coef1(sb) * qdepth + dtp_intcept(sb)
+               qout = dtp_coef(1,sb) * qdepth + dtp_intcept(sb)
              case(3) !! 3 is logarthmic function
-               qout = dtp_coef1(sb) * Log(qdepth) + dtp_intcept(sb)
+               qout = dtp_coef(1,sb) * Log(qdepth) + dtp_intcept(sb)
              case(4) !! 4 is power function
-               qout = dtp_coef1(sb) * (qdepth**3) + dtp_coef2(sb) *&
-                  &(qdepth**2) + dtp_coef3(sb) * qdepth + dtp_intcept(sb)
+               qout = dtp_coef(1,sb) * (qdepth**3) + dtp_coef(2,sb) *&
+                  &(qdepth**2) + dtp_coef(3,sb) * qdepth + dtp_intcept(sb)
              case(5)
-               qout = dtp_coef1(sb)*(qdepth**dtp_expont(sb))+&
+               qout = dtp_coef(1,sb)*(qdepth**dtp_expont(sb))+&
                   &dtp_intcept(sb)
             end select
             qout = qout * 60. * idt

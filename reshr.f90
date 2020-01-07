@@ -81,6 +81,8 @@ subroutine reshr(jres)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    flw         |m^3/s         |reservoir outflow for day
+!!    hhresflwi
+!!    hhressedi
 !!    inhyd       |none          |inflow hydrograph location number
 !!    k           |none          |counter
 !!    sed         |kg/L          |concentration of sediment in reservoir at
@@ -102,6 +104,7 @@ subroutine reshr(jres)
    implicit none
 
    integer, intent(in) :: jres
+   real*8, dimension(nstep) :: hhresflwi, hhressedi
    real*8 :: flw, sed, targ, vol, vvr, xx
    integer :: inhyd, k
 

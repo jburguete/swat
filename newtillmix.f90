@@ -193,11 +193,12 @@ subroutine newtillmix(j, bmix)
 
    !! calculate max mixing to preserve target surface residue MJW rev 490
    !! Assume residue in all other layers is negligible to simplify calculation and remove depth dependency
-   if (min_res(j) > 1. .and. bmix < 0.001) then
-      maxmix = 1 - min_res(j)/sol_rsd(1,j)
-      if (maxmix <0.05)  maxmix = 0.05
-      if (emix > maxmix)  emix = maxmix
-   end if
+   ! min_res seems to be always 0
+   !if (min_res(j) > 1. .and. bmix < 0.001) then
+   !   maxmix = 1 - min_res(j)/sol_rsd(1,j)
+   !   if (maxmix <0.05)  maxmix = 0.05
+   !   if (emix > maxmix)  emix = maxmix
+   !end if
 
 
    do l=1, sol_nly(j)

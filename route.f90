@@ -6,13 +6,15 @@
 !> this subroutine simulates channel routing
 !> @param[in] i current day in simulation--loop counter (julian date)
 !> @param[in] jrch reach number (none)
-subroutine route(i, jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine route(i, jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |julian date   |current day in simulation--loop counter
 !!    jrch        |none          |reach number
+!!    k           |none          |inflow hydrograph storage location number
 !!    alpha_bnke(:)|none         |Exp(-alpha_bnk(:))
 !!    bankst(:)   |m^3 H2O       |bank storage
 !!    ch_eqn      |              |sediment routing methods
@@ -33,7 +35,6 @@ subroutine route(i, jrch)
 !!                               |1 sub-daily rainfall/Green&Ampt/hourly
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    irte        |none          |water routing method:
 !!                               |0 variable storage method
 !!                               |1 Muskingum method
@@ -81,7 +82,7 @@ subroutine route(i, jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: i, jrch 
+   integer, intent(in) :: i, jrch, k 
    real*8 :: qdbank, rnum1i, subwtr
    integer :: ii
 
@@ -213,11 +214,11 @@ subroutine route(i, jrch)
    if (ievent == 0) then
       select case (iwq)
        case (2)
-         call watqual2(jrch)
+         call watqual2(jrch, k)
        case (1)
-         call watqual(i, jrch)
+         call watqual(i, jrch, k)
        case (0)
-         call noqual(jrch)
+         call noqual(jrch, k)
       end select
    else
       select case (iwq)

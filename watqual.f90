@@ -7,13 +7,15 @@
 !> quality calculations
 !> @param[in] i current day in simulation--loop counter (julian date)
 !> @param[in] jrch reach number (none)
-subroutine watqual(i, jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine watqual(i, jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i            |julian date   |current day in simulation--loop counter
 !!    jrch         |none          |reach number
+!!    k            |none          |inflow hydrograph storage location number
 !!    ai0          |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    ai1          |mg N/mg alg   |fraction of algal biomass that is nitrogen
 !!    ai2          |mg P/mg alg   |fraction of algal biomass that is phosphorus
@@ -47,7 +49,6 @@ subroutine watqual(i, jrch)
 !!                                |   u = mumax * fll * Min(fnn, fpp)
 !!                                |3: harmonic mean
 !!                                |   u = mumax * fll * 2. / ((1/fnn)+(1/fpp))
-!!    inum2        |none          |inflow hydrograph storage location number
 !!    k_l          |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n          |mg N/L        |michaelis-menton half-saturation constant
 !!                                |for nitrogen
@@ -232,7 +233,7 @@ subroutine watqual(i, jrch)
    implicit none
 
    real*8 Theta, Oxygen_saturation
-   integer, intent(in) :: i, jrch
+   integer, intent(in) :: i, jrch, k
    real*8, parameter :: dcoef = 3., thbc1 = 1.083, thbc2 = 1.047,&
       &thbc3 = 1.047, thbc4 = 1.047, thgra = 1.047, thrho = 1.047,&
       &thrk1 = 1.047, thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060,&
@@ -244,7 +245,7 @@ subroutine watqual(i, jrch)
       &wtrin, wtrtot, ww, xx, yy, zz
 
    !! initialize water flowing into reach
-   wtrin = varoute(2,inum2) * (1. - rnum1)
+   wtrin = varoute(2,k) * (1. - rnum1)
 
    if (wtrin > 1.e-4) then
 !! concentrations
@@ -252,16 +253,16 @@ subroutine watqual(i, jrch)
       if (wtrin > 0.001) then
          xx = 1. - rnum1
          yy = 1000. * xx / wtrin
-         chlin = varoute(13,inum2) * yy
+         chlin = varoute(13,k) * yy
          algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-         orgnin = varoute(4,inum2) * yy
-         ammoin = varoute(14,inum2) * yy
-         nitritin = varoute(15,inum2) * yy
-         nitratin = varoute(6,inum2) * yy
-         orgpin = varoute(5,inum2) * yy
-         dispin = varoute(7,inum2) * yy
-         cbodin = varoute(16,inum2) * yy
-         disoxin = varoute(17,inum2) * yy
+         orgnin = varoute(4,k) * yy
+         ammoin = varoute(14,k) * yy
+         nitritin = varoute(15,k) * yy
+         nitratin = varoute(6,k) * yy
+         orgpin = varoute(5,k) * yy
+         dispin = varoute(7,k) * yy
+         cbodin = varoute(16,k) * yy
+         disoxin = varoute(17,k) * yy
       else
          chlin = 0.
          algin = 0.
@@ -553,7 +554,7 @@ subroutine watqual(i, jrch)
          &ammoin, ammonian(jrch), nitritin, nitriten(jrch),&
          &nitratin, nitraten(jrch), orgpin, organicp(jrch),&
          &dispin, disolvp(jrch), cbodin, rch_cbod(jrch), soxy,&
-         &disoxin, rch_dox(jrch), varoute (2,inum2), rttime
+         &disoxin, rch_dox(jrch), varoute (2,k), rttime
 5000  format ('REACH', i4, i5, 22e12.4)
    end if
 

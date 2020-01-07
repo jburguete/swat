@@ -136,7 +136,7 @@ subroutine command(i)
          call subbasin(i, inum1)
          call print_hyd(i)
        case (2)
-         call route(i, inum1)
+         call route(i, inum1, inum2)
          if (dtp_onoff(inum1)==1) call bmp_det_pond(inum1) !route detention pond J.Jeong feb 2010
          if (wtp_onoff(inum1)==1) call bmp_wet_pond(inum1) !route wetention pond J.Jeong june 2010
          call sumhyd

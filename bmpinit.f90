@@ -13,9 +13,9 @@ subroutine bmpinit(ii)
 !!    ii             |none          |subbasin number
 !!    dtp_addon(:,:)  |m            |The distance between spillway levels
 !!    dtp_cdis(:,:)  |none          |Discharge coeffieicne for weir/orifice flow
-!!    dtp_coef1(:)   |none          |Coefficient of 3rd degree in the polynomial equation
-!!    dtp_coef2(:)   |none          |Coefficient of 2nd degree in the polynomial equation
-!!    dtp_coef3(:)   |none          |Coefficient of 1st degree in the polynomial equation
+!!    dtp_coef(1,:)   |none          |Coefficient of 3rd degree in the polynomial equation
+!!    dtp_coef(2,:)   |none          |Coefficient of 2nd degree in the polynomial equation
+!!    dtp_coef(3,:)   |none          |Coefficient of 1st degree in the polynomial equation
 !!    dtp_depweir(:,:)|m            |Depth of rectangular weir at different stages
 !!    dtp_diaweir(:,:)|m            |Diameter of orifice hole at different stages
 !!    dtp_evrsv      |none          |detention pond evaporation coefficient

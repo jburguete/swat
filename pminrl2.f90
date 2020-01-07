@@ -138,7 +138,7 @@ subroutine pminrl2(j)
       !! on day 1 just set to a value of zero
       if ((iida == 1) .and. (curyr == 1)) then
          a_days(l,j) = 0 !! days since P Application
-         b_days(l,j) = 0 !! days since P deficit
+         !b_days(l,j) = 0 !! days since P deficit ! not used
       end if
 
       !! Calculate P balance
@@ -161,7 +161,7 @@ subroutine pminrl2(j)
          if (arate < 0.1) arate  = 0.1
          rmn1 = arate * rmn1
          a_days(l,j) = a_days(l,j)  + 1 !! add a day to the imbalance counter
-         b_days(l,j) = 0
+         ! b_days(l,j) = 0 ! not used
       End if
 
       if (rmn1 < 0.) then !! Net movement from Active to Soluble
@@ -174,7 +174,7 @@ subroutine pminrl2(j)
          if (varc < 0.1) varc  = 0.1
          rmn1 = rmn1 * varc
          a_days(l,j) = 0
-         b_days(l,j) = b_days(l,j)  + 1 !! add a day to the imbalance counter
+         ! b_days(l,j) = b_days(l,j)  + 1 !! add a day to the imbalance counter ! not used
       End if
 
 !!*************** Active - Stable Transformations ******************
@@ -227,7 +227,7 @@ subroutine pminrl2(j)
       end if
 
 !! Add water soluble P pool assume 1:5 ratio based on sharpley 2005 et al
-      sol_watp(l,j) = sol_solp(l,j) / 5
+      !sol_watp(l,j) = sol_solp(l,j) / 5 ! not used
 
       if (curyr > nyskip) then
          wshd_pas = wshd_pas + roc * hru_dafr(j)

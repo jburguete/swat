@@ -82,7 +82,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Exp, Max, Log, Abs, Int
+!!    Intrinsic: Exp, Max, Log, Abs
 !!    SWAT: Pipeflow, Log_normal
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -396,7 +396,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
          sedpnd = Max(0.,sedpnd - sed(2,ii)) !tons
 
          ! write cumulative amount of sediment removed
-         ft_sed_cumul(sb,kk) = ft_sed_cumul(sb,kk) + sed_removed !tons
+         !ft_sed_cumul(sb,kk) = ft_sed_cumul(sb,kk) + sed_removed !tons ! not used
       end if
 
    end do
@@ -407,7 +407,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
    ft_qin(sb,kk) = qin(nstep)
    ft_qout(sb,kk) = qout(nstep)
    ft_sedpnd(sb,kk) = sedpnd
-   ft_fc(sb,kk) = Int(fc(nstep))
+   ft_fc(sb,kk) = fc(nstep)
 
    return
 end subroutine bmp_sand_filter

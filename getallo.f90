@@ -33,7 +33,6 @@ subroutine getallo
 !!    nrgage      |none        |number of raingage files
 !!    nrgfil      |none        |number of rain gages per file
 !!    nrtot       |none        |total number of rain gages
-!!    nsave       |none        |number of save commands in .fig file
 !!    nstep       |none        |max number of time steps per day
 !!    nstot       |none        |number of solar radiation records in file
 !!    ntgage      |none        |number of temperature gage files
@@ -82,6 +81,7 @@ subroutine getallo
 !!    mcut        |none        |maximum number of cuttings per year (unused)
 !!    mfcst       |none        |maximum number of forecast stations
 !!    nlines      |none        |counter
+!!    nsave       |none        |number of save commands in .fig file
 !!    numhru      |none        |number of HRUs listed in subbasin file
 !!    pestdb      |NA          |name of pesticide database input file(pest.dat)
 !!    plantdb     |NA          |name of LU/LC database input file (crop.dat)
@@ -106,7 +106,7 @@ subroutine getallo
    character (len=13) :: bsnfile, fertdb, fcstfile, figfile, pestdb, plantdb,&
       &subfile, tilldb, urbandb
    integer :: eof, fcsttot, ic, icd, ifcst, ifnum, iht, inm1, inm2, inm3,&
-      &ipnum, isnum, itnum, iunum, j, k, mfcst, mtran, nlines, numhru
+      &ipnum, isnum, itnum, iunum, j, k, mfcst, mtran, nlines, nsave, numhru
    character (len=1) ::  a
 
 !!    initialize variables

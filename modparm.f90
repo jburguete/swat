@@ -4300,12 +4300,11 @@ module parm
    real*8, dimension (:,:), allocatable :: cbodyr
 !> average daily loading of dissolved O2 in year (kg/day)
    real*8, dimension (:,:), allocatable :: disoxyr
-!X
 !> average daily soluble pesticide loading for year (mg pst/day)
    real*8, dimension (:,:), allocatable :: solpstyr
 !> average daily sorbed pesticide loading for year (mg pst/day)
    real*8, dimension (:,:), allocatable :: srbpstyr
-   real*8, dimension (:,:), allocatable :: sol_mc,sol_mn,sol_mp
+   real*8, dimension (:,:), allocatable :: sol_mc, sol_mn, sol_mp
 !> average daily water loading to reach (m^3 H2O/day)
    real*8, dimension (:), allocatable :: flocnst
 !> average daily organic N loading to reach (kg N/day)
@@ -4396,10 +4395,9 @@ module parm
 !> persistent bacteria in reach/outflow during hour (# cfu/100mL)
    real*8, dimension (:), allocatable :: hbactp
 ! store initial values
-   integer, dimension (10) :: ivar_orig
-   real*8, dimension (10) :: rvar_orig
-   integer :: nsave !< number of save commands in .fig file
-   integer ::  nauto, iatmodep
+   integer, dimension (6) :: ivar_orig
+   real*8, dimension (4) :: rvar_orig
+   integer ::  iatmodep
    real*8, dimension (:), allocatable :: wattemp
    real*8, dimension (:), allocatable :: lkpst_mass, lkspst_mass
    real*8, dimension (:), allocatable :: vel_chan
@@ -4412,21 +4410,19 @@ module parm
 !> channelized (none)
    real*8, dimension (:), allocatable :: vfsch
    real*8, dimension (:), allocatable :: vfsi
-   real*8, dimension (:,:), allocatable :: filter_i,filter_ratio
-   real*8, dimension (:,:), allocatable :: filter_con,filter_ch
+   real*8, dimension (:,:), allocatable :: filter_i, filter_ratio
+   real*8, dimension (:,:), allocatable :: filter_con, filter_ch
    real*8, dimension (:,:), allocatable :: sol_n
 !> = 0 Static soil carbon (old mineralization routines)\n
 !> = 1 C-FARM one carbon pool model\n
 !> = 2 Century model
    integer :: cswat
 
-   real*8, dimension (:,:), allocatable :: sol_bdp
-
    real*8, dimension (:,:), allocatable :: tillagef
    real*8, dimension (:), allocatable :: rtfr
 !> storing last soil root depth for use in harvestkillop/killop (mm)
    real*8, dimension (:), allocatable :: stsol_rd
-   integer:: urban_flag, dorm_flag
+   integer:: dorm_flag
    real*8 :: bf_flg, iabstr
 !> TSS loading from urban impervious cover (metric tons)
    real*8, dimension (:), allocatable :: ubntss
@@ -4436,7 +4432,6 @@ module parm
    real*8, dimension (:,:), allocatable :: sub_ubnrunoff
 !> TSS loading from urban impervious cover in subbasin (metric tons)
    real*8, dimension (:,:), allocatable :: sub_ubntss
-   real*8, dimension (:,:), allocatable :: ovrlnd_dt
    real*8, dimension (:,:,:), allocatable :: hhsurf_bs
 
 !> unit hydrograph method: 1=triangular UH; 2=gamma funtion UH;
@@ -4448,7 +4443,7 @@ module parm
    real*8 :: eros_spl !< coefficient of splash erosion varing 0.9-3.1
 !> Multiplier to USLE_K for soil susceptible to rill erosion, range 0.5-2.0
    real*8 :: rill_mult
-   real*8 :: sedprev, c_factor
+   real*8 :: c_factor
    real*8 :: ch_d50 !< median particle diameter of channel bed (mm)
 !> geometric standard deviation of particle sizes for the main channel. Mean air
 !> temperature at which precipitation is equally likely to be rain as
@@ -4457,7 +4452,7 @@ module parm
 !> alpha coefficient for estimating unit hydrograph using a gamma function
 !> (*.bsn)
    real*8 :: uhalpha
-   real*8 :: abstinit,abstmax
+   real*8 :: abstinit
 !> sediment yield from HRU drung a time step applied to HRU (tons)
    real*8, dimension(:,:), allocatable :: hhsedy
 !> precipitation for time step in subbasin (mm H2O)
@@ -4467,36 +4462,29 @@ module parm
    real*8, dimension(:,:), allocatable :: sub_atmp
 !> main channel hydraulic radius (m H2O)
    real*8, dimension(:), allocatable :: rhy
-   real*8, dimension(:), allocatable :: init_abstrc
 !> evaporation losses for hour (m^3 H2O)
    real*8, dimension(:), allocatable :: hrtevp
 !> transmission losses for hour (m^3 H2O)
    real*8, dimension(:), allocatable :: hrttlc
    real*8, dimension(:), allocatable :: dratio
    real*8, dimension(:,:,:), allocatable :: rchhr
-!! subdaily reservoir modeling by Jaehak Jeong
-   real*8, dimension(:), allocatable :: hhresflwi, hhresflwo,&
-      &hhressedi, hhressedo
+   real*8, dimension(:), allocatable :: hhresflwo, hhressedo
 
-!! bmp modeling by jaehak jeong
-   character(len=4), dimension(:), allocatable :: lu_nodrain
+   character(len=4), dimension(30) :: lu_nodrain
    integer, dimension(:), allocatable :: bmpdrain
-   real*8, dimension(:), allocatable :: sub_cn2, sub_ha_urb,&
-      &bmp_recharge
-   !sed-fil
-   real*8, dimension(:), allocatable :: sub_ha_imp,subdr_km,subdr_ickm
-   real*8, dimension(:,:), allocatable :: sf_im,sf_iy,sp_sa,&
-      &sp_pvol,sp_pd,sp_sedi,sp_sede,ft_sa,ft_fsa,&
-      &ft_dep,ft_h,ft_pd,ft_k,ft_dp,ft_dc,ft_por,&
-      &tss_den,ft_alp,sf_fr,sp_qi,sp_k,ft_qpnd,sp_dp,&
-      &ft_qsw,ft_qin,ft_qout,ft_sedpnd,sp_bpw,ft_bpw,&
-      &ft_sed_cumul,sp_sed_cumul
+   real*8, dimension(:), allocatable :: sub_cn2, sub_ha_urb, bmp_recharge
+   real*8, dimension(:), allocatable :: sub_ha_imp, subdr_km, subdr_ickm
+   real*8, dimension(:,:), allocatable :: sf_im, sf_iy, sp_sa,&
+      &sp_pvol, sp_pd, sp_sedi, sp_sede, ft_sa, ft_fsa,&
+      &ft_dep, ft_h, ft_pd, ft_k, ft_dp, ft_dc, ft_por,&
+      &tss_den, ft_alp, sf_fr, sp_qi, sp_k, ft_qpnd, sp_dp,&
+      &ft_qsw, ft_qin, ft_qout, ft_sedpnd, sp_bpw, ft_bpw
    integer, dimension(:), allocatable :: num_sf
-   integer, dimension(:,:), allocatable :: sf_typ,sf_dim,ft_qfg,&
-      &sp_qfg,sf_ptp,ft_fc
-   real*8 :: sfsedmean,sfsedstdev  !Jaehak effluent probability method for urban bmp 2017
+   integer, dimension(:,:), allocatable :: sf_typ, sf_dim, ft_qfg,&
+      &sp_qfg, sf_ptp
+   real*8, dimension(:,:), allocatable :: ft_fc
+   real*8 :: sfsedmean, sfsedstdev  !Jaehak effluent probability method for urban bmp 2017
 
-   !detention pond
 !> month the reservoir becomes operational (none)
    integer, dimension(:), allocatable :: dtp_imo
 !> year of the simulation that the reservoir becomes operational (none)
@@ -4518,7 +4506,6 @@ module parm
 !> 0=use weir/orifice discharge equation to calculate outflow,\n
 !> 1=use stage-dicharge relationship
    integer, dimension(:), allocatable :: dtp_stagdis
-   integer, dimension(:), allocatable :: dtp_subnum
 !> this parameter controls the response of decomposition to the combined effect
 !> of soil temperature and moisture.
    real*8, dimension (:), allocatable :: cf
@@ -4538,12 +4525,10 @@ module parm
 !> 2=circular
    integer, dimension(:,:), allocatable :: dtp_weirtype
 
-!> coefficient of 3rd degree in the polynomial equation (none)
-   real*8, dimension(:), allocatable :: dtp_coef1
-!> coefficient of 2nd degree in the polynomial equation (none)
-   real*8, dimension(:), allocatable :: dtp_coef2
-!> coefficient of 1st degree in the polynomial equation (none)
-   real*8, dimension(:), allocatable :: dtp_coef3
+!> dtp_coef(1,:) coefficient of 3rd degree in the polynomial equation (none)\n
+!> dtp_coef(2,:) coefficient of 2nd degree in the polynomial equation (none)\n
+!> dtp_coef(3,:) coefficient of 1st degree in the polynomial equation (none)
+   real*8, dimension(:,:), allocatable :: dtp_coef
 !> detention pond evaporation coefficient (none)
    real*8, dimension(:), allocatable :: dtp_evrsv
 !> exponent used in the exponential equation (none)
@@ -4554,24 +4539,16 @@ module parm
    real*8, dimension(:), allocatable :: dtp_lwratio
 !> total constructed width of the detention wall across the creek (m)
    real*8, dimension(:), allocatable :: dtp_totwrwid
-   real*8, dimension(:), allocatable :: &
-      &dtp_inflvol,dtp_wdep,dtp_totdep,&
-      &dtp_watdepact,dtp_outflow,dtp_totrel,dtp_backoff,dtp_seep_sa,&
-      &dtp_evap_sa,dtp_pet_day,dtp_pcpvol,dtp_seepvol,dtp_evapvol,&
-      &dtp_flowin,dtp_backup_length,dtp_ivol,dtp_ised
+   real*8, dimension(:), allocatable :: dtp_ivol, dtp_ised
 
-   integer, dimension (:,:),allocatable :: so_res_flag, ro_bmp_flag
-   real*8, dimension (:,:),allocatable :: sol_watp, sol_solp_pre
-   real*8, dimension (:,:),allocatable :: psp_store, ssp_store, so_res
+   integer, dimension (:,:),allocatable :: ro_bmp_flag
+   real*8, dimension (:,:),allocatable :: psp_store, ssp_store
    real*8, dimension (:,:),allocatable :: sol_cal, sol_ph
-   integer:: sol_p_model
-   integer, dimension (:,:),allocatable :: a_days, b_days
-!> minimum residue allowed due to implementation of residue managment in the OPS
-!> file (kg/ha)
-   real*8, dimension (:), allocatable :: min_res
-   real*8, dimension (:), allocatable :: harv_min, fstap
+   integer :: sol_p_model
+   integer, dimension (:,:),allocatable :: a_days
    real*8, dimension (:,:),allocatable :: ro_bmp_flo, ro_bmp_sed
    real*8, dimension (:,:),allocatable :: ro_bmp_bac
+!X
    real*8, dimension (:,:),allocatable :: ro_bmp_pp, ro_bmp_sp
    real*8, dimension (:,:),allocatable :: ro_bmp_pn, ro_bmp_sn
 

@@ -173,8 +173,8 @@ subroutine filter(i, j)
 !! vfs comnposed of two sections one with more concentrated flow than the other
 
 !! Calculate drainage area of vfs 1 2 3 in ha
-      drain_vfs1 = (1-vfscon(j))* hru_ha(j)
-      drain_vfs2 = ((1-vfsch(j)) * vfscon(j))* hru_ha(j)
+      drain_vfs1 = (1. - vfscon(j)) * hru_ha(j)
+      drain_vfs2 = (1. - vfsch(j)) * vfscon(j) * hru_ha(j)
       drain_vfs3 = vfscon(j) * vfsch(j) * hru_ha(j)
 
 !! Calculate area of vfs 1 and 2 in ha

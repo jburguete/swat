@@ -7,17 +7,18 @@
 !> are calculated. New concentrations of the nutrients are calculated based
 !> on the loading to the reach from upstream.
 !> @param[in] jrch reach number (none)
-subroutine noqual(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine noqual(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch         |none          |reach number
+!!    k            |none          |inflow hydrograph storage location number
 !!    ai0          |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    algae(:)     |mg alg/L      |algal biomass concentration in reach
 !!    ammonian(:)  |mg N/L        |ammonia concentration in reach
 !!    disolvp(:)   |mg P/L        |dissolved phosphorus concentration in reach
-!!    inum2        |none          |inflow hydrograph storage location number
 !!    nitraten(:)  |mg N/L        |nitrate concentration in reach
 !!    nitriten(:)  |mg N/L        |nitrite concentration in reach
 !!    organicn(:)  |mg N/L        |organic nitrogen concentration in reach
@@ -91,31 +92,31 @@ subroutine noqual(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8 :: algcon, algin, ammoin, cbodcon, cbodin, chlin, disoxin, dispin,&
       &nh3con, nitratin, nitritin, no2con, no3con, o2con, orgncon, orgnin,&
       &orgpcon, orgpin, solpcon, wtrin, wtrtot, xx
 
    !! initialize water flowing into reach
-   wtrin = varoute(2,inum2) * (1. - rnum1)
+   wtrin = varoute(2,k) * (1. - rnum1)
 
    if (rtwtr / 86400. > 0.01 .and. wtrin > 0.01) then
 !! concentrations
       !! initialize inflow concentrations
-      if (varoute(13,inum2) < 1.e-6) varoute(13,inum2) = 0.0
+      if (varoute(13,k) < 1.e-6) varoute(13,k) = 0.0
       xx = 1000. * (1. - rnum1) / wtrin
-      chlin = varoute(13,inum2) * xx
+      chlin = varoute(13,k) * xx
       algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-      orgnin = varoute(4,inum2) * xx
-      ammoin = varoute(14,inum2) * xx
-      nitritin = varoute(15,inum2) * xx
-      nitratin = varoute(6,inum2) * xx
-      orgpin = varoute(5,inum2) * xx
-      dispin = varoute(7,inum2) * xx
-      if (varoute(16,inum2) < 1.e-6) varoute(16,inum2) = 0.0
-      cbodin = varoute(16,inum2) * xx
-      if (varoute(17,inum2) < 1.e-6) varoute(17,inum2) = 0.0
-      disoxin = varoute(17,inum2) * xx
+      orgnin = varoute(4,k) * xx
+      ammoin = varoute(14,k) * xx
+      nitritin = varoute(15,k) * xx
+      nitratin = varoute(6,k) * xx
+      orgpin = varoute(5,k) * xx
+      dispin = varoute(7,k) * xx
+      if (varoute(16,k) < 1.e-6) varoute(16,k) = 0.0
+      cbodin = varoute(16,k) * xx
+      if (varoute(17,k) < 1.e-6) varoute(17,k) = 0.0
+      disoxin = varoute(17,k) * xx
 
       !! initialize concentration of nutrient in reach
       if (algae(jrch) < 1.e-6) algae(jrch) = 0.0

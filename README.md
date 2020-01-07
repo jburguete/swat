@@ -283,6 +283,10 @@ variables is not possible.
     `husc` has to be `phu_op(iop,ihru)` has in readmgt.f?
     `igrow` has to be `igro(ihru)` has in readmgt.f?
 
+* In schedule_ops.f:
+  - `so_res_flag(iops,ihru)` is used but not initialized at line 149
+  - `so_res(iops,ihru)` is used but not initialized at line 150
+
 * In smeas.f:
   - `rabsb` could be used not initialized at line 86
 
@@ -290,6 +294,9 @@ variables is not possible.
   - `fr_curb` is used but not initialized at line 56.
     It has to be added to modparm.f to share result with sched\_mgt.f?
     or it has to be `mgt5op(nop(ihru),ihru)` as in sched\_mgt.f?
+
+* In tillfactor.f
+  - `tillagef(l,jj)` could be used but not initialized at line 44
 
 * In tmeas.f:
   - `tmxbsb` and `tmnbsb` could be used not initialized at lines 109-110
@@ -301,6 +308,9 @@ variables is not possible.
 * In urbanhr.f
   - `isweep(j)` is used at lines 166 and 186 but not initialized at any part of
     code
+
+* In watqual2.f
+  - `wattemp` is used but not initialized at line 271
 
 * In wmeas.f:
   - `u10bsb` could be used not initialized at line 85

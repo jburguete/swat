@@ -174,8 +174,8 @@ subroutine urbanhr(j)
       sus_sol=0
 
       ! Compute evaporation of water (initial dabstraction) from impervious cover
-      init_abstrc(j) = init_abstrc(j) - etday / nstep
-      init_abstrc(j) = Max(0.,init_abstrc(j))
+      !init_abstrc(j) = init_abstrc(j) - etday / nstep ! not used
+      !init_abstrc(j) = Max(0.,init_abstrc(j)) ! not used
    end do
 
    !! perform street sweeping

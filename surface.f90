@@ -77,11 +77,12 @@ subroutine surface(i, j, sb)
 
    !! add overland flow from upstream routing unit
    precipday = precipday + ovrlnd(j)
-   if (nstep > 0) then
-      do ii = 1, nstep
-         precipdt(ii+1) = precipdt(ii+1) + ovrlnd_dt(j,ii)
-      end do
-   end if
+   ! ovrlnd_dt seems to be always 0
+   !if (nstep > 0) then
+   !   do ii = 1, nstep
+   !      precipdt(ii+1) = precipdt(ii+1) + ovrlnd_dt(j,ii)
+   !   end do
+   !end if
 
    !! add irrigation from retention-irrigation ponds to soil water
    if (ri_luflg(j)==1) then

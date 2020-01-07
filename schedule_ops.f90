@@ -146,11 +146,13 @@ subroutine schedule_ops(j)
 
        case (9)
          !! Implement Residue Management MJW
-         if (so_res_flag(iops,j) == 1)  then
-            min_res(j) = so_res(iops,j)
-         else
-            min_res(j) = 0.
-         end if
+         !! so_res and so_res_flag are not initialized, assuming 0 values
+         !if (so_res_flag(iops,j) == 1)  then
+         !   min_res(j) = so_res(iops,j)
+         !else
+         !   min_res(j) = 0.
+         !end if
+         !min_res(j) = 0. ! not used (it seems to be always 0)
 
        case (10) !! User defined Upland CP removal MJW
          if (ro_bmp_flag (iops,j) == 1) then

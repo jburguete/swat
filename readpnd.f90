@@ -25,9 +25,9 @@ subroutine readpnd(i)
 !!                               |wetland
 !!    dtp_addon(:,:)|m           |The distance between spillway levels
 !!    dtp_cdis(:,:)|none         |Discharge coeffieicne for weir/orifice flow
-!!    dtp_coef1(:)|none          |Coefficient of 3rd degree in the polynomial equation
-!!    dtp_coef2(:)|none          |Coefficient of 2nd degree in the polynomial equation
-!!    dtp_coef3(:)|none          |Coefficient of 1st degree in the polynomial equation
+!!    dtp_coef(1,:)|none          |Coefficient of 3rd degree in the polynomial equation
+!!    dtp_coef(2,:)|none          |Coefficient of 2nd degree in the polynomial equation
+!!    dtp_coef(3,:)|none          |Coefficient of 1st degree in the polynomial equation
 !!    dtp_depweir(:,:)|m         |Depth of rectangular wier at different stages
 !!    dtp_diaweir(:,:)|m         |Diameter of orifice hole at different stages
 !!    dtp_evrsv   |none          |detention pond evaporation coefficient
@@ -411,11 +411,11 @@ subroutine readpnd(i)
          if (eof < 0) exit
          read (104,*,iostat=eof) dtp_expont(i)
          if (eof < 0) exit
-         read (104,*,iostat=eof) dtp_coef1(i)
+         read (104,*,iostat=eof) dtp_coef(1,i)
          if (eof < 0) exit
-         read (104,*,iostat=eof) dtp_coef2(i)
+         read (104,*,iostat=eof) dtp_coef(2,i)
          if (eof < 0) exit
-         read (104,*,iostat=eof) dtp_coef3(i)
+         read (104,*,iostat=eof) dtp_coef(3,i)
          if (eof < 0) exit
 
          j = dtp_numstage(i)

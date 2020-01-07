@@ -306,6 +306,7 @@ subroutine zero1
    terr_sl = 0.
    tfile = ""
    thalf = 0.
+   tillagef = 0.
    tillnm = ""
    title = ""
    tlaps = 0.

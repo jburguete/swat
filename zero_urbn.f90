@@ -9,7 +9,6 @@ subroutine zero_urbn
    use parm
    implicit none
 
-   urban_flag = 0
    sci = 0.
 
    hhsurf_bs = 0.
@@ -32,10 +31,9 @@ subroutine zero_urbn
    iuh = 1
    uhalpha = 1.
    rchhr = 0.
-   init_abstrc = 0
+   !init_abstrc = 0 ! not used
 
 !!    subdaily bmp modeling
-   lu_nodrain = "    "
    bmpdrain = 0
    !sed-fil
    num_sf = 0
@@ -72,14 +70,13 @@ subroutine zero_urbn
    ft_qin = 0.
    ft_qout = 0.
    ft_sedpnd = 0.
-   ft_sed_cumul = 0.
-   sp_sed_cumul = 0.
+   !ft_sed_cumul = 0. ! not used
+   !sp_sed_cumul = 0. ! not used
    ft_qfg = 0
    sp_qfg = 0
    sf_ptp = 0
    ft_fc = 0
    !detention pond
-   dtp_subnum = 0
    dtp_imo = 0
    dtp_iyr = 0
    dtp_numweir = 0
@@ -88,28 +85,11 @@ subroutine zero_urbn
    dtp_reltype = 0
    dtp_onoff = 0
    dtp_evrsv = 0.
-   dtp_inflvol = 0.
    dtp_totwrwid = 0.
    dtp_lwratio = 0.
-   dtp_wdep = 0.
-   dtp_totdep = 0.
-   dtp_watdepact = 0.
-   dtp_outflow = 0.
-   dtp_totrel = 0.
-   dtp_backoff = 0.
-   dtp_seep_sa = 0.
-   dtp_evap_sa = 0.
-   dtp_pet_day = 0.
-   dtp_pcpvol = 0.
-   dtp_seepvol = 0.
-   dtp_evapvol = 0.
-   dtp_flowin = 0.
-   dtp_backup_length = 0.
    dtp_intcept = 0.
    dtp_expont = 0.
-   dtp_coef1 = 0.
-   dtp_coef2 = 0.
-   dtp_coef3 = 0.
+   dtp_coef = 0.
    dtp_wdratio = 0.
    dtp_depweir = 0.
    dtp_diaweir = 0.
@@ -181,7 +161,7 @@ subroutine zero_urbn
    wtp_sedi = 0.
    wtp_sede = 0.
    wtp_qi = 0.
-   ovrlnd_dt = 0.
+   !ovrlnd_dt = 0. ! not used
    bmp_recharge = 0.
    sfsedmean = 0.
    sfsedstdev = 0.

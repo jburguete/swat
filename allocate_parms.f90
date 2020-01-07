@@ -1302,10 +1302,6 @@ subroutine allocate_parms
    allocate (sol_n(mlyr,mhru))
 !! sj, june 07 end
 
-!! sj dec 07 modification tillage
-   allocate (sol_bdp(mlyr,mhru))
-!! sj dec 07 end
-
 !!Armen Jan 2008
    allocate (tillagef(mlyr,mhru))
 !  test rtfr
@@ -1329,16 +1325,15 @@ subroutine allocate_parms
    allocate (sub_ubnrunoff(msub,nstep),sub_ubntss(msub,nstep))
 
 !! Arrays for subdaily erosion modeling by Jaehak Jeong
-   allocate (hhsedy(mhru,nstep),rhy(nstep),ovrlnd_dt(mhru,nstep))
+   allocate (hhsedy(mhru,nstep),rhy(nstep))
    allocate (snam(mhru),hydgrp(mhru))
-   allocate (dratio(msub),init_abstrc(mhru))
+   allocate (dratio(msub))
    allocate (sub_subp_dt(msub,nstep),sub_hhsedy(msub,nstep))
    allocate (sub_atmp(msub,nstep),bmp_recharge(msub))
    allocate (rchhr(mrcho,mch,nstep),hrtevp(nstep),hrttlc(nstep))
-   allocate (hhresflwi(nstep), hhresflwo(nstep),hhressedi(nstep),&
-      &hhressedo(nstep))
+   allocate (hhresflwo(nstep),hhressedo(nstep))
 !! Arrays for bmp simulation by jaehak jeong
-   allocate (lu_nodrain(30),bmpdrain(mhru))
+   allocate (bmpdrain(mhru))
    allocate (subdr_km(mhyd),subdr_ickm(mhyd),sub_cn2(msub))
    ! sedimentation-filtration
    allocate (num_sf(msub),sf_fr(msub,10),sf_dim(msub,10),&
@@ -1349,8 +1344,8 @@ subroutine allocate_parms
       &ft_k(msub,10),ft_dp(msub,10),ft_dc(msub,10),&
       &ft_por(msub,10),tss_den(msub,10),ft_alp(msub,10),&
       &sp_qi(msub,10),sp_k(msub,10),sp_bpw(msub,10),&
-      &ft_bpw(msub,10),sp_dp(msub,10),ft_sed_cumul(msub,10),&
-      &sp_sed_cumul(msub,10),ft_qfg(msub,10),sp_qfg(msub,10))
+      &ft_bpw(msub,10),sp_dp(msub,10),&
+      &ft_qfg(msub,10),sp_qfg(msub,10))
    allocate (sub_ha_imp(msub),ft_qpnd(msub,10),ft_qsw(msub,10),&
       &ft_qin(msub,10),ft_qout(msub,10),ft_sedpnd(msub,10),&
       &sf_ptp(msub,10),ft_fc(msub,10),sub_ha_urb(msub))
@@ -1366,19 +1361,13 @@ subroutine allocate_parms
    allocate (filter_ch(20,mhru))
 
    ! detention pond
-   allocate(dtp_subnum(mhyd),dtp_imo(mhyd),dtp_iyr(mhyd),&
+   allocate(dtp_imo(mhyd),dtp_iyr(mhyd),&
       &dtp_numweir(mhyd),dtp_numstage(mhyd),&
       &dtp_stagdis(mhyd),dtp_reltype(mhyd),dtp_onoff(mhyd))
 
-   allocate(dtp_evrsv(msub),&
-      &dtp_inflvol(msub),dtp_totwrwid(msub),dtp_lwratio(msub),&
-      &dtp_wdep(msub),dtp_totdep(msub),dtp_watdepact(msub),&
-      &dtp_outflow(msub),dtp_totrel(msub),dtp_backoff(msub),&
-      &dtp_seep_sa(msub),dtp_evap_sa(msub),dtp_pet_day(msub),&
-      &dtp_pcpvol(msub),dtp_seepvol(msub),dtp_evapvol(msub),&
-      &dtp_flowin(msub),dtp_backup_length(msub),dtp_intcept(msub),&
-      &dtp_expont(msub),dtp_coef1(msub),dtp_coef2(msub),&
-      &dtp_coef3(msub),dtp_ivol(msub),dtp_ised(msub))
+   allocate(dtp_evrsv(msub),dtp_totwrwid(msub),dtp_lwratio(msub),&
+      &dtp_intcept(msub),&
+      &dtp_expont(msub),dtp_coef(3,msub),dtp_ivol(msub),dtp_ised(msub))
 
    allocate(dtp_wdratio(msub,10),dtp_depweir(msub,10),&
       &dtp_diaweir(msub,10),dtp_retperd(msub,10),dtp_pcpret(msub,10),&
@@ -1390,18 +1379,11 @@ subroutine allocate_parms
    allocate (lat_orgp(mhru))
 
 !! Variables for soil P and additional operations mjw
-   allocate (sol_watp(mlyr,mhru))
    allocate (a_days(mlyr,mhru))
-   allocate (b_days(mlyr,mhru))
    allocate (psp_store(mlyr,mhru))
    allocate (ssp_store(mlyr,mhru))
    allocate (sol_cal(mlyr,mhru))
    allocate (sol_ph(mlyr,mhru))
-   allocate (harv_min(mhru))
-   allocate (fstap(mfdb))
-   allocate (min_res(mhru))
-   allocate (so_res(20,mhru))
-   allocate (so_res_flag(20,mhru))
    allocate (ro_bmp_flag(20,mhru))
    allocate (ro_bmp_flo(20,mhru))
    allocate (ro_bmp_sed(20,mhru))

@@ -134,6 +134,7 @@ subroutine surfstor(j, sb)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    k           |none          |counter
+!!    sedprev
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -145,6 +146,7 @@ subroutine surfstor(j, sb)
    implicit none
 
    integer, intent(in) :: j, sb
+   real*8 :: sedprev
    integer :: k
 
    if (ievent == 0) then

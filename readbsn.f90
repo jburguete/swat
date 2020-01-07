@@ -553,14 +553,14 @@ subroutine readbsn
       read (103,*,iostat=eof) titldum
       read (103,'(a)') tlu
       pos = Index(tlu, ",")
-      if(pos>0.and.Len_trim(tlu)>0) then
+      if (pos > 0 .and. Len_trim(tlu) > 0) then
          numlu = 1
-         do ii=pos+1,Len_trim(tlu)
-            if (tlu(ii:ii).eq.',') then
+         do ii = pos + 1, Len_trim(tlu)
+            if (tlu(ii:ii) .eq. ',') then
                numlu = numlu + 1
             end if
          end do
-         if (tlu(ii-1:ii-1).ne.',') then
+         if (tlu(ii-1:ii-1) .ne. ',') then
             numlu = numlu + 1
          end if
       end if
@@ -700,14 +700,14 @@ subroutine readbsn
 !!    mike van liew additions for basins.bsn
 
    ! check parameter values for urban project jaehak 9/15/09
-   if(iuh/=1.and.iuh/=2) then
+   if (iuh /= 1 .and. iuh /= 2) then
       iuh = 1
    endif
-   if(bf_flg>1.or.bf_flg<0) then
+   if (bf_flg > 1 .or. bf_flg < 0) then
       write(*,*) 'The range of BFLO_DIST in bsn file should be 0-1'
       !  stop
    endif
-   if(sed_ch>2) then
+   if (sed_ch > 2) then
       write(*,*) 'Error in choosing channel erosion model:&
          & 0-Bagnold, 1-Brownlie, 2-Yang'
       write(*,*) 'Check *.bsn file to correct the error'

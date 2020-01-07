@@ -352,7 +352,7 @@ subroutine zero2
    ssp_store = 0.
    psp_store = 0.
    a_days = 0
-   b_days = 0
+   !b_days = 0 ! not used
    sol_ph = 0
    sol_cal = 0
    bio_init = 0

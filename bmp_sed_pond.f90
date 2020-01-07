@@ -206,7 +206,7 @@ subroutine bmp_sed_pond(sb, kk, flw, sed)
       sed(3,ii) = sweir
 
       ! total sediment removed from the pond, tons
-      sp_sed_cumul(sb,kk) = sp_sed_cumul(sb,kk) + sedpndi - sedpnde
+      !sp_sed_cumul(sb,kk) = sp_sed_cumul(sb,kk) + sedpndi - sedpnde ! not used
 
    end do
 
