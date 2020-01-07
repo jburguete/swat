@@ -157,6 +157,10 @@ module parm
    real*8, parameter :: potpcpmm = 0.
 !> seepage from pothole expressed as depth over HRU (mm H2O)
    real*8, parameter :: potsepmm = 0.
+!> fraction of potential plant growth achieved on the day where the reduction is
+!> caused by phosphorus stress (none)
+   real*8, parameter :: strsp = 1.
+   character(len=1), parameter :: kirr = " " !< irrigation in HRU
 
 !> code for writing out calendar day or julian day to output.rch, .sub, .hru
 !> files;\n
@@ -3099,27 +3103,19 @@ module parm
    real*8, dimension (:,:), allocatable :: bio_p
 !> fraction above ground biomass that dies off at dormancy (fraction)
    real*8, dimension (:), allocatable :: bm_dieoff
-!X
    real*8, dimension (:), allocatable :: bmx_trees,ext_coef
-!> initial root to shoot ratio at the beg of growing season
-   real*8, dimension (:), allocatable :: rsr1
-!> root to shoot ratio at the end of the growing season
-   real*8, dimension (:), allocatable :: rsr2
+!> rsr(1,:) initial root to shoot ratio at the beg of growing season\n
+!> rsr(2,:) root to shoot ratio at the end of the growing season
+   real*8, dimension (:,:), allocatable :: rsr
 !> nitrogen uptake parameter #1: normal fraction of N in crop biomass at
 !> emergence (kg N/kg biomass)
    real*8, dimension (:), allocatable :: pltnfr1
-!> nitrogen uptake parameter #2: normal fraction of N in crop biomass at 0.5
-!> maturity (kg N/kg biomass)
-   real*8, dimension (:), allocatable :: pltnfr2
 !> nitrogen uptake parameter #3: normal fraction of N in crop biomass at
 !> maturity (kg N/kg biomass)
    real*8, dimension (:), allocatable :: pltnfr3
 !> phosphorus uptake parameter #1: normal fraction of P in crop biomass at
 !> emergence (kg P/kg biomass)\n
    real*8, dimension (:), allocatable :: pltpfr1
-!> phosphorus uptake parameter #2: normal fraction of P in crop biomass at 0.5
-!> maturity (kg P/kg biomass)
-   real*8, dimension (:), allocatable :: pltpfr2
 !> phosphorus uptake parameter #3: normal fraction of P in crop biomass at
 !> maturity (kg P/kg biomass)
    real*8, dimension (:), allocatable :: pltpfr3
@@ -3347,21 +3343,15 @@ module parm
    real*8, dimension (:), allocatable :: grwat_spcon
 !> time of concentration for grassed waterway and its drainage area (none)
    real*8, dimension (:), allocatable :: tc_gwat
-   real*8, dimension (:), allocatable :: pot_volmm,pot_tilemm,pot_volxmm  !!NUBZ
+   real*8, dimension (:), allocatable :: pot_tilemm,pot_volxmm  !!NUBZ
 !> fraction of HRU area that drains into pothole (km^2/km^2)
    real*8, dimension (:), allocatable :: pot_fr
-!> average daily outflow to main channel from tile flow if drainage tiles are
-!> installed in pothole (needed only if current HRU is IPOT) (m^3/s)
-   real*8, dimension (:), allocatable :: pot_tile
 !> initial or current volume of water stored in the depression/impounded area
 !> (read in as mm and converted to m^3) (needed only if current HRU is IPOT)
 !> (mm or m^3 H20)
    real*8, dimension (:), allocatable :: pot_vol
 !> surface area of impounded water body (ha)
    real*8, dimension (:), allocatable :: potsa
-!> maximum volume of water stored in the depression/impounded area (read in as
-!> mm and converted to m^3) (needed only if current HRU is IPOT) (mm)
-   real*8, dimension (:), allocatable :: pot_volx
 !> wetting front matric potential (average capillary suction at wetting front)
 !> (mm)
    real*8, dimension (:), allocatable :: wfsh
@@ -3369,13 +3359,6 @@ module parm
    real*8, dimension (:), allocatable :: potflwi
 !> sediment entering pothole on day (metric tons)
    real*8, dimension (:), allocatable :: potsedi
-!> nitrate decay rate in impounded area (1/day)
-   real*8, dimension (:), allocatable :: pot_no3l
-!> normal sediment concentration in impounded water (needed only if current HRU
-!> is IPOT)(mg/L)
-   real*8, dimension (:), allocatable :: pot_nsed
-!> nitrate-N concentration in groundwater loading to reach (mg N/L)
-   real*8, dimension (:), allocatable :: gwno3
 !> infiltration rate for last time step from the previous day (mm/hr)
    real*8, dimension (:), allocatable :: newrti
 !> reduction in bacteria loading from filter strip (none)
@@ -3384,12 +3367,8 @@ module parm
    real*8, dimension (:), allocatable :: pot_no3
 !> amount of sediment in pothole water body (metric tons)
    real*8, dimension (:), allocatable :: pot_sed
-   real*8, dimension (:), allocatable :: tmpavp
 !> average distance to stream (m)
    real*8, dimension (:), allocatable :: dis_stream
-!> pothole evaporation coefficient (none)
-   real*8, dimension (:), allocatable :: evpot
-   real*8, dimension (:), allocatable :: pot_solpl
    real*8, dimension (:), allocatable :: sed_con, orgn_con, orgp_con
 !> hydraulic conductivity of soil surface of pothole [defaults to conductivity
 !> of upper soil (0.01--10.) layer] (mm/hr)
@@ -3397,9 +3376,6 @@ module parm
    real*8, dimension (:), allocatable :: soln_con, solp_con
 !> nitrogen uptake reduction factor (not currently used; defaulted 300.)
    real*8, dimension (:), allocatable :: n_reduc
-!> lag coefficient for calculating nitrate concentration in subsurface drains
-!> (0.001 - 1.0) (dimensionless)
-   real*8, dimension (:), allocatable :: n_lag
 !> power function exponent for calculating nitrate concentration in subsurface
 !> drains (1.0 - 3.0) (dimensionless)
    real*8, dimension (:), allocatable :: n_ln
@@ -3407,7 +3383,6 @@ module parm
 !> subsurface drains (0.5 - 4.0) (dimensionless)
    real*8, dimension (:), allocatable :: n_lnco
    integer, dimension (:), allocatable :: ioper
-   integer, dimension (:), allocatable :: ngrwat
 !> USLE equation length slope (LS) factor (none)
    real*8, dimension (:), allocatable :: usle_ls
 !> filter strip width for bacteria transport (m)
@@ -3452,16 +3427,16 @@ module parm
 !> total drainage area contributing to flow at the outlet (pour point) of the
 !> reach in square kilometers (km^2)
    real*8, dimension (:), allocatable :: rch_dakm
-!> SCS runoff curve number for moisture condition I (none)
-   real*8, dimension (:), allocatable :: cn1
+!> cn(1,:) SCS runoff curve number for moisture condition I (none)\n
+!> cn(2,:) SCS runoff curve number for moisture condition II (none)\n
+!> cn(3,:) SCS runoff curve number for moisture condition III (none)
+   real*8, dimension (:,:), allocatable :: cn
 !> amount of nitrate originating from lateral flow in pond at end of day or at
 !> beginning of day(kg N)
    real*8, dimension (:), allocatable :: pnd_no3s
 !> lateral flow travel time or exponential of the lateral flow travel time
 !> (days or none)
    real*8, dimension (:), allocatable :: lat_ttime
-!> SCS runoff curve number for moisture condition II (none)
-   real*8, dimension (:), allocatable :: cn2
 !> fraction of available flow in reach that is allowed to be applied to the HRU
 !> (none)
    real*8, dimension (:), allocatable :: flowfr
@@ -3493,8 +3468,6 @@ module parm
 !> amount of organic P originating from surface runoff in pond at end of day or
 !> at beginning of day (kg P)
    real*8, dimension (:), allocatable :: pnd_orgp
-!> SCS runoff curve number for moisture condition III (none)
-   real*8, dimension (:), allocatable :: cn3
 !> water lost through seepage from ponds on day in HRU (mm H2O)
    real*8, dimension (:), allocatable :: twlpnd
 !> water lost through seepage from wetlands on day in HRU (mm H2O)
@@ -3636,8 +3609,6 @@ module parm
 !> amount of organic P originating from surface runoff in wetland at end of day
 !> (kg P)
    real*8, dimension (:), allocatable :: wet_orgp
-!> average porosity for entire soil profile (none)
-   real*8, dimension (:), allocatable :: sol_avpor
 !> product of USLE K,P,LS,exp(rock) (none)
    real*8, dimension (:), allocatable :: usle_mult
 !> relative humidity for the day in HRU (none)
@@ -3665,17 +3636,15 @@ module parm
 !> water stress factor which triggers auto irrigation (none or mm)
    real*8, dimension (:), allocatable :: auto_wstr
 !> fertilizer/manure identification number from database (fert.dat) (none)
-   real*8, dimension (:), allocatable :: cfrt_id
+   integer, dimension (:), allocatable :: cfrt_id
 !> amount of fertilzier/manure applied to HRU on a given day ((kg/ha)/day)
    real*8, dimension (:), allocatable :: cfrt_kg
-   real*8, dimension (:), allocatable :: cpst_id
+   integer, dimension (:), allocatable :: cpst_id
    real*8, dimension (:), allocatable :: cpst_kg
    real*8, dimension (:), allocatable :: irr_asq !< surface runoff ratio
    real*8, dimension (:), allocatable :: irr_eff
 !> surface runoff ratio (0-1) .1 is 10% surface runoff (frac)
    real*8, dimension (:), allocatable :: irrsq
-!> concentration of salt in irrigation water (mg/kg)
-   real*8, dimension (:), allocatable :: irrsalt
    real*8, dimension (:), allocatable :: irrefm
 !> dry weight of biomass removed by grazing daily ((kg/ha)/day)
    real*8, dimension (:), allocatable :: bio_eat
@@ -3704,8 +3673,6 @@ module parm
    integer, dimension (:), allocatable :: pest_days
 !> harvested biomass of plant (kg/ha)
    real*8, dimension (:,:), allocatable :: bio_aahv
-   real*8, dimension (:), allocatable :: cumei,cumeira
-   real*8, dimension (:), allocatable :: cumrt, cumrai
 !> amount of soluble P originating from surface runoff in wetland at end of day
 !> (kg P)
    real*8, dimension (:), allocatable :: wet_solp
@@ -3737,9 +3704,8 @@ module parm
    real*8, dimension (:), allocatable :: alpha_bfe
 !> specific yield for shallow aquifer (m^3/m^3)
    real*8, dimension (:), allocatable :: gw_spyld
-!> alpha factor for groudwater recession curve of the deep aquifer (1/days)
-   real*8, dimension (:), allocatable :: alpha_bf_d
-!> \f$\exp(-alpha_bf_d)\f$ for deep aquifer (none)
+!> \f$\exp(-alpha_bf_d)\f$ (with alpha_bf_d the alpha factor for groudwater
+!> recession curve of the deep aquifer (1/days)) (none)
    real*8, dimension (:), allocatable :: alpha_bfe_d
 !> groundwater contribution to streamflow from deep aquifer from HRU on current
 !> day (mm H2O)
@@ -3811,7 +3777,6 @@ module parm
    real*8, dimension (:), allocatable :: re !< effective radius of drains (mm)
 !> distance between two drain tubes or tiles (mm)
    real*8, dimension (:), allocatable :: sdrain
-   real*8, dimension (:), allocatable :: ddrain_hru
 !> drainage coefficient (mm/day)
    real*8, dimension (:), allocatable :: drain_co
 !> multiplication factor to determine conk(j1,j) from sol_k(j1,j) for HRU (none)
@@ -3843,16 +3808,11 @@ module parm
 !> total or net amount of water entering main channel for day from HRU (mm H2O)
    real*8, dimension (:), allocatable :: qdr
 !> amount of N applied in autofert operation in year (kg N/ha)
-   real*8, dimension (:), allocatable :: tauton
-!> amount of P applied in autofert operation in year (kg N/ha)
-   real*8, dimension (:), allocatable :: tautop
-!> carbonaceous biological oxygen demand of surface runoff on current day in HRU
 !> (mg/L)
    real*8, dimension (:), allocatable :: cbodu
 !> chlorophyll-a concentration in water yield on current day in HRU
 !> (microgram/L)
    real*8, dimension (:), allocatable :: chl_a
-   real*8, dimension (:), allocatable :: tfertn,tfertp,tgrazn,tgrazp
 !> total amount of water in lateral flow in soil profile for the day in HRU
 !> (mm H2O)
    real*8, dimension (:), allocatable :: latq
@@ -3887,15 +3847,11 @@ module parm
 !> fraction of potential plant growth achieved on the day in HRU where the
 !> reduction is caused by temperature stress (none)
    real*8, dimension (:), allocatable :: strstmp
-!> fraction of potential plant growth achieved on the day where the reduction is
-!> caused by phosphorus stress (none)
-   real*8, dimension (:), allocatable :: strsp
 !> amount of nitrate transported in surface runoff in HRU for the day (kg N/ha)
    real*8, dimension (:), allocatable :: surqno3
    real*8, dimension (:), allocatable :: hru_ha !< area of HRU in hectares (ha)
 !> fraction of total watershed area contained in HRU (km2/km2)
    real*8, dimension (:), allocatable :: hru_dafr
-   real*8, dimension (:), allocatable :: tcfrtn,tcfrtp
 !> atmospheric dry deposition of nitrates (kg/ha/yr)
    real*8, dimension (:), allocatable :: drydep_no3
 !> atmospheric dry deposition of ammonia (kg/ha/yr)
@@ -3936,11 +3892,8 @@ module parm
    real*8, dimension (:), allocatable :: dormhr
 !> maximum leaf area index for the year in the HRU (none)
    real*8, dimension (:), allocatable :: lai_yrmx
-   real*8, dimension (:), allocatable :: bio_aamx
 !> amount of pesticide in lateral flow in HRU for the day (kg pst/ha)
    real*8, dimension (:), allocatable :: lat_pst
-!> fraction of HRU area that drains into floodplain (km^2/km^2)
-   real*8, dimension (:), allocatable :: fld_fr
    real*8, dimension (:), allocatable :: orig_snohru,orig_potvol
 !> fraction of plant biomass that is nitrogen (none)
    real*8, dimension (:), allocatable :: pltfr_n
@@ -3952,8 +3905,6 @@ module parm
    real*8, dimension (:), allocatable :: phu_plt
    real*8, dimension (:), allocatable :: orig_phu
    real*8, dimension (:), allocatable :: orig_shallst,orig_deepst
-!> fraction of HRU area that drains into riparian zone (km^2/km^2)
-   real*8, dimension (:), allocatable :: rip_fr
    real*8, dimension (:), allocatable :: orig_pndvol,orig_pndsed
    real*8, dimension (:), allocatable :: orig_pndno3,orig_pndsolp
    real*8, dimension (:), allocatable :: orig_pndorgn,orig_pndorgp
@@ -3964,10 +3915,9 @@ module parm
    real*8, dimension (:), allocatable :: orig_potno3,orig_potsed
 !> water table based on 30 day antecedent climate (precip,et) (mm)
    real*8, dimension (:), allocatable :: wtab
-   real*8, dimension (:), allocatable :: wtab_mn,wtab_mx
 !> nitrate concentration in shallow aquifer converted to kg/ha (ppm NO3-N)
    real*8, dimension (:), allocatable :: shallst_n
-   real*8, dimension (:), allocatable :: gw_nloss,rchrg_n
+   real*8, dimension (:), allocatable :: gw_nloss, rchrg_n
    real*8, dimension (:), allocatable :: det_san, det_sil, det_cla
    real*8, dimension (:), allocatable :: det_sag, det_lag
 !> fraction of fertilizer which is applied to top 10 mm of soil (the remaining
@@ -3996,9 +3946,8 @@ module parm
    real*8, dimension (:,:), allocatable :: yldn
    integer, dimension (:,:), allocatable :: gwati
    real*8, dimension (:,:), allocatable :: gwatn, gwatl
-   real*8, dimension (:,:), allocatable :: gwatw, gwatd, gwatveg
-   real*8, dimension (:,:), allocatable :: gwata, gwats, gwatspcon
-   real*8, dimension (:,:), allocatable :: rfqeo_30d,eo_30d
+   real*8, dimension (:,:), allocatable :: gwatw, gwatd
+   real*8, dimension (:,:), allocatable :: gwats, gwatspcon
 !> psetlp(1,:) phosphorus settling rate for 1st season (m/day)\n
 !> psetlp(2,:) phosphorus settling rate for 2nd season (m/day)
    real*8, dimension (:,:), allocatable :: psetlp
@@ -4013,10 +3962,9 @@ module parm
 !> wgncur(3,:) parameter which predicts impact of precip on daily solar
 !> radiation
    real*8, dimension (:,:), allocatable :: wgncur
-!> 1st shape parameter for calculation of water retention (none)
-   real*8, dimension (:), allocatable :: wrt1
-!> 2nd shape parameter for calculation of water retention (none)
-   real*8, dimension (:), allocatable :: wrt2
+!> wrt(1,:) 1st shape parameter for calculation of water retention (none)\n
+!> wrt(2,:) 2nd shape parameter for calculation of water retention (none)
+   real*8, dimension (:,:), allocatable :: wrt
 !> pesticide enrichment ratio (none)
    real*8, dimension (:,:), allocatable :: pst_enr
 !> amount of pesticide type lost in water surface runoff on current day in HRU
@@ -4062,21 +4010,7 @@ module parm
 !> bottom width of main channel (m)
    real*8, dimension (:), allocatable :: wat_phi6
 !> depth of water when reach is at bankfull depth (m)
-   real*8, dimension (:), allocatable :: wat_phi7
-!> average velocity when reach is at bankfull depth (m/s)
-   real*8, dimension (:), allocatable :: wat_phi8
-!> wave celerity when reach is at bankfull depth (m/s)
    real*8, dimension (:), allocatable :: wat_phi9
-!> storage time constant for reach at bankfull depth (ratio of storage to
-!> discharge) (hour)
-   real*8, dimension (:), allocatable :: wat_phi10
-!> average velocity when reach is at 0.1 bankfull depth (low flow) (m/s)
-   real*8, dimension (:), allocatable :: wat_phi11
-!> wave celerity when reach is at 0.1 bankfull depth (low flow) (m/s)
-   real*8, dimension (:), allocatable :: wat_phi12
-!> storage time constant for reach at 0.1 bankfull depth (low flow) (ratio of
-!> storage to discharge) (hour)
-   real*8, dimension (:), allocatable :: wat_phi13
 !> snow water content in elevation band on current day (mm H2O)
    real*8, dimension (:,:), allocatable :: snoeb
 !> average daily water removal from the deep aquifer for the month for the HRU
@@ -4085,8 +4019,6 @@ module parm
 !> average daily water removal from the shallow aquifer for the month for the
 !> HRU within the subbasin (10^4 m^3/day)
    real*8, dimension (:,:), allocatable :: wushal
-!> minimum temperature for the day in band in HRU (deg C)
-   real*8, dimension (:,:), allocatable :: tmnband
 !> bss(1,:) amount of lateral flow lagged (mm H2O)\n
 !> bss(2,:) amount of nitrate in lateral flow lagged (kg N/ha)\n
 !> bss(3,:) amount of tile flow lagged (mm)\n
@@ -4134,12 +4066,11 @@ module parm
    real*8, dimension (:,:), allocatable :: terr_p, terr_cn, terr_sl
    real*8, dimension (:,:), allocatable :: drain_d, drain_t, drain_g
    real*8, dimension (:,:), allocatable :: drain_idep
-   real*8, dimension (:,:), allocatable :: cont_cn, cont_p, filt_w
-   real*8, dimension (:,:), allocatable :: strip_n, strip_cn, strip_c
+   real*8, dimension (:,:), allocatable :: cont_cn, cont_p
+   real*8, dimension (:,:), allocatable :: strip_n, strip_cn
    real*8, dimension (:,:), allocatable :: strip_p, fire_cn
-   real*8, dimension (:,:), allocatable :: cropno_upd,hi_upd,laimx_upd
-!> fraction of plant heat units at which grazing begins (none)
-   real*8, dimension (:,:,:), allocatable :: phug
+   integer, dimension (:,:), allocatable :: cropno_upd
+   real*8, dimension (:,:), allocatable :: hi_upd, laimx_upd
 !> pst_lag(1,:,:) amount of soluble pesticide in surface runoff lagged
 !> (kg pst/ha)\n
 !> pst_lag(2,:,:) amount of sorbed pesticide in surface runoff lagged
@@ -4150,18 +4081,10 @@ module parm
 !>  0: no pesticides used in HRU\n
 !>  1: pesticides used in HRU
    integer, dimension (:), allocatable :: hrupest
-!> sequence number of impound/release operation within the year (none)
-   integer, dimension (:), allocatable :: nrelease
 !> rainfall event flag (none):\n
 !> 0: no rainfall event over midnight\n
 !> 1: rainfall event over midnight
    integer, dimension (:), allocatable :: swtrg
-!> number of years of rotation (none)
-   integer, dimension (:), allocatable :: nrot
-!> sequence number of fertilizer application within the year (none)
-   integer, dimension (:), allocatable :: nfert
-!> sequence number of year in rotation (none)
-   integer, dimension (:), allocatable :: nro
 !> land cover status code (none). This code informs the model whether or not a
 !> land cover is growing at the beginning of the simulation\n
 !> 0 no land cover currently growing\n
@@ -4171,16 +4094,12 @@ module parm
 !> (none)\n
 !> ipnd(2,:) ending month of 2nd "season" of nutrient settling season (none)
    integer, dimension (:,:), allocatable :: ipnd
-!> sequence number of auto-irrigation application within the year (none)
-   integer, dimension (:), allocatable :: nair
 !> iflod(1,:) beginning month of non-flood season (none)\n
 !> iflod(2,:) ending month of non-flood season (none)
    integer, dimension (:,:), allocatable :: iflod
 !> number of days required to reach target storage from current pond storage
 !> (none)
    integer, dimension (:), allocatable :: ndtarg
-!> sequence number of irrigation application within the year (none)
-   integer, dimension (:), allocatable :: nirr
 !> code for approach used to determine amount of nitrogen to HRU (none):\n
 !> 0 nitrogen target approach\n
 !> 1 annual max approach
@@ -4191,14 +4110,8 @@ module parm
    integer, dimension (:), allocatable :: grz_days
 !> management code (for GIS output only) (none)
    integer, dimension (:), allocatable :: nmgt
-!> sequence number of auto-fert application within the year (none)
-   integer, dimension (:), allocatable :: nafert
-!> sequence number of street sweeping operation within the year (none)
-   integer, dimension (:), allocatable :: nsweep
 !> sequence number of crop grown within the current year (none)
    integer, dimension (:), allocatable :: icr
-!> sequence number of harvest operation within a year (none)
-   integer, dimension (:), allocatable :: ncut
 !> irrigation source location (none)\n
 !> if IRRSC=1, IRRNO is the number of the reach\n
 !> if IRRSC=2, IRRNO is the number of the reservoir\n
@@ -4214,10 +4127,6 @@ module parm
    integer, dimension (:), allocatable :: npcp
 !> average annual number of irrigation applications in HRU (none)
    integer, dimension (:), allocatable :: irn
-!> sequence number of continuous fertilization operation within the year (none)
-   integer, dimension (:), allocatable :: ncf
-!> sequence number of grazing operation within the year (none)
-   integer, dimension (:), allocatable :: ngr
 !> grazing flag for HRU (none):\n
 !> 0 HRU currently not grazed\n
 !> 1 HRU currently grazed
@@ -4245,10 +4154,6 @@ module parm
 !> 1 HRU currently continuously fertilized
    integer, dimension (:), allocatable :: icfrt
    integer, dimension (:), allocatable :: iday_fert
-!> number of HRU (in subbasin) that is a floodplain (none)
-   integer, dimension (:), allocatable :: ifld
-!> number of HRU (in subbasin) that is a riparian zone (none)
-   integer, dimension (:), allocatable :: irip
 !> GIS code printed to output files (output.hru, output.rch) (none)
    integer, dimension (:), allocatable :: hrugis
 !> number of days HRU has been continuously fertilized (days)
@@ -4260,24 +4165,16 @@ module parm
 !> 4 divert water from deep aquifer\n
 !> 5 divert water from source outside watershed
    integer, dimension (:), allocatable :: irrsc
-!> sequence number of tillage operation within current year (none)
-   integer, dimension (:), allocatable :: ntil
    integer, dimension (:), allocatable :: orig_igro
-!> high water table code (none):\n
-!> 0 no high water table\n
-!> 1 high water table
-   integer, dimension (:), allocatable :: iwatable
    integer, dimension (:), allocatable :: curyr_mat
 !> icpst = 0 do not apply\n
 !> icpst = 1 application period
    integer, dimension (:), allocatable :: icpst
 !> current day within the application period (day)
    integer, dimension (:), allocatable :: ndcpst
-   integer, dimension (:), allocatable :: ncpest
 !> current day between applications (day)
    integer, dimension (:), allocatable :: iday_pest
    integer, dimension (:), allocatable :: irr_flag
-   integer, dimension (:), allocatable :: irra_flag
 !> random number generator seeds array. The seeds in the array are used to
 !> generate random numbers for the following purposes (none):\n
 !> (1) wet/dry day probability\n
@@ -4291,15 +4188,11 @@ module parm
 !> (9) minimum temperature\n
 !> (10) generate new random numbers
    integer, dimension (:,:), allocatable :: rndseed
-   integer, dimension (:,:), allocatable :: iterr, iyterr
-   integer, dimension (:,:), allocatable :: itdrain, iydrain, ncrops
+   integer, dimension (:,:), allocatable :: ncrops
 !> manure (fertilizer) identification number from fert.dat (none)
    integer, dimension (:), allocatable :: manure_id
 
-   integer, dimension (:,:), allocatable :: mgt_sdr,idplrot
-   integer, dimension (:,:), allocatable :: icont, iycont
-   integer, dimension (:,:), allocatable :: ifilt, iyfilt
-   integer, dimension (:,:), allocatable :: istrip, iystrip
+   integer, dimension (:,:), allocatable :: idplrot
    integer, dimension (:,:), allocatable :: iopday, iopyr, mgt_ops
 !> total or average annual amount of pesticide type applied in watershed during
 !> simulation (kg/ha)
@@ -4318,7 +4211,6 @@ module parm
 
    character(len=4), dimension (1000) :: urbname !< name of urban land use
 
-   character(len=1), dimension (:), allocatable :: kirr !< irrigation in HRU
    character(len=1), dimension (:), allocatable :: hydgrp
    character(len=16), dimension (:), allocatable :: snam !< soil series name
    character(len=17), dimension (300) :: pname !< name of pesticide/toxin
@@ -4360,15 +4252,13 @@ module parm
 !> average amount of NO2-N loaded to stream on a given day in the month
 !> (kg N/day)
    real*8, dimension (:,:,:), allocatable :: no2mon
-!> average amount of conservative metal #1 loaded to stream on a given day in
-!> the month (# bact/day)
-   real*8, dimension (:,:,:), allocatable :: cmtl1mon
-!> average amount of conservative metal #2 loaded to stream on a given day in
-!> the month (# bact/day)
-   real*8, dimension (:,:,:), allocatable :: cmtl2mon
-!> average amount of conservative metal #3 loaded to stream on a given day in
-!> the month (# bact/day)
-   real*8, dimension (:,:,:), allocatable :: cmtl3mon
+!> cmtlmon(1,:,:,:) average amount of conservative metal #1 loaded to stream on
+!> a given day in the month (# bact/day)\n
+!> cmtlmon(2,:,:,:) average amount of conservative metal #2 loaded to stream on
+!> a given day in the month (# bact/day)\n
+!> cmtlmon(3,:,:,:) average amount of conservative metal #3 loaded to stream on
+!> a given day in the month (# bact/day)
+   real*8, dimension (:,:,:,:), allocatable :: cmtlmon
 !> average amount of CBOD loaded to stream on a given day in the month (kg/day)
    real*8, dimension (:,:,:), allocatable :: cbodmon
 !> average amount of chlorophyll a loaded to stream on a given day in the month
@@ -4397,18 +4287,20 @@ module parm
    real*8, dimension (:,:), allocatable :: bactlpyr
 !> average daily loading of persistent bacteria for year (# bact/day)
    real*8, dimension (:,:), allocatable :: bactpyr
-!> average daily loading of conservative metal #1 for year (kg/day)
-   real*8, dimension (:,:), allocatable :: cmtl1yr
+!> cmtlyr(1,:,:) average daily loading of conservative metal #1 for year
+!> (kg/day)\n
+!> cmtlyr(2,:,:) average daily loading of conservative metal #2 for year
+!> (kg/day)\n
+!> cmtlyr(3,:,:) average daily loading of conservative metal #3 for year
+!> (kg/day)
+   real*8, dimension (:,:,:), allocatable :: cmtlyr
 !> average daily loading of chlorophyll-a in year (kg/day)
    real*8, dimension (:,:), allocatable :: chlayr
-!> average daily loading of conservative metal #2 for year (kg/day)
-   real*8, dimension (:,:), allocatable :: cmtl2yr
-!> average daily loading of conservative metal #3 for year (kg/day)
-   real*8, dimension (:,:), allocatable :: cmtl3yr
 !> average daily loading of CBOD in year (kg/day)
    real*8, dimension (:,:), allocatable :: cbodyr
 !> average daily loading of dissolved O2 in year (kg/day)
    real*8, dimension (:,:), allocatable :: disoxyr
+!X
 !> average daily soluble pesticide loading for year (mg pst/day)
    real*8, dimension (:,:), allocatable :: solpstyr
 !> average daily sorbed pesticide loading for year (mg pst/day)
@@ -4434,14 +4326,12 @@ module parm
    real*8, dimension (:), allocatable :: no2cnst
 !> average daily less persistent bacteria loading to reach (# bact/day)
    real*8, dimension (:), allocatable :: bactlpcnst
-!> average daily conservative metal #1 loading (kg/day)
-   real*8, dimension (:), allocatable :: cmtl1cnst
-!> average daily conservative metal #2 loading (kg/day)
-   real*8, dimension (:), allocatable :: cmtl2cnst
+!> cmltcnst(1,:) average daily conservative metal #1 loading (kg/day)\n
+!> cmltcnst(2,:) average daily conservative metal #2 loading (kg/day)\n
+!> cmltcnst(3,:) average daily conservative metal #3 loading (kg/day)
+   real*8, dimension (:,:), allocatable :: cmtlcnst
 !> average daily chlorophyll-a loading to reach (kg/day)
    real*8, dimension (:), allocatable :: chlacnst
-!> average daily conservative metal #3 loading (kg/day)
-   real*8, dimension (:), allocatable :: cmtl3cnst
 !> average daily dissolved oxygen loading to reach (kg/day)
    real*8, dimension (:), allocatable :: disoxcnst
 !> average daily loading of CBOD to reach (kg/day)

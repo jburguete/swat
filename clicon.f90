@@ -100,7 +100,6 @@ subroutine clicon(i)
 !!    subp(:)     |mm H2O        |precipitation for the day in HRU
 !!    tavband(:,:)|deg C         |average temperature for the day in band in HRU
 !!    tmn(:)      |deg C         |minimum temperature for the day in HRU
-!!    tmnband(:,:)|deg C         |minimum temperature for the day in band in HRU
 !!    tmpav(:)    |deg C         |average temperature for the day in HRU
 !!    tmx(:)      |deg C         |maximum temperature for the day in HRU
 !!    tmxband(:,:)|deg C         |maximum temperature for the day in band in HRU
@@ -130,6 +129,7 @@ subroutine clicon(i)
 !!    rmxbsb      |MJ/m^2        |generated maximum solar radiation for subbasin
 !!    tdif        |deg C         |difference in temperature for station and
 !!                               |temperature for elevation band
+!!    tmnband(:)  |deg C         |minimum temperature for the day in band in HRU
 !!    tmnbsb      |deg C         |generated minimum temperature for subbasin
 !!    tmxbsb      |deg C         |generated maximum temperature for subbasin
 !!    u10bsb      |m/s           |generated wind speed for subbasin
@@ -147,6 +147,7 @@ subroutine clicon(i)
 
    integer, intent(in) :: i
    real*8, dimension(nstep) :: fradbsb
+   real*8, dimension(10) :: tmnband
    real*8 :: daylbsb, pdif, rabsb, ratio, rbsb, rhdbsb, rmxbsb, tdif, tmnbsb,&
       &tmxbsb, u10bsb
    integer :: ib, idap, ii, inum3sprev, iyp, k, l, npcpbsb
@@ -306,7 +307,7 @@ subroutine clicon(i)
             end if
             tavband(ib,k) = tmpav(k) + tdif
             tmxband(ib,k) = tmx(k) + tdif
-            tmnband(ib,k) = tmn(k) + tdif
+            tmnband(ib) = tmn(k) + tdif
             if (subp(k) > 0.01) then
                pcpband(ib,k) = subp(k) + pdif
                if (pcpband(ib,k) < 0.) pcpband(ib,k) = 0.
@@ -329,7 +330,7 @@ subroutine clicon(i)
             if (elevb_fr(ib,hru_sub(k)) < 0.) exit
             tmpav(k) = tmpav(k) + tavband(ib,k) * elevb_fr(ib,hru_sub(k))
             tmx(k) = tmx(k) + tmxband(ib,k) * elevb_fr(ib,hru_sub(k))
-            tmn(k) = tmn(k) + tmnband(ib,k) * elevb_fr(ib,hru_sub(k))
+            tmn(k) = tmn(k) + tmnband(ib) * elevb_fr(ib,hru_sub(k))
             subp(k) = subp(k) + pcpband(ib,k) * elevb_fr(ib,hru_sub(k))
          end do
          if (nstep > 0) then

@@ -158,7 +158,7 @@ subroutine sumv(j)
 !!    strsn(:)    |none          |fraction of potential plant growth achieved on
 !!                               |the day where the reduction is caused by
 !!                               |nitrogen stress
-!!    strsp(:)    |none          |fraction of potential plant growth achieved on
+!!    strsp       |none          |fraction of potential plant growth achieved on
 !!                               |the day where the reduction is caused by
 !!                               |phosphorus stress
 !!    strstmp(:)  |none          |fraction of potential plant growth achieved on
@@ -482,10 +482,10 @@ subroutine sumv(j)
       hrumono(28,j) = hrumono(28,j) + auton
       hrumono(29,j) = hrumono(29,j) + autop
       hrumono(30,j) = hrumono(30,j) + sol_tmp(2,j)
-      hrumono(31,j) = hrumono(31,j) + (1.-strsw(j))
-      hrumono(32,j) = hrumono(32,j) + (1.-strstmp(j))
-      hrumono(33,j) = hrumono(33,j) + (1.-strsn(j))
-      hrumono(34,j) = hrumono(34,j) + (1.-strsp(j))
+      hrumono(31,j) = hrumono(31,j) + 1. - strsw(j)
+      hrumono(32,j) = hrumono(32,j) + 1. - strstmp(j)
+      hrumono(33,j) = hrumono(33,j) + 1. - strsn(j)
+      hrumono(34,j) = hrumono(34,j) + 1. - strsp
       hrumono(35,j) = hrumono(35,j) + sedorgn(j)
       hrumono(36,j) = hrumono(36,j) + sedorgp(j)
       hrumono(37,j) = hrumono(37,j) + surqno3(j)

@@ -98,7 +98,7 @@ subroutine readmgt(k)
 !!    cfrt_id(:,:,:)  |none           |fertilizer/manure id number from database
 !!    cfrt_kg(:,:,:)  |kg/ha          |amount of fertilzier applied to HRU on a
 !!                                    |given day
-!!    cn2(:)          |none           |SCS runoff curve number for moisture
+!!    cn(2,:)          |none           |SCS runoff curve number for moisture
 !!                                    |condition II
 !!    cnop            |none           |SCS runoff curve number for moisture
 !!                                    |condition II
@@ -309,7 +309,7 @@ subroutine readmgt(k)
    read (109,*) phu_plt(k)
    read (109,5000) titldum
    read (109,*) biomix(k)
-   read (109,*) cn2(k)
+   read (109,*) cn(2,k)
    read (109,*) usle_p(k)
    read (109,*) bio_min(k)
    read (109,*) filterw(k)
@@ -332,16 +332,12 @@ subroutine readmgt(k)
    read (109,5000) titldum
 
 !!    set pothole trigger
-!    if (ipot(k) == k) then
-!        do irot = 1, nrot(k)
    imp_trig(k) = 0
-!        end do
-!     end if
 
 !!    set default values
    uu = urblu(k)
-   if (cn2(k) <= 35.0) cn2(k) = 35.0
-   if (cn2(k) >= 98.0) cn2(k) = 98.0
+   if (cn(2,k) <= 35.0) cn(2,k) = 35.0
+   if (cn(2,k) >= 98.0) cn(2,k) = 98.0
    if (usle_p(k) <= 0.0) usle_p(k) = 0.0
    if (usle_p(k) >= 1.0) usle_p(k) = 1.0
    if (biomix(k) <= 0.) biomix(k) = .2
@@ -378,12 +374,12 @@ subroutine readmgt(k)
 !!    Set curve number for urban disconnected impervious areas and pervious
 !!    areas. This assumes CN2 given in mgt file is for pervious area only
    if (iurban(k) > 0) then
-      xx = fimp(uu) * (urbcn2(uu) - cn2(k))
+      xx = fimp(uu) * (urbcn2(uu) - cn(2,k))
       if (fimp(uu) < 0.30) then
          disc = fimp(uu) - fcimp(uu)
          xx = xx * (1. - disc / (2. * fimp(uu)))
       endif
-      cn2(k) = cn2(k) + xx
+      cn(2,k) = cn(2,k) + xx
    endif
 
 !!    Filter strip calculations

@@ -10,7 +10,7 @@ subroutine soil_phys(ii)
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cn2(:)        |none          |SCS runoff curve number for moisture
+!!    cn(2,:)        |none          |SCS runoff curve number for moisture
 !!                                 |condition II
 !!    ddrain(:)     |mm            |depth to the sub-surface drain
 !!    ffc(:)        |none          |initial HRU soil water content
@@ -44,7 +44,6 @@ subroutine soil_phys(ii)
 !!    crdep(:,:)    |mm            |maximum or potential crack volume
 !!    ldrain(:)     |none          |soil layer where drainage tile is located
 !!    sol_avbd(:)   |Mg/m^3        |average bulk density for soil profile
-!!    sol_avpor(:)  |none          |average porosity for entire soil profile
 !!    sol_fc(:,:)   |mm H2O        |amount of water available to plants in soil
 !!                                 |layer at field capacity (fc - wp)
 !!    sol_hk(:,:)   |none          |beta coefficent to calculate hydraulic
@@ -91,6 +90,7 @@ subroutine soil_phys(ii)
 !!    pormm       |mm            |porosity in mm depth
 !!    sa
 !!    si
+!!    sol_avpor   |none          |average porosity for entire soil profile
 !!    sumpor      |mm            |porosity of profile
 !!    xx          |none          |variable to hold value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -105,7 +105,7 @@ subroutine soil_phys(ii)
    implicit none
 
    integer, intent(in) :: ii
-   real*8 :: cl, dg, drpor, pormm, sa, si, sumpor, xx
+   real*8 :: cl, dg, drpor, pormm, sa, si, sol_avpor, sumpor, xx
    integer :: j, nly
 
    nly = sol_nly(ii)
@@ -190,12 +190,12 @@ subroutine soil_phys(ii)
    do j = 1, nly
       sol_stpwt(j,ii) = sol_st(j,ii)
    end do
-   wat_tbl(ii) = dep_imp(ii)- (shallst(ii)/sol_por(nly,ii))
+   wat_tbl(ii) = dep_imp(ii)- (shallst(ii) / sol_por(nly,ii))
 
    !!Initializing water table depth and soil water revised by D. Moriasi 4/8/2014
    !! initialize water table depth and soil water for Daniel
-   sol_avpor(ii) = sumpor / sol_z(nly,ii)
-   sol_avbd(ii) = 2.65 * (1. - sol_avpor(ii))
+   sol_avpor = sumpor / sol_z(nly,ii)
+   sol_avbd(ii) = 2.65 * (1. - sol_avpor)
 
 
 !!    define soil layer that the drainage tile is in
@@ -229,8 +229,8 @@ subroutine soil_phys(ii)
    wshd_snob = wshd_snob + sno_hru(ii) * hru_dafr(ii)
 
 
-   call curno(cn2(ii),ii) !! J.Jeong 4/18/2008
-!      call curno_subd(cn2(ii),ii)  !! changed for URBAN
+   call curno(cn(2,ii),ii) !! J.Jeong 4/18/2008
+!      call curno_subd(cn(2,ii),ii)  !! changed for URBAN
 
    return
 end

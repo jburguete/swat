@@ -326,8 +326,8 @@ subroutine readsub(i)
       if (urblu(l)>0) then
          kk=1
          bmpdrain(l) = 1
-         do while(lu_nodrain(kk).ne."    ")
-            if (urbname(urblu(l)).eq.lu_nodrain(kk)) then
+         do while(lu_nodrain(kk) .ne. "    ")
+            if (urbname(urblu(l)) .eq. lu_nodrain(kk)) then
                bmpdrain(l) = 0
                exit
             end if
@@ -366,7 +366,7 @@ subroutine readsub(i)
          subdr_ickm(i) = subdr_ickm(i) + hru_km(l) * fimp(urblu(l))
       end if
       ! estimate average Curve Number for the subbasin
-      sub_cn2(i) = sub_cn2(i) + cn2(l) * hru_fr(l)
+      sub_cn2(i) = sub_cn2(i) + cn(2,l) * hru_fr(l)
    end do      ! hru loop
 
    !! set up routing unit fractions for landscape routing

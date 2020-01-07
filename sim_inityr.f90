@@ -59,27 +59,24 @@ subroutine sim_inityr
    implicit none
 
    !! initialize variables/arrays at beginning of every year
-   ncpest = 1
-   nfert = 1
-   nrelease = 1
-   nsweep= 1
-   nirr = 1
-   ngr = 1
-   ncf = 1
-   nair = 1
-   nafert = 1
+   !ncpest = 1 ! not used
+   !nfert = 1 ! not used
+   !nsweep= 1 ! not used
+   !nirr = 1 ! not used
+   !ngr = 1 ! not used
+   !ncf = 1 ! not used
    yldanu = 0.
    bio_yrms = 0.
    lai_yrmx = 0.
    anano3 = 0.
-   tauton = 0.
-   tautop = 0.
-   tcfrtn = 0.
-   tcfrtp = 0.
-   tfertn = 0.
-   tfertp = 0.
-   tgrazn = 0.
-   tgrazp = 0.
+   !tauton = 0. ! not used
+   !tautop = 0. ! not used
+   !tcfrtn = 0. ! not used
+   !tcfrtp = 0. ! not used
+   !tfertn = 0. ! not used
+   !tfertp = 0. ! not used
+   !tgrazn = 0. ! not used
+   !tgrazp = 0. ! not used
 
 
    if (iskip == 0) then

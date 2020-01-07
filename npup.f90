@@ -63,7 +63,7 @@ subroutine npup(j)
 !!    pltfr_p(:)  |none          |fraction of plant biomass that is phosphorus
 !!    pplnt(:)    |kg P/ha       |plant uptake of phosphorus in HRU for the day
 !!    sol_solp(:,:)|kg P/ha      |amount of phosohorus stored in solution
-!!    strsp(:)    |none          |fraction of potential plant growth achieved on
+!!    strsp       |none          |fraction of potential plant growth achieved on
 !!                               |the day where the reduction is caused by
 !!                               |phosphorus stress
 !!    wshd_pup    |kg P/ha       |average annual amount of plant uptake of
@@ -108,7 +108,7 @@ subroutine npup(j)
    uapd = up2 - plantp(j)
    uapd = 1.5 * uapd                         !! luxury p uptake
 
-   strsp(j) = 1.
+   ! strsp(j) = 1. ! it seems to be always 1
    if (uapd < 1.e-6) return
 
    ir = 0
@@ -132,7 +132,7 @@ subroutine npup(j)
    plantp(j) = plantp(j) + pplnt(j)
 
 !! compute phosphorus stress
-   call nuts(plantp(j), up2, strsp(j))
+   call nuts(plantp(j), up2, strsp)
 
 !! summary calculations
    if (curyr > nyskip) then

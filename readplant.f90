@@ -28,13 +28,13 @@ subroutine readplant
 !!                                 |active radiation.
 !!    bio_leaf(:)|none             |fraction of leaf/needle biomass that drops
 !!                                 |during dormancy (for trees only)
-!!    bio_n(1,:)  |none             |1st shape parameter for plant N uptake
+!!    bio_n(1,:) |none             |1st shape parameter for plant N uptake
 !!                                 |equation
-!!    bio_n(2,:)  |none             |2nd shape parameter for plant N uptake
+!!    bio_n(2,:) |none             |2nd shape parameter for plant N uptake
 !!                                 |equation
-!!    bio_p(1,:)  |none             |1st shape parameter for plant P uptake
+!!    bio_p(1,:) |none             |1st shape parameter for plant P uptake
 !!                                 |equation
-!!    bio_p(2,:)  |none             |2st shape parameter for plant P uptake
+!!    bio_p(2,:) |none             |2st shape parameter for plant P uptake
 !!                                 |equation
 !!    blai(:)    |none             |maximum (potential) leaf area index
 !!    bm_dieoff(:) fraction        |fraction above ground biomass that dies
@@ -57,23 +57,17 @@ subroutine readplant
 !!               |                 |5 cold season annual
 !!               |                 |6 perennial
 !!               |                 |7 trees
-!!    leaf(1,:)   |none             |1st shape parameter for leaf area
+!!    leaf(1,:)  |none             |1st shape parameter for leaf area
 !!                                 |development equation.
-!!    leaf(2,:)   |none             |2nd shape parameter for leaf area
+!!    leaf(2,:)  |none             |2nd shape parameter for leaf area
 !!                                 |development equation.
-!!    pltnfr1(:)|kg N/kg biomass  |nitrogen uptake parameter #1: normal
+!!    pltnfr1(:) |kg N/kg biomass  |nitrogen uptake parameter #1: normal
 !!                                 |fraction of N in crop biomass at emergence
-!!    pltnfr2(:)|kg N/kg biomass  |nitrogen uptake parameter #2: normal
-!!                                 |fraction of N in crop biomass at 0.5
-!!                                 |maturity
-!!    pltnfr3(:)|kg N/kg biomass  |nitrogen uptake parameter #3: normal
+!!    pltnfr3(:) |kg N/kg biomass  |nitrogen uptake parameter #3: normal
 !!                                 |fraction of N in crop biomass at maturity
-!!    pltpfr1(:)|kg P/kg biomass  |phosphorus uptake parameter #1: normal
+!!    pltpfr1(:) |kg P/kg biomass  |phosphorus uptake parameter #1: normal
 !!                                 |fraction of P in crop biomass at emergence
-!!    pltpfr2(:)|kg P/kg biomass  |phosphorus uptake parameter #2: normal
-!!                                 |fraction of P in crop biomass at 0.5
-!!                                 |maturity
-!!    pltpfr3(:)|kg P/kg biomass  |phosphorus uptake parameter #3: normal
+!!    pltpfr3(:) |kg P/kg biomass  |phosphorus uptake parameter #3: normal
 !!                                 |fraction of P in crop biomass at maturity
 !!    rdmx(:)    |m                |maximum root depth
 !!    rsdco_pl(:)|none             |plant residue decomposition coefficient. The
@@ -157,6 +151,12 @@ subroutine readplant
 !!    laimx2    |none             |fraction of maximum leaf area index
 !!                                |corresponding to the 2nd point on optimal
 !!                                |leaf area development curve
+!!    pltnfr2   |kg N/kg biomass  |nitrogen uptake parameter #2: normal
+!!                                |fraction of N in crop biomass at 0.5
+!!                                |maturity
+!!    pltpfr2   |kg P/kg biomass  |phosphorus uptake parameter #2: normal
+!!                                |fraction of P in crop biomass at 0.5
+!!                                |maturity
 !!    rdmxc
 !!    rsdcopl
 !!    rsr1c     |                 |initial root to shoot ratio at the beg of growing season
@@ -185,8 +185,8 @@ subroutine readplant
    real*8 :: alaimin, b1, b2, b3, bioe, bioehi, bioleaf, biomxtrees, blaic,&
       &bmdieoff, bn1, bn2, bn3, bp1c, bp2c, bp3c, chtmxc, cnyldc, co2hi,&
       &cpyldc, dlaic, extcoef, frgmax, frgrw1, frgrw2, gsic, hvstc, laimx1,&
-      &laimx2, rdmxc, rsdcopl, rsr1c, rsr2c, tbase, topt, usle_c, vpdfr, wavpc,&
-      &wsyfc
+      &laimx2, pltnfr2, pltpfr2, rdmxc, rsdcopl, rsr1c, rsr2c, tbase, topt,&
+      &usle_c, vpdfr, wavpc, wsyfc
    integer :: eof, ic, idtype, yrsmat
    character (len=4) :: cname
 
@@ -266,10 +266,10 @@ subroutine readplant
       cnyld(ic) = cnyldc
       cpyld(ic) = cpyldc
       pltnfr1(ic) = bn1
-      pltnfr2(ic) = bn2
+      pltnfr2 = bn2
       pltnfr3(ic) = bn3
       pltpfr1(ic) = bp1c
-      pltpfr2(ic) = bp2c
+      pltpfr2 = bp2c
       pltpfr3(ic) = bp3c
       wsyf(ic) = wsyfc
       gsi(ic) = gsic
@@ -281,8 +281,8 @@ subroutine readplant
       bmx_trees(ic) = 1000. * biomxtrees
       ext_coef(ic) = extcoef
       bm_dieoff(ic) = bmdieoff
-      rsr1(ic) = rsr1c
-      rsr2(ic) = rsr2c
+      rsr(1,ic) = rsr1c
+      rsr(2,ic) = rsr2c
 
       !! set default value
       if (ext_coef(ic) < 1.e-6) ext_coef(ic) = 0.65
@@ -291,8 +291,8 @@ subroutine readplant
       if (usle_c >= 1.0) usle_c = 1.0
       if (blai(ic) <= 0.0) blai(ic) = 0.0
       if (blai(ic) >= 13.0) blai(ic) = 13.0 !! modified by Cibin from 10 to 13
-      if (rsr1(ic) <= 0.0) rsr1(ic) = 0.4
-      if (rsr2(ic) <= 0.0) rsr2(ic) = 0.2
+      if (rsr(1,ic) <= 0.0) rsr(1,ic) = 0.4
+      if (rsr(2,ic) <= 0.0) rsr(2,ic) = 0.2
 
 
       if (bio_e(ic) > 0. .and. cpnm(ic) /= 'WATR') then
@@ -317,12 +317,10 @@ subroutine readplant
 
 !!        nitrogen uptake parameters
 !!        fix bad input for pltnfr3(ic)
-         if (pltnfr1(ic) - pltnfr2(ic) < .0001)&
-            &pltnfr2(ic) = pltnfr1(ic) - .0001
-         if (pltnfr2(ic) - pltnfr3(ic) < .0001)&
-            &pltnfr3(ic) = .75 * pltnfr3(ic)
+         if (pltnfr1(ic) - pltnfr2 < .0001) pltnfr2 = pltnfr1(ic) - .0001
+         if (pltnfr2 - pltnfr3(ic) < .0001) pltnfr3(ic) = .75 * pltnfr3(ic)
          b1 = pltnfr1(ic) - pltnfr3(ic)           !!normalize N fractions
-         b2 = 1. - (pltnfr2(ic) - pltnfr3(ic)) / b1
+         b2 = 1. - (pltnfr2 - pltnfr3(ic)) / b1
          b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant nitrogen uptake equation
          call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_n(1,ic), bio_n(2,ic))
@@ -330,12 +328,10 @@ subroutine readplant
 
 !!        phosphorus uptake parameters
 !!        fix bad input for pltpfr3(ic)
-         if (pltpfr1(ic) - pltpfr2(ic) < .0001)&
-            &pltpfr2(ic) = pltpfr1(ic) - .0001
-         if (pltpfr2(ic) - pltpfr3(ic) < .0001)&
-            &pltpfr3(ic) = .75 * pltpfr3(ic)
+         if (pltpfr1(ic) - pltpfr2 < .0001) pltpfr2 = pltpfr1(ic) - .0001
+         if (pltpfr2 - pltpfr3(ic) < .0001) pltpfr3(ic) = .75 * pltpfr3(ic)
          b1 = pltpfr1(ic) - pltpfr3(ic)        !!normalize P fractions
-         b2 = 1. - (pltpfr2(ic) - pltpfr3(ic)) / b1
+         b2 = 1. - (pltpfr2 - pltpfr3(ic)) / b1
          b3 = 1. - .00001 / b1
 !!        determine shape parameters for plant phosphorus uptake equation
          call ascrv(b2, b3, 5.0D-01, 1.0D+00, bio_p(1,ic), bio_p(2,ic))

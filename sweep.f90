@@ -58,7 +58,7 @@ subroutine sweep(j)
 !! set time to correspond to lower amount of dirt
    twash(j) = thalf(urblu(j)) * dirt / (dirtmx(urblu(j)) - dirt)
 
-   nsweep(j) = nsweep(j) + 1
+   !nsweep(j) = nsweep(j) + 1 ! not used
 
    return
 end

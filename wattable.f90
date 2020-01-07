@@ -52,7 +52,16 @@ subroutine wattable(j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    eo_30d
+!!    eo_sum
 !!    i30         |none          |counter
+!!    rfqeo_30d
+!!    rfqeo_sum
+!!    w1
+!!    w2
+!!    wtab_mn
+!!    wtab_mx
+!!    wtl
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -64,22 +73,19 @@ subroutine wattable(j)
    implicit none
 
    integer, intent(in) :: j
+   real*8, parameter :: wtab_mn = 0., wtab_mx = 2.5
+   real*8 :: eo_30d, eo_sum, rfqeo_30d, rfqeo_sum, w1, w2, wtl
    integer :: i30
 
-   real*8 :: w2, eo_sum, rfqeo_sum, w1, wtl
-
-   wtab_mn(j) = 0.
-   wtab_mx(j) = 2.5
-
    !! compute 30 day sums
-   rfqeo_30d(nd_30,j) = precipday - qday - pet_day
-   eo_30d(nd_30,j) = pet_day
+   rfqeo_30d = precipday - qday - pet_day
+   eo_30d = pet_day
    rfqeo_sum = 0.
    eo_sum = 0.
 
    do i30 = 1, 30
-      rfqeo_sum = rfqeo_sum + rfqeo_30d(i30,j)
-      eo_sum = eo_sum + eo_30d(i30,j)
+      rfqeo_sum = rfqeo_sum + rfqeo_30d
+      eo_sum = eo_sum + eo_30d
    end do
 
    if (eo_sum > 1.e-4) then
@@ -89,9 +95,9 @@ subroutine wattable(j)
    end if
    w1 = Dmin1 (0.1, Abs(w2))
    if (w2 > 0.) then
-      wtl = wtab_mn(j)
+      wtl = wtab_mn
    else
-      wtl = wtab_mx(j)
+      wtl = wtab_mx
    end if
    if (wtab(j) < 1.e-6) wtab(j) = 0.0
    wtab(j) = wtab(j) - w1 * (wtab(j) - wtl)

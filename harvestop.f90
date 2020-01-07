@@ -501,17 +501,11 @@ subroutine harvestop(j)
       yldanu(j) = yldanu(j) + yield  / 1000.
       ncrops(icr(j),j) = ncrops(icr(j),j) + 1           !!!!!!!!!!!!!!!!nubz
 
-      ! select case (idc(idplt(j)))
-      !   case (3, 6, 7)
-      !     bio_hv(nro(j),icr(j),j) = (yield + clip) + bio_hv(nro(j),icr(j),j)
-      !     bio_yrms(j) = bio_yrms(j) + (yield + clip) / 1000.
-      !   case default
-      bio_hv(icr(j),j) = (yield + clip + rtresnew) + bio_hv(icr(j),j) !! Jeff, is this the intention
-      bio_yrms(j) = bio_yrms(j) + (yield + clip + rtresnew) / 1000.            !! Jeff, is this the intention
-      ! end select
+      bio_hv(icr(j),j) = (yield + clip + rtresnew) + bio_hv(icr(j),j)
+      bio_yrms(j) = bio_yrms(j) + (yield + clip + rtresnew) / 1000.
    endif
 
-   ncut(j) = ncut(j) + 1
+   !ncut(j) = ncut(j) + 1 ! not used
 
    return
 end subroutine

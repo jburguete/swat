@@ -25,13 +25,13 @@ subroutine readmon(i)
 !!     cbodmon(:,:,:)  |kg/day        |average daily loading of CBOD in month
 !!     chlamon(:,:,:)  |kg/day        |average daily loading of chlorophyll-a in
 !!                                    |month
-!!     cmtl1mon(:,:,:) |# bact/day    |average amount of conservative metal #1
+!!     cmtlmon(1,:,:,:) |# bact/day    |average amount of conservative metal #1
 !!                                    |loaded to stream on a given day in the
 !!                                    |month
-!!     cmtl2mon(:,:,:) |# bact/day    |average amount of conservative metal #2
+!!     cmtlmon(2,:,:,:) |# bact/day    |average amount of conservative metal #2
 !!                                    |loaded to stream on a given day in the
 !!                                    |month
-!!     cmtl3mon(:,:,:) |# bact/day    |average amount of conservative metal #3
+!!     cmtlmon(3,:,:,:) |# bact/day    |average amount of conservative metal #3
 !!                                    |loaded to stream on a given day in the
 !!                                    |month
 !!     disoxmon(:,:,:) |kg/day        |average daily loading of dissolved O2 in
@@ -103,9 +103,9 @@ subroutine readmon(i)
          &srbpstmon(i,iya,mon),&
          &bactpmon(i,iya,mon),&
          &bactlpmon(i,iya,mon),&
-         &cmtl1mon(i,iya,mon),&
-         &cmtl2mon(i,iya,mon),&
-         &cmtl3mon(i,iya,mon)
+         &cmtlmon(1,i,iya,mon),&
+         &cmtlmon(2,i,iya,mon),&
+         &cmtlmon(3,i,iya,mon)
 
 
       if (ia2 == iyr) exit
@@ -137,9 +137,9 @@ subroutine readmon(i)
             &srbpstmon(i,iya,mon),&
             &bactpmon(i,iya,mon),&
             &bactlpmon(i,iya,mon),&
-            &cmtl1mon(i,iya,mon),&
-            &cmtl2mon(i,iya,mon),&
-            &cmtl3mon(i,iya,mon)
+            &cmtlmon(1,i,iya,mon),&
+            &cmtlmon(2,i,iya,mon),&
+            &cmtlmon(3,i,iya,mon)
          if (eof < 0) exit
       end do
       if (eof < 0) exit

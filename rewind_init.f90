@@ -148,7 +148,7 @@ subroutine rewind_init
    snotmpeb = 0.
    tmp_hi = 0.
    tmp_lo = 0.
-   tmpavp = 0.
+   ! tmpavp = 0. ! not used
 
    igro = orig_igro
    laiday = orig_alai
@@ -182,10 +182,10 @@ subroutine rewind_init
    igrz = 0
    irn = 0
    ncrops = 0
-   ncut = 1
+   ! ncut = 1 ! not used
    ndcfrt = 0
-   ntil = 1
-   nro = 1
+   ! ntil = 1 ! not used
+   ! nro = 1 ! not used
    ndeat = 0
 
    sumix = orig_sumix
@@ -219,7 +219,7 @@ subroutine rewind_init
    pst_lag = 0.
    surf_bs = 0.
    do j = 1, nhru
-      call curno(cn2(j),j)
+      call curno(cn(2,j),j)
    end do
    bactlp_plt = 0.
    bactp_plt = 0.

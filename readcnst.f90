@@ -23,9 +23,9 @@ subroutine readcnst(jj)
 !!                                 |to reach
 !!     cbodcnst(:)  |kg/day        |average daily loading of CBOD to reach
 !!     chlacnst(:)  |kg/day        |average daily loading of chlorophyll-a
-!!     cmtl1cnst(:) |kg/day        |average daily conservative metal #1 loading
-!!     cmtl2cnst(:) |kg/day        |average daily conservative metal #2 loading
-!!     cmtl3cnst(:) |kg/day        |average daily conservative metal #3 loading
+!!     cmtlcnst(1,:) |kg/day        |average daily conservative metal #1 loading
+!!     cmtlcnst(2,:) |kg/day        |average daily conservative metal #2 loading
+!!     cmtlcnst(3,:) |kg/day        |average daily conservative metal #3 loading
 !!     disoxcnst(:) |kg/day        |average daily loading of dissolved O2
 !!     flocnst(:)   |m^3 H2O/day   |average daily water loading to reach
 !!     minpcnst(:)  |kg P/day      |average daily soluble P loading to reach
@@ -64,8 +64,8 @@ subroutine readcnst(jj)
       &no3cnst(jj), nh3cnst(jj), no2cnst(jj), minpcnst(jj),&
       &cbodcnst(jj), disoxcnst(jj), chlacnst(jj),&
       &solpstcnst(jj), srbpstcnst(jj), bactpcnst(jj),&
-      &bactlpcnst(jj), cmtl1cnst(jj), cmtl2cnst(jj),&
-      &cmtl3cnst(jj)
+      &bactlpcnst(jj), cmtlcnst(1,jj), cmtlcnst(2,jj),&
+      &cmtlcnst(3,jj)
 
    close (109)
 

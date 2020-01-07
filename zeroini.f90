@@ -40,7 +40,6 @@ subroutine zeroini
    cswat = 0        !(CB 8/24/09)
    da_ha = 0.
    da_km = 0.
-   eo_30d = 0.        !(CB 8/24/09)
    evlai = 0.
    evrch = 0.
    fcstcycles = 0
@@ -79,7 +78,6 @@ subroutine zeroini
    itoth = 0
    itotr = 0
    itots = 0
-   iwatable = 0
    iwq = 0
    iyr = 0
    k_l = 0.
@@ -119,7 +117,6 @@ subroutine zeroini
    velsetlr = 0.
    velsetlp = 0.
    rexp = 0.
-   rfqeo_30d = 0.        !(CB 8/24/09)
    rhfile = ""
    rhoq = 0.
    rhsim = 0

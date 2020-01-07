@@ -28,7 +28,7 @@ subroutine schedule_ops(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    INTRINSIC: Exp, Sin, Atan, Int
+!!    INTRINSIC: Exp, Sin, Atan
 !!    SWAT: curno, ttcoef_wway
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -42,7 +42,7 @@ subroutine schedule_ops(j)
  
    iops = ioper(j)
 
-   do while (iida == iopday(iops,j).and.iyr == iopyr(iops,j))
+   do while (iida == iopday(iops,j) .and. iyr == iopyr(iops,j))
 
       select case (mgt_ops(iops,j))
 
@@ -114,15 +114,12 @@ subroutine schedule_ops(j)
 
          tconc(j) = tconc(j) + tover - t_ov(j)
 
-!       ioper(j) = ioper(j) + 1
-!       iops = ioper(j)
-
        case (6)
          call curno (fire_cn(iops,j),j)
 
        case (7)
-         if (ngrwat(j) < 0)  ngrwat(j) = 0
-         ngrwat(j) = ngrwat(j) + 1
+         !if (ngrwat(j) < 0)  ngrwat(j) = 0 ! not used
+         !ngrwat(j) = ngrwat(j) + 1 ! not used
          grwat_n(j) = gwatn(iops,j)
          grwat_i(j) = gwati(iops,j)
          grwat_l(j) = gwatl(iops,j)
@@ -143,7 +140,7 @@ subroutine schedule_ops(j)
          call ttcoef_wway(j)
 
        case (8)
-         jj = Int(cropno_upd(iops,j))
+         jj = cropno_upd(iops,j)
          blai(jj) = laimx_upd(iops,j)
          hvsti(jj) = hi_upd(iops,j)
 

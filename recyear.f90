@@ -19,11 +19,11 @@ subroutine recyear(k)
 !!                               |for year
 !!    cbodyr(:,:) |kg/day        |average daily loading of CBOD for year
 !!    chlayr(:,:) |kg/day        |average daily loading of chlorophyll-a for year
-!!    cmtl1yr(:,:)|kg/day        |average daily loading of conservative metal #1
+!!    cmtlyr(1,:,:)|kg/day        |average daily loading of conservative metal #1
 !!                               |for year
-!!    cmtl2yr(:,:)|kg/day        |average daily loading of conservative metal #2
+!!    cmtlyr(2,:,:)|kg/day        |average daily loading of conservative metal #2
 !!                               |for year
-!!    cmtl3yr(:,:)|kg/day        |average daily loading of conservative metal #3
+!!    cmtlyr(3,:,:)|kg/day        |average daily loading of conservative metal #3
 !!                               |for year
 !!    curyr       |none          |year of simulation
 !!    disoxyr(:,:)|kg/day        |average daily loading of dissolved oxygen for
@@ -122,9 +122,9 @@ subroutine recyear(k)
    varoute(17,ihout) = disoxyr(k,curyr)
    varoute(18,ihout) = bactpyr(k,curyr)
    varoute(19,ihout) = bactlpyr(k,curyr)
-   varoute(20,ihout) = cmtl1yr(k,curyr)
-   varoute(21,ihout) = cmtl2yr(k,curyr)
-   varoute(22,ihout) = cmtl3yr(k,curyr)
+   varoute(20,ihout) = cmtlyr(1,k,curyr)
+   varoute(21,ihout) = cmtlyr(2,k,curyr)
+   varoute(22,ihout) = cmtlyr(3,k,curyr)
 
    !! Assumed equal distribution of sediment
    varoute(23,ihout) = sedyr(k,curyr) * 0.   ! sand
@@ -152,9 +152,9 @@ subroutine recyear(k)
          hhvaroute(17,ihout,ii) = disoxyr(k,curyr) / fn
          hhvaroute(18,ihout,ii) = bactpyr(k,curyr) / fn
          hhvaroute(19,ihout,ii) = bactlpyr(k,curyr) / fn
-         hhvaroute(20,ihout,ii) = cmtl1yr(k,curyr) / fn
-         hhvaroute(21,ihout,ii) = cmtl2yr(k,curyr) / fn
-         hhvaroute(22,ihout,ii) = cmtl3yr(k,curyr) / fn
+         hhvaroute(20,ihout,ii) = cmtlyr(1,k,curyr) / fn
+         hhvaroute(21,ihout,ii) = cmtlyr(2,k,curyr) / fn
+         hhvaroute(22,ihout,ii) = cmtlyr(3,k,curyr) / fn
       end do
    end if
 

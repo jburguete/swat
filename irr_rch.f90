@@ -208,9 +208,10 @@ subroutine irr_rch(jrch)
                   end if
 
                   !! advance irrigation operation number
-                  if (flag == 1) then
-                     nirr(k) = nirr(k) + 1
-                  end if
+                  !not used
+                  !if (flag == 1) then
+                  !   nirr(k) = nirr(k) + 1
+                  !end if
 
                end if
 

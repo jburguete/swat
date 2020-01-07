@@ -304,8 +304,8 @@ subroutine fert(j, ifrt)
 
    fertp = fertp + (frt_kg + cfertp) * (fminp(ifrt) + forgp(ifrt))
 
-   tfertn(j) = tfertn(j) + fertn
-   tfertp(j) = tfertp(j) + fertp
+   !tfertn(j) = tfertn(j) + fertn ! not used
+   !tfertp(j) = tfertp(j) + fertp ! not used
 
    if (curyr > nyskip) then
       wshd_ftotn = wshd_ftotn + frt_kg * hru_dafr(j)&
@@ -329,7 +329,7 @@ subroutine fert(j, ifrt)
 
 
 !! increase fertilizer sequence number by one
-   nfert(j) = nfert(j) + 1
+   ! nfert(j) = nfert(j) + 1 ! not used
 
    return
 end

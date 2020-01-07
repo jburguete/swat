@@ -156,25 +156,13 @@ subroutine newtillmix(j, bmix)
       emix = effmix(idtill)
       dtil = deptil(idtill)
    end if
-   ! -------------------------------- Original D. Moriasi code replaced by code below
-! Drainmod  07/2006
-!      if(itill(j) == 1) then
-!   cumei(j) = 0.
-!   cumeira(j) = 0.
-!   cumrt(j) = 0.
-!        cumrai(j) = 0.
-!   ranrns_hru(j) = ranrns(idtill)
-!      end if
-!!    Drainmod 7/2006
-! --------------------------------------------------------------------
    if (idtill.GE. 1) then ! Updated dynamic depressional storage D.Moriasi 4/8/2014
-      cumei(j)   = 0.
-      cumeira(j) = 0.
-      cumrt(j)   = 0.
-      cumrai(j)  = 0.
+      !cumei(j)   = 0. ! not used
+      !cumeira(j) = 0. ! not used
+      !cumrt(j)   = 0. ! not used
+      !cumrai(j)  = 0. ! not used
       ranrns_hru(j) = ranrns(idtill)
    end if
-! --------------------------------------------------------------------
 
    !!by zhang DSSAT tillage
    !!=======================
@@ -380,9 +368,10 @@ subroutine newtillmix(j, bmix)
    !! perform final calculations for tillage operation
 
    !! count the tillage only if it is a scheduled operation biomix does not count MJW Rev 490
-   if (bmix <= 1.e-6) then
-      ntil(j) = ntil(j) + 1
-   end if
+   !not used
+   !if (bmix <= 1.e-6) then
+   !   ntil(j) = ntil(j) + 1
+   !end if
    if (cnop > 1.e-4) call curno(cnop,j)
 
    !ntil(j) = ntil(j) + 1 ' orig code

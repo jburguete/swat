@@ -11,8 +11,8 @@ subroutine std2
 !!    name          |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ch_d(:)       |m           |average depth of main channel
-!!    ch_s(2,:)      |m/m         |average slope of main channel
-!!    ch_w(2,:)      |m           |average width of main channel
+!!    ch_s(2,:)     |m/m         |average slope of main channel
+!!    ch_w(2,:)     |m           |average width of main channel
 !!    hru_fr(:)     |none        |fraction of subbasin area in HRU
 !!    hru_ha(:)     |ha          |area of HRU
 !!    hrupest(:)    |none        |pesticide use flag:
@@ -145,17 +145,17 @@ subroutine std2
       if (pot_fr(j) > 0.) kpot = "x"
       if (ddrain(j) > 0.) kdrn = "x"
       write (24,1021)hru_sub(j),j,hru_ha(j),hru_slp(j),slsubbsn(j),&
-         &ov_n(j),cn2(j),tconc(j),esco(j),epco(j)
+         &ov_n(j),cn(2,j),tconc(j),esco(j),epco(j)
    end do
 
    write (24,1028)
    do j = 1, nhru
       if (idplt(j) > 0) then
          write (24,1029) hru_sub(j), j, hru_ha(j),cpnm(idplt(j)),snam(j),&
-            &cn1(j), cn2(j), cn3(j), sol_sumwp(j),sol_sumfc(j), sol_sumul(j)
+            &cn(1,j), cn(2,j), cn(3,j), sol_sumwp(j),sol_sumfc(j), sol_sumul(j)
       else
-         write (24,1030)hru_sub(j),j,hru_ha(j), snam(j), cn1(j), cn2(j),&
-            &cn3(j), sol_sumwp(j), sol_sumfc(j), sol_sumul(j)
+         write (24,1030)hru_sub(j),j,hru_ha(j), snam(j), cn(1,j), cn(2,j),&
+            &cn(3,j), sol_sumwp(j), sol_sumfc(j), sol_sumul(j)
       end if
    end do
 
@@ -179,14 +179,17 @@ subroutine std2
       if (hrupest(j) > 0.) kpst = "x"
       if (isep_hru(j) == 1) ksep = "x"
 
-      write (24,1025) hru_sub(j),j,hru_ha(j),kubn,kirr(j),kdrn,kpot,&
+      write (24,1025) hru_sub(j),j,hru_ha(j),kubn,kirr,kdrn,kpot,&
          &kpst,biomix(j),ksep
    end do
    write (24,1026)
    do j = 1, nhru
+      !gwno3 seems to be 0
+      !write (24,1027) hru_sub(j),j,hru_ha(j),delay(j),alpha_bf(j),&
+      !   &gwqmn(j),gw_revap(j),revapmn(j),rchrg_dp(j),gwno3(j),&
+      !   &gwminp(j)
       write (24,1027) hru_sub(j),j,hru_ha(j),delay(j),alpha_bf(j),&
-         &gwqmn(j),gw_revap(j),revapmn(j),rchrg_dp(j),gwno3(j),&
-         &gwminp(j)
+         &gwqmn(j),gw_revap(j),revapmn(j),rchrg_dp(j),0.,gwminp(j)
    end do
 
    !! write reach characteristics

@@ -170,6 +170,9 @@ variables is not possible.
   - `smxold` could be used not initialized if `cn1(h)<=1.e-6` and `curyr/=0` at
     line 96
 
+* In depstor.f
+  - `itill` is used at line 64 but not initialized in any part of code
+
 * In drains.f:
   - `nlayer` could be used not initialized at line 23. However, the problem only
     arises if it is not set in the previous bucle (`mlyr<=1` or
@@ -296,7 +299,8 @@ variables is not possible.
     and 241 if `ihout==2`
 
 * In urbanhr.f
-  - `isweep(j)` is used but not initialized at any part of code
+  - `isweep(j)` is used at lines 166 and 186 but not initialized at any part of
+    code
 
 * In wmeas.f:
   - `u10bsb` could be used not initialized at line 85

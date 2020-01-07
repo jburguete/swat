@@ -27,9 +27,9 @@ subroutine dailycn(j)
 !!    sol_sw(:)   |mm H2O        |amount of water stored in soil profile on
 !!                               |any given day
 !!    sol_tmp(2,:)|deg C         |daily average temperature of second soil layer
-!!    wrt1(:)    |none          |1st shape parameter for calculation of
+!!    wrt(1,:)    |none          |1st shape parameter for calculation of
 !!                               |water retention
-!!    wrt2(:)    |none          |2nd shape parameter for calculation of
+!!    wrt(2,:)    |none          |2nd shape parameter for calculation of
 !!                               |water retention
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -60,7 +60,7 @@ subroutine dailycn(j)
    integer, intent(in) :: j
    real*8 :: r2, xx
 
-   xx = wrt1(j) - wrt2(j) * sol_sw(j)
+   xx = wrt(1,j) - wrt(2,j) * sol_sw(j)
    if (xx < -20.) xx = -20.
    if (xx > 20.) xx = 20.
 

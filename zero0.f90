@@ -50,10 +50,10 @@ subroutine zero0
 
    wtab = 0.8
 !    Drainmod tile equations  01/2006
-   cumeira = 0.
-   cumei = 0.
-   cumrai = 0.
-   cumrt = 0.
+   ! cumeira = 0. ! not used
+   ! cumei = 0. ! not used
+   ! cumrai = 0. ! not used
+   ! cumrt = 0. ! not used
    ranrns_hru = 20.
 !    Drainmod tile equations  01/2006
    afrt_surface = 0.
@@ -145,10 +145,8 @@ subroutine zero0
    chpst_vol = 0.
    chside = 0.
    chtmx = 0.
+   cn = 0.
    cncoef_sub = 0.
-   cn1 = 0.
-   cn2 = 0.
-   cn3 = 0.
    cnop = 0.
    cnyld = 0.
    co2 = 0.
@@ -198,14 +196,13 @@ subroutine zero0
 !    Drainmod tile equations  01/2006
    drydep_no3 = 0.
    drydep_nh4 = 0.
-   eo_30d = 0.
    effmix = 0.
    elevb = 0.
    elevb_fr = 0.
    epco = 0.
    esco = 0.
    evpnd = 0.
-   evpot = 0.
+   ! evpot = 0. ! not used
    evrsv = 0.
    evwet = 0.
    fcst_reg = 0
@@ -216,7 +213,7 @@ subroutine zero0
    ffcst = 0
    filterw = 0.
    fimp = 0.
-   fld_fr = 0.
+   ! fld_fr = 0. ! not used
    flomon = 0.
    flowmin = 0.
    fminn = 0.
@@ -287,7 +284,7 @@ subroutine zero0
    ifirsta = 1
    ifirstr = 1
    ifirstt = 1
-   ifld = 0
+   ! ifld = 0 ! not used
    iflod = 0
    ifrt_freq = 0
    irelh = 1
@@ -319,30 +316,26 @@ subroutine zero0
    !!     ipot = 0
    ireg = 1
    irgage = 0
-   irip = 0
+   !irip = 0 ! not used
    iroutunit = 0
    irn = 0
-   irramt = 0.
-   irrefm = 1.
-   irrsalt = 0.
-   irrsc = 0
-   irrno = 0
-   irr_sca = 0
-   irr_noa = 0
-   irrsq = 0
-   irrno = 0
-   irrsc = 0
-   irr_sc = 0
-   irr_no = 0
    irr_asq = 0
-   irr_sca = 0
+   irr_no = 0
    irr_noa = 0
+   irr_sc = 0
+   irr_sca = 0
+   irramt = 0.
+   irrno = 0
+   irrefm = 1.
+   ! irrsalt = 0. ! not used
+   irrsc = 0
+   irrsq = 0
    itb = 0
    itemp = 0
    itgage = 0
    iurban = 0
    ivar_orig = 0
-   kirr = " "
+   ! kirr = " " ! it seems to be always ' '
    laiday = 0.
 !    Drainmod tile equations  02/2009
    latksatf = 0.
@@ -369,11 +362,10 @@ subroutine zero0
    mo_transb = 0
    mo_transe = 0
    ncrops = 0
-   ncut = 1
+   ! ncut = 1 ! not used
    ndcfrt = 0
    fert_days = 0
    grz_days = 0
-   nair = 1
    irr_mx = 0.
    latno3 = 0.
    ndmo = 0
@@ -386,9 +378,8 @@ subroutine zero0
    nopmx = 0
    npcp = 1
    npno = 0
-   nro = 1
-   nrot = 0
-   ntil = 1
+   ! nro = 1 ! not used
+   ! ntil = 1 ! not used
    orig_alai = 0.
    orig_bioms = 0.
    orig_deepst = 0.
@@ -404,10 +395,8 @@ subroutine zero0
 !    Drainmod tile equations  01/2006
    phubase = 0.
    pltnfr1 = 0.
-   pltnfr2 = 0.
    pltnfr3 = 0.
    pltpfr1 = 0.
-   pltpfr2 = 0.
    pltpfr3 = 0.
    pot_seep = 0.
 !----------------------- !Moriasi 4/8/2014
@@ -452,10 +441,7 @@ subroutine zero0
    vwt = 0.
    wat_tbl = 0.
 !    Drainmod tile equations  01/2006
-   rsr1 = 0.
-   rsr2 = 0.
-   rsr1 = 0.
-   rsr2 = 0.
+   rsr = 0.
    sed_con = 0.
    sq_rto = 0.
    sol_clay = 0.
@@ -489,7 +475,6 @@ subroutine zero0
    sub_smtmp = 0.
    sub_tileno3 = 0.
    sub_gwq_d = 0.
-   alpha_bf_d = 0.
    gw_qdeep = 0.
    subgis = 0
    tb_adj = 0.

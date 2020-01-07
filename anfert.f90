@@ -185,9 +185,9 @@ subroutine anfert(j)
    integer, intent(in) :: j
             !orgc_f is the fraction of organic carbon in fertilizer
             !for most fertilziers this value is set to 0.
-   real*8, parameter :: orgc_f = 0.0, rtoaf = 0.50
-   real*8 :: dwfert, RLN, targn, tfp, tpno3, tsno3, X1, X8, X10, xx, XXX, XZ,&
-     &YY, YZ, ZZ
+   real*8, parameter :: orgc_f = 0.0, rtoaf = 0.50, tfp = 0.
+   real*8 :: dwfert, RLN, targn, tpno3, tsno3, X1, X8, X10, xx, XXX, XZ, YY,&
+     &YZ, ZZ
    integer :: ifrt, ly
 
    ifrt = iafrttyp(j)
@@ -322,24 +322,19 @@ subroutine anfert(j)
          !!=================
 
          !! check for P stress
-!!       Naresh (npai@stone-env.com) edited on 4/12/2016
-!!       to handle fertilizers which have fminn(ifrt) = 0 (e.g. elemental P)
-!!        if (strsp(j) <= 0.75) then
-!!           tfp = fminn(ifrt) / 7.
-!!        else
-!!           tfp = fminp(ifrt)
-!!        end if
 
-         if (strsp(j) <= 0.75 .and. fminn(ifrt) > 0.0001) then
-            tfp = fminn(ifrt) / 7. !! all other fertilizers
-            autop = autop + dwfert *(tfp + forgp(ifrt))
-         else if (strsp(j) <= 0.75 .and. fminn(ifrt) == 0) then
-            tfp = 1/7. !! elemental P cases
-            autop = autop + dwfert *(tfp + forgp(ifrt))
-         else
-            tfp = 0 !! no P stress, plant doesn't need any P
-            autop=0
-         end if
+         !strsp seems to be always 1
+!         if (strsp(j) <= 0.75 .and. fminn(ifrt) > 0.0001) then
+!            tfp = fminn(ifrt) / 7. !! all other fertilizers
+!            autop = autop + dwfert *(tfp + forgp(ifrt))
+!         else if (strsp(j) <= 0.75 .and. fminn(ifrt) == 0) then
+!            tfp = 1/7. !! elemental P cases
+!            autop = autop + dwfert *(tfp + forgp(ifrt))
+!         else
+!            tfp = 0 !! no P stress, plant doesn't need any P
+!            autop=0
+!         end if
+         autop = 0
          sol_solp(ly,j) = sol_solp(ly,j) + xx * dwfert * tfp
       end do
 
@@ -349,8 +344,8 @@ subroutine anfert(j)
 !! Naresh (npai@stone-env.com) commented this code on 4/12/2016
 !! and moved it above to handle elemental P auto-fertilization
 !!        autop = autop + dwfert *(tfp + forgp(ifrt))
-      tauton(j) = tauton(j) + auton
-      tautop(j) = tautop(j) + autop
+      !tauton(j) = tauton(j) + auton ! not used
+      !tautop(j) = tautop(j) + autop ! not used
       if (curyr > nyskip) then
          wshd_ftotn = wshd_ftotn + dwfert * (fminn(ifrt) +&
             &forgn(ifrt))* hru_dafr(j)

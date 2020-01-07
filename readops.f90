@@ -103,7 +103,7 @@ subroutine readops(k)
        case (5)  !! strip cropping
          strip_n(j,k) = mgt(4)
          strip_cn(j,k) = mgt(5)
-         strip_c(j,k) = mgt(6)
+         ! strip_c(j,k) = mgt(6) ! not used
          strip_p(j,k) = mgt(7)
 
        case (6)  !! fire
@@ -133,7 +133,7 @@ subroutine readops(k)
 
 
        case (8) !! plant parameter update
-         cropno_upd(j,k) = mgt(1)
+         cropno_upd(j,k) = Int(mgt(1))
          hi_upd(j,k) = mgt(4)
          laimx_upd(j,k) = mgt(5)
 

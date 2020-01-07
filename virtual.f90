@@ -637,7 +637,7 @@ subroutine virtual(i, j, k, sb)
    potflwi(j) = 0.
    potsedi(j) = 0.
 !! end of day calculations
-   tmpavp(j) = tmpav(j)
+   ! tmpavp(j) = tmpav(j) ! not used
 
    return
 end

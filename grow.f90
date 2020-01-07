@@ -21,7 +21,7 @@ subroutine grow(j)
 !!                                  |unit of intercepted photosynthetically
 !!                                  |active radiation.
 !!    bio_ms(:)   |kg/ha            |land cover/crop biomass (dry weight)
-!!    bio_targ(:,:,:)|kg/ha          |biomass target
+!!    bio_targ(:,:,:)|kg/ha         |biomass target
 !!    chtmx(:)    |m                |maximum canopy height
 !!    co2(:)      |ppmv             |CO2 concentration
 !!    curyr       |none             |current year of simulation
@@ -56,9 +56,9 @@ subroutine grow(j)
 !!                                  |HRU
 !!    laiday(:)   |m**2/m**2        |leaf area index
 !!    laimxfr(:)  |
-!!    leaf(1,:)    |none             |1st shape parameter for leaf area
+!!    leaf(1,:)   |none             |1st shape parameter for leaf area
 !!                                  |development equation.
-!!    leaf(2,:)    |none             |2nd shape parameter for leaf area
+!!    leaf(2,:)   |none             |2nd shape parameter for leaf area
 !!                                  |development equation.
 !!    nro(:)      |none             |sequence number of year in rotation
 !!    nyskip      |none             |number of years output summarization
@@ -74,7 +74,7 @@ subroutine grow(j)
 !!    strsn(:)    |none             |fraction of potential plant growth achieved
 !!                                  |on the day where the reduction is caused by
 !!                                  |nitrogen stress
-!!    strsp(:)    |none             |fraction of potential plant growth achieved
+!!    strsp       |none             |fraction of potential plant growth achieved
 !!                                  |on the day where the reduction is caused by
 !!                                  |phosphorus stress
 !!    strstmp(:)  |none             |fraction of potential plant growth achieved
@@ -117,8 +117,8 @@ subroutine grow(j)
 !!    phuacc(:)   |none          |fraction of plant heat units accumulated
 !!    plt_et(:)   |mm H2O        |actual ET simulated during life of plant
 !!    plt_pet(:)  |mm H2O        |potential ET simulated during life of plant
-!!    rsr1(:)     |              |initial root to shoot ratio at beg of growing season
-!!    rsr2(:)     |              |root to shoot ratio at end of growing season
+!!    rsr(1,:)    |              |initial root to shoot ratio at beg of growing season
+!!    rsr(2,:)    |              |root to shoot ratio at end of growing season
 !!    rwt(:)      |none          |fraction of total plant biomass that is
 !!                               |in roots
 !!    wshd_nstrs  |stress units  |average annual number of nitrogen stress
@@ -223,7 +223,7 @@ subroutine grow(j)
          call npup(j)
       else
          strsn(j) = 1.
-         strsp(j) = 1.
+         !strsp(j) = 1. ! it seems to be always 1
       end if
 
       !! auto fertilization-nitrogen demand (non-legumes only)
@@ -233,7 +233,7 @@ subroutine grow(j)
       end select
 
       !! reduce predicted biomass due to stress on plant
-      reg = Min(strsw(j), strstmp(j), strsn(j), strsp(j), strsa(j))
+      reg = Min(strsw(j), strstmp(j), strsn(j), strsp, strsa(j))
       if (reg < 0.) reg = 0.
       if (reg > 1.) reg = 1.
 
@@ -259,7 +259,7 @@ subroutine grow(j)
       end if
 
       !! calculate fraction of total biomass that is in the roots
-      rwt(j) = rsr1(idp) -(rsr1(idp) - rsr2(idp)) * phuacc(j)
+      rwt(j) = rsr(1,idp) -(rsr(1,idp) - rsr(2,idp)) * phuacc(j)
 
       f = phuacc(j) / (phuacc(j) + Exp(leaf(1,idp)&
          &- leaf(2,idp) * phuacc(j)))
@@ -308,16 +308,16 @@ subroutine grow(j)
       strsw_sum(j) = strsw_sum(j) + (1. - strsw(j))
       strstmp_sum(j) = strstmp_sum(j) + (1. - strstmp(j))
       strsn_sum(j) = strsn_sum(j) + (1. - strsn(j))
-      strsp_sum(j) = strsp_sum(j) + (1. - strsp(j))
+      strsp_sum(j) = strsp_sum(j) + (1. - strsp)
       strsa_sum(j) = strsa_sum(j) + (1. - strsa(j))
 
       !! summary calculations
       if (curyr > nyskip) then
-         wshd_wstrs = wshd_wstrs + (1.-strsw(j)) * hru_dafr(j)
-         wshd_tstrs = wshd_tstrs + (1.-strstmp(j)) * hru_dafr(j)
-         wshd_nstrs = wshd_nstrs + (1.-strsn(j)) * hru_dafr(j)
-         wshd_pstrs = wshd_pstrs + (1.-strsp(j)) * hru_dafr(j)
-         wshd_astrs = wshd_astrs + (1.-strsa(j)) * hru_dafr(j)
+         wshd_wstrs = wshd_wstrs + (1. - strsw(j)) * hru_dafr(j)
+         wshd_tstrs = wshd_tstrs + (1. - strstmp(j)) * hru_dafr(j)
+         wshd_nstrs = wshd_nstrs + (1. - strsn(j)) * hru_dafr(j)
+         wshd_pstrs = wshd_pstrs + (1. - strsp) * hru_dafr(j)
+         wshd_astrs = wshd_astrs + (1. - strsa(j)) * hru_dafr(j)
       end if
       if (dlai(idp) > 1.) then
          if (phuacc(j) > dlai(idp)) then

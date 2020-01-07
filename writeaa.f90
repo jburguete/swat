@@ -318,12 +318,12 @@ subroutine writeaa
 !! calculate number of years simulated
    yrs = 0.
    do j = 1, nbyr
-      xx = 366. - dfloat(leapyr)
+      xx = 366. - Dfloat(leapyr)
       if (j > nyskip) then
          if (j == 1 .and. idaf > 0) then
-            yrs = yrs + (xx - (dfloat(idaf) - 1. - dfloat(fcstcnt))) / xx
+            yrs = yrs + (xx - (Dfloat(idaf) - 1. - Dfloat(fcstcnt))) / xx
          elseif (j == nbyr .and. idal > 0) then
-            yrs = yrs + ((dfloat(idal) - dfloat(fcstcnt)) / xx)
+            yrs = yrs + ((Dfloat(idal) - Dfloat(fcstcnt)) / xx)
          else
             yrs = yrs + 1.
          end if
@@ -350,7 +350,7 @@ subroutine writeaa
    do j = 1, nhru
       do nicr = 1, mcrhru(j)
          if (ncrops(nicr,j) > 0) then
-            yldn(nicr,j) = yldkg(nicr,j) /  ncrops(nicr,j)
+            yldn(nicr,j) = yldkg(nicr,j) / ncrops(nicr,j)
             bio_aahv(nicr,j) = bio_hv(nicr,j) / ncrops(nicr,j)
          else
             yldn(nicr,j) = 0.
@@ -403,7 +403,7 @@ subroutine writeaa
    wshd_pstdg = wshd_pstdg / yrs
    !! calculate monthly averages
    do j = 1, 12
-      xmm = dfloat(ndmo(j)) / dfloat(ndays(j+1) - ndays(j))
+      xmm = Dfloat(ndmo(j)) / Dfloat(ndays(j+1) - ndays(j))
       if (xmm > 0.) then
          do k = 1, 8
             wshd_aamon(j,k) = wshd_aamon(j,k) / xmm

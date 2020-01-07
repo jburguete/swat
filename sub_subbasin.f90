@@ -138,15 +138,15 @@ subroutine sub_subbasin(j)
 
    !! Count hours with no rainfall
    do ii = 1, nstep
-      if(rainsub(j,ii)/idt > 0.017) then
+      if (rainsub(j,ii) / idt > 0.017) then
          !! effective pcp is > 0.017 mm/min (or 4/100 inches/hr)
          hrnopcp(sb,ii) = 0
          !! the potential for initial dabstraction from paved surface is less than the user input initial dabstraction
-         abstinit = Max(0.,abstinit - rainsub(j,ii))
+         abstinit = Max(0., abstinit - rainsub(j,ii))
       else
          hrnopcp(sb,ii) = hrnopcp(sb,ii-1) + idt / 60.
          !! the potential for initial dabstraction from paved surface increases based on evaporation
-         abstinit = Min(iabstr,abstinit + pet_day / nstep)
+         abstinit = Min(iabstr, abstinit + pet_day / nstep)
       end if
    end do
 

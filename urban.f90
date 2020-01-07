@@ -124,26 +124,25 @@ subroutine urban(j)
          tn = Regres(3,j)
          tp = Regres(4,j)
 
-         sedyld(j) = (.001 * sus_sol) * fimp(urblu(j)) + sedyld(j)&
-            &* (1. - fimp(urblu(j)))
+         xx = 1. - fimp(urblu(j))
+         sedyld(j) = (.001 * sus_sol) * fimp(urblu(j)) + sedyld(j) * xx
 
          !! The sediment loading from urban imprevious area is assumed
          !! to be all sitly particles
-         silyld(j) = (.001 * sus_sol) * fimp(urblu(j))&
-            &+ silyld(j) * (1. - fimp(urblu(j)))
-         sanyld(j) = sanyld(j) * (1. - fimp(urblu(j)))
-         clayld(j) = clayld(j) * (1. - fimp(urblu(j)))
-         sagyld(j) = sagyld(j) * (1. - fimp(urblu(j)))
-         lagyld(j) = lagyld(j) * (1. - fimp(urblu(j)))
+         silyld(j) = (.001 * sus_sol) * fimp(urblu(j)) + silyld(j) * xx
+         sanyld(j) = sanyld(j) * xx
+         clayld(j) = clayld(j) * xx
+         sagyld(j) = sagyld(j) * xx
+         lagyld(j) = lagyld(j) * xx
 
          sedorgn(j) = (.7 * tn / (hru_km(j) * 100.)) * fimp(urblu(j)) +&
-            &sedorgn(j) * (1. - fimp(urblu(j)))
+            &sedorgn(j) * xx
          surqno3(j) = (.3 * tn / (hru_km(j) * 100.)) * fimp(urblu(j)) +&
-            &surqno3(j) * (1. - fimp(urblu(j)))
+            &surqno3(j) * xx
          sedorgp(j) = (.75 * tp / (hru_km(j) * 100.)) * fimp(urblu(j))&
-            &+  sedorgp(j) * (1. - fimp(urblu(j)))
+            &+  sedorgp(j) * xx
          surqsolp(j) = .25 * tp / (hru_km(j) * 100.) * fimp(urblu(j)) +&
-            &surqsolp(j) * (1. - fimp(urblu(j)))
+            &surqsolp(j) * xx
       endif
 
     case (2)                         !! build-up/wash-off algorithm
@@ -177,26 +176,23 @@ subroutine urban(j)
          tp = tpconc(urblu(j)) * sus_sol / 1.e6
          tno3 = tno3conc(urblu(j)) * sus_sol / 1.e6
 
+         xx = 1. - fimp(urblu(j))
          sedyld(j) = (.001 * sus_sol * hru_ha(j)) *&
-            &fimp(urblu(j)) + sedyld(j) * (1. - fimp(urblu(j)))
+            &fimp(urblu(j)) + sedyld(j) * xx
 
          !! The sediment loading from urban imprevious area is assumed
          !! to be all sitly particles
          silyld(j) = (.001 * sus_sol * hru_ha(j)) *&
-            &fimp(urblu(j)) + silyld(j) * (1. - fimp(urblu(j)))
-         sanyld(j) = sanyld(j) * (1. - fimp(urblu(j)))
-         clayld(j) = clayld(j) * (1. - fimp(urblu(j)))
-         sagyld(j) = sagyld(j) * (1. - fimp(urblu(j)))
-         lagyld(j) = lagyld(j) * (1. - fimp(urblu(j)))
+            &fimp(urblu(j)) + silyld(j) * xx
+         sanyld(j) = sanyld(j) * xx
+         clayld(j) = clayld(j) * xx
+         sagyld(j) = sagyld(j) * xx
+         lagyld(j) = lagyld(j) * xx
 
-         surqno3(j) = tno3 * fimp(urblu(j)) + surqno3(j) *&
-            &(1. - fimp(urblu(j)))
-         sedorgn(j) = (tn - tno3) * fimp(urblu(j)) + sedorgn(j) *&
-            &(1. - fimp(urblu(j)))
-         sedorgp(j) = .75 * tp * fimp(urblu(j)) + sedorgp(j) *&
-            &(1. - fimp(urblu(j)))
-         surqsolp(j) = .25 * tp * fimp(urblu(j)) + surqsolp(j) *&
-            &(1. - fimp(urblu(j)))
+         surqno3(j) = tno3 * fimp(urblu(j)) + surqno3(j) * xx
+         sedorgn(j) = (tn - tno3) * fimp(urblu(j)) + sedorgn(j) * xx
+         sedorgp(j) = .75 * tp * fimp(urblu(j)) + sedorgp(j) * xx
+         surqsolp(j) = .25 * tp * fimp(urblu(j)) + surqsolp(j) * xx
       else
          !! dry day
          twash(j) = twash(j) + 1.

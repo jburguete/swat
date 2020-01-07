@@ -76,16 +76,12 @@ subroutine ttcoef_wway(j)
 
    real*8 Qman
    integer, intent(in) :: j
-   real*8, parameter :: aa = 1., fps = 4.
-   real*8 :: a, b, chsslope, d, p, qq1, rh, tt1, tt2
+   real*8, parameter :: aa = 1.! , fps = 4. ! not used
+   real*8 :: a, b, chsslope, d, p, rh
 
 !!    If side slope is not set in .rte file then assume this default
 !!    If it is main reach default side slope to 2:1 if it is a waterway default to 8:1
-   !if (chside(j) <= 1.e-6) then
    chsslope = 8.
-   !else
-   !   chsslope = chside(j)
-   !end if
 
    d = grwat_d(j)
    b = grwat_w(j) - 2. * d * chsslope
@@ -97,7 +93,7 @@ subroutine ttcoef_wway(j)
       chsslope = (grwat_w(j) - b) / (2. * d)
    end if
    wat_phi6(j) = b
-   wat_phi7(j) = d
+   ! wat_phi7(j) = d not used
 
 !!    compute flow and travel time at bankfull depth
    p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
@@ -105,29 +101,30 @@ subroutine ttcoef_wway(j)
    rh = a / p
    wat_phi1(j) = a
    wat_phi5(j) = Qman(a, rh, grwat_n(j), grwat_s(j))
-   wat_phi8(j) = Qman(aa, rh, grwat_n(j), grwat_s(j))
-   wat_phi9(j) = wat_phi8(j) * 5. / 3.
-   wat_phi10(j) = grwat_l(j) / wat_phi9(j) / 3.6
-   tt2 = grwat_l(j) * a / wat_phi5(j)
+   wat_phi9(j) = Qman(aa, rh, grwat_n(j), grwat_s(j)) * 5. / 3.
+   ! wat_phi8(j) = Qman(aa, rh, grwat_n(j), grwat_s(j)) ! not used
+   ! wat_phi9(j) = wat_phi8(j) * 5. / 3. ! not used
+   ! wat_phi10(j) = grwat_l(j) / wat_phi9(j) / 3.6 ! not used
+   ! tt2 = grwat_l(j) * a / wat_phi5(j) ! not used
 
 !!    compute flow and travel time at 1.2 bankfull depth
-   d = 1.2 * grwat_d(j)
-   a = a + (grwat_w(j) * grwat_d(j) + fps * (d - grwat_d(j)) ** 2)
-   p=p + 4.*grwat_w(j) + (0.4 * grwat_d(j) * Sqrt(fps * fps + 1.))
-   rh = a / p
-   qq1 = Qman(a, rh, grwat_n(j), grwat_s(j))
-   tt1 = grwat_l(j) * a / qq1
+   ! d = 1.2 * grwat_d(j) ! not used
+   ! a = a + (grwat_w(j) * grwat_d(j) + fps * (d - grwat_d(j)) ** 2) ! not used
+   ! p = p + 4.*grwat_w(j) + (0.4 * grwat_d(j) * Sqrt(fps * fps + 1.)) ! not used
+   ! rh = a / p ! not used
+   ! qq1 = Qman(a, rh, grwat_n(j), grwat_s(j)) ! not used
+   ! tt1 = grwat_l(j) * a / qq1 ! not used
 
 !!    compute flow and travel time at 0.1 bankfull depth
-   d = 0.1 * grwat_d(j)
-   p = b + 2. * d * Sqrt(chsslope * chsslope + 1.)
-   a = b * d + chsslope * d * d
-   rh = a / p
-   qq1 = Qman(a, rh, grwat_n(j), grwat_s(j))
-   tt1 = grwat_l(j) * a / qq1
-   wat_phi11(j) = Qman(aa, rh, grwat_n(j), grwat_s(j))
-   wat_phi12(j) = wat_phi11(j) * 5. / 3.
-   wat_phi13(j) = grwat_l(j) / wat_phi12(j) / 3.6
+   ! d = 0.1 * grwat_d(j) ! not used
+   ! p = b + 2. * d * Sqrt(chsslope * chsslope + 1.) ! not used
+   ! a = b * d + chsslope * d * d ! not used
+   ! rh = a / p ! not used
+   ! qq1 = Qman(a, rh, grwat_n(j), grwat_s(j)) ! not used
+   ! tt1 = grwat_l(j) * a / qq1 ! not used
+   ! wat_phi11(j) = Qman(aa, rh, grwat_n(j), grwat_s(j)) ! not used
+   ! wat_phi12(j) = wat_phi11(j) * 5. / 3. not used
+   ! wat_phi13(j) = grwat_l(j) / wat_phi12(j) / 3.6 ! not used
 
    return
 end

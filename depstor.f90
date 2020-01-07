@@ -61,14 +61,14 @@ subroutine depstor(j)
 
 !! Calculate current cummulative erosivity and rainfall
    ei = usle_ei * 18.7633
-   if(itill(j) ==1)then
-      cumeira(j) = cumeira(j) + ei
-      cumei(j) = cumeira(j) - ei
-      cumrai(j) = cumrai(j) + precipday
-      cumrt(j) = cumrai(j) - precipday
-   end if
+   ! itill is not initialized in any part of code. Assumed itill=0
+   !if(itill(j) ==1)then
+   !   cumeira(j) = cumeira(j) + ei
+   !   cumei(j) = cumeira(j) - ei
+   !   cumrai(j) = cumrai(j) + precipday
+   !   cumrt(j) = cumrai(j) - precipday
+   !end if
 !! Calculate the decay factor df based on %clay and %organic matter or %organic carbon
-! sol_orgm = (sol_rsd(1,j)*0.01)/(sol_z(1,j)*sol_bd(1,j))
    sol_orgm = sol_cbn(1,j) / 0.58
    xx = (0.943 - 0.07 * sol_clay(1,j) + 0.0011 * sol_clay(1,j)**2&
       &- 0.67 * sol_orgm + 0.12 * sol_orgm**2)
@@ -82,8 +82,10 @@ subroutine depstor(j)
 !! Determine the current random and oriented roughness using cumei and cumrt and initial
 !! random and oriented roughness values
 
-   sol_rrr = 0.1 * ranrns_hru(j)&
-      &* Exp(df * (-0.0009 * cumei(j) - 0.0007 * cumrt(j)))
+   ! cumei and cumrt seem to be always 0
+   !sol_rrr = 0.1 * ranrns_hru(j)&
+   !   &* Exp(df * (-0.0009 * cumei(j) - 0.0007 * cumrt(j)))
+   sol_rrr = 0.1 * ranrns_hru(j)
 
 !! Compute the current maximum depressional storage using percent slope steepness
 !! and current random and oriented roughness values determined above

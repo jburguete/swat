@@ -19,9 +19,9 @@ subroutine reccnst(k)
 !!                               |to reach
 !!    cbodcnst(:) |kg/day        |average daily CBOD loading to reach
 !!    chlacnst(:) |kg/day        |average daily chlorophyll-a loading to reach
-!!    cmtl1cnst(:)|kg/day        |average daily conservative metal #1 loading
-!!    cmtl2cnst(:)|kg/day        |average daily conservative metal #2 loading
-!!    cmtl3cnst(:)|kg/day        |average daily conservative metal #3 loading
+!!    cmtlcnst(1,:)|kg/day        |average daily conservative metal #1 loading
+!!    cmtlcnst(2,:)|kg/day        |average daily conservative metal #2 loading
+!!    cmtlcnst(3,:)|kg/day        |average daily conservative metal #3 loading
 !!    disoxcnst(:)|kg/day        |average daily dissolved oxygen loading to reach
 !!    flocnst(:)  |m^3 H2O/day   |average daily water loading to reach
 !!    ievent      |none          |rainfall/runoff code
@@ -123,9 +123,9 @@ subroutine reccnst(k)
    varoute(17,ihout) = disoxcnst(k)
    varoute(18,ihout) = bactpcnst(k)
    varoute(19,ihout) = bactlpcnst(k)
-   varoute(20,ihout) = cmtl1cnst(k)
-   varoute(21,ihout) = cmtl2cnst(k)
-   varoute(22,ihout) = cmtl3cnst(k)
+   varoute(20,ihout) = cmtlcnst(1,k)
+   varoute(21,ihout) = cmtlcnst(2,k)
+   varoute(22,ihout) = cmtlcnst(3,k)
 
    !! Assumed equal distribution of sediment
    varoute(23,ihout) = sedcnst(k) * 0.   ! sand
@@ -153,9 +153,9 @@ subroutine reccnst(k)
          hhvaroute(17,ihout,ii) = disoxcnst(k) / fn
          hhvaroute(18,ihout,ii) = bactpcnst(k) / fn
          hhvaroute(19,ihout,ii) = bactlpcnst(k) / fn
-         hhvaroute(20,ihout,ii) = cmtl1cnst(k) / fn
-         hhvaroute(21,ihout,ii) = cmtl2cnst(k) / fn
-         hhvaroute(22,ihout,ii) = cmtl3cnst(k) / fn
+         hhvaroute(20,ihout,ii) = cmtlcnst(1,k) / fn
+         hhvaroute(21,ihout,ii) = cmtlcnst(2,k) / fn
+         hhvaroute(22,ihout,ii) = cmtlcnst(3,k) / fn
       end do
    end if
 

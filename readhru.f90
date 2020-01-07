@@ -45,8 +45,6 @@ subroutine readhru(i, j)
 !!    erorgp(:)   |none          |organic P enrichment ratio, if left blank
 !!                               |the model will calculate for every event
 !!    esco(:)     |none          |soil evaporation compensation factor (0-1)
-!!    evpot(:)    |none          |pothole evaporation coefficient
-!!    fld_fr(:)   |km2/km2       |fraction of HRU area that drains into floodplain
 !!    hru_fr(:)   |km2/km2       |fraction of subbasin area contained in HRU
 !!    hru_ha(:)   |ha            |area of HRU in hectares
 !!    hru_km(:)   |km**2         |area of HRU in square kilometers
@@ -54,8 +52,6 @@ subroutine readhru(i, j)
 !!    lat_sed(:)  |g/L           |sediment concentration in lateral flow
 !!    lat_ttime(:)|days          |lateral flow travel time
 !!    n_reduc     |              |nitrogen uptake reduction factor (not currently used; defaulted 300.)
-!!    n_lag       |dimensionless |lag coefficient for calculating nitrate concentration in subsurface
-!!                                 drains (0.001 - 1.0)
 !!    n_ln        |dimensionless |power function exponent for calculating nitrate concentration in
 !!                                 subsurface drains (1.0 - 3.0)
 !!    n_lnco      |dimensionless |coefficient for power function for calculating nitrate concentration
@@ -64,9 +60,6 @@ subroutine readhru(i, j)
 !!    pot_fr(:)   |km2/km2       |fraction of HRU area that drains into pothole
 !!    pot_k       |(mm/hr)       |hydraulic conductivity of soil surface of pothole
 !!                   [defaults to conductivity of upper soil (0.01--10.) layer]
-!!    pot_no3l(:) |1/day         |nitrate decay rate in impounded area
-!!    pot_nsed(:) |mg/L          |normal sediment concentration in impounded
-!!                               |water (needed only if current HRU is IPOT)
 !!    pot_solp(:) |1/d           | soluble P loss rate in the pothole (.01 - 0.5)
 !!    pot_tile(:) |m3/s          |average daily outflow to main channel from
 !!                               |tile flow if drainage tiles are installed in
@@ -81,8 +74,6 @@ subroutine readhru(i, j)
 !!                               |HRU is IPOT)
 !!    r2adj       |dimensionless |curve number retention parameter adjustment factor to
 !!                                 adjust surface runoff for flat slopes (0.5 - 3.0)
-!!    rip_fr(:)   |km2/km2       |fraction of HRU area that drains into riparian
-!!                               |zone
 !!    rsdin(:)    |kg/ha         |initial residue cover
 !!    slsoil(:)   |m             |slope length for lateral subsurface flow
 !!    slsubbsn(:) |m             |average slope length for subbasin
@@ -101,6 +92,15 @@ subroutine readhru(i, j)
 !!    eof         |none          |end of file flag (=-1 if eof, else =0)
 !!    epcohru     |none          |plant water uptake compensation factor (0-1)
 !!    escohru     |none          |soil evaporation compensation factor (0-1)
+!!    evpot       |none          |pothole evaporation coefficient
+!!    fld_fr      |km2/km2       |fraction of HRU area that drains into floodplain (not used)
+!!    n_lag       |dimensionless |lag coefficient for calculating nitrate concentration in subsurface
+!!                                 drains (0.001 - 1.0)
+!!    pot_no3l    |1/day         |nitrate decay rate in impounded area
+!!    pot_nsed    |mg/L          |normal sediment concentration in impounded
+!!                               |water (needed only if current HRU is IPOT)
+!!    rip_fr      |km2/km2       |fraction of HRU area that drains into riparian
+!!                               |zone (not used)
 !!    sin_sl      |none          |Sin(slope angle)
 !!    titldum     |NA            |title line of .sub file (not used)
 !!    xm          |none          |exponential in equation to calculate
@@ -119,7 +119,8 @@ subroutine readhru(i, j)
 
    integer, intent(in) :: i, j
    character (len=80) :: titldum
-   real*8 :: epcohru, escohru, r2adj, sin_sl, xm, xx
+   real*8 :: epcohru, escohru, evpot, fld_fr, n_lag, pot_no3l, pot_nsed,&
+      &pot_solpl, pot_volmm, r2adj, rip_fr, sin_sl, xm, xx
    integer :: eof
 
 
@@ -127,6 +128,7 @@ subroutine readhru(i, j)
    eof = 0
    escohru = 0.
    epcohru = 0.
+   pot_nsed = 0.
 
    do
       read (108,5100) titldum
@@ -151,9 +153,9 @@ subroutine readhru(i, j)
       if (eof < 0) exit
       read (108,*,iostat=eof) pot_fr(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) fld_fr(j)
+      read (108,*,iostat=eof) fld_fr ! not used
       if (eof < 0) exit
-      read (108,*,iostat=eof) rip_fr(j)
+      read (108,*,iostat=eof) rip_fr ! not used
       if (eof < 0) exit
       read (108,5100,iostat=eof) titldum
       if (eof < 0) exit
@@ -162,11 +164,11 @@ subroutine readhru(i, j)
       if (eof < 0) exit
       read (108,*,iostat=eof) pot_volxmm(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_volmm(j)
+      read (108,*,iostat=eof) pot_volmm
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_nsed(j)
+      read (108,*,iostat=eof) pot_nsed
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_no3l(j)
+      read (108,*,iostat=eof) pot_no3l
       if (eof < 0) exit
 !        read (108,5100,iostat=eof) titldum
 !        if (eof < 0) exit
@@ -187,7 +189,7 @@ subroutine readhru(i, j)
       if (eof < 0) exit
       read (108,5100,iostat=eof) titldum
       if (eof < 0) exit
-      read (108,*,iostat=eof) evpot(j)
+      read (108,*,iostat=eof) evpot
       if (eof < 0) exit
       read (108,*,iostat=eof) dis_stream(j)
       if (eof < 0) exit
@@ -208,13 +210,13 @@ subroutine readhru(i, j)
       if (eof < 0) exit
       read (108,*,iostat=eof) solp_con(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) pot_solpl(j)
+      read (108,*,iostat=eof) pot_solpl
       if (eof < 0) exit
       read (108,*,iostat=eof) pot_k(j)
       if (eof < 0) exit
       read (108,*,iostat=eof) n_reduc(j)
       if (eof < 0) exit
-      read (108,*,iostat=eof) n_lag(j)
+      read (108,*,iostat=eof) n_lag
       if (eof < 0) exit
       read (108,*,iostat=eof) n_ln(j)
       if (eof < 0) exit
@@ -251,7 +253,7 @@ subroutine readhru(i, j)
    if (iwetgw(j) <= 0) iwetgw(j) = 0
 
    if (n_reduc(j) <= 0.) n_reduc(j) = 300.
-   if (n_lag(j) <= 0.) n_lag(j) = 0.25
+   ! if (n_lag(j) <= 0.) n_lag(j) = 0.25 ! not used
    if (n_ln(j) <= 0.) n_ln(j) = 2.0
    if (n_lnco(j) <= 0.) n_lnco(j) = 2.0
 
@@ -281,7 +283,7 @@ subroutine readhru(i, j)
 !     if (dep_imp(j) <= 0.) dep_imp(j) = 6000.
 !     esco(j) = 1. - esco(j)
    if (epco(j) <= 0. .or. epco(j) > 1.) epco(j) = 1.0
-   if (evpot(j) <= 0.) evpot(j) = 0.5
+!   if (evpot(j) <= 0.) evpot(j) = 0.5 ! not used
    if (dis_stream(j) <= 0.) dis_stream(j) = 35.0
 
 !! armen & stefan changes for SWAT-C
@@ -301,15 +303,15 @@ subroutine readhru(i, j)
    hru_km(j) = sub_km(i) * hru_fr(j)
    hru_ha(j) = hru_km(j) * 100.
    lat_sed(j) = lat_sed(j) * 1.e-3     !!mg/L => g/L
-   pot_vol(j) = pot_volmm(j)
-   pot_volx(j) = pot_volxmm(j)
-   pot_tile(j) = pot_tilemm(j)
+   pot_vol(j) = pot_volmm
+!   pot_volx(j) = pot_volxmm(j) ! not used
+!   pot_tile(j) = pot_tilemm(j) ! not used
 
-   xx = 10. * pot_volmm(j) * hru_ha(j) / 1000000.  !! mg/L * m3 * 1000L/m3 * t/1,000,000,000   Srini pothole
-   pot_sed(j) = pot_nsed(j) * xx
+   xx = 10. * pot_volmm * hru_ha(j) / 1000000.  !! mg/L * m3 * 1000L/m3 * t/1,000,000,000   Srini pothole
+   pot_sed(j) = pot_nsed * xx
    pot_san(j) = 0.
    pot_sil(j) = 0.
-   pot_cla(j) = pot_nsed(j) * xx
+   pot_cla(j) = pot_nsed * xx
    pot_sag(j) = 0.
    pot_lag(j) = 0.
 

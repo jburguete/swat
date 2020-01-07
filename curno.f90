@@ -29,17 +29,17 @@ subroutine curno(cnn,h)
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    cn1(:)      |none          |SCS runoff curve number for moisture
+!!    cn(1,:)      |none          |SCS runoff curve number for moisture
 !!                               |condition I
-!!    cn3(:)      |none          |SCS runoff curve number for moisture
+!!    cn(3,:)      |none          |SCS runoff curve number for moisture
 !!                               |condition III
 !!    sci(:)      |none          |retention coefficient for cn method based on
 !!                               |plant ET
 !!    smx(:)      |none          |retention coefficient for cn method based on
 !!                               |soil moisture
-!!    wrt1(:)    |none          |1st shape parameter for calculation of
+!!    wrt(1,:)    |none          |1st shape parameter for calculation of
 !!                               |water retention
-!!    wrt2(:)    |none          |2nd shape parameter for calculation of
+!!    wrt(2,:)    |none          |2nd shape parameter for calculation of
 !!                               |water retention
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!
@@ -69,21 +69,21 @@ subroutine curno(cnn,h)
    integer, intent (in) :: h
    real*8 :: c2, rto3, rtos, s3, sumfc_ul, smxold
 
-   cn2(h) = cnn
+   cn(2,h) = cnn
    smxold = 0.
-   if (cn1(h) > 1.e-6) smxold = 254.* (100. / cn1(h) - 1.)
+   if (cn(1,h) > 1.e-6) smxold = 254.* (100. / cn(1,h) - 1.)
 
 !! calculate moisture condition I and III curve numbers
    c2 = 100. - cnn
-   cn1(h) = cnn - 20. * c2 / (c2 + Exp(2.533 - 0.0636 * c2))
-   cn1(h) = Max(cn1(h), .4 * cnn)
-   cn3(h) = cnn * Exp(.006729 * c2)
+   cn(1,h) = cnn - 20. * c2 / (c2 + Exp(2.533 - 0.0636 * c2))
+   cn(1,h) = Max(cn(1,h), .4 * cnn)
+   cn(3,h) = cnn * Exp(.006729 * c2)
 
 !! calculate maximum retention parameter value
-   smx(h) = 254. * (100. / cn1(h) - 1.)
+   smx(h) = 254. * (100. / cn(1,h) - 1.)
 
 !! calculate retention parameter value for CN3
-   s3 = 254. * (100. / cn3(h) - 1.)
+   s3 = 254. * (100. / cn(3,h) - 1.)
 
 !! calculate fraction difference in retention parameters
    rto3 = 1. - s3 / smx(h)
@@ -91,7 +91,7 @@ subroutine curno(cnn,h)
 
    sumfc_ul = sol_sumfc(h)
 !! calculate shape parameters
-   call ascrv(rto3,rtos,sumfc_ul,sol_sumul(h),wrt1(h),wrt2(h))
+   call ascrv(rto3,rtos,sumfc_ul,sol_sumul(h),wrt(1,h),wrt(2,h))
 
    if (curyr == 0) then
       sci(h) = 0.9 * smx(h)

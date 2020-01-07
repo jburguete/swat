@@ -165,9 +165,10 @@ subroutine irr_res(jres)
                if (res_vol(jres) < 0.) res_vol(jres) = 0.
 
                !! advance irrigation operation number
-               if (flag == 1) then
-                  nirr(k) = nirr(k) + 1
-               end if
+               !not used
+               !if (flag == 1) then
+               !   nirr(k) = nirr(k) + 1
+               !end if
 
             end if
          end if

@@ -451,8 +451,8 @@ subroutine graze(j)
       !! I do not understand these summary calculations Armen March 2009
       grazn = grazn + manure_kg(j) * (fminn(it) + forgn(it))
       grazp = grazp + manure_kg(j) * (fminp(it) + forgp(it))
-      tgrazn(j) = tgrazn(j) + grazn
-      tgrazp(j) = tgrazp(j) + grazp
+      !tgrazn(j) = tgrazn(j) + grazn ! not used
+      !tgrazp(j) = tgrazp(j) + grazp ! not used
 
       if (curyr > nyskip) then
          wshd_ftotn = wshd_ftotn + manure_kg(j) * hru_dafr(j) *&
@@ -466,7 +466,6 @@ subroutine graze(j)
             &(fminp(it) + forgp(it))
          wshd_fminp = wshd_fminp + manure_kg(j) * hru_dafr(j) * fminp(it)
          wshd_forgp = wshd_forgp + manure_kg(j) * hru_dafr(j) * forgp(it)
-         !       yldkg(nro(j),1,j) = yldkg(nro(j),1,j) + (dmi - bio_ms(j))
          yldkg(icr(j),j)=yldkg(icr(j),j) + (dmi - bio_ms(j))
       end if
    end if
@@ -475,7 +474,7 @@ subroutine graze(j)
    if (ndeat(j) == grz_days(j)) then
       igrz(j) = 0
       ndeat(j) = 0
-      ngr(j) = ngr(j) + 1
+      !ngr(j) = ngr(j) + 1 ! not used
    end if
 
 

@@ -147,7 +147,7 @@ subroutine hruday(i, j)
 !!    strsn(:)      |none          |fraction of potential plant growth achieved
 !!                                 |on the day where the reduction is caused by
 !!                                 |nitrogen stress
-!!    strsp(:)      |none          |fraction of potential plant growth achieved
+!!    strsp         |none          |fraction of potential plant growth achieved
 !!                                 |on the day where the reduction is caused by
 !!                                 |phosphorus stress
 !!    strstmp(:)    |none          |fraction of potential plant growth achieved
@@ -397,10 +397,10 @@ subroutine hruday(i, j)
    pdvas(57) = no3gw(j)
    pdvas(58) = surqsolp(j)
    pdvas(59) = minpgw(j)
-   pdvas(60) = (1.-strsw(j))
-   pdvas(61) = (1.-strstmp(j))
-   pdvas(62) = (1.-strsn(j))
-   pdvas(63) = (1.-strsp(j))
+   pdvas(60) = 1. - strsw(j)
+   pdvas(61) = 1. - strstmp(j)
+   pdvas(62) = 1. - strsn(j)
+   pdvas(63) = 1. - strsp
    pdvas(64) = bio_ms(j) / 1000.
    pdvas(65) = laiday(j)
    pdvas(66) = yield

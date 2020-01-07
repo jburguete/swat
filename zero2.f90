@@ -47,15 +47,9 @@ subroutine zero2
    chlaw = 0.
    cht = 0.
    cklsp = 0.
-   cmtl1cnst = 0.
-   cmtl1mon = 0.
-   cmtl1yr = 0.
-   cmtl2cnst = 0.
-   cmtl2mon = 0.
-   cmtl2yr = 0.
-   cmtl3cnst = 0.
-   cmtl3mon = 0.
-   cmtl3yr = 0.
+   cmtlcnst = 0.
+   cmtlmon = 0.
+   cmtlyr = 0.
    crdep = 0.
    elevp = 0
    elevt = 0
@@ -69,7 +63,7 @@ subroutine zero2
    flwout = 0.
    fsred = 0.
    gwminp = 0.
-   gwno3 = 0.
+   !gwno3 = 0. ! not used
    harveff = 0.
    hhvaroute = 0.
    hru_sub = 0
@@ -83,7 +77,6 @@ subroutine zero2
    ihgage = 0
    ipnd = 0
 
-   imp_trig = 0   !!Srini pothole
    pot_orgn = 0.
    pot_orgp = 0.
    pot_mps = 0.
@@ -91,14 +84,14 @@ subroutine zero2
    pot_no3 = 0.
    pot_solp = 0.
 !   pot_evap = 0. ! not used
-!   tile_out = 0. ! not used
-!   tile_sedo = 0. ! not used
-!   tile_no3o = 0. ! not used
-   tile_solpo = 0.
-!   tile_orgno = 0. ! not used
-!   tile_orgpo = 0. ! not used
 !   tile_minpso = 0. ! not used
 !   tile_minpao = 0. ! not used
+!   tile_no3o = 0. ! not used
+!   tile_orgno = 0. ! not used
+!   tile_orgpo = 0. ! not used
+!   tile_out = 0. ! not used
+!   tile_sedo = 0. ! not used
+   tile_solpo = 0.
 
    imp_trig = 1
    ires = 0
@@ -188,7 +181,7 @@ subroutine zero2
    pnd_psed = 0.
    pnd_solp = 0.
    pnd_solpg = 0.
-   pot_volx = 0.
+   ! pot_volx = 0. ! not used
    pot_volxmm = 0.
    potflwi = 0.
    potsedi = 0.
@@ -247,7 +240,6 @@ subroutine zero2
    snotmp = 0.
    snotmpeb = 0.
    sol_avbd = 0.
-   sol_avpor = 0.
    sol_awc = 0.
    sol_fc = 0.
    sol_hk = 0.
@@ -264,7 +256,7 @@ subroutine zero2
    surf_bs = 0.
    tmp_hi = 0.
    tmp_lo = 0.
-   tmpavp = 0.
+   ! tmpavp = 0. ! not used
    twash = 0.
    urblu = 0
    urbname = ""
@@ -288,8 +280,7 @@ subroutine zero2
    wpstaao = 0.
    wpstmono = 0.
    wpstyro = 0.
-   wrt1 = 0.
-   wrt2 = 0.
+   wrt = 0.
    wshd_pstdg = 0.
    wshdaao = 0.
    wshdmono = 0.

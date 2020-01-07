@@ -29,7 +29,7 @@ subroutine stdaa
 !!                               |the organic P pool in watershed soil
 !!    bio_aahv(:,:,:)|kg/ha         |harvested biomass of plant
 !!    bio_aams(:) |metric tons/ha|average annual biomass (dry weight) in HRU
-!!    cn2(:)      |none          |SCS runoff curve number for moisture
+!!    cn(2,:)      |none          |SCS runoff curve number for moisture
 !!                               |condition II
 !!    cpnm(:)     |NA            |four character code to represent crop name
 !!    hru_km(:)   |km^2          |area of HRU in square kilometers
@@ -374,7 +374,7 @@ subroutine stdaa
             cropname = 'BARE'
          end if
          write (26,1900) j, hru_sub(j),&
-            &snam(j), hru_km(j), cn2(j), sol_sumfc(j), usle_ls(j),&
+            &snam(j), hru_km(j), cn(2,j), sol_sumfc(j), usle_ls(j),&
             &hruaao(22,j), hruaao(28,j), hruaao(29,j), sumix(j),&
             &hruaao(1,j), hruaao(19,j), hruaao(5,j) + hruaao(6,j),&
             &hruaao(12,j), hruaao(14,j), hruaao(37,j) + hruaao(38,j),&
@@ -390,7 +390,7 @@ subroutine stdaa
             cropname = 'BARE'
          end if
          write (19,1900) j, hru_sub(j), cropname,&
-            &snam(j), hru_km(j), cn2(j), sol_sumfc(j), usle_ls(j),&
+            &snam(j), hru_km(j), cn(2,j), sol_sumfc(j), usle_ls(j),&
             &hruaao(22,j), hruaao(28,j), hruaao(29,j), sumix(j),&
             &hruaao(1,j), hruaao(19,j), hruaao(5,j) + hruaao(6,j),&
             &hruaao(12,j), hruaao(14,j), hruaao(37,j) + hruaao(38,j),&

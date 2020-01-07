@@ -67,9 +67,8 @@ subroutine resetlu
       wet_mxvol(j) = wet_mxvol(j) * xx
       wet_vol(j) = wet_vol(j) * xx
       hru_ha(j) = hru_km(j) * 100.
-!   pot_vol(j) = 10. * pot_volmm(j) * hru_ha(j)   !! mm => m^3     NUBZ
-      pot_volx(j) = pot_volxmm(j)
-      pot_tile(j) = pot_tilemm(j)
+      ! pot_volx(j) = pot_volxmm(j) ! not used
+      ! pot_tile(j) = pot_tilemm(j) ! not used
    end do
 
 5101 format (a80)

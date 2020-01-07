@@ -394,8 +394,8 @@ subroutine pothole(i, j)
       pot_mps(j) = xx * pot_mps(j)
       pot_mpa(j) = xx * pot_mpa(j)
 
-      pot_no3(j) = pot_no3(j) * (1. - pot_no3l(j))
-      pot_solp(j) = pot_solp(j) * (1. - pot_solpl(j))
+!      pot_no3(j) = pot_no3(j) * (1. - pot_no3l(j)) ! not used
+!      pot_solp(j) = pot_solp(j) * (1. - pot_solpl(j)) ! not used
 
 !       compute flow from surface inlet tile
       tileo = Min(pot_tilemm(j), pot_vol(j))

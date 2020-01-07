@@ -193,7 +193,7 @@ subroutine irrsub(j)
       end select
 
       !! advance irrigate operation number
-      nirr(j) = nirr(j) + 1
+      !nirr(j) = nirr(j) + 1 ! not used
 
    endif
 

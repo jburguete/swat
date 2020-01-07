@@ -8,7 +8,7 @@
 !> @param[in] hr hour of the day (none)
 !> @param[in] jj HRU number (none)
 !> @return air temperature for hour in HRU (deg C)
-real*8 function tair(hr, jj) result (r_tair)
+real*8 function tair(hr, jj)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -56,7 +56,7 @@ real*8 function tair(hr, jj) result (r_tair)
    end select
 
 !! SWAT manual equation 2.3.1
-   r_tair = 0.5 * (tmp_hi(jj) + tmp_lo(jj) + (tmp_hi(jj) - tmp_lo(jj)&
+   tair = 0.5 * (tmp_hi(jj) + tmp_lo(jj) + (tmp_hi(jj) - tmp_lo(jj)&
       &* Cos(0.2618 * (hr - 15))))
 
    return

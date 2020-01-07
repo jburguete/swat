@@ -136,7 +136,7 @@ subroutine sim_initday
    sol_prk = 0.
    strsa = 1.
    strsn = 1.
-   strsp = 1.
+   ! strsp = 1. it seems to be always 1
    strstmp = 1.
 !!  NUBZ    strsw = 1.
    sub_bactlp = 0.
@@ -197,7 +197,6 @@ subroutine sim_initday
    tavband = 0.
    tileno3 = 0.    !CB 8/24/09
    tmn = 0.
-   tmnband = 0.
    tmpav = 0.
    tmx = 0.
    tmxband = 0.

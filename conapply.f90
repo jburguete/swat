@@ -58,7 +58,7 @@ subroutine conapply(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    INTRINSIC: Int, Erfc
+!!    INTRINSIC: Erfc
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -82,7 +82,7 @@ subroutine conapply(j)
       iday_pest(j) = 1
 
       !! initialize local variables
-      kk = Int(cpst_id(j))
+      kk = cpst_id(j)
       k = nope(kk)
       xx = cpst_kg(j)
       xx = xx * ap_ef(kk)
@@ -118,7 +118,7 @@ subroutine conapply(j)
       icpst(j) = 0
       ndcpst(j) = 0
       iday_pest(j) = 0
-      ncpest(j) = ncpest(j) + 1
+      !ncpest(j) = ncpest(j) + 1 ! not used
    end if
 
 1000 format (a5,1x,a7,3i6,1x,e10.5,1x,2a15,7f10.2,20x,f10.2)

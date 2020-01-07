@@ -101,7 +101,6 @@ subroutine zero1
    drain_t = 0.
    drain_g = 0.
    dr_sub = 0.
-   filt_w = 0.
    fname = '             '       ! CB 8/24/09
    grwat_n = 0.
    grwat_i = 0.
@@ -113,15 +112,12 @@ subroutine zero1
    gwatl = 0.
    gwatw = 0.
    gwatd = 0.
-   gwatveg = 0.
    harg_petco = 0.       ! CB 8/24/09
    hru_slp = 0.
    hruaao = 0.
    hruyro = 0.
-   icont = 0
    ida_lup = 0           !CB 8/24/09
-   ifilt = 0
-   ngrwat = 0
+   !ngrwat = 0 ! not used
    nop = 1
    orig_phu = 0.
    orig_phuacc = 0.
@@ -161,7 +157,6 @@ subroutine zero1
    pperco_sub = 0.
    phu_plt = 0.
    phuacc = 0.
-   phug = 300.
    phu_op = 0.
    phutot = 0.
    plaps = 0.
@@ -185,10 +180,9 @@ subroutine zero1
    pnd_vol = 0.
    pot_fr = 0.
    pot_no3 = 0.
-   pot_no3l = 0.
-   pot_solpl = 0.
+   !pot_no3l = 0. ! not used
+   !pot_solpl = 0. ! not used
    pot_k = -1.
-   pot_nsed = 0.
    pot_sed = 0.
 
    pot_san = 0.
@@ -197,7 +191,7 @@ subroutine zero1
    pot_sag = 0.
    pot_lag = 0.
 
-   pot_tile = 0.
+   !pot_tile = 0. ! not used
    pot_vol = 0.
    pr_w = 0.
    pst_enr = 0.
@@ -215,7 +209,7 @@ subroutine zero1
    revapmn = 0.
    rfile = ""
    rfinc = 0.
-   rip_fr = 0.
+   !rip_fr = 0. ! not used
    rk = 0.
    rnum1s = 0.
 !!  septic changes 1/29/09
@@ -273,7 +267,6 @@ subroutine zero1
    srbpstyr = 0.
    strip_n = 0.
    strip_cn = 0.
-   strip_c = 0.
    strip_p = 0.
    rchaao = 0.
    rchyro = 0.

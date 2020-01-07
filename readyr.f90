@@ -24,11 +24,11 @@ subroutine readyr(i)
 !!     cbodyr(:,:)  |kg/day        |average daily loading of CBOD in year
 !!     chlayr(:,:)  |kg/day        |average daily loading of chlorophyll-a in
 !!                                 |year
-!!     cmtl1yr(:,:) |kg/day        |average daily loading of conservative metal
+!!     cmtlyr(1,:,:) |kg/day        |average daily loading of conservative metal
 !!                                 |#1 for year
-!!     cmtl2yr(:,:) |kg/day        |average daily loading of conservative metal
+!!     cmtlyr(2,:,:) |kg/day        |average daily loading of conservative metal
 !!                                 |#2 for year
-!!     cmtl3yr(:,:) |kg/day        |average daily loading of conservative metal
+!!     cmtlyr(3,:,:) |kg/day        |average daily loading of conservative metal
 !!                                 |#3 for year
 !!     disoxyr(:,:) |kg/day        |average daily loading of dissolved O2 in
 !!                                 |year
@@ -92,9 +92,9 @@ subroutine readyr(i)
          &srbpstyr(i,iya),&
          &bactpyr(i,iya),&
          &bactlpyr(i,iya),&
-         &cmtl1yr(i,iya),&
-         &cmtl2yr(i,iya),&
-         &cmtl3yr(i,iya)
+         &cmtlyr(1,i,iya),&
+         &cmtlyr(2,i,iya),&
+         &cmtlyr(3,i,iya)
       if (ia1 == iyr) exit
       if (eof < 0) exit
    end do
@@ -115,9 +115,9 @@ subroutine readyr(i)
          &srbpstyr(i,iya),&
          &bactpyr(i,iya),&
          &bactlpyr(i,iya),&
-         &cmtl1yr(i,iya),&
-         &cmtl2yr(i,iya),&
-         &cmtl3yr(i,iya)
+         &cmtlyr(1,i,iya),&
+         &cmtlyr(2,i,iya),&
+         &cmtlyr(3,i,iya)
       if (eof < 0) exit
    end do
 

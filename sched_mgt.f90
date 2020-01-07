@@ -24,6 +24,7 @@ subroutine sched_mgt(j)
 !!    biomass
 !!    husc
 !!    ifrt
+!!    irrsalt
 !!    n
 !!    ncrp
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -39,7 +40,7 @@ subroutine sched_mgt(j)
    implicit none
 
    integer, intent(in) :: j
-   real*8 :: biomass, husc
+   real*8 :: biomass, husc, irrsalt
    integer :: ifrt, n, ncrp
 
    n = nop(j)
@@ -76,7 +77,7 @@ subroutine sched_mgt(j)
       irr_sc(j) = mgt2iop(n,j)     !!NUBZ
       irr_no(j) = mgt10iop(n,j)
       irramt(j) = mgt4op(n,j)
-      irrsalt(j) = mgt5op(n,j)
+      irrsalt = mgt5op(n,j) !! not used
       irrefm(j) = mgt6op(n,j)
       irrsq(j) = mgt7op(n,j)
       irr_flag(j) = 1
@@ -236,7 +237,6 @@ subroutine sched_mgt(j)
       if (irr_eff(j) == 0.) irr_eff(j) = 1.
       if (irr_mx(j) < 1.e-6) irr_mx(j) = 25.4
       if (irr_sca(j) <= 0) irr_sca(j) = irrsc(j)
-      irra_flag(j) = 1
       if (imgt ==1) then
          write (143, 1010) subnum(j), hruno(j), iyr, i_mo,&
             &iida, hru_km(j), "        ",&

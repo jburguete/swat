@@ -158,7 +158,7 @@ subroutine confert(j)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Int, Erfc
+!!    Intrinsic: Erfc
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
@@ -175,7 +175,7 @@ subroutine confert(j)
 
    if (iday_fert(j) == ifrt_freq(j)) then
       !! apply manure
-      it = Int(cfrt_id(j))
+      it = cfrt_id(j)
       if (cfrt_kg(j) > 0.) then
          l = 1
          if (cswat == 0 .or. cswat == 1) then
@@ -269,8 +269,8 @@ subroutine confert(j)
          &(fminn(it) + forgn(it))
       cfertp = cfertp + cfrt_kg(j) *&
          &(fminp(it) + forgp(it))
-      tcfrtn(j) = tcfrtn(j) + cfertn
-      tcfrtp(j) = tcfrtp(j) + cfertp
+      !tcfrtn(j) = tcfrtn(j) + cfertn ! not used
+      !tcfrtp(j) = tcfrtp(j) + cfertp ! not used
 
       if (curyr > nyskip) then
          wshd_ftotn = wshd_ftotn + cfrt_kg(j) *&
@@ -305,7 +305,7 @@ subroutine confert(j)
       icfrt(j) = 0
       ndcfrt(j) = 0
       iday_fert(j) = 0
-      ncf(j) = ncf(j) + 1
+      !ncf(j) = ncf(j) + 1 ! not used
    end if
 
 1000 format (a5,1x,a4,3i6,1x,e10.5,1x,2a15,7f10.2,20x,f10.2)

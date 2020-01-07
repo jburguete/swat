@@ -23,13 +23,13 @@ subroutine recmon(k)
 !!                                |on a given day in the month
 !!    chlamon(:,:,:) |kg/day      |average amount of chlorophyll a loaded
 !!                                |to stream on a given day in the month
-!!    cmtl1mon(:,:,:)|kg/day      |average amount of conservative metal #1
+!!    cmtlmon(1,:,:,:)|kg/day      |average amount of conservative metal #1
 !!                                |loaded to stream on a given day in the
 !!                                |month
-!!    cmtl2mon(:,:,:)|kg/day      |average amount of conservative metal #2
+!!    cmtlmon(2,:,:,:)|kg/day      |average amount of conservative metal #2
 !!                                |loaded to stream on a given day in the
 !!                                |month
-!!    cmtl3mon(:,:,:)|kg/day      |average amount of conservative metal #3
+!!    cmtlmon(3,:,:,:)|kg/day      |average amount of conservative metal #3
 !!                                |loaded to stream on a given day in the
 !!                                |month
 !!    curyr         |none         |year of simulation
@@ -143,9 +143,9 @@ subroutine recmon(k)
    varoute(17,ihout) = disoxmon(k,curyr,i_mo)
    varoute(18,ihout) = bactpmon(k,curyr,i_mo)
    varoute(19,ihout) = bactlpmon(k,curyr,i_mo)
-   varoute(20,ihout) = cmtl1mon(k,curyr,i_mo)
-   varoute(21,ihout) = cmtl2mon(k,curyr,i_mo)
-   varoute(22,ihout) = cmtl3mon(k,curyr,i_mo)
+   varoute(20,ihout) = cmtlmon(1,k,curyr,i_mo)
+   varoute(21,ihout) = cmtlmon(2,k,curyr,i_mo)
+   varoute(22,ihout) = cmtlmon(3,k,curyr,i_mo)
 
    !! Assumed equal distribution of sediment
    varoute(23,ihout) = sedmon(k,curyr,i_mo) * 0.   ! sand
@@ -173,9 +173,9 @@ subroutine recmon(k)
          hhvaroute(17,ihout,ii) = disoxmon(k,curyr,i_mo) / fn
          hhvaroute(18,ihout,ii) = bactpmon(k,curyr,i_mo) / fn
          hhvaroute(19,ihout,ii) = bactlpmon(k,curyr,i_mo) / fn
-         hhvaroute(20,ihout,ii) = cmtl1mon(k,curyr,i_mo) / fn
-         hhvaroute(21,ihout,ii) = cmtl2mon(k,curyr,i_mo) / fn
-         hhvaroute(22,ihout,ii) = cmtl3mon(k,curyr,i_mo) / fn
+         hhvaroute(20,ihout,ii) = cmtlmon(1,k,curyr,i_mo) / fn
+         hhvaroute(21,ihout,ii) = cmtlmon(2,k,curyr,i_mo) / fn
+         hhvaroute(22,ihout,ii) = cmtlmon(3,k,curyr,i_mo) / fn
       end do
    end if
 

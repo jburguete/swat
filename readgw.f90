@@ -20,13 +20,12 @@ subroutine readgw(i, j)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    alpha_bf(:) |1/days        |alpha factor for groundwater recession curve
-!!    alpha_bf_d(:) | 1/days     |alpha factor for groudwater recession curve of the deep aquifer
 !!    alpha_bfe(:)|none          |Exp(-alpha_bf(:))
-!!    alpha_bfe_d (:) |1/days    |Exp(-alpha_bf_d(:)) for deep aquifer
+!!    alpha_bfe_d (:) |1/days    |Exp(-alpha_bf_d) for deep aquifer
 !!    ch_revap(:) |none          |revap coeff: this variable controls the amount
 !!                               |of water moving from bank storage to the root
 !!                               |zone as a result of soil moisture depletion
-!!    deepst(i)  |mm H2O        |depth of water in deep aquifer
+!!    deepst(i)   |mm H2O        |depth of water in deep aquifer
 !!    delay(:)    |days          |groundwater delay: time required for water
 !!                               |leaving the bottom of the root zone to
 !!                               |reach the shallow aquifer
@@ -56,6 +55,8 @@ subroutine readgw(i, j)
 !!    ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    alpha_bf_d  | 1/days       |alpha factor for groudwater recession curve of
+!!                               |the deep aquifer
 !!    eof         |none          |end of file flag
 !!    hlife_ngw
 !!    titldum     |NA            |title line for .gw file
@@ -71,10 +72,11 @@ subroutine readgw(i, j)
 
    integer, intent(in) :: i, j
    character (len=80) :: titldum
-   real*8 :: hlife_ngw
+   real*8 :: alpha_bf_d, hlife_ngw
    integer :: eof
 
    eof = 0
+   alpha_bf_d = 0.
    hlife_ngw = 0.0
 
    do
@@ -102,7 +104,7 @@ subroutine readgw(i, j)
       if (eof < 0) exit
       read (110,*,iostat=eof) lat_orgp(j)
       if (eof < 0) exit
-      read (110,*,iostat=eof) alpha_bf_d(j)
+      read (110,*,iostat=eof) alpha_bf_d
       exit
    end do
 
@@ -124,7 +126,7 @@ subroutine readgw(i, j)
    gw_nloss(j) = Exp(-.693 / hlife_ngw)
 
 !!    alpha baseflow factor for deep aquifer according to Yi Luo
-   alpha_bfe_d(j) = Exp(-alpha_bf_d(j))
+   alpha_bfe_d(j) = Exp(-alpha_bf_d)
 
 
 !! assign values to channels

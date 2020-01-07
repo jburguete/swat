@@ -222,7 +222,7 @@ subroutine drains(j)
 ! drainage flux - for WT below the surface and for ponded depths < storro (S1)
       else
          dflux=4.0*24.0*cone*em*(2.0*hdrain+em)/sdrain(j)**2 !eq.5
-         if (dflux > drain_co(j)) dflux=drain_co(j) !eq.11
+         if (dflux > drain_co(j)) dflux = drain_co(j) !eq.11
          if (dflux < 0.) dflux=0.
          if (em < 0.) dflux=0.
       end if
