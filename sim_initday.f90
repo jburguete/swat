@@ -220,24 +220,12 @@ subroutine sim_initday
    surfqc_d =0.
    latc_d = 0.
    percc_d = 0.
-   foc_d = 0.
    NPPC_d = 0.
    rsdc_d = 0.
    grainc_d = 0.
    stoverc_d = 0.
    emitc_d = 0.
-   soc_d = 0.
    rspc_d = 0.
-
-   sub_sedc_d =0.
-   sub_surfqc_d=0.
-   sub_latc_d=0.
-   sub_percc_d=0.
-   sub_foc_d=0.
-   sub_rsdc_d=0.
-   sub_grainc_d=0.
-   sub_soc_d =0.
-   sub_rspc_d =0.
 
    return
 end

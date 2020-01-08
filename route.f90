@@ -88,7 +88,6 @@ subroutine route(i, jrch, k)
 
    !inum3 is the subbasin for stream-aquifer interaction
    !inum5 is the landscape within the subbasin
-   isub = inum3
    iru = inum5
 
 !! initialize variables for route command loop

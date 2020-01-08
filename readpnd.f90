@@ -115,6 +115,7 @@ subroutine readpnd(i)
 !!    dpd_file
 !!    eof         |none          |end of file flag
 !!    evpnd       |none          |pond evaporation coefficient
+!!    idummy      |none          |dummy array to read unused integer data
 !!    ii
 !!    j           |none          |counter
 !!    k
@@ -186,6 +187,7 @@ subroutine readpnd(i)
 
    integer, intent(in) :: i
    real*8, dimension(mudb) :: dummy
+   integer, dimension(mudb) :: idummy
    character (len=200) :: lus
    character (len=80) :: titldum
    character(len=13) :: dpd_file, lid_file, rib_file, sfb_file, wpd_file
@@ -627,9 +629,9 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (gr_onoff(i,k),k=1,mudb)
 
          !read (104,*,iostat=eof) (gr_imo(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
          !read (104,*,iostat=eof) (gr_iyr(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
 
          read (104,*,iostat=eof) (gr_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_solop(i,k),k=1,mudb)
@@ -650,9 +652,9 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (rg_onoff(i,k),k=1,mudb)
  
          !read (104,*,iostat=eof) (rg_imo(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
          !read (104,*,iostat=eof) (rg_iyr(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
 
          read (104,*,iostat=eof) (rg_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_solop(i,k),k=1,mudb)
@@ -680,8 +682,12 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (dummy(k),k=1,mudb)
          !! CiStern (CS)
          read (104,*,iostat=eof) (cs_onoff(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_imo(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (cs_iyr(i,k),k=1,mudb)
+
+         !read (104,*,iostat=eof) (cs_imo(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         !read (104,*,iostat=eof) (cs_iyr(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+
          read (104,*,iostat=eof) (cs_grcon(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_vol(i,k),k=1,mudb)
@@ -693,8 +699,12 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (dummy(k),k=1,mudb)
          !! Porous paVement (PV)
          read (104,*,iostat=eof) (pv_onoff(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_imo(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (pv_iyr(i,k),k=1,mudb)
+
+         !read (104,*,iostat=eof) (pv_imo(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         !read (104,*,iostat=eof) (pv_iyr(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+
          read (104,*,iostat=eof) (pv_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_grvdep(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_grvpor(i,k),k=1,mudb)

@@ -365,12 +365,12 @@ subroutine readfig
             read (102,5100) rufile
             call caps(rufile)
             iru = inum1s(k)
-            isub = inum2s(k)
-            daru_km(isub,iru) = rnum1s(k)
+            ii = inum2s(k)
+            daru_km(ii,iru) = rnum1s(k)
             open (113,file=rufile)
-            call readru(i)
+            call readru(i, ii)
             close(113)
-            subdr_km(ihouts(k)) = daru_km(inum2s(k),inum1s(k))
+            subdr_km(ihouts(k)) = daru_km(ii,iru)
 
           case (18)  !! icode = 18  LANDSCAPE ROUTING command
             subdr_km(ihouts(k)) = subdr_km(inum2s(k))

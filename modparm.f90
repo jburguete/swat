@@ -216,7 +216,7 @@ module parm
    integer, dimension (:), allocatable :: ils2, ils2flag
 !> pesticide identification number from pest.dat (none)
    integer :: ipest
-   integer :: iru, mru, irch, isub, mhyd_bsn, ils_nofig
+   integer :: iru, mru, irch, mhyd_bsn, ils_nofig
    integer :: mhru1
 
 !! septic variables for output.std
@@ -4652,23 +4652,19 @@ module parm
       &gr_fc,gr_wp,gr_ksat,gr_por,gr_hydeff,gr_soldpt
 
    ! Rain Gerden
-   integer, dimension(:,:), allocatable :: rg_onoff
-!X
-   real*8, dimension(:,:), allocatable :: rg_farea,rg_solop,rg_etcoef,&
-      &rg_fc,rg_wp,rg_ksat,rg_por,rg_hydeff,rg_soldpt,rg_dimop,rg_sarea,&
-      &rg_vol,rg_sth,rg_sdia,rg_bdia,rg_sts,rg_orifice,rg_oheight,&
-      &rg_odia
+   integer, dimension(:,:), allocatable :: rg_onoff, rg_solop, rg_orifice
+   real*8, dimension(:,:), allocatable :: rg_farea, rg_etcoef,&
+      &rg_fc, rg_wp, rg_ksat, rg_por, rg_hydeff, rg_soldpt, rg_dimop, rg_sarea,&
+      &rg_vol, rg_sth, rg_sdia, rg_bdia, rg_sts, rg_oheight, rg_odia
 
    ! CiStern
-   integer, dimension(:,:), allocatable :: cs_onoff,cs_imo,cs_iyr,&
-      &cs_grcon
-   real*8, dimension(:,:), allocatable :: cs_farea,cs_vol,cs_rdepth
+   integer, dimension(:,:), allocatable :: cs_onoff, cs_grcon
+   real*8, dimension(:,:), allocatable :: cs_farea, cs_vol, cs_rdepth
 
    ! Porous paVement
-   integer, dimension(:,:), allocatable :: pv_onoff,pv_imo,pv_iyr,&
-      &pv_solop
-   real*8, dimension(:,:), allocatable :: pv_grvdep,pv_grvpor,pv_farea,&
-      &pv_drcoef,pv_fc,pv_wp,pv_ksat,pv_por,pv_hydeff,pv_soldpt
+   integer, dimension(:,:), allocatable :: pv_onoff, pv_solop
+   real*8, dimension(:,:), allocatable :: pv_grvdep, pv_grvpor, pv_farea,&
+      &pv_drcoef, pv_fc, pv_wp, pv_ksat, pv_por, pv_hydeff, pv_soldpt
 
    ! LID general
    integer, dimension(:,:), allocatable :: lid_onoff
@@ -4696,31 +4692,17 @@ module parm
 !> mass of N in structural litter (kg ha-1)
    real*8, dimension(:,:), allocatable :: sol_LSN
 
-   real*8, dimension(:,:), allocatable :: sol_BMC, sol_BMN, sol_RNMN,&
-      &sol_LSLC, sol_LSLNC, sol_RSPC, sol_WOC, sol_WON, sol_HP, sol_HS, sol_BM
-
-   !!SOM-residue C/N state variables -- may need to be included
-   real*8, dimension(:,:), allocatable :: sol_CAC, sol_CEC
-
-   !!daily updated soil layer associated percolaton and lateral flow Carbon loss
-   real*8, dimension(:,:), allocatable :: sol_percc
-   real*8, dimension(:,:), allocatable :: sol_latc
+   real*8, dimension(:,:), allocatable :: sol_BMC, sol_BMN,&
+      &sol_LSLC, sol_LSLNC, sol_WOC, sol_WON
 
 !> amount of C lost with sediment pools (kg C/ha)
    real*8, dimension(:), allocatable :: sedc_d
    real*8, dimension(:), allocatable :: surfqc_d, latc_d,&
-      &percc_d, foc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d, soc_d,&
+      &percc_d, NPPC_d, rsdc_d, grainc_d, stoverc_d,&
       &rspc_d, emitc_d
    !!emitc_d include biomass_c eaten by grazing, burnt
 
-
-   !!Daily carbon change by different means (entire soil profile for each Subbasin)
-   !!Only defined the variables, but not used them in the code
-   real*8, dimension(:), allocatable :: sub_sedc_d, sub_surfqc_d,&
-      &sub_latc_d, sub_percc_d, sub_foc_d, sub_NPPC_d, sub_rsdc_d,&
-      &sub_grainc_d, sub_stoverc_d, sub_emitc_d, sub_soc_d, sub_rspc_d
-
-
+!X
    !!Monthly carbon change by different means (entire soil profile for each HRU)
    real*8, dimension(:), allocatable :: sedc_m, surfqc_m, latc_m, percc_m,&
       &foc_m, NPPC_m, rsdc_m, grainc_m, stoverc_m, emitc_m, soc_m,&

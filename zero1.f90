@@ -30,15 +30,10 @@ subroutine zero1
    sol_LSL = 0.
    sol_LSC = 0.
    sol_LSN = 0.
-   sol_RNMN = 0.
    sol_LSLC = 0.
    sol_LSLNC = 0.
-   sol_RSPC = 0.
    sol_WOC = 0.
    sol_WON = 0.
-   sol_HP = 0.
-   sol_HS = 0.
-   sol_BM = 0.
 !!    added by zhang for CSWAT == 2
 
 

@@ -63,9 +63,9 @@ subroutine readatmodep
 
    select case (iatmodep)
     case (0)
-      do isub = 1, subtot
-         read (127,*,iostat=eof) rammo_sub(isub), rcn_sub(isub),&
-         &drydep_nh4(isub), drydep_no3(isub)
+      do iii = 1, subtot
+         read (127,*,iostat=eof) rammo_sub(iii), rcn_sub(iii),&
+            &drydep_nh4(iii), drydep_no3(iii)
          if (eof < 0) exit
       end do
       close (127)

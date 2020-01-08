@@ -132,9 +132,9 @@ subroutine soil_chem(ii)
          !FHP = 0.44
    integer, intent(in) :: ii
    real*8, parameter :: FBM =.04, FHP = .7 - .4 * Exp(-.0277 * 100)
-   real*8 :: actp, dg, RTO, sol_cmass, sol_mass, sol_min_n,&
-      &sol_thick, soldepth, solp, solpst, SSP, summinp, sumno3, sumorgn,&
-      &sumorgp, wt1, xx, X1, zdst
+   real*8 :: actp, dg, RTO, sol_BM, sol_cmass, sol_HP, sol_HS, sol_mass,&
+      &sol_min_n, sol_thick, soldepth, solp, solpst, SSP, summinp, sumno3,&
+      &sumorgn, sumorgp, wt1, xx, X1, zdst
    integer :: j, jj, n, nly
 
    sumno3 = 0.
@@ -313,15 +313,15 @@ subroutine soil_chem(ii)
          sol_WON(j,ii) = sol_aorgn(j,ii)+  sol_orgn(j,ii)!0.1 * sol_WOC(j,ii)
 
 
-         sol_BM(j,ii)=FBM*sol_WOC(j,ii)
-         sol_BMC(j,ii)=sol_BM(j,ii)
+         sol_BM=FBM*sol_WOC(j,ii)
+         sol_BMC(j,ii)=sol_BM
          RTO=sol_WON(j,ii)/sol_WOC(j,ii)
          sol_BMN(j,ii)=RTO*sol_BMC(j,ii)
-         sol_HP(j,ii)=FHP*(sol_WOC(j,ii)-sol_BM(j,ii))
-         sol_HS(j,ii)=sol_WOC(j,ii)-sol_BM(j,ii)-sol_HP(j,ii)
-         sol_HSC(j,ii)=sol_HS(j,ii)
+         sol_HP=FHP*(sol_WOC(j,ii)-sol_BM)
+         sol_HS=sol_WOC(j,ii)-sol_BM-sol_HP
+         sol_HSC(j,ii)=sol_HS
          sol_HSN(j,ii)= RTO*sol_HSC(j,ii)  !sol_aorgn(j,ii)
-         sol_HPC(j,ii)=sol_HP(j,ii)
+         sol_HPC(j,ii)=sol_HP
          sol_HPN(j,ii)= RTO*sol_HPC(j,ii)  !sol_orgn(j,ii)
 
 

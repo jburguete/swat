@@ -120,8 +120,8 @@ subroutine lidinit(i)
 !!    CiStern
    do kk = 1, mudb
       if (cs_onoff(i,kk)==1) then
-         if (cs_imo(i,kk)<=0)          cs_imo(i,kk) = 1
-         if (cs_iyr(i,kk)<=1000)       cs_iyr(i,kk) = iyr
+         !if (cs_imo(i,kk)<=0)          cs_imo(i,kk) = 1 ! not used
+         !if (cs_iyr(i,kk)<=1000)       cs_iyr(i,kk) = iyr ! not used
          if (cs_farea(i,kk) <=0)       cs_farea(i,kk) = 0.1
          if (cs_vol(i,kk) <=0) then
             if (cs_rdepth(i,kk) <=0) then
@@ -134,8 +134,8 @@ subroutine lidinit(i)
 !!    Poropus paVement
    do kk = 1, mudb
       if (pv_onoff(i,kk)==1) then
-         if (pv_imo(i,kk)<=0)          pv_imo(i,kk) = 1
-         if (pv_iyr(i,kk)<=1000)       pv_iyr(i,kk) = iyr
+         !if (pv_imo(i,kk)<=0)          pv_imo(i,kk) = 1 ! not used
+         !if (pv_iyr(i,kk)<=1000)       pv_iyr(i,kk) = iyr ! not used
          if (pv_grvdep(i,kk)<=0)       pv_grvdep(i,kk) = 130
          if (pv_grvpor(i,kk)<=0)       pv_grvpor(i,kk) = 0.35
          if (pv_farea(i,kk) <=0)       pv_farea(i,kk) = 0.1
@@ -157,7 +157,9 @@ subroutine lidinit(i)
    do kk = 1, mudb
       if (gr_onoff(i,kk)==1 .or. rg_onoff(i,kk)==1 .or.&
          &cs_onoff(i,kk)==1 .or. pv_onoff(i,kk)==1) then
-         lid_onoff(i,kk)=1
+         lid_onoff(i,kk) = 1
+      else
+         lid_onoff(i,kk) = 0
       end if
    end do
 

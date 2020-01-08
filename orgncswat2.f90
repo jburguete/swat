@@ -64,10 +64,10 @@ subroutine orgncswat2(iwave, j)
    integer, intent (in) :: iwave ,j
    !YW = WIND EROSION (T/HA)
    !PMRT_44 RATIO OF SOLUBLE C CONCENTRATION IN RUNOFF TO PERCOLATE(0.1_1.)
-   real*8, parameter :: YW = 0., PRMT_21 = 1000., PRMT_44 = .5
-   real*8 :: conc, er, wt1, xx
-   real*8 :: sol_mass, QBC, VBC, YBC, YOC, TOT, YEW, X1
-   real*8 :: DK,  V, X3, CO, CS, perc_clyr, latc_clyr, sol_thick, xx1, Y1
+   real*8, parameter :: PRMT_21 = 1000., PRMT_44 = .5, YW = 0.
+   real*8 :: CO, conc, CS, DK, er, latc_clyr, perc_clyr, QBC, sol_latc,&
+      &sol_mass, sol_percc, sol_thick, TOT, V, VBC, wt1, YBC, YEW, YOC, X1, X3,&
+      &xx, xx1, Y1
    integer :: k
    perc_clyr = 0.
 
@@ -181,11 +181,11 @@ subroutine orgncswat2(iwave, j)
    sol_BMC(1,j)=sol_BMC(1,j)-YBC
    surfqc_d(j) = QBC*(surfq(j)/(surfq(j)+flat(1,j)+1.e-6))
 
-   sol_latc(1,j) = QBC*(flat(1,j)/(surfq(j)+flat(1,j)+1.e-6))
-   sol_percc(1,j) = VBC
+   sol_latc = QBC*(flat(1,j)/(surfq(j)+flat(1,j)+1.e-6))
+   !sol_percc = VBC ! not used
    sedc_d(j) = YOC + YBC
 
-   latc_clyr = latc_clyr + sol_latc(1,j)
+   latc_clyr = latc_clyr + sol_latc
    DO k=2,sol_nly(j)
       !if (sol_prk(k,j) > 0 .and. k == sol_nly(j)) then
       !write (*,*) 'stop'
@@ -198,14 +198,14 @@ subroutine orgncswat2(iwave, j)
          V=sol_prk(k,j) + flat(k,j)
          IF(V>0.)VBC=Y1*(1.-Exp(-V/(sol_por(k,j)*sol_thick-sol_wpmm(k,j)+.0001*PRMT_21*sol_WOC(k,j))))
       END IF
-      sol_latc(k,j) = VBC*(flat(k,j)/(sol_prk(k,j) + flat(k,j)+1.e-6))
-      sol_percc(k,j) = VBC-sol_latc(k,j)
+      sol_latc = VBC*(flat(k,j)/(sol_prk(k,j) + flat(k,j)+1.e-6))
+      sol_percc = VBC-sol_latc
       sol_BMC(k,j)=Y1-VBC
 
       !! calculate nitrate in percolate
-      perc_clyr = perc_clyr + sol_percc(k,j)
+      perc_clyr = perc_clyr + sol_percc
 
-      latc_clyr = latc_clyr + sol_latc(k,j)
+      latc_clyr = latc_clyr + sol_latc
    END DO
 
    latc_d(j) = latc_clyr

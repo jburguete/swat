@@ -1481,12 +1481,12 @@ subroutine allocate_parms
       &rg_odia(msub,mudb))
 
 !!    CiStern
-   allocate(cs_onoff(msub,mudb),cs_imo(msub,mudb),cs_iyr(msub,mudb),&
+   allocate(cs_onoff(msub,mudb),&
       &cs_grcon(msub,mudb),cs_farea(msub,mudb),cs_vol(msub,mudb),&
       &cs_rdepth(msub,mudb))
 
 !!    Poropus paVement
-   allocate(pv_onoff(msub,mudb),pv_imo(msub,mudb),pv_iyr(msub,mudb),&
+   allocate(pv_onoff(msub,mudb),&
       &pv_grvdep(msub,mudb),pv_grvpor(msub,mudb),pv_farea(msub,mudb),&
       &pv_solop(msub,mudb),pv_drcoef(msub,mudb),pv_fc(msub,mudb),&
       &pv_wp(msub,mudb),pv_ksat(msub,mudb),pv_por(msub,mudb),&
@@ -1497,8 +1497,6 @@ subroutine allocate_parms
 
    !! By Zhang for C/N cycling
    !! ============================
-   allocate(sol_CAC(mlyr,mhru))
-   allocate(sol_CEC(mlyr,mhru))
    allocate(sol_BMC(mlyr,mhru))
    allocate(sol_BMN(mlyr,mhru))
    allocate(sol_HSC(mlyr,mhru))
@@ -1512,46 +1510,22 @@ subroutine allocate_parms
    allocate(sol_LSC(mlyr,mhru))
    allocate(sol_LSN(mlyr,mhru))
    allocate(sol_LSL(mlyr,mhru))
-   allocate(sol_RNMN(mlyr,mhru))
    allocate(sol_LSLC(mlyr,mhru))
    allocate(sol_LSLNC(mlyr,mhru))
-   allocate(sol_RSPC(mlyr,mhru))
    allocate(sol_WOC(mlyr,mhru))
    allocate(sol_WON(mlyr,mhru))
-   allocate(sol_HP(mlyr,mhru))
-   allocate(sol_HS(mlyr,mhru))
-   allocate(sol_BM(mlyr,mhru))
-
-   !daily update
-   allocate(sol_percc(mlyr,mhru))
-   allocate(sol_latc(mlyr,mhru))
 
    !!for print out at daily, monthly, and annual scale
    allocate(sedc_d(mhru))
    allocate(surfqc_d(mhru))
    allocate(latc_d(mhru))
    allocate(percc_d(mhru))
-   allocate(foc_d(mhru))
    allocate(NPPC_d(mhru))
    allocate(rsdc_d(mhru))
    allocate(grainc_d(mhru))
    allocate(stoverc_d(mhru))
    allocate(emitc_d(mhru))
-   allocate(soc_d(mhru))
    allocate(rspc_d(mhru))
-
-   allocate(sub_sedc_d(msub))
-   allocate(sub_surfqc_d(msub))
-   allocate(sub_latc_d(msub))
-   allocate(sub_percc_d(msub))
-   allocate(sub_foc_d(msub))
-   allocate(sub_NPPC_d(msub))
-   allocate(sub_rsdc_d(msub))
-   allocate(sub_grainc_d(msub))
-   allocate(sub_stoverc_d(msub))
-   allocate(sub_emitc_d(msub))
-   allocate(sub_soc_d(msub))
-   allocate(sub_rspc_d(mhru))
 
    allocate(sedc_m(mhru))
    allocate(surfqc_m(mhru))

@@ -117,12 +117,10 @@ subroutine carbon_zhang2(j)
    real*8 :: LSCTP, LSLCTP, LSLNCTP, LSNTP, LMR, LMCTP, LMNTP, BMCTP,HSCTP, HSNTP, HPCTP, HPNTP
    real*8 :: NCHP, NCBM, NCHS, ABCO2, ABP, ASP, A1, ASX, APX
    real*8 :: PRMT_51, PRMT_45
-   real*8 :: DF1, DF2, DF3, DF4, DF5, DF6, ADD, ADF1, ADF2, ADF3, ADF4, ADF5
-   real*8 :: TOT
-   real*8 :: PN1, PN2, PN3, PN5, PN6, PN7, PN8, PN9
-   real*8 :: SUM1, CPN1, CPN2, CPN3, CPN4, CPN5
-   real*8 :: WMIN,DMDN
-   real*8 :: BMNTP, decr, hmn, hmp, hmp_rate, RLR, rmn1, rmp, RTO, rwn, XBM
+   real*8 :: ADD, ADF1, ADF2, ADF3, ADF4, ADF5, BMNTP, decr, CPN1, CPN2, CPN3,&
+      &CPN4, CPN5, DF1, DF2, DF3, DF4, DF5, DF6, DMDN, hmn, hmp,&
+      &hmp_rate, PN1, PN2, PN3, PN5, PN6, PN7, PN8, PN9, RLR, rmn1, rmp, RTO,&
+      &rwn, sol_RNMN, sol_RSPC, SUM1, TOT, WMIN, XBM
    integer :: k, kk
 
 
@@ -173,11 +171,11 @@ subroutine carbon_zhang2(j)
          void = sol_por(k,j) * (1. - wc / sat)   ! fraction
 
          X1 = wc - sol_wpmm(k,j)
-         IF(X1<0.)THEN
+         if (X1<0.) then
             sut = .1 * (sol_st(kk,j) / sol_wpmm(k,j))**2
-         ELSE
+         else
             sut = .1 + .9 * Sqrt(sol_st(k,j) / sol_fc(k,j))
-         END IF
+         end if
          sut = Min(1., sut)
          sut = Max(.05, sut)
          !check X1, FC, S15
@@ -234,7 +232,7 @@ subroutine carbon_zhang2(j)
          !!The following codes are clculating of the N:C ration in the newly formed SOM for each pool
          !!please note that in the surface layer, no new materials enter Passive pool, therefore, no NCHP is
          !!calculated for the first layer.
-         IF(k==1)THEN
+         if (k==1) then
             CS=CS*PRMT_51
             ABCO2=.55
             BMR=.0164
@@ -244,33 +242,33 @@ subroutine carbon_zhang2(j)
             XBM=1.
             !     COMPUTE N/C RATIOS
             X1 = 0.1*(sol_LSN(k,j)+sol_LMN(k,j))/(sol_rsd(k,j)/1000+1.E-5) !relative notrogen content in residue (%)
-            IF(X1>2.)THEN
+            if (X1>2.) then
                NCBM=.1
-            ELSE
-               IF(X1>.01)THEN
+            else
+               if (X1>.01) then
                   NCBM=1./(20.05-5.0251*X1)
-               ELSE
+               else
                   NCBM=.05
-               END IF
-            END IF
+               end if
+            end if
             NCHS=NCBM/(5.*NCBM+1.)
-         ELSE
+         else
             ABCO2 = 0.17 + 0.0068 * sol_sand(k,j)
             BMR=.02
             LMR=.0507
             LSR=.0132
             XBM=.25+.0075*sol_sand(k,j)
             X1 = 1000. * sol_min_n/(sol_mass/1000)
-            IF(X1>7.15)THEN
+            if (X1>7.15) then
                NCBM=.33
                NCHS=.083
                NCHP=.143
-            ELSE
+            else
                NCBM=1./(15.-1.678*X1)
                NCHS=1./(20.-1.119*X1)
                NCHP=1./(10.-.42*X1)
-            END IF
-         END IF
+            end if
+         end if
          ABP=.003+.00032*sol_clay(k,j)
          PRMT_45 = 0.  !COEF IN CENTURY EQ ALLOCATING SLOW TO PASSIVE HUMUS(0.001_0.05) ORIGINAL VALUE = 0.003,
          PRMT_45 = 5.0000001E-02
@@ -320,33 +318,33 @@ subroutine carbon_zhang2(j)
          CPN4=0.
          CPN5=0.
          X1=PN1+PN2
-         IF(LSNTP<X1)THEN
+         if (LSNTP<X1) then
             CPN1=X1-LSNTP
-         ELSE
+         else
             SUM1=SUM1+LSNTP-X1
-         END IF
-         IF(LMNTP<PN3)THEN
+         end if
+         if (LMNTP<PN3) then
             CPN2=PN3-LMNTP
-         ELSE
+         else
             SUM1=SUM1+LMNTP-PN3
-         END IF
+         end if
          X1=PN5+PN6
-         IF(BMNTP<X1)THEN
+         if (BMNTP<X1) then
             CPN3=X1-BMNTP
-         ELSE
+         else
             SUM1=SUM1+BMNTP-X1
-         END IF
+         end if
          X1=PN7+PN8
-         IF(HSNTP<X1)THEN
+         if (HSNTP<X1) then
             CPN4=X1-HSNTP
-         ELSE
+         else
             SUM1=SUM1+HSNTP-X1
-         END IF
-         IF(HPNTP<PN9)THEN
+         end if
+         if (HPNTP<PN9) then
             CPN5=PN9-HPNTP
-         ELSE
+         else
             SUM1=SUM1+HPNTP-PN9
-         END IF
+         end if
          !     WNH3(ISL)=WNH3(ISL)+SUM1
          !total available N
          WMIN=Max(1.E-5,sol_NO3(k,j) + sol_NH3(k,j)+SUM1)
@@ -355,49 +353,49 @@ subroutine carbon_zhang2(j)
 
          X3=1.
          !     REDUCE DEMAND IF SUPPLY LIMITS
-         IF(WMIN<DMDN) then
+         if (WMIN<DMDN) then
             X3=WMIN/DMDN
          end if
          !     ACTUAL TRANSFORMATIONS
-         IF(CPN1>0.)THEN
+         if (CPN1>0.) then
             LSCTA=LSCTP*X3
             LSNTA=LSNTP*X3
             LSLCTA=LSLCTP*X3
             LSLNCTA=LSLNCTP*X3
-         ELSE
+         else
             LSCTA=LSCTP
             LSNTA=LSNTP
             LSLCTA=LSLCTP
             LSLNCTA=LSLNCTP
-         END IF
-         IF(CPN2>0.)THEN
+         end if
+         if (CPN2>0.) then
             LMCTA=LMCTP*X3
             LMNTA=LMNTP*X3
-         ELSE
+         else
             LMCTA=LMCTP
             LMNTA=LMNTP
-         END IF
-         IF(CPN3>0.)THEN
+         end if
+         if (CPN3>0.) then
             BMCTA=BMCTP*X3
             BMNTA=BMNTP*X3
-         ELSE
+         else
             BMCTA=BMCTP
             BMNTA=BMNTP
-         END IF
-         IF(CPN4>0.)THEN
+         end if
+         if (CPN4>0.) then
             HSCTA=HSCTP*X3
             HSNTA=HSNTP*X3
-         ELSE
+         else
             HSCTA=HSCTP
             HSNTA=HSNTP
-         END IF
-         IF(CPN5>0.)THEN
+         end if
+         if (CPN5>0.) then
             HPCTA=HPCTP*X3
             HPNTA=HPNTP*X3
-         ELSE
+         else
             HPCTA=HPCTP
             HPNTA=HPNTP
-         END IF
+         end if
 
          !Recalculate demand using actural transformations
          !revised from EPIC code by Zhang
@@ -418,33 +416,33 @@ subroutine carbon_zhang2(j)
          CPN4=0.
          CPN5=0.
          X1=PN1+PN2
-         IF(LSNTA<X1)THEN
+         if (LSNTA<X1) then
             CPN1=X1-LSNTA
-         ELSE
+         else
             SUM1=SUM1+LSNTA-X1
-         END IF
-         IF(LMNTA<PN3)THEN
+         end if
+         if (LMNTA<PN3) then
             CPN2=PN3-LMNTA
-         ELSE
+         else
             SUM1=SUM1+LMNTA-PN3
-         END IF
+         end if
          X1=PN5+PN6
-         IF(BMNTA<X1)THEN
+         if (BMNTA<X1) then
             CPN3=X1-BMNTA
-         ELSE
+         else
             SUM1=SUM1+BMNTA-X1
-         END IF
+         end if
          X1=PN7+PN8
-         IF(HSNTA<X1)THEN
+         if (HSNTA<X1) then
             CPN4=X1-HSNTA
-         ELSE
+         else
             SUM1=SUM1+HSNTA-X1
-         END IF
-         IF(HPNTA<PN9)THEN
+         end if
+         if (HPNTA<PN9) then
             CPN5=PN9-HPNTA
-         ELSE
+         else
             SUM1=SUM1+HPNTA-PN9
-         END IF
+         end if
          !total available N
          WMIN=Max(1.E-5,sol_NO3(k,j) + sol_NH3(k,j)+SUM1)
          !total demand for potential tranformaiton of SOM
@@ -452,19 +450,19 @@ subroutine carbon_zhang2(j)
 
 
          !supply - demand
-         sol_RNMN(k,j)=SUM1-DMDN
+         sol_RNMN=SUM1-DMDN
          !     UPDATE
-         IF(sol_RNMN(k,j)>0.)THEN
-            sol_NH3(k,j)=sol_NH3(k,j)+sol_RNMN(k,j)
-         ELSE
-            X1=sol_NO3(k,j)+sol_RNMN(k,j)
-            IF(X1<0.)THEN
-               sol_RNMN(k,j)=-sol_NO3(k,j)
+         if (sol_RNMN>0.) then
+            sol_NH3(k,j)=sol_NH3(k,j)+sol_RNMN
+         else
+            X1=sol_NO3(k,j)+sol_RNMN
+            if (X1<0.) then
+               sol_RNMN=-sol_NO3(k,j)
                sol_NO3(k,j)=1.E-10
-            ELSE
+            else
                sol_NO3(k,j)=X1
-            END IF
-         END IF
+            end if
+         end if
          DF1=LSNTA
 
          DF2=LMNTA
@@ -496,11 +494,11 @@ subroutine carbon_zhang2(j)
          sol_LSLC(k,j)=Max(1.E-10,sol_LSLC(k,j)-LSLCTA)
          sol_LSLNC(k,j)=Max(1.E-10,sol_LSLNC(k,j)-LSLNCTA)
          LMCTA=Min(sol_LMC(k,j),LMCTA)
-         IF (sol_LM(k,j) > 0.) THEN
+         if (sol_LM(k,j) > 0.) then
             RTO = Max(0.42,sol_LMC(k,j)/sol_LM(k,j))
             sol_LM(k,j) = sol_LM(k,j) - LMCTA/RTO
             sol_LMC(k,j) = sol_LMC(k,j) - LMCTA
-         END IF
+         end if
          sol_LSL(k,j)=Max(1.E-10,sol_LSL(k,j)-LSLCTA/.42)
          sol_LS(k,j)=Max(1.E-10,sol_LS(k,j)-LSCTA/.42)
 
@@ -533,8 +531,8 @@ subroutine carbon_zhang2(j)
          sol_BMN(k,j)=sol_BMN(k,j)-DF3+XX*ADF3
          sol_HSN(k,j)=sol_HSN(k,j)-DF4+XX*ADF4
          sol_HPN(k,j)=sol_HPN(k,j)-DF5+XX*ADF5
-         sol_RSPC(k,j)=.3*LSLCTA+A1CO2*(LSLNCTA+LMCTA)+ABCO2*BMCTA+ASCO2*HSCTA+APCO2*HPCTA
-         rspc_d(j) = rspc_d(j) +  sol_RSPC(k,j)
+         sol_RSPC=.3*LSLCTA+A1CO2*(LSLNCTA+LMCTA)+ABCO2*BMCTA+ASCO2*HSCTA+APCO2*HPCTA
+         rspc_d(j) = rspc_d(j) +  sol_RSPC
          sol_rsd(k,j)= sol_LS(k,j)+sol_LM(k,j)
          sol_orgn(k,j) = sol_HPN(k,j)
          sol_aorgn(k,j) = sol_HSN(k,j)
@@ -549,7 +547,7 @@ subroutine carbon_zhang2(j)
          !! summary calculations
          !! calculations are based on century model, and not alighned with SWAT old algorithm yet.
          if (curyr > nyskip) then
-            hmn = sol_RNMN(k,j)
+            hmn = sol_RNMN
             wshd_hmn = wshd_hmn + hmn * hru_dafr(j)
             rwn = HSNTA
             wshd_rwn = wshd_rwn + rwn * hru_dafr(j)

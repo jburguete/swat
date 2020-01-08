@@ -121,6 +121,7 @@ subroutine subbasin(i, sb, k, l)
 !!    i_wtrhru
 !!    ihout1
 !!    iru_sub
+!!    isub        |none          |subbasin number
 !!    j           |none          |HRU number
 !!    kk          |none          |counter
 !!    l           |none          |HRU number
@@ -152,7 +153,7 @@ subroutine subbasin(i, sb, k, l)
    integer, intent(inout) :: sb, k, l
    integer, parameter :: iru_sub = 1 ! route across landscape unit
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
-   integer :: i_wtrhru, ihout1, j, kk
+   integer :: i_wtrhru, ihout1, isub, j, kk
 
    j = hru1(sb)
 
@@ -428,35 +429,35 @@ subroutine subbasin(i, sb, k, l)
 
       !! calculate outputs from hillslope
       ihout1 = mhyd_bsn + (sb - 1) * 4 ! first outflow hyd number
-      ihout = ihout1                      ! outflow hyd number
+      ihout = ihout1                   ! outflow hyd number
       sb = 1                           ! landscape unit number
-      k = isub                        ! subbasin number
-      call routeunit(sb, k)               ! hillslope unit
+      k = isub                         ! subbasin number
+      call routeunit(sb, k)            ! hillslope unit
       call sumhyd
       inum1s(ihout) = sb
       inum2s(ihout) = k
       ihouts(ihout) = ihout
 
       !! calculate outputs from valley bottom
-      sb = 2                              ! landscape unit number
-      ihout = ihout + 1                   ! outflow hyd number
+      sb = 2                           ! landscape unit number
+      ihout = ihout + 1                ! outflow hyd number
       sumdaru = 0.
       do j = 1, hrutot(isub)
          sumdaru = sumdaru + hru_km(j)
       end do
       daru_km(k,sb) = sumdaru
-      call routeunit(sb, k)               ! valley bottom unit
+      call routeunit(sb, k)            ! valley bottom unit
       call sumhyd
       inum1s(ihout) = sb
       inum2s(ihout) = k
       ihouts(ihout) = ihout
 
       !! route output from hillslope across valley bottom
-      ihout = ihout + 1                   ! outflow hyd number
-      !sb = 2                             ! valley bottom landscape unit
-      k = ihout1                      ! inflow hyd=outlfow from hillslope
-      l = isub                        ! subbasin number
-      rnum1 = 1.                          ! fraction overland flow
+      ihout = ihout + 1                ! outflow hyd number
+      !sb = 2                          ! valley bottom landscape unit
+      k = ihout1                       ! inflow hyd=outlfow from hillslope
+      l = isub                         ! subbasin number
+      rnum1 = 1.                       ! fraction overland flow
       !! compute weighted K factor for sediment transport capacity
       sumk = 0.
       ovsl = 0.
@@ -482,9 +483,9 @@ subroutine subbasin(i, sb, k, l)
 
       !! add routed with valley bottom loading
       sb = ihout                       ! hyd from routed
-      k = ihout - 1                   ! hyd from loading
-      ihout = ihout + 1                   ! outflow hyd number
-      call addh(sb, k)                    ! add hyd's
+      k = ihout - 1                    ! hyd from loading
+      ihout = ihout + 1                ! outflow hyd number
+      call addh(sb, k)                 ! add hyd's
       call sumhyd
       inum1s(ihout) = sb
       inum2s(ihout) = k

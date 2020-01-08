@@ -26,7 +26,7 @@ Objectives
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
-* Remove global counters (as i, ihru, iihru, inumX, isub or idum in module
+* Remove global counters (as i, ihru, iihru, inumX, isub, iru or idum in module
   parm). Using local counters or passing values as argument are preferred
   (:construction:)
 * Generate a detailed list of issues detected in the original code
@@ -213,9 +213,13 @@ variables is not possible.
     They have to be included in modparm.f to share harvkillop.f values?
     or they have to be redefined as in harvkillop.f?
 
-* In lid\_greenroof.f
+* In lid\_greenroof.f:
   - `lid_excum_last(j,1)` is used but not initialized at line 95.
     It is needed `lid_excum_last=0` in lidinit.f?
+
+* In lidinit.f:
+  - At lines 152-157 `lid_onoff(i,kk)=1` if the condition is hold but else it
+    is not initialized and used in surq\_greenampt.f
 
 * In NCsed\_leach.f90:
   - `perc_clyr` could be used not initialized at line 221 if `sol_nly(j)<2`

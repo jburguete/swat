@@ -5,13 +5,15 @@
 
 !> this subroutine reads data from the sub input file (.sub).
 !> This file contains data related to routing
-!> @param[in] i subbasin number
-subroutine readru(i)
+!> @param[in] i subbasin number (none)
+!> @param[in] k subbasin number (none)
+subroutine readru(i, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definitionov
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |subbasin number
+!!    k           |none          |subbasin number
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -44,7 +46,7 @@ subroutine readru(i)
    use parm
    implicit none
 
-   integer, intent(in) :: i
+   integer, intent(in) :: i, k
    character (len=80) :: titldum
    real*8 :: chk_ru, chl_ru, chn_ru, chs_ru, chw_ru, da_ru, ix,&
       &ovn_ru, ovs, ovsl, sumk, tck
@@ -89,11 +91,11 @@ subroutine readru(i)
    do j = 1, hrutot(i)
       sumk = sumk + usle_k(j) * hru_rufr(iru,j)
    end do
-   ru_k(isub,iru) = sumk
-   ru_ovsl(isub,iru) = ovsl
-   ru_ovs(isub,iru) = ovs
-   ru_ktc(isub,iru) = tck ! tck is not readed
-   !daru_km(isub,iru) = da_ru
+   ru_k(k,iru) = sumk
+   ru_ovsl(k,iru) = ovsl
+   ru_ovs(k,iru) = ovs
+   ru_ktc(k,iru) = tck ! tck is not readed
+   !daru_km(k,iru) = da_ru
 
 5000 format (a)
    return
