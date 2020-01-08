@@ -104,7 +104,7 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
    lid_excum = lid_excum_last(j,1)
    lid_cumr = lid_cumr_last(j,1)
 
-   if (lid_prec > 0) Then
+   if (lid_prec > 0) then
 
       lid_cumr = lid_cumr + lid_prec
       whd = wfsh(j)

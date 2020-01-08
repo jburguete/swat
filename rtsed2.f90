@@ -12,17 +12,19 @@
 !> strempower and Yang's sand-gravel equation approaches combined with
 !> Einstein's deposition equation plus particle size tracking
 !> @param[in] jrch reach number
-subroutine rtsed2(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rtsed2(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch        |none          |reach number
-!!    ch_cov(1,:)  |none          |channel bank cover factor (0.0-1.0)
+!!    k           |none          |inflow hydrograph storage location number
+!!    ch_cov(1,:) |none          |channel bank cover factor (0.0-1.0)
 !!                               |0 channel is completely protected from
 !!                               |  erosion by cover
 !!                               |1 no vegetative cover on channel
-!!    ch_cov(2,:)  |none          |channel bed cover factor (0.0-1.0)
+!!    ch_cov(2,:) |none          |channel bed cover factor (0.0-1.0)
 !!                               |0 channel is completely protected from
 !!                               |  erosion by cover
 !!                               |1 no vegetative cover on channel
@@ -38,7 +40,6 @@ subroutine rtsed2(jrch)
 !!                               |0: do not compute channel degradation
 !!                               |1: compute channel degredation (downcutting
 !!                               |   and widening)
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    prf(:)      |none          |Reach peak rate adjustment factor for sediment
 !!                               |routing in the channel. Allows impact of
@@ -167,7 +168,7 @@ subroutine rtsed2(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
 !! Fall velocity Based on equation 1.36 from SWRRB manual
    real*8, parameter :: vcla = 411.0 * ((0.002)**2.) / (3600.),&
       &vgra = 411.0 * ((2.00)**2.) / (3600.),&
@@ -175,13 +176,15 @@ subroutine rtsed2(jrch)
       &vsag = 411.0 * ((0.03)**2.) / (3600.),&
       &vsan = 411.0 * ((0.20)**2.) / (3600.),&
       &vsil = 411.0 * ((0.01)**2.) / (3600.)
-   real*8 :: adddep, akod_a, akod_b, akod_c, akod_d, alog10cychppm, asinea, bedrt, bedsize, bnkcla, bnkgra, bnkrt, bnkrte, bnksan,&
-      &bnksil, c, clain, cych, cychppm, cychv, cychw, cyin, dat2, deg, deg1, deg1cla, deg1gra,&
+   real*8 :: adddep, akod_a, akod_b, akod_c, akod_d, alog10cychppm, asinea,&
+      &bedrt, bedsize, bnkcla, bnkgra, bnkrt, bnkrte, bnksan, bnksil, c, clain,&
+      &cych, cychppm, cychv, cychw, cyin, dat2, deg, deg1, deg1cla, deg1gra,&
       &deg1lag, deg1sag, deg1san, deg1sil, degcla, deggra, degremain, degrte,&
       &degsan, degsil, dep, depcla, depdeg, depgra, deplag, depnet, depsag,&
       &depsan, depsil, effbnkbed, fpratio, grain, lagin, outfract, pbank, pbed,&
-      &pdep, qcych, qdin, rh, sagin, sanin, sedin, SFbank, silin, Tbank, Tbed, topw, Tou,&
-      &USpower, var1, var2, var3, var4, var5, var6, var56, vc, vsh, w50, watdep, x, xx
+      &pdep, qcych, qdin, rh, sagin, sanin, sedin, SFbank, silin, Tbank, Tbed,&
+      &topw, Tou, USpower, var1, var2, var3, var4, var5, var6, var56, vc, vsh,&
+      &w50, watdep, x, xx
 
    if (rtwtr > 0. .and. rchdep > 0.) then
 
@@ -189,13 +192,14 @@ subroutine rtsed2(jrch)
       qdin = rtwtr + rchstor(jrch)
 
 !! initialize sediment in reach during time step
-      sedin = varoute(3, inum2) * (1. - rnum1) + sedst(jrch)
-      sanin = varoute(23,inum2) * (1. - rnum1) + sanst(jrch)
-      silin = varoute(24,inum2) * (1. - rnum1) + silst(jrch)
-      clain = varoute(25,inum2) * (1. - rnum1) + clast(jrch)
-      sagin = varoute(26,inum2) * (1. - rnum1) + sagst(jrch)
-      lagin = varoute(27,inum2) * (1. - rnum1) + lagst(jrch)
-      grain = varoute(28,inum2) * (1. - rnum1) + grast(jrch)
+      xx = 1. - rnum1
+      sedin = varoute(3, k) * xx + sedst(jrch)
+      sanin = varoute(23,k) * xx + sanst(jrch)
+      silin = varoute(24,k) * xx + silst(jrch)
+      clain = varoute(25,k) * xx + clast(jrch)
+      sagin = varoute(26,k) * xx + sagst(jrch)
+      lagin = varoute(27,k) * xx + lagst(jrch)
+      grain = varoute(28,k) * xx + grast(jrch)
       !sedinorg = sedin ! not used
 
 !! do not perform sediment routing if no water in reach

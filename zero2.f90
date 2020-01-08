@@ -296,7 +296,7 @@ subroutine zero2
    !! MJW
    sol_P_model = 0
 
-   bmp_flag = 0
+   !bmp_flag = 0 ! not used
    !! surface
    bmp_flo = 1.      !! Surface Flow
    bmp_sed = 1.      !! Sediment
@@ -355,9 +355,6 @@ subroutine zero2
    !b_days = 0 ! not used
    sol_ph = 0
    sol_cal = 0
-   bio_init = 0
-   lai_init = 0
-
 
    return
 end

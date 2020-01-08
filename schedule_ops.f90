@@ -156,7 +156,7 @@ subroutine schedule_ops(j)
 
        case (10) !! User defined Upland CP removal MJW
          if (ro_bmp_flag (iops,j) == 1) then
-            bmp_flag(j) = 1
+            !bmp_flag(j) = 1 ! not used
             !! surface
             bmp_flo(j) = (1. - ro_bmp_flo(iops,j) / 100.)    !! Surface Flow
             bmp_sed(j) = (1. - ro_bmp_sed(iops,j) / 100.)    !! Sediment
@@ -182,7 +182,7 @@ subroutine schedule_ops(j)
             bmp_snt(j) = (1. - ro_bmp_snt(iops,j) / 100.)      !! Soluble N
             bmp_bact(j) = (1. - ro_bmp_bact(iops,j) / 100.)    !! Bacteria
          else
-            bmp_flag(j) = 0
+            !bmp_flag(j) = 0 ! not used
             !! surface
             bmp_flo(j) = 1.      !! Surface Flow
             bmp_sed(j) = 1.      !! Sediment

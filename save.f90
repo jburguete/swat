@@ -10,12 +10,19 @@
 !> a simulation of the downstream portion of the watershed. The recday
 !> command is used to read in the data.
 !> @param[in] j file number (none)
-subroutine save(j)
+!> @param[in] k
+!> printout frequency for save command\n
+!> 0 daily average concentrations\n
+!> 1 hourly average concentrations
+subroutine save(j, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j             |none         |file number
+!!    k             |none         |printout frequency for saveconc command
+!!                                |0 daily average concentrations
+!!                                |1 hourly average concentrations
 !!    iida          |julian date  |current day of simulation
 !!    ihout         |none         |hydrograph storage location number for data
 !!                                |to be printed to event file
@@ -46,11 +53,11 @@ subroutine save(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, k
    integer :: ii
 
    if (j <= 10 .and. j > 0) then
-      if (ievent == 1 .and. inum2 == 1) then
+      if (ievent == 1 .and. k == 1) then
          !! Write subdaily values
          do ii = 1, nstep
             if (inum3 == 0) then

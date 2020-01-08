@@ -5,22 +5,23 @@
 
 !> this subroutine routes bacteria through the stream network
 !> @param[in] jrch reach number (none)
-subroutine rtbact(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rtbact(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units       |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    jrch             |none          |reach number
+!!    jrch             |none        |reach number
+!!    k                |none        |inflow hydrograph storage location number
 !!    hrchwtr(:)       |m^3 H2O     |water stored in reach at beginning of hour
 !!    hhvaroute(2,:,:) |m^3 H2O     |water flowing into reach on day
 !!    hhvaroute(18,:,:)|# cfu/100ml |persistent bacteria
 !!    hhvaroute(19,:,:)|# cfu/100ml |less persistent bacteria
-!!    ievent      |none          |rainfall/runoff code
-!!                               |0 daily rainfall/curve number technique
-!!                               |1 sub-daily rainfall/Green&Ampt/hourly
-!!                               |  routing
-!!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
-!!    inum2            |none        |inflow hydrograph storage location number
+!!    ievent           |none        |rainfall/runoff code
+!!                                  |0 daily rainfall/curve number technique
+!!                                  |1 sub-daily rainfall/Green&Ampt/hourly
+!!                                  |  routing
+!!                                  |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    rch_bactlp(:)    |# cfu/100ml |less persistent bacteria stored in reach
 !!    rch_bactp(:)     |# cfu/100ml |persistent bacteria stored in reach
 !!    rchwtr           |m^3 H2O     |water stored in reach at beginning of day
@@ -63,6 +64,7 @@ subroutine rtbact(jrch)
 !!    totbactlp   |10^4 cfu      |mass less persistent bacteria
 !!    totbactp    |10^4 cfu      |mass persistent bacteria
 !!    wtmp        |deg C         |temperature of water in reach
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -75,8 +77,8 @@ subroutine rtbact(jrch)
    implicit none
 
    real*8 Theta
-   integer, intent(in) :: jrch
-   real*8 :: initlp, initp, netwtr, tday, totbactlp, totbactp, wtmp
+   integer, intent(in) :: jrch, k
+   real*8 :: initlp, initp, netwtr, tday, totbactlp, totbactp, wtmp, xx
    integer :: ii
 
    !! calculate temperature in stream
@@ -90,12 +92,13 @@ subroutine rtbact(jrch)
       initlp = rch_bactlp(jrch)
       initp = rch_bactp(jrch)
       netwtr = 0.
+      xx = 1. - rnum1
       do ii = 1, nstep
          !! total bacteria mass in reach
-         totbactp = hhvaroute(18,inum2,ii) * hhvaroute(2,inum2,ii) *&
-            &(1. - rnum1) + initp * hrchwtr(ii)
-         totbactlp = hhvaroute(19,inum2,ii) * hhvaroute(2,inum2,ii) *&
-            &(1. - rnum1) + initlp * hrchwtr(ii)
+         totbactp = hhvaroute(18,k,ii) * hhvaroute(2,k,ii) *&
+            &xx + initp * hrchwtr(ii)
+         totbactlp = hhvaroute(19,k,ii) * hhvaroute(2,k,ii) *&
+            &xx + initlp * hrchwtr(ii)
 
          !! compute bacteria die-off
          totbactp = totbactp * Exp(-Theta(wdprch / 24.,thbact,wtmp))
@@ -104,7 +107,7 @@ subroutine rtbact(jrch)
          totbactlp = Max(0., totbactlp)
 
          !! new concentration
-         netwtr = hhvaroute(2,inum2,ii) * (1. - rnum1) + hrchwtr(ii)
+         netwtr = hhvaroute(2,k,ii) * xx + hrchwtr(ii)
          if (netwtr >= 1.) then
             hbactp(ii) = totbactp / netwtr
             hbactlp(ii) = totbactlp / netwtr
@@ -127,10 +130,10 @@ subroutine rtbact(jrch)
 !! daily mass balance
       !! total bacteria mass in reach
 
-      totbactp = varoute(18,inum2) * varoute(2,inum2) * (1. - rnum1)&
+      totbactp = varoute(18,k) * varoute(2,k) * xx&
          &+ rch_bactp(jrch) * rchwtr
-      totbactlp = varoute(19,inum2) * varoute(2,inum2) *&
-         &(1. - rnum1) + rch_bactlp(jrch) * rchwtr
+      totbactlp = varoute(19,k) * varoute(2,k) *&
+         &xx + rch_bactlp(jrch) * rchwtr
 
       !! compute bacteria die-off
       !! calculate flow duration
@@ -142,7 +145,7 @@ subroutine rtbact(jrch)
       totbactlp = Max(0., totbactlp)
 
       !! new concentration
-      netwtr = varoute(2,inum2) * (1. - rnum1) + rchwtr
+      netwtr = varoute(2,k) * xx + rchwtr
 
 !! !! change made by CS while running region 4; date 2 jan 2006
       if (totbactp < 1.e-6) totbactp = 0.0

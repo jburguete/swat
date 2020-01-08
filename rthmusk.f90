@@ -10,13 +10,15 @@
 !> Muskingum method at a given time step
 !> @param[in] i current day of simulation (none)
 !> @param[in] jrch reach number
-subroutine rthmusk(i, jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rthmusk(i, jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |current day of simulation
 !!    jrch        |none          |reach number
+!!    k           |none          |inflow hydrograph storage location number
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
@@ -36,7 +38,6 @@ subroutine rthmusk(i, jrch)
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    id1         |none          |first day of simulation in year
 !!    idt         |minutes       |operational time step
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    msk_co1     |none          |calibration coefficient to control impact
 !!                               |of the storage time constant for the
 !!                               |reach at bankfull depth (phi(10,:) upon
@@ -107,6 +108,7 @@ subroutine rthmusk(i, jrch)
 !!    wtrin       |m^3 H2O       |water entering reach on day
 !!    xkm         |hr            |storage time constant for the reach on
 !!                               |current day
+!!    xx          |none          |auxiliar variable
 !!    yy          |none          |variable to hold intermediate calculation
 !!                               |value
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -121,8 +123,8 @@ subroutine rthmusk(i, jrch)
    implicit none
 
    real*8 Qman
-   integer, intent(in) :: i, jrch
-   real*8 :: c, c1, c2, c3, c4, det, p, topw, vol, wtrin, xkm, yy
+   integer, intent(in) :: i, jrch, k
+   real*8 :: c, c1, c2, c3, c4, det, p, topw, vol, wtrin, xkm, xx, yy
    integer :: ii
 
    !! Compute storage time constant for reach
@@ -137,9 +139,10 @@ subroutine rthmusk(i, jrch)
    c3 = (2. * xkm * (1. - msk_x) - det) / yy
    c4 = phi(5,jrch) * ch_l(2,jrch) * det / yy
 
+   xx = 1. - rnum1
    do ii = 1, nstep   !! begin time step loop
       !! Water entering reach on day
-      wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
+      wtrin = hhvaroute(2,k,ii) * xx
 
       !! Compute water leaving reach at the end of time step
       if (curyr == 1 .and. i == id1 .and. ii == 1) then

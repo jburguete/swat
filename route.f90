@@ -92,17 +92,17 @@ subroutine route(i, jrch, k)
    iru = inum5
 
 !! initialize variables for route command loop
-   call rchinit(jrch)
+   call rchinit(jrch, k)
 
    vel_chan(jrch) = 0.
 
 !! route water through reach
    if (ievent == 0) then
-      if (irte == 0) call rtday(jrch)
-      if (irte == 1) call rtmusk(i, jrch)
+      if (irte == 0) call rtday(jrch, k)
+      if (irte == 1) call rtmusk(i, jrch, k)
    else
-      if (irte == 0) call rthvsc(jrch)
-      if (irte == 1) call rthmusk(i, jrch)
+      if (irte == 0) call rthvsc(jrch, k)
+      if (irte == 1) call rthmusk(i, jrch, k)
    endif
 
 !! average daily water depth for sandi doty 09/26/07
@@ -165,22 +165,22 @@ subroutine route(i, jrch, k)
 
 !! do not perform sediment routing for headwater subbasins
    !! when i_subhw = 0
-   if (i_subhw == 0 .and. jrch == inum2) then
+   if (i_subhw == 0 .and. jrch == k) then
       rnum1i = 1. - rnum1
       if (ievent == 0) then
          if (rtwtr > 0. .and. rchdep > 0.) then
-            sedrch  = varoute(3,inum2)  * rnum1i
-            rch_san = varoute(23,inum2) * rnum1i
-            rch_sil = varoute(24,inum2) * rnum1i
-            rch_cla = varoute(25,inum2) * rnum1i
-            rch_sag = varoute(26,inum2) * rnum1i
-            rch_lag = varoute(27,inum2) * rnum1i
-            rch_gra = varoute(28,inum2) * rnum1i
+            sedrch  = varoute(3,k)  * rnum1i
+            rch_san = varoute(23,k) * rnum1i
+            rch_sil = varoute(24,k) * rnum1i
+            rch_cla = varoute(25,k) * rnum1i
+            rch_sag = varoute(26,k) * rnum1i
+            rch_lag = varoute(27,k) * rnum1i
+            rch_gra = varoute(28,k) * rnum1i
          end if
       else
          do ii = 1, nstep
             if (hrtwtr(ii) > 0. .and. hdepth(ii) > 0.) then
-               hsedyld(ii) = hhvaroute(3,inum2,ii) * rnum1i
+               hsedyld(ii) = hhvaroute(3,k,ii) * rnum1i
                sedrch = sedrch + hsedyld(ii)
                rch_san = 0.
                rch_sil = rch_sil + hsedyld(ii)  !!All are assumed to be silt type particles
@@ -194,12 +194,12 @@ subroutine route(i, jrch, k)
    else
       if (ievent == 0) then
          if (ch_eqn(jrch) == 0) then
-            call rtsed(jrch)
+            call rtsed(jrch, k)
          else
-            call rtsed2(jrch)
+            call rtsed2(jrch, k)
          end if
       else
-         call rthsed(jrch)
+         call rthsed(jrch, k)
          do ii = 1, nstep
             if (hrtwtr(ii) > 0. .and. hdepth(ii) > 0.) then
                sedrch = sedrch + hsedyld(ii)
@@ -223,21 +223,21 @@ subroutine route(i, jrch, k)
    else
       select case (iwq)
        case (1)
-         call hhwatqual(jrch)
+         call hhwatqual(jrch, k)
        case (0)
-         call hhnoqual(jrch)
+         call hhnoqual(jrch, k)
       end select
    end if
 
 !! perform in-stream pesticide calculations
    if (ievent == 0) then
-      call rtpest(jrch)
+      call rtpest(jrch, k)
    else
-      call rthpest(jrch)
+      call rthpest(jrch, k)
    end if
 
 !! perform in-stream bacteria calculations
-   call rtbact(jrch)
+   call rtbact(jrch, k)
 
 !! remove water from reach for irrigation
    call irr_rch(jrch)
@@ -246,7 +246,7 @@ subroutine route(i, jrch, k)
    call rchuse(jrch)
 
 !! summarize output/determine loadings to next routing unit
-   call rtout(jrch)
+   call rtout(jrch, k)
 
    return
 end

@@ -4,7 +4,8 @@
 !> modified by Javier Burguete
 
 !> @param[in] j reach number (none)
-subroutine routeunit(j)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine routeunit(j, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -37,17 +38,17 @@ subroutine routeunit(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, k
    real*8 :: sumc, sumeiq, xx
    integer :: jj, kk
 
    varoute(:,ihout) = 0.
    sumc = 0.
    sumeiq = 0.
-   do kk = 1, hrutot(inum2)
-      xx = hru_rufr(j,kk)* daru_km(inum2,j) * 100.      !!km2*100 = ha
+   do kk = 1, hrutot(k)
+      xx = hru_rufr(j,kk)* daru_km(k,j) * 100.      !!km2*100 = ha
       if (xx > 1.e-9) then
-         jj= hru1(inum2) + kk - 1
+         jj= hru1(k) + kk - 1
          sumc = sumc + usle_cfac(jj) * hru_rufr(j,kk)
          sumeiq = sumeiq + usle_eifac(jj) * qdayout(jj) * hru_rufr(j,kk)
          varoute(1,ihout) = 5.0 + 0.75 * tmpav(jj)
@@ -78,7 +79,7 @@ subroutine routeunit(j)
       end if
    end do
 
-   ru_c(inum2,j) = sumc
-   ru_eiq(inum2,j) = sumeiq
+   ru_c(k,j) = sumc
+   ru_eiq(k,j) = sumeiq
    return
 end

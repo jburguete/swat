@@ -8,12 +8,14 @@
 !> Routing method: Enhanced Variable Storage routing (Jeong et al., 2014)
 !> adopted from APEX
 !> @param[in] jrch reach number
-subroutine rthvsc(jrch)
+!> @param[in] inhyd inflow hydrograph storage location number (none)
+subroutine rthvsc(jrch, inhyd)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name            |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch            |none          |reach number
+!!    inhyd           |none          |inflow hydrograph storage location number
 !!    ch_d(:)         |m             |average depth of main channel
 !!    ch_k(2,:)       |mm/hr         |effective hydraulic conductivity of
 !!                                   |main channel alluvium
@@ -32,7 +34,6 @@ subroutine rthvsc(jrch)
 !!                                   |regions.
 !!    hhvaroute(2,:,:)|m^3 H2O       |water
 !!    idt             |min           |model operational time step
-!!    inum2           |none          |inflow hydrograph storage location number
 !!    nstep           |none          |No. of steps in a day (depends on model operational time step)
 !!    pet_day         |mm H2O        |potential evapotranspiration
 !!    phi(1,:)        |m^2           |cross-sectional area of flow in channel at
@@ -83,7 +84,6 @@ subroutine rthvsc(jrch)
 !!    I1
 !!    ii          |none          |counter (hour)
 !!    IIY
-!!    inhyd       |none          |inflow hydrograph storage location number
 !!    IT
 !!    j
 !!    K
@@ -128,12 +128,12 @@ subroutine rthvsc(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, inhyd
    real*8, dimension(nstep*5) :: pcp, QMS, QMSI
    real*8 :: ADI, ai, aii, ao, c, cbw, chw, DD, fpw, g1, GB, GL, GQ, p, pcpday,&
       &Q1, QI1, qi2, QO1, QO2, SIA, SMO, STHY, sss, T1, T2, topw, TT, V, wtrin,&
       &xflo, XL3, XLS, XLT, XX, zch, zi, zii, zo
-   integer :: I1, ii, IIY, inhyd, IT, j, K, l
+   integer :: I1, ii, IIY, IT, j, K, l
 
    QMS = 0.
    QMSI = 0.
@@ -141,8 +141,6 @@ subroutine rthvsc(jrch)
    hrttlc = 0.
    pcp(1:nstep) = precipdt(1:nstep)
    pcpday = precipday
-
-   inhyd = inum2
 
 
    if (Sum(QHY(:,inhyd,IHX(1)))<=0.) return

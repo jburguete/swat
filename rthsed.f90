@@ -9,16 +9,18 @@
 !> on a sub-daily timestep
 !> Brownlie (1981) bed load model and Yang (1973, 1984) model added.
 !> @param[in] jrch reach number (none)
-subroutine rthsed(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rthsed(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch        |none          |reach number
-!!    ch_cov(1,:)  |none          |channel erodibility factor (0.0-1.0)
+!!    k           |none          |inflow hydrograph storage location number
+!!    ch_cov(1,:) |none          |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
-!!    ch_cov(2,:)   |none         |channel bed cover factor (0.0-1.0)
+!!    ch_cov(2,:)  |none         |channel bed cover factor (0.0-1.0)
 !!                               |0 channel is completely protected from
 !!                               |  erosion by cover
 !!                               |1 no vegetative cover on channel
@@ -38,7 +40,6 @@ subroutine rthsed(jrch)
 !!    ideg        |none          |channel degredation code
 !!                               |0: do not compute channel degradation
 !!                               |1: compute channel degredation (downcutting and widening)
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    prf(:)      |none          |Reach peak rate adjustment factor for sediment routing in the channel. Allows impact of
 !!                               |peak flow rate on sediment routing and channel reshaping to be taken into account
@@ -104,6 +105,7 @@ subroutine rthsed(jrch)
 !!    vfall
 !!    visco_h2o
 !!    vshear
+!!    xx          |none          |auxiliar variable
 !!    ycoeff
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -116,13 +118,13 @@ subroutine rthsed(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    integer :: ii
    real*8, parameter :: particle_specific_gravity = 2.65
    real*8 :: channel_d50, coefa, coefb, coefc, coefd, coefe, cych, cyin,&
       &d_fract, dat2, deg, deg1, deg2, deg24, dep, dep24, depdeg, depnet, dot,&
       &Fr_g, Fr_gc, log10sedcon, qin, qdin, Reynolds_g, sedcon, sedin,&
-      &shear_stress, thbase, tmpw, vc, vfall, visco_h2o, vshear, ycoeff
+      &shear_stress, thbase, tmpw, vc, vfall, visco_h2o, vshear, xx, ycoeff
 
    deg24=0.; dep24=0
    channel_d50 = ch_d50 / 1000. !! unit change mm->m
@@ -139,10 +141,11 @@ subroutine rthsed(jrch)
          if (qin > 0.01) then
 
             !! initialize sediment in reach during time step
+            xx = 1. - rnum1
             if (ii == 1) then
-               sedin = hhvaroute(3,inum2,ii) * (1. - rnum1) + sedst(jrch)
+               sedin = hhvaroute(3,k,ii) * xx + sedst(jrch)
             else
-               sedin = hhvaroute(3,inum2,ii) * (1. - rnum1) + hsedst(ii-1)
+               sedin = hhvaroute(3,k,ii) * xx + hsedst(ii-1)
             end if
 
             if (sedin < 1.e-6) sedin = 0.

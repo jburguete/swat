@@ -26,14 +26,14 @@ Objectives
 
 * Remove redundant code (:heavy_check_mark:)
 * Exhaustive use of the "parameter" directive on constants (:heavy_check_mark:)
-* Remove global counters (as i, ihru, iihru, inum1 or idum in module parm).
-  Using local counters or passing values as argument are preferred
+* Remove global counters (as i, ihru, iihru, inumX, isub or idum in module
+  parm). Using local counters or passing values as argument are preferred
   (:construction:)
 * Generate a detailed list of issues detected in the original code
   (:heavy_check_mark:, see at the end of this README)
 * Remove obsolete commented code (:x:)
 * Update variable descriptions in comments (:construction:, a lot of work)
-* Standardize comments by using Doxygen style in order to generate
+* Standardize comments by using Doxygen style in order to generate automatically
   documentation. See at latex/refman.pdf (:heavy_check_mark:)
 
 Required tools
@@ -212,6 +212,10 @@ variables is not possible.
     They are set in harvkillop.f file (lines 257-258).
     They have to be included in modparm.f to share harvkillop.f values?
     or they have to be redefined as in harvkillop.f?
+
+* In lid\_greenroof.f
+  - `lid_excum_last(j,1)` is used but not initialized at line 95.
+    It is needed `lid_excum_last=0` in lidinit.f?
 
 * In NCsed\_leach.f90:
   - `perc_clyr` could be used not initialized at line 221 if `sol_nly(j)<2`

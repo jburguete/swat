@@ -6,12 +6,14 @@
 !> this subroutine initializes variables for the daily simulation of the
 !> channel routing command loop
 !> @param[in] jrch reach number
-subroutine rchinit(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rchinit(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch        |none          |reach number
+!!    k           |none          |inflow hydrograph storage location number
 !!    hru_sub(:)  |none          |subbasin in whic HRU/reach is located
 !!    ievent      |none          |rainfall/runoff code
 !!                               |0 daily rainfall/curve number technique
@@ -19,7 +21,6 @@ subroutine rchinit(jrch)
 !!                               |  routing
 !!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout       |none          |outflow hydrograph storage location number
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    mvaro       |none          |max number of variables routed through the
 !!                               |reach
 !!    rchstor(:)  |m^3 H2O       |water stored in reach
@@ -84,12 +85,12 @@ subroutine rchinit(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    integer :: ii, kk
 
 !! add transfer amounts
    do ii = 2, mvaro
-      varoute(ii,inum2) = varoute(ii,inum2) + vartran(ii,jrch)
+      varoute(ii,k) = varoute(ii,k) + vartran(ii,jrch)
       vartran(ii,jrch) = 0.
    end do
 

@@ -310,7 +310,6 @@ subroutine varinit(j)
 
    !! urban modeling by J.Jeong
    ubnrunoff = 0.
-   irmmdt = 0.
    hhsedy = 0.
    ubntss = 0.
 

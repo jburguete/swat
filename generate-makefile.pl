@@ -29,12 +29,17 @@ print DATA "\nmods = parm.mod\n".
 	"\t\$(cc) \$(cflags) main.f90 -o main.o\n\ttouch parm.mod\n";
 foreach $source (@sources)
 {
-	if (($source ne "modparm.f90") and ($source ne "main.f90"))
+	if ($source eq "main.f90")
+	{
+		print DATA "\nmain.o:\n".
+			"\t\$(cc) \$(cflags) ".$source." -o main.o\n";
+	}
+	elsif (($source ne "modparm.f90"))
 	{
 		$obj = $source;
 		$obj =~ s/\.f90/\.o/g;
-		print DATA "\n".$obj.": ".$source." parm.mod Makefile\n".
-			"\t\$(cc) \$(cflags) ".$source." -o ".$obj."\n"
+		print DATA "\n".$obj.": ".$source." parm.mod\n".
+			"\t\$(cc) \$(cflags) ".$source." -o ".$obj."\n";
 	}
 }
 print DATA

@@ -105,8 +105,7 @@ subroutine zero_urbn
    dtp_flowrate = 0.
    !retention-irrigation
    ri_luflg(:) = 0
-   ri_sed = 0.
-   ri_sed = 0.
+   !ri_sed = 0. ! it seems to be always 0
    ri_fr = 0.
    ri_dim = 0.
    ri_im = 0.
@@ -120,12 +119,10 @@ subroutine zero_urbn
    ri_evrsv = 0.
    ri_nirr = "    "
    ri_dep = 0.
-   ri_ndt = 0.
    ri_subkm = 0.
    num_ri = 0
    hrnopcp = 100.
-   ri_sed_cumul = 0.
-   irmmdt = 0.
+   !ri_sed_cumul = 0. ! not used
    subdr_km = 0.
    subdr_ickm = 0.
    num_noirr = 0
@@ -133,7 +130,6 @@ subroutine zero_urbn
    ri_pumpv = 0
 
    !! wet pond
-   wtp_subnum = 0
    wtp_onoff = 0
    wtp_imo = 0
    wtp_iyr = 0
@@ -149,9 +145,7 @@ subroutine zero_urbn
    wtp_evrsv = 0.
    wtp_sdintc = 0.
    wtp_sdexp = 0.
-   wtp_sdc1 = 0.
-   wtp_sdc2 = 0.
-   wtp_sdc3 = 0.
+   wtp_sdc = 0.
    wtp_pdia = 0.
    wtp_plen = 0.
    wtp_pmann = 0.

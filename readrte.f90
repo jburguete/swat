@@ -139,7 +139,7 @@ subroutine readrte
       if (eof < 0) exit
       read (103,5000,iostat=eof) tc_bed(j)
       if (eof < 0) exit
-      read (103,5100,iostat=eof) (ch_erodmo(j,mo), mo = 1,12)
+      read (103,5100,iostat=eof) (ch_erodmo(mo,j), mo = 1, 12)
       if (eof < 0) exit
       read (103,*,iostat=eof) ch_eqn(j)
       if (eof < 0) exit
@@ -303,12 +303,12 @@ subroutine readrte
 
    sumerod = 0.
    do mo = 1, 12
-      sumerod = sumerod + ch_erodmo(j,mo)
+      sumerod = sumerod + ch_erodmo(mo,j)
    end do
 
    if (sumerod < 1.e-6) then
       do mo = 1, 12
-         ch_erodmo(j,mo) = ch_cov(1,j)
+         ch_erodmo(mo,j) = ch_cov(1,j)
       end do
    end if
 

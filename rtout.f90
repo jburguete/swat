@@ -5,12 +5,14 @@
 
 !> this subroutine summarizes data for reaches
 !> @param[in] jrch reach number (none)
-subroutine rtout(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rtout(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units      |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch          |none       |reach number
+!!    k             |none       |inflow hydrograph location
 !!    ammonian(:)   |mg N/L     |ammonia concentration in reach
 !!    bury          |mg pst     |loss of pesticide from active sediment layer
 !!                              |by burial
@@ -44,13 +46,12 @@ subroutine rtout(jrch)
 !!    hsorpst(:)    |mg pst/m^3 |sorbed pesticide concentration in outflow
 !!                              |on day
 !!    hrtwtr(:)     |m^3 H2O    |water leaving reach during hour
-!!    ievent      |none          |rainfall/runoff code
-!!                               |0 daily rainfall/curve number technique
-!!                               |1 sub-daily rainfall/Green&Ampt/hourly
-!!                               |  routing
-!!                               |3 sub-daily rainfall/Green&Ampt/hourly routing
+!!    ievent        |none       |rainfall/runoff code
+!!                              |0 daily rainfall/curve number technique
+!!                              |1 sub-daily rainfall/Green&Ampt/hourly
+!!                              |  routing
+!!                              |3 sub-daily rainfall/Green&Ampt/hourly routing
 !!    ihout         |none       |outflow hydrograph location
-!!    inum2         |none       |inflow hydrograph location
 !!    nitraten(:)   |mg N/L     |nitrate concentration in reach
 !!    nitriten(:)   |mg N/L     |nitrite concentration in reach
 !!    organicn(:)   |mg N/L     |organic nitrogen concentration in reach
@@ -279,7 +280,7 @@ subroutine rtout(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8 :: bedvol, idt60, rnum1i, sedcon, sedpest, xx
    integer :: ii
 
@@ -293,9 +294,9 @@ subroutine rtout(jrch)
    varoute(10,ihout) = 0.
    varoute(18,ihout) = rch_bactp(jrch)
    varoute(19,ihout) = rch_bactlp(jrch)
-   varoute(20,ihout) = varoute(20,inum2) * rnum1i
-   varoute(21,ihout) = varoute(21,inum2) * rnum1i
-   varoute(22,ihout) = varoute(22,inum2) * rnum1i
+   varoute(20,ihout) = varoute(20,k) * rnum1i
+   varoute(21,ihout) = varoute(21,k) * rnum1i
+   varoute(22,ihout) = varoute(22,k) * rnum1i
 !!    sediment routing
    varoute(23,ihout) = rch_san
    varoute(24,ihout) = rch_sil
@@ -340,9 +341,9 @@ subroutine rtout(jrch)
          hhvaroute(17,ihout,ii) = hdisox(ii) *  xx
          hhvaroute(18,ihout,ii) = hbactp(ii)
          hhvaroute(19,ihout,ii) = hbactlp(ii)
-         hhvaroute(20,ihout,ii) = hhvaroute(20,inum2,ii) * rnum1i
-         hhvaroute(21,ihout,ii) = hhvaroute(21,inum2,ii) * rnum1i
-         hhvaroute(22,ihout,ii) = hhvaroute(22,inum2,ii) * rnum1i
+         hhvaroute(20,ihout,ii) = hhvaroute(20,k,ii) * rnum1i
+         hhvaroute(21,ihout,ii) = hhvaroute(21,k,ii) * rnum1i
+         hhvaroute(22,ihout,ii) = hhvaroute(22,k,ii) * rnum1i
 
          varoute(4,ihout) = varoute(4,ihout) + hhvaroute(4,ihout,ii)
          varoute(5,ihout) = varoute(5,ihout) + hhvaroute(5,ihout,ii)
@@ -369,11 +370,11 @@ subroutine rtout(jrch)
          else
             sedcon = 0.
          end if
-         rchhr(1,jrch,ii) = hhvaroute(2,inum2,ii) * rnum1i / idt60!!flow in (m^3/s)
+         rchhr(1,jrch,ii) = hhvaroute(2,k,ii) * rnum1i / idt60!!flow in (m^3/s)
          rchhr(2,jrch,ii) = hrtwtr(ii) / idt60            !!flow out (m^3/s)
          rchhr(3,jrch,ii) = hrtevp(ii) / idt60            !!evap (m^3/s)
          rchhr(4,jrch,ii) = hrttlc(ii) / idt60            !!tloss (m^3/s)
-         rchhr(5,jrch,ii) = hhvaroute(3,inum2,ii) * rnum1i   !!sed in (tons)
+         rchhr(5,jrch,ii) = hhvaroute(3,k,ii) * rnum1i   !!sed in (tons)
          rchhr(6,jrch,ii) = hsedyld(ii)                         !!sed out (tons)
          rchhr(7,jrch,ii) = sedcon             !!sed conc (mg/L)
       end do
@@ -392,35 +393,35 @@ subroutine rtout(jrch)
    sedpest = sedpst_conc(jrch) * bedvol
 
 !! set daily reach output
-   rchdy(1,jrch) = varoute(2,inum2) * rnum1i / 86400. !!flow in (m^3/s)
+   rchdy(1,jrch) = varoute(2,k) * rnum1i / 86400. !!flow in (m^3/s)
    rchdy(2,jrch) = rtwtr / 86400. !!flow out (m^3/s)
 
    rchdy(3,jrch) = rtevp / 86400.                     !!evap (m^3/s)
    rchdy(4,jrch) = rttlc / 86400.                     !!tloss (m^3/s)
-   rchdy(5,jrch) = varoute(3,inum2) * rnum1i    !!sed in (tons)
+   rchdy(5,jrch) = varoute(3,k) * rnum1i    !!sed in (tons)
    rchdy(6,jrch) = sedrch                             !!sed out (tons)
    rchdy(7,jrch) = sedcon                             !!sed conc (mg/L)
-   rchdy(8,jrch) = varoute(4,inum2) * rnum1i    !!orgN in (kg N)
+   rchdy(8,jrch) = varoute(4,k) * rnum1i    !!orgN in (kg N)
    rchdy(9,jrch) = varoute(4,ihout)                   !!orgN out (kg N)
-   rchdy(10,jrch) = varoute(5,inum2) * rnum1i   !!orgP in (kg P)
+   rchdy(10,jrch) = varoute(5,k) * rnum1i   !!orgP in (kg P)
    rchdy(11,jrch) = varoute(5,ihout)                  !!orgP out (kg P)
-   rchdy(12,jrch) = varoute(6,inum2) * rnum1i   !!NO3 in (kg N)
+   rchdy(12,jrch) = varoute(6,k) * rnum1i   !!NO3 in (kg N)
    rchdy(13,jrch) = varoute(6,ihout)                  !!NO3 out (kg N)
-   rchdy(14,jrch) = varoute(14,inum2) * rnum1i  !!NH4 in (kg)
+   rchdy(14,jrch) = varoute(14,k) * rnum1i  !!NH4 in (kg)
    rchdy(15,jrch) = varoute(14,ihout)                 !!NH4 out (kg)
-   rchdy(16,jrch) = varoute(15,inum2) * rnum1i  !!NO2 in (kg)
+   rchdy(16,jrch) = varoute(15,k) * rnum1i  !!NO2 in (kg)
    rchdy(17,jrch) = varoute(15,ihout)                 !!NO2 out (kg)
-   rchdy(18,jrch) = varoute(7,inum2) * rnum1i   !!solP in (kg P)
+   rchdy(18,jrch) = varoute(7,k) * rnum1i   !!solP in (kg P)
    rchdy(19,jrch) = varoute(7,ihout)                  !!solP out (kg P)
-   rchdy(20,jrch) = varoute(13,inum2) * rnum1i  !!chl-a in (kg)
+   rchdy(20,jrch) = varoute(13,k) * rnum1i  !!chl-a in (kg)
    rchdy(21,jrch) = varoute(13,ihout)                 !!chl-a out (kg)
-   rchdy(22,jrch) = varoute(16,inum2) * rnum1i  !!CBOD in (kg)
+   rchdy(22,jrch) = varoute(16,k) * rnum1i  !!CBOD in (kg)
    rchdy(23,jrch) = varoute(16,ihout)                 !!CBOD out (kg)
-   rchdy(24,jrch) = varoute(17,inum2) * rnum1i  !!dis O2 in (kg)
+   rchdy(24,jrch) = varoute(17,k) * rnum1i  !!dis O2 in (kg)
    rchdy(25,jrch) = varoute(17,ihout)                 !!dis O2 out (kg)
-   rchdy(26,jrch) = varoute(11,inum2) * rnum1i  !!solpst in (mg pst)
+   rchdy(26,jrch) = varoute(11,k) * rnum1i  !!solpst in (mg pst)
    rchdy(27,jrch) = varoute(11,ihout)                 !!solpst out (mg pst)
-   rchdy(28,jrch) = varoute(12,inum2) * rnum1i  !!srbpst in (mg pst)
+   rchdy(28,jrch) = varoute(12,k) * rnum1i  !!srbpst in (mg pst)
    rchdy(29,jrch) = varoute(12,ihout)                 !!srbpst out (mg pst)
    rchdy(30,jrch) = reactw                            !!reacted pst (mg pst)
    rchdy(31,jrch) = volatpst                          !!volatilized pst (mg)
@@ -440,22 +441,22 @@ subroutine rtout(jrch)
 !!    Assumed all silt for default sediment routine
 !!    For other sediment routing models particle size are tracked
    if (ch_eqn(jrch) .NE. 0) then
-      rchdy(43,jrch) = varoute(23,inum2) * rnum1i  !!sand in
+      rchdy(43,jrch) = varoute(23,k) * rnum1i  !!sand in
       rchdy(44,jrch) = varoute(23,ihout)                 !!sand out
-      rchdy(45,jrch) = varoute(24,inum2) * rnum1i  !!silt in
+      rchdy(45,jrch) = varoute(24,k) * rnum1i  !!silt in
       rchdy(46,jrch) = varoute(24,ihout)                 !!silt out
-      rchdy(47,jrch) = varoute(25,inum2) * rnum1i  !!clay in
+      rchdy(47,jrch) = varoute(25,k) * rnum1i  !!clay in
       rchdy(48,jrch) = varoute(25,ihout)                 !!clay out
-      rchdy(49,jrch) = varoute(26,inum2) * rnum1i  !!sm ag in
+      rchdy(49,jrch) = varoute(26,k) * rnum1i  !!sm ag in
       rchdy(50,jrch) = varoute(26,ihout)                 !!sm ag out
-      rchdy(51,jrch) = varoute(27,inum2) * rnum1i  !!lg ag in
+      rchdy(51,jrch) = varoute(27,k) * rnum1i  !!lg ag in
       rchdy(52,jrch) = varoute(27,ihout)                 !!lg ag out
-      rchdy(53,jrch) = varoute(28,inum2) * rnum1i  !!gravel in
+      rchdy(53,jrch) = varoute(28,k) * rnum1i  !!gravel in
       rchdy(54,jrch) = varoute(28,ihout)                 !!gravel out
    else
       rchdy(43,jrch) = 0.                 !!sand in
       rchdy(44,jrch) = 0.                 !!sand out
-      rchdy(45,jrch) = varoute(3,inum2) * rnum1i   !!silt in
+      rchdy(45,jrch) = varoute(3,k) * rnum1i   !!silt in
       rchdy(46,jrch) = varoute(3,ihout)                  !!silt out
       rchdy(47,jrch) = 0.                 !!clay in
       rchdy(48,jrch) = 0.                 !!clay out

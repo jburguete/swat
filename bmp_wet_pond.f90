@@ -174,17 +174,17 @@ subroutine bmp_wet_pond(sb)
          if (wtp_stagdis(sb)==1) then
             select case(wtp_sdtype(sb))
              case(1) !! 1 is exponential function
-               qout = wtp_sdc1(sb) * Exp(wtp_sdexp(sb) * qdepth) +&
+               qout = wtp_sdc(1,sb) * Exp(wtp_sdexp(sb) * qdepth) +&
                   &wtp_sdintc(sb)
              case(2) !! 2 is Linear function
-               qout = wtp_sdc1(sb) * qdepth + wtp_sdintc(sb)
+               qout = wtp_sdc(1,sb) * qdepth + wtp_sdintc(sb)
              case(3) !! 3 is logarthmic function
-               qout = wtp_sdc1(sb) * Log(qdepth) + wtp_sdintc(sb)
+               qout = wtp_sdc(1,sb) * Log(qdepth) + wtp_sdintc(sb)
              case(4) !! 4 is power function
-               qout = wtp_sdc1(sb) * (qdepth**3) + wtp_sdc2(sb) *&
-                  &(qdepth**2) + wtp_sdc3(sb) * qdepth + wtp_sdintc(sb)
+               qout = wtp_sdc(1,sb) * (qdepth**3) + wtp_sdc(2,sb) *&
+                  &(qdepth**2) + wtp_sdc(3,sb) * qdepth + wtp_sdintc(sb)
              case(5)
-               qout = wtp_sdc1(sb) * (qdepth**wtp_sdexp(sb)) +&
+               qout = wtp_sdc(1,sb) * (qdepth**wtp_sdexp(sb)) +&
                   &wtp_sdintc(sb) !m3/s
             end select
          else

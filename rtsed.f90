@@ -6,16 +6,18 @@
 !> this subroutine routes sediment from subbasin to basin outlets
 !> deposition is based on fall velocity and degradation on stream
 !> @param[in] jrch reach number
-subroutine rtsed(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rtsed(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch        |none          |reach number
-!!    ch_cov(1,:)  |none          |channel erodibility factor (0.0-1.0)
+!!    k           |none          |inflow hydrograph storage location number
+!!    ch_cov(1,:) |none          |channel erodibility factor (0.0-1.0)
 !!                               |0 non-erosive channel
 !!                               |1 no resistance to erosion
-!!    ch_cov(2,:)  |none          |channel cover factor (0.0-1.0)
+!!    ch_cov(2,:) |none          |channel cover factor (0.0-1.0)
 !!                               |0 channel is completely protected from
 !!                               |  erosion by cover
 !!                               |1 no vegetative cover on channel
@@ -31,7 +33,6 @@ subroutine rtsed(jrch)
 !!                               |0: do not compute channel degradation
 !!                               |1: compute channel degredation (downcutting
 !!                               |   and widening)
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    phi(5,:)    |m^3/s         |flow rate when reach is at bankfull depth
 !!    prf(:)      |none          |Reach peak rate adjustment factor for sediment
 !!                               |routing in the channel. Allows impact of
@@ -88,7 +89,7 @@ subroutine rtsed(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8 :: cych, cyin, dat2, deg, deg1, deg2, dep, depdeg, depnet, outfract,&
       &qdin, sedin, vc
 
@@ -103,7 +104,7 @@ subroutine rtsed(jrch)
       if (qdin > 0.01) then
 
 !! initialize sediment in reach during time step
-         sedin = varoute(3,inum2) * (1. - rnum1) + sedst(jrch)
+         sedin = varoute(3,k) * (1. - rnum1) + sedst(jrch)
          !sedinorg = sedin ! not used
 !! initialize reach peak runoff rate
          peakr = prf(jrch) * sdti
@@ -133,7 +134,7 @@ subroutine rtsed(jrch)
             !! First the deposited material will be degraded before channel bed
             if (deg >= depch(jrch)) then
                deg1 = depch(jrch)
-               deg2 = (deg - deg1) * ch_erodmo(jrch,i_mo) * ch_cov(2,jrch)
+               deg2 = (deg - deg1) * ch_erodmo(i_mo,jrch) * ch_cov(2,jrch)
             else
                deg1 = deg
                deg2 = 0.

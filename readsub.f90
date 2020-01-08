@@ -227,21 +227,21 @@ subroutine readsub(i)
    endif
    read (101,*) co2(i)
    read (101,5100) titldum
-   read (101,5200) (rfinc(i,mon),mon = 1,6)
+   read (101,5200) (rfinc(mon,i),mon = 1,6)
    read (101,5100) titldum
-   read (101,5200) (rfinc(i,mon),mon = 7,12)
+   read (101,5200) (rfinc(mon,i),mon = 7,12)
    read (101,5100) titldum
-   read (101,5200) (tmpinc(i,mon),mon = 1,6)
+   read (101,5200) (tmpinc(mon,i),mon = 1,6)
    read (101,5100) titldum
-   read (101,5200) (tmpinc(i,mon),mon = 7,12)
+   read (101,5200) (tmpinc(mon,i),mon = 7,12)
    read (101,5100) titldum
-   read (101,5200) (radinc(i,mon),mon = 1,6)
+   read (101,5200) (radinc(mon,i),mon = 1,6)
    read (101,5100) titldum
-   read (101,5200) (radinc(i,mon),mon = 7,12)
+   read (101,5200) (radinc(mon,i),mon = 7,12)
    read (101,5100) titldum
-   read (101,5200) (huminc(i,mon),mon = 1,6)
+   read (101,5200) (huminc(mon,i),mon = 1,6)
    read (101,5100) titldum
-   read (101,5200) (huminc(i,mon),mon = 7,12)
+   read (101,5200) (huminc(mon,i),mon = 7,12)
    read (101,5100) titldum
 !! read HRU input data
    read (101,*) hrutot(i)

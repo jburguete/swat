@@ -127,6 +127,7 @@ subroutine clicon(i)
 !!    rbsb        |mm H2O        |generated precipitation for subbasin
 !!    rhdbsb      |none          |generated relative humidity for subbasin
 !!    rmxbsb      |MJ/m^2        |generated maximum solar radiation for subbasin
+!!    sb          |none          |subbasin number
 !!    tdif        |deg C         |difference in temperature for station and
 !!                               |temperature for elevation band
 !!    tmnband(:)  |deg C         |minimum temperature for the day in band in HRU
@@ -150,7 +151,9 @@ subroutine clicon(i)
    real*8, dimension(10) :: tmnband
    real*8 :: daylbsb, pdif, rabsb, ratio, rbsb, rhdbsb, rmxbsb, tdif, tmnbsb,&
       &tmxbsb, u10bsb
-   integer :: ib, idap, ii, inum3sprev, iyp, k, l, npcpbsb
+   integer :: ib, idap, ii, inum3sprev, iyp, k, l, npcpbsb, sb
+
+   sb = hru_sub(k)
 
 !! Precipitation: Measured !!
    if (pcpsim == 1) call pmeas(i)
@@ -197,7 +200,7 @@ subroutine clicon(i)
       u10bsb = 0.
       fradbsb = 0.
       !! use same generated data for all HRUs in a subbasin
-      if (hru_sub(k) == inum3sprev .and. hru_sub(k) /= 0) then
+      if (sb == inum3sprev .and. sb /= 0) then
          if (tmpsim == 2) then
             tmx(k) = tmxbsb
             tmn(k) = tmnbsb
@@ -236,7 +239,7 @@ subroutine clicon(i)
             if (wndsim == 2) call wndgen(k)
          end if
          !! set subbasin generated values
-         inum3sprev = hru_sub(k)
+         inum3sprev = sb
          tmxbsb = tmx(k)
          tmnbsb = tmn(k)
          rbsb = subp(k)
@@ -262,48 +265,48 @@ subroutine clicon(i)
 
 !! Climate Change Adjustments !!
    do k = 1, nhru
-      subp(k) = subp(k) * (1. + rfinc(hru_sub(k),i_mo) / 100.)
+      subp(k) = subp(k) * (1. + rfinc(i_mo,sb) / 100.)
       if (subp(k) < 0.) subp(k) = 0.
       if (nstep > 0) then
          do ii = 1, nstep
             rainsub(k,ii) = rainsub(k,ii) *&
-               &(1. + rfinc(hru_sub(k),i_mo) / 100.)
+               &(1. + rfinc(i_mo,sb) / 100.)
             if (rainsub(k,ii) < 0.) rainsub(k,ii) = 0.
          end do
       end if
-      tmx(k) = tmx(k) + tmpinc(hru_sub(k),i_mo)
-      tmn(k) = tmn(k) + tmpinc(hru_sub(k),i_mo)
-      tmpav(k) = tmpav(k) + tmpinc(hru_sub(k),i_mo)
-      hru_ra(k) = hru_ra(k) + radinc(hru_sub(k),i_mo)
+      tmx(k) = tmx(k) + tmpinc(i_mo,sb)
+      tmn(k) = tmn(k) + tmpinc(i_mo,sb)
+      tmpav(k) = tmpav(k) + tmpinc(i_mo,sb)
+      hru_ra(k) = hru_ra(k) + radinc(i_mo,sb)
       hru_ra(k) = Max(0.,hru_ra(k))
-      rhd(k) = rhd(k) + huminc(hru_sub(k),i_mo)
+      rhd(k) = rhd(k) + huminc(i_mo,sb)
       rhd(k) = Max(0.01,rhd(k))
       rhd(k) = Min(0.99,rhd(k))
    end do
 
 !! Elevation Adjustments !!
    do k = 1, nhru
-      if (elevb(1,hru_sub(k)) > 0. .and.&
-         &elevb_fr(1,hru_sub(k)) > 0.) then
+      if (elevb(1,sb) > 0. .and.&
+         &elevb_fr(1,sb) > 0.) then
       !! determine temperature and precipitation for individual bands
          ratio = 0.
          do ib = 1, 10
-            if (elevb_fr(ib,hru_sub(k)) < 0.) exit
+            if (elevb_fr(ib,sb) < 0.) exit
             if (tmpsim == 1) then
-               tdif = (elevb(ib,hru_sub(k)) -&
-                  &dfloat(elevt(itgage(hru_sub(k))))) * tlaps(hru_sub(k))&
+               tdif = (elevb(ib,sb) -&
+                  &dfloat(elevt(itgage(sb)))) * tlaps(sb)&
                   &/ 1000.
             else
-               tdif = (elevb(ib,hru_sub(k)) - welev(hru_sub(k)))&
-                  &* tlaps(hru_sub(k)) / 1000.
+               tdif = (elevb(ib,sb) - welev(sb))&
+                  &* tlaps(sb) / 1000.
             end if
             if (pcpsim == 1) then
-               pdif = (elevb(ib,hru_sub(k)) -&
-                  &dfloat(elevp(irgage(hru_sub(k))))) * plaps(hru_sub(k))&
+               pdif = (elevb(ib,sb) -&
+                  &dfloat(elevp(irgage(sb)))) * plaps(sb)&
                   &/ 1000.
             else
-               pdif = (elevb(ib,hru_sub(k)) - welev(hru_sub(k)))&
-                  &* plaps(hru_sub(k)) / 1000.
+               pdif = (elevb(ib,sb) - welev(sb))&
+                  &* plaps(sb) / 1000.
             end if
             tavband(ib,k) = tmpav(k) + tdif
             tmxband(ib,k) = tmx(k) + tdif
@@ -312,7 +315,7 @@ subroutine clicon(i)
                pcpband(ib,k) = subp(k) + pdif
                if (pcpband(ib,k) < 0.) pcpband(ib,k) = 0.
             end if
-            ratio = ratio + pdif * elevb_fr(ib,hru_sub(k))
+            ratio = ratio + pdif * elevb_fr(ib,sb)
          end do
          !! determine fraction change in precipitation for HRU
          if (subp(k) >= 0.01) then
@@ -327,11 +330,11 @@ subroutine clicon(i)
          tmn(k) = 0.
          subp(k) = 0.
          do ib = 1, 10
-            if (elevb_fr(ib,hru_sub(k)) < 0.) exit
-            tmpav(k) = tmpav(k) + tavband(ib,k) * elevb_fr(ib,hru_sub(k))
-            tmx(k) = tmx(k) + tmxband(ib,k) * elevb_fr(ib,hru_sub(k))
-            tmn(k) = tmn(k) + tmnband(ib) * elevb_fr(ib,hru_sub(k))
-            subp(k) = subp(k) + pcpband(ib,k) * elevb_fr(ib,hru_sub(k))
+            if (elevb_fr(ib,sb) < 0.) exit
+            tmpav(k) = tmpav(k) + tavband(ib,k) * elevb_fr(ib,sb)
+            tmx(k) = tmx(k) + tmxband(ib,k) * elevb_fr(ib,sb)
+            tmn(k) = tmn(k) + tmnband(ib) * elevb_fr(ib,sb)
+            subp(k) = subp(k) + pcpband(ib,k) * elevb_fr(ib,sb)
          end do
          if (nstep > 0) then
             do ii = 1, nstep

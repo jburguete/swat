@@ -6,12 +6,14 @@
 !> this subroutine computes the hourly stream pesticide balance
 !> (soluble and sorbed)
 !> @param[in] jrch reach number (none)
-subroutine rthpest(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rthpest(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch          |none          |reach number
+!!    k             |none          |inflow hydrograph storage location number
 !!    ch_l(2,:)     |km            |length of main channel
 !!    ch_w(2,:)     |m             |average width of main channel
 !!    chpst_conc(:) |mg/(m**3)     |initial pesticide concentration in reach
@@ -30,7 +32,6 @@ subroutine rthpest(jrch)
 !!                                 |channel in subbasin
 !!    hdepth(:)     |m             |depth of flow in hour
 !!    hru_sub(:)    |none          |subbasin number where reach is located
-!!    inum2         |none          |inflow hydrograph storage location number
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rnum1         |none          |fraction of overland flow
 !!    rtwtr         |m^3 H2O       |water leaving reach on day
@@ -90,6 +91,7 @@ subroutine rthpest(jrch)
 !!    thour       |hour          |flow duration
 !!    wtrin       |m^3 H2O       |volume of water entering reach during time
 !!                               |step
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -100,9 +102,9 @@ subroutine rthpest(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8 :: bedvol, chpstmass, depth, fd2, frsol, frsrb, pstin, sedcon,&
-      &sedpstmass, solmax, solpstin, sorpstin, thour, wtrin
+      &sedpstmass, solmax, solpstin, sorpstin, thour, wtrin, xx
    integer :: ii
 
 !! calculate volume of active river bed sediment layer
@@ -120,11 +122,12 @@ subroutine rthpest(jrch)
       endif
 
 !! calculate volume of water entering reach
-      wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
+      xx = 1. - rnum1
+      wtrin = hhvaroute(2,k,ii) * xx
 
 !! pesticide transported into reach during day
-      solpstin = hhvaroute(11,inum2,ii) * (1. - rnum1)
-      sorpstin = hhvaroute(12,inum2,ii) * (1. - rnum1)
+      solpstin = hhvaroute(11,k,ii) * xx
+      sorpstin = hhvaroute(12,k,ii) * xx
       pstin = solpstin + sorpstin
 
       !! calculate mass of pesticide in reach

@@ -65,7 +65,7 @@ subroutine lid_cistern(sb,j,k,lid_prec)
    end if
 
    lid_str = lid_str_last(j,3)
-   lid_cumirr = lid_cumirr_last(j,3)
+   lid_cumirr = lid_cumirr_last(j)
    lid_bypass = 0.
 
    if (hrnopcp(sb,k-1) > 96) then ! four days
@@ -116,7 +116,7 @@ subroutine lid_cistern(sb,j,k,lid_prec)
       lid_cumirr = 0.
    end if
 
-   lid_cumirr_last(j,3) = lid_cumirr
+   lid_cumirr_last(j) = lid_cumirr
    lid_str_last(j,3) = lid_str
 
    return

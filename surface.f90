@@ -36,6 +36,7 @@ subroutine surface(i, j, sb)
 !!    hruvirr
 !!    ii          |none          |counter
 !!    irfr
+!!    irmmdt
 !!    kk          |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -50,6 +51,7 @@ subroutine surface(i, j, sb)
    implicit none
 
    integer, intent(in) :: i, j, sb
+   real*8, dimension(nstep) :: irmmdt
    real*8 :: hruvirr, irfr
    integer :: ii, kk
 

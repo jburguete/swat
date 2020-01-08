@@ -6,14 +6,17 @@
 !> this subroutine controls the simulation of the land phase of the
 !> hydrologic cycle
 !> @param[in] i current day in simulation--loop counter (julian date)
-!> @param[inout] sb subbasin number
-subroutine subbasin(i, sb)
+!> @param[inout] sb subbasin number (none)
+!> @param[inout] k inflow hydrograph storage location number (none)
+!> @param[inout] l subbasin number (none)
+subroutine subbasin(i, sb, k, l)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i              |julian date   |current day in simulation--loop counter
 !!    sb             |none          |subbasin number
+!!    k              |none          |inflow hydrograph storage location number
 !!    auto_wstr(:)   |none          |water stress factor which triggers auto
 !!                                  |irrigation
 !!    bio_e(:)       |(kg/ha)/      |biomass-energy ratio
@@ -119,7 +122,7 @@ subroutine subbasin(i, sb)
 !!    ihout1
 !!    iru_sub
 !!    j           |none          |HRU number
-!!    k
+!!    kk          |none          |counter
 !!    l           |none          |HRU number
 !!    ovs
 !!    ovsl
@@ -146,21 +149,18 @@ subroutine subbasin(i, sb)
    implicit none
 
    integer, intent(in) :: i
-   integer, intent(inout) :: sb
+   integer, intent(inout) :: sb, k, l
    integer, parameter :: iru_sub = 1 ! route across landscape unit
    real*8 :: ovs, ovsl, sumdaru, sumk, xx
-   integer :: i_wtrhru, ihout1, j, k, l
+   integer :: i_wtrhru, ihout1, j, kk
 
-   l = hru1(sb)
+   j = hru1(sb)
 
-   call sub_subbasin(l)
+   call sub_subbasin(j)
 
-   do k = 1, hrutot(sb)
+   do kk = 1, hrutot(sb)
 
-      j = l
-
-
-      !jj is hru number
+      !j is hru number
       if (cswat == 2) then
          if (tillage_switch(j) .eq. 1) then
             if (tillage_days(j) .ge. 30) then
@@ -265,7 +265,7 @@ subroutine subbasin(i, sb)
          !! write daily air and soil temperature file
          !! can be uncommmented if needed by user and also in readfile.f
 
-!         write (120,12112) i,j,tmx(j),tmn(j),(sol_tmp(k,j),k=1,sol_nly(j))
+!         write (120,12112) i,j,tmx(j),tmn(j),(sol_tmp(kk,j),kk=1,sol_nly(j))
 !12112  format (2i4,12f8.2)
 
          !! compute nitrogen and phosphorus mineralization
@@ -416,10 +416,10 @@ subroutine subbasin(i, sb)
 
       !! summarize output for multiple HRUs per subbasin
       !! store reach loadings for new fig method
-      call virtual(i, j, k, sb)
+      call virtual(i, j, kk, sb)
       aird(j) = 0.
 
-      l = l + 1
+      j = j + 1
    end do
 
    !! route 2 landscape units
@@ -430,11 +430,11 @@ subroutine subbasin(i, sb)
       ihout1 = mhyd_bsn + (sb - 1) * 4 ! first outflow hyd number
       ihout = ihout1                      ! outflow hyd number
       sb = 1                           ! landscape unit number
-      inum2 = isub                        ! subbasin number
-      call routeunit(sb)               ! hillslope unit
+      k = isub                        ! subbasin number
+      call routeunit(sb, k)               ! hillslope unit
       call sumhyd
       inum1s(ihout) = sb
-      inum2s(ihout) = inum2
+      inum2s(ihout) = k
       ihouts(ihout) = ihout
 
       !! calculate outputs from valley bottom
@@ -444,18 +444,18 @@ subroutine subbasin(i, sb)
       do j = 1, hrutot(isub)
          sumdaru = sumdaru + hru_km(j)
       end do
-      daru_km(inum2,sb) = sumdaru
-      call routeunit(sb)               ! valley bottom unit
+      daru_km(k,sb) = sumdaru
+      call routeunit(sb, k)               ! valley bottom unit
       call sumhyd
       inum1s(ihout) = sb
-      inum2s(ihout) = inum2
+      inum2s(ihout) = k
       ihouts(ihout) = ihout
 
       !! route output from hillslope across valley bottom
       ihout = ihout + 1                   ! outflow hyd number
       !sb = 2                             ! valley bottom landscape unit
-      inum2 = ihout1                      ! inflow hyd=outlfow from hillslope
-      inum3 = isub                        ! subbasin number
+      k = ihout1                      ! inflow hyd=outlfow from hillslope
+      l = isub                        ! subbasin number
       rnum1 = 1.                          ! fraction overland flow
       !! compute weighted K factor for sediment transport capacity
       sumk = 0.
@@ -473,21 +473,21 @@ subroutine subbasin(i, sb)
       ru_ovs(isub,sb) = ovs
       ru_ktc(isub,sb) = 50.
       ru_a(isub,sb) = daru_km(isub,1) / ru_ovsl(isub,sb)
-      call routels(iru_sub, sb)               ! route across valley bottom
+      call routels(iru_sub, sb, k, l) ! route across valley bottom
       call sumhyd
       inum1s(ihout) = sb
-      inum2s(ihout) = inum2
-      inum3s(ihout) = inum3
+      inum2s(ihout) = k
+      inum3s(ihout) = l
       ihouts(ihout) = ihout
 
       !! add routed with valley bottom loading
       sb = ihout                       ! hyd from routed
-      inum2 = ihout - 1                   ! hyd from loading
+      k = ihout - 1                   ! hyd from loading
       ihout = ihout + 1                   ! outflow hyd number
-      call addh(sb)                    ! add hyd's
+      call addh(sb, k)                    ! add hyd's
       call sumhyd
       inum1s(ihout) = sb
-      inum2s(ihout) = inum2
+      inum2s(ihout) = k
       ihouts(ihout) = ihout
 
       !! save landscape routed output in place of subbasin output for routing

@@ -114,7 +114,6 @@ subroutine newtillmix(j, bmix)
 !!    emix        |none          |mixing efficiency
 !!    k           |none          |counter
 !!    l           |none          |counter
-!!    maxmix      |none          | maximum mixing eff to preserve specified minimum residue cover
 !!    smix(:)     |varies        |amount of substance in soil profile
 !!                               |that is being redistributed between
 !!                               |mixed layers
@@ -142,7 +141,7 @@ subroutine newtillmix(j, bmix)
    real*8, intent (in) :: bmix
    real*8, dimension(22+npmx+12) :: smix
    real*8, dimension(sol_nly(j)) :: sol_mass, sol_msm, sol_msn, sol_thick
-   real*8 :: dtil, emix, maxmix, XX, WW1, WW2, WW3, WW4
+   real*8 :: dtil, emix, XX, WW1, WW2, WW3, WW4
    integer :: k, l
 
 

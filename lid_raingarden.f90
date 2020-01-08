@@ -22,7 +22,6 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
 !!    lid_cuminf_last  |mm H2O        |Cumulative amount of water infiltrated into the amended soil layer at the last time step in a day
 !!    lid_cumr_last    |mm H2O        |Cumulative amount of rainfall at the last time step in a day
 !!    lid_f_last       |mm/mm H2O     |Potential infiltration rate of the amended soil layer at the last time step in a day
-!!    Cumulative amount of rainfall a LID receives in a time interval_last   |mm H2O        |Cumulative amount of excess rainfall at the last time step in a day
 !!    lid_sw_last      |mm/mm H2O     |Soil water content of the amended soil layer at the last time step in a day
 !!    lid_vgcl         |none          |van Genuchten equation's coefficient, l
 !!    lid_vgcm         |none          |van Genuchten equation's coefficient, m

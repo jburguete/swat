@@ -6,11 +6,18 @@
 !> this subroutine saves hourly or average daily concentrations from
 !> a particular hydrograph node to a file
 !> @param[in] k file number
-subroutine saveconc(k)
+!> @param[in] l
+!> printout frequency for saveconc command\n
+!> 0 daily average concentrations\n
+!> 1 hourly average concentrations
+subroutine saveconc(k, l)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name           |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!!    l              |none          |printout frequency for saveconc command
+!!                                  |0 daily average concentrations
+!!                                  |1 hourly average concentrations
 !!    hhvaroute(1,:) |deg C         |temperature
 !!    hhvaroute(2,:) |m^3 H2O       |water
 !!    hhvaroute(3,:) |metric tons   |sediment
@@ -40,9 +47,6 @@ subroutine saveconc(k)
 !!                                  |  daily routing
 !!                                  |3 sub-daily rainfall/Green&Ampt/hourly
 !!                                  |  routing
-!!    inum2          |none          |printout frequency for saveconc command
-!!                                  |0 daily average concentrations
-!!                                  |1 hourly average concentrations
 !!    mvaro          |none          |max number of variables routed through the
 !!                                  |reach
 !!    varoute(1,:)   |deg C         |temperature
@@ -102,12 +106,12 @@ subroutine saveconc(k)
    use parm
    implicit none
 
-   integer, intent(in) :: k
+   integer, intent(in) :: k, l
    real*8, dimension (19) :: varii
    integer :: ii, j
 
    if (k <= 50 .and. k > 0) then
-      if (ievent == 1 .and. inum2 == 1) then
+      if (ievent == 1 .and. l == 1) then
 
 
          !! Write sub-daily values (any time step) : URBAN MODELING

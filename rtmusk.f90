@@ -1,19 +1,25 @@
 !> @file rtmusk.f90
 !> file containing the subroutine rtmusk
 !> @author
-!> modified by Javier Burguete
+!> code provided by Dr. Valentina Krysanova, Pottsdam Institute for
+!> Climate Impact Research, Germany.\n
+!> Modified by Balaji Narasimhan, Spatial Sciences Laboratory,
+!> Texas A&M University.\n
+!> Modified by Javier Burguete
 
 !> this subroutine routes a daily flow through a reach using the
 !> Muskingum method
 !> @param[in] i current day of simulation (none)
 !> @param[in] jrch reach number
-subroutine rtmusk(i, jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rtmusk(i, jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    i           |none          |current day of simulation
 !!    jrch        |none          |reach number
+!!    k           |none          |inflow hydrograph storage location number
 !!    ch_d(:)     |m             |average depth of main channel
 !!    ch_k(2,:)   |mm/hr         |effective hydraulic conductivity of
 !!                               |main channel alluvium
@@ -32,7 +38,6 @@ subroutine rtmusk(i, jrch)
 !!    flwin(:)    |m^3 H2O       |flow into reach on previous day
 !!    flwout(:)   |m^3 H2O       |flow out of reach on previous day
 !!    id1         |none          |first day of simulation in year
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    msk_co1     |none          |calibration coefficient to control impact
 !!                               |of the storage time constant for the
 !!                               |reach at bankfull depth (phi(10,:) upon
@@ -120,16 +125,11 @@ subroutine rtmusk(i, jrch)
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
-!!    code provided by Dr. Valentina Krysanova, Pottsdam Institute for
-!!    Climate Impact Research, Germany
-!!    Modified by Balaji Narasimhan
-!!    Spatial Sciences Laboratory, Texas A&M University
-
    use parm
    implicit none
 
    real*8 Qman
-   integer, intent(in) :: i, jrch
+   integer, intent(in) :: i, jrch, k
    real*8 :: aaa, addarea, adddep, addp, c, c1, c2, c3, det, detmax, detmin,&
       &maxrt, p, qoutday, rh, rtevp1, rtevp2, rttlc1, rttlc2, topw, vc, vol,&
       &volrt, wtrin, xkm, yy
@@ -141,7 +141,7 @@ subroutine rtmusk(i, jrch)
 
 
 !! Water entering reach on day
-   wtrin = varoute(2,inum2) * (1. - rnum1)
+   wtrin = varoute(2,k) * (1. - rnum1)
 
 !! Compute storage time constant for reach (msk_co1 + msk_co2 = 1.)
    msk_co1 = msk_co1 / (msk_co1 + msk_co2)

@@ -904,7 +904,6 @@ module parm
 !> 2 data simulated for each subbasin
    integer :: wndsim
    integer :: ihout !< variable to hold value for ihouts(:) (none)
-   integer :: inum2 !< variable to hold value for inum2s(:) (none)
    integer :: inum3 !< variable to hold value for inum3s(:) (none)
    integer :: inum4 !< variable to hold value for inum4s(:) (none)
 !> icfac = 0 for C-factor calculation using Cmin (as described in manual)\n
@@ -4548,7 +4547,6 @@ module parm
    integer, dimension (:,:),allocatable :: a_days
    real*8, dimension (:,:),allocatable :: ro_bmp_flo, ro_bmp_sed
    real*8, dimension (:,:),allocatable :: ro_bmp_bac
-!X
    real*8, dimension (:,:),allocatable :: ro_bmp_pp, ro_bmp_sp
    real*8, dimension (:,:),allocatable :: ro_bmp_pn, ro_bmp_sn
 
@@ -4564,7 +4562,7 @@ module parm
 
    real*8, dimension (:),allocatable :: bmp_flo, bmp_sed, bmp_bac
    real*8, dimension (:),allocatable :: bmp_pp, bmp_sp
-   real*8, dimension (:),allocatable :: bmp_pn, bmp_sn, bmp_flag
+   real*8, dimension (:),allocatable :: bmp_pn, bmp_sn
 
    real*8, dimension (:),allocatable :: bmp_flos, bmp_seds, bmp_bacs
    real*8, dimension (:),allocatable :: bmp_pps, bmp_sps
@@ -4592,28 +4590,25 @@ module parm
    real*8, dimension(:,:), allocatable :: dtp_wdratio
    real*8, dimension(:,:), allocatable :: dtp_wrwid
 
-   real*8, dimension(:), allocatable :: ri_subkm,ri_totpvol,&
-      &irmmdt
-!> total sediment deposited in the pond (tons)
-   real*8, dimension(:,:), allocatable :: ri_sed
-   real*8, dimension(:,:), allocatable :: ri_fr,ri_dim,&
-      &ri_im,ri_iy,ri_sa,ri_vol,ri_qi,ri_k,ri_dd,ri_evrsv,&
-      &ri_dep,ri_ndt,ri_pmpvol,ri_sed_cumul,hrnopcp,ri_qloss,&
-      &ri_pumpv,ri_sedi
+   real*8, dimension(:), allocatable :: ri_subkm, ri_totpvol
+   real*8, dimension(:,:), allocatable :: ri_fr, ri_dim,&
+      &ri_im, ri_iy, ri_sa, ri_vol, ri_qi, ri_k, ri_dd, ri_evrsv,&
+      &ri_dep, ri_pmpvol, hrnopcp, ri_qloss, ri_pumpv, ri_sedi
    character(len=4), dimension(:,:), allocatable :: ri_nirr
-   integer, dimension(:), allocatable :: num_ri,ri_luflg,num_noirr
+   integer, dimension(:), allocatable :: num_ri, ri_luflg, num_noirr
 
    !wet pond
-   integer, dimension(:), allocatable :: wtp_subnum,wtp_onoff,wtp_imo,&
-      &wtp_iyr,wtp_dim,wtp_stagdis,wtp_sdtype
+   integer, dimension(:), allocatable :: wtp_onoff, wtp_imo,&
+      &wtp_iyr, wtp_dim, wtp_stagdis, wtp_sdtype
 !> detention pond evaporation coefficient (none)
    real*8, dimension(:), allocatable :: wtp_evrsv
 !> volume of permanent pool including forebay (m^3 H2O)
    real*8, dimension(:), allocatable :: wtp_pvol
-   real*8, dimension(:), allocatable :: wtp_pdepth,wtp_sdslope,&
-      &wtp_lenwdth,wtp_extdepth,wtp_hydeff,wtp_sdintc,&
-      &wtp_sdexp,wtp_sdc1,wtp_sdc2,wtp_sdc3,wtp_pdia,wtp_plen,&
-      &wtp_pmann,wtp_ploss,wtp_k,wtp_dp,wtp_sedi,wtp_sede,wtp_qi
+   real*8, dimension(:), allocatable :: wtp_pdepth, wtp_sdslope,&
+      &wtp_lenwdth, wtp_extdepth, wtp_hydeff, wtp_sdintc,&
+      &wtp_sdexp, wtp_pdia, wtp_plen,&
+      &wtp_pmann, wtp_ploss, wtp_k, wtp_dp, wtp_sedi, wtp_sede, wtp_qi
+   real*8, dimension(:,:), allocatable :: wtp_sdc
 
    real*8 :: lai_init !< initial leaf area index of transplants
    real*8 :: bio_init !< initial biomass of transplants (kg/ha)
@@ -4628,7 +4623,6 @@ module parm
 
    real*8 :: lid_vgcl !< van Genuchten equation's coefficient, l (none)
    real*8 :: lid_vgcm !< van Genuchten equation's coefficient, m (none)
-   real*8 :: lid_qsurf_total,lid_farea_sum
 
 !> cumulative amount of water infiltrated into the amended soil layer at the
 !> last time step in a day (mm H2O)
@@ -4645,18 +4639,21 @@ module parm
    real*8, dimension(:,:), allocatable :: lid_sw_last
 !> depth of runoff generated on a LID in a given time interval (mm H2O)
    real*8, dimension(:,:), allocatable :: lid_qsurf
-   real*8, dimension(:,:), allocatable :: interval_last,lid_str_last,&
-      &lid_farea,lid_sw_add,lid_cumqperc_last,lid_cumirr_last
+   real*8, dimension(:,:), allocatable :: lid_str_last,&
+      &lid_farea, lid_sw_add, lid_cumqperc_last
+   real*8, dimension(:), allocatable :: lid_cumirr_last
 
    ! Green Roof
-   integer, dimension(:,:), allocatable :: gr_onoff,gr_imo,gr_iyr
+   integer, dimension(:,:), allocatable :: gr_onoff
 !> fractional area of a green roof to the HRU (none)
    real*8, dimension(:,:), allocatable :: gr_farea
-   real*8, dimension(:,:), allocatable :: gr_solop,gr_etcoef,&
+   integer, dimension(:,:), allocatable :: gr_solop
+   real*8, dimension(:,:), allocatable :: gr_etcoef,&
       &gr_fc,gr_wp,gr_ksat,gr_por,gr_hydeff,gr_soldpt
 
    ! Rain Gerden
-   integer, dimension(:,:), allocatable :: rg_onoff,rg_imo,rg_iyr
+   integer, dimension(:,:), allocatable :: rg_onoff
+!X
    real*8, dimension(:,:), allocatable :: rg_farea,rg_solop,rg_etcoef,&
       &rg_fc,rg_wp,rg_ksat,rg_por,rg_hydeff,rg_soldpt,rg_dimop,rg_sarea,&
       &rg_vol,rg_sth,rg_sdia,rg_bdia,rg_sts,rg_orifice,rg_oheight,&

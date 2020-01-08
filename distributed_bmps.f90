@@ -83,8 +83,8 @@ subroutine distributed_bmps(sb)
          sf_totaltss(1,:) = sf_totaltss(1,:) + sfsed(1,:) !tons
 
          if (iyr>sf_iy(sb,kk) .or.&
-            &(iyr==sf_iy(sb,kk).and.i_mo>=sf_im(sb,kk))) then
-            if(sf_typ(sb,kk)==2) then !partial scale
+            &(iyr==sf_iy(sb,kk) .and. i_mo>=sf_im(sb,kk))) then
+            if (sf_typ(sb,kk)==2) then !partial scale
                call bmp_sand_filter(sb, kk, sfflw, sfsed)
                spqm3(:,:) = 0.
                spsed(:,:) = 0.
@@ -97,7 +97,7 @@ subroutine distributed_bmps(sb)
                   &+ sfflw(3,:) !mm
                sf_totaltss(2,:) = sf_totaltss(2,:) + ftsed(2,:)&
                   &+ ftsed(3,:) !tons
-            elseif(sf_typ(sb,kk)==1) then !full scale
+            else if (sf_typ(sb,kk)==1) then !full scale
                !first route through sedimentation pond
                call bmp_sed_pond(sb, kk, sfflw, sfsed)
 
@@ -161,7 +161,7 @@ subroutine distributed_bmps(sb)
 
    !---------------------------------
    ! retention-irrigation (RI)
-   if(num_ri(sb)>=1.and.hrnopcp(sb,nstep)<96) then !72 hours draw-down plus another day (24hrs)
+   if (num_ri(sb)>=1 .and. hrnopcp(sb,nstep)<96) then !72 hours draw-down plus another day (24hrs)
 
       do kk=1,num_ri(sb)
 
@@ -181,7 +181,7 @@ subroutine distributed_bmps(sb)
 
          ! skip bmp simulation before it's constructed
          if (iyr>ri_iy(sb,kk) .or.&
-            &(iyr==ri_iy(sb,kk).and.i_mo>=ri_im(sb,kk))) then
+            &(iyr==ri_iy(sb,kk) .and. i_mo>=ri_im(sb,kk))) then
 
             call bmp_ri_pond(sb, kk, riflw, rised)
 

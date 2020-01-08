@@ -5,12 +5,14 @@
 
 !> this subroutine performs reservoir routing
 !> @param[in] jres reservoir number (none)
-subroutine routres(jres)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine routres(jres, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jres        |none          |reservoir number
+!!    k           |none          |inflow hydrograph storage location number
 !!    bury        |mg pst        |loss of pesticide from active sediment layer
 !!                               |by burial
 !!    curyr       |none          |current year of simulation
@@ -19,7 +21,6 @@ subroutine routres(jres)
 !!                               |water
 !!    iida        |julian date   |day being simulated (current julian date)
 !!    ihout       |none          |outflow hydrograph storage location number
-!!    inum2       |none          |inflow hydrograph storage location number
 !!    iprint      |none          |print code:
 !!                               |0 monthly
 !!                               |1 daily
@@ -197,13 +198,13 @@ subroutine routres(jres)
    use parm
    implicit none
 
-   integer, intent(in) :: jres
+   integer, intent(in) :: jres, k
    real*8 :: resnh3c, resno2c, resno3c, resorgnc, resorgpc, ressolpc, sedcon,&
       &sepmm, xx
-   integer :: ii, k
+   integer :: ii
 
    !! initialize variables for reservoir daily simulation
-   call resinit(jres)
+   call resinit(jres, k)
 
    if (iyr > iyres(jres) .or.&
       &(i_mo >= mores(jres) .and. iyr == iyres(jres))) then
@@ -214,11 +215,11 @@ subroutine routres(jres)
       if (ievent == 0) then  !! urban modeling by J.Jeong
          call res(jres)
       else
-         call reshr(jres)
+         call reshr(jres, k)
       endif
 
       !! perform reservoir nutrient balance
-      call resnut(jres)
+      call resnut(jres, k)
 
       !! perform reservoir pesticide transformations
       call lakeq(jres)
@@ -226,9 +227,9 @@ subroutine routres(jres)
       !! add reservoir seepage to shallow aquifer convert from m^3 to mm
       if (ressep > 0.) then
          sepmm = ressep / (da_ha * sub_fr(res_sub(jres)) * 10.)
-         do k = 1, nhru
-            if (hru_sub(k) == res_sub(jres)) then
-               shallst(k) = shallst(k) + sepmm
+         do ii = 1, nhru
+            if (hru_sub(ii) == res_sub(jres)) then
+               shallst(ii) = shallst(ii) + sepmm
             end if
          end do
       end if
@@ -251,11 +252,11 @@ subroutine routres(jres)
       varoute(15,ihout) = resno2o
       varoute(16,ihout) = 0.          !!CBOD
       varoute(17,ihout) = 0.          !!dis O2
-      varoute(18,ihout) = varoute(18,inum2)  !!persistent bact
-      varoute(19,ihout) = varoute(19,inum2)  !!less persistent bact
-      varoute(20,ihout) = varoute(20,inum2)  !!conservative metal #1
-      varoute(21,ihout) = varoute(21,inum2)  !!conservative metal #2
-      varoute(22,ihout) = varoute(22,inum2)  !!conservative metal #3
+      varoute(18,ihout) = varoute(18,k)  !!persistent bact
+      varoute(19,ihout) = varoute(19,k)  !!less persistent bact
+      varoute(20,ihout) = varoute(20,k)  !!conservative metal #1
+      varoute(21,ihout) = varoute(21,k)  !!conservative metal #2
+      varoute(22,ihout) = varoute(22,k)  !!conservative metal #3
 
       if (ievent > 0) then
          xx = Dfloat(nstep)
@@ -277,18 +278,18 @@ subroutine routres(jres)
             hhvaroute(15,ihout,ii) = resno2o / xx
             hhvaroute(16,ihout,ii) = 0.          !!CBOD
             hhvaroute(17,ihout,ii) = 0.          !!dis O2
-            hhvaroute(18,ihout,ii) = hhvaroute(18,inum2,ii) !!persistent bact
-            hhvaroute(19,ihout,ii) = hhvaroute(19,inum2,ii)  !!less persist bact
-            hhvaroute(20,ihout,ii) = varoute(20,inum2) / xx !!cons metal #1
-            hhvaroute(21,ihout,ii) = varoute(21,inum2) / xx !!cons metal #2
-            hhvaroute(22,ihout,ii) = varoute(22,inum2) / xx !!cons metal #3
+            hhvaroute(18,ihout,ii) = hhvaroute(18,k,ii) !!persistent bact
+            hhvaroute(19,ihout,ii) = hhvaroute(19,k,ii)  !!less persist bact
+            hhvaroute(20,ihout,ii) = varoute(20,k) / xx !!cons metal #1
+            hhvaroute(21,ihout,ii) = varoute(21,k) / xx !!cons metal #2
+            hhvaroute(22,ihout,ii) = varoute(22,k) / xx !!cons metal #3
 
-            hhvaroute(23,ihout,ii) = varoute(23,inum2) / xx !!Sand out
-            hhvaroute(24,ihout,ii) = varoute(24,inum2) / xx !!Silt out
-            hhvaroute(25,ihout,ii) = varoute(25,inum2) / xx !!clay out
-            hhvaroute(26,ihout,ii) = varoute(26,inum2) / xx !!Small agg out
-            hhvaroute(27,ihout,ii) = varoute(27,inum2) / xx !!Large agg out
-            hhvaroute(28,ihout,ii) = varoute(28,inum2) / xx !!Gravel out
+            hhvaroute(23,ihout,ii) = varoute(23,k) / xx !!Sand out
+            hhvaroute(24,ihout,ii) = varoute(24,k) / xx !!Silt out
+            hhvaroute(25,ihout,ii) = varoute(25,k) / xx !!clay out
+            hhvaroute(26,ihout,ii) = varoute(26,k) / xx !!Small agg out
+            hhvaroute(27,ihout,ii) = varoute(27,k) / xx !!Large agg out
+            hhvaroute(28,ihout,ii) = varoute(28,k) / xx !!Gravel out
 
          end do
       end if
@@ -326,19 +327,19 @@ subroutine routres(jres)
          resoutm(19,jres) = resoutm(19,jres) + respcp
          resoutm(20,jres) = resoutm(20,jres) + resflwi
          resoutm(21,jres) = resoutm(21,jres) + resflwo
-         resoutm(22,jres) = resoutm(22,jres) + varoute(4,inum2)
+         resoutm(22,jres) = resoutm(22,jres) + varoute(4,k)
          resoutm(23,jres) = resoutm(23,jres) + resorgno
-         resoutm(24,jres) = resoutm(24,jres) + varoute(5,inum2)
+         resoutm(24,jres) = resoutm(24,jres) + varoute(5,k)
          resoutm(25,jres) = resoutm(25,jres) + resorgpo
-         resoutm(26,jres) = resoutm(26,jres) + varoute(6,inum2)
+         resoutm(26,jres) = resoutm(26,jres) + varoute(6,k)
          resoutm(27,jres) = resoutm(27,jres) + resno3o
-         resoutm(28,jres) = resoutm(28,jres) + varoute(15,inum2)
+         resoutm(28,jres) = resoutm(28,jres) + varoute(15,k)
          resoutm(29,jres) = resoutm(29,jres) + resno2o
-         resoutm(30,jres) = resoutm(30,jres) + varoute(14,inum2)
+         resoutm(30,jres) = resoutm(30,jres) + varoute(14,k)
          resoutm(31,jres) = resoutm(31,jres) + resnh3o
-         resoutm(32,jres) = resoutm(32,jres) + varoute(7,inum2)
+         resoutm(32,jres) = resoutm(32,jres) + varoute(7,k)
          resoutm(33,jres) = resoutm(33,jres) + ressolpo
-         resoutm(34,jres) = resoutm(34,jres) + varoute(13,inum2)
+         resoutm(34,jres) = resoutm(34,jres) + varoute(13,k)
          resoutm(35,jres) = resoutm(35,jres) + reschlao
          resoutm(36,jres) = resoutm(36,jres) + resorgpc
          resoutm(37,jres) = resoutm(37,jres) + ressolpc
@@ -355,33 +356,33 @@ subroutine routres(jres)
          if (iscen == 1.and. isproj == 0) then
             write (8,5000) jres, iida, res_vol(jres), resflwi / 86400.,&
                &(resflwo / 86400.), respcp, resev, ressep, ressedi, ressedo,&
-               &sedcon, varoute(4,inum2), resorgno, resorgnc,&
-               &varoute(5,inum2), resorgpo, resorgpc, varoute(6,inum2),&
-               &resno3o, resno3c, varoute(15,inum2), resno2o, resno2c,&
-               &varoute(14,inum2), resnh3o, resnh3c, varoute(7,inum2),&
-               &ressolpo, ressolpc, varoute(13,inum2), reschlao,&
+               &sedcon, varoute(4,k), resorgno, resorgnc,&
+               &varoute(5,k), resorgpo, resorgpc, varoute(6,k),&
+               &resno3o, resno3c, varoute(15,k), resno2o, resno2c,&
+               &varoute(14,k), resnh3o, resnh3c, varoute(7,k),&
+               &ressolpo, ressolpc, varoute(13,k), reschlao,&
                &res_seci(jres), respesti, reactw, volatpst, setlpst, resuspst,&
                &difus, reactb, bury, solpesto + sorpesto, lkpst_conc(jres),&
                &lkspst_conc(jres),iyr
          else if (isproj == 1) then
             write (22,5000) jres, iida, res_vol(jres), resflwi / 86400.,&
                &(resflwo / 86400.), respcp, resev, ressep, ressedi, ressedo,&
-               &sedcon, varoute(4,inum2), resorgno, resorgnc,&
-               &varoute(5,inum2), resorgpo, resorgpc, varoute(6,inum2),&
-               &resno3o, resno3c, varoute(15,inum2), resno2o, resno2c,&
-               &varoute(14,inum2), resnh3o, resnh3c, varoute(7,inum2),&
-               &ressolpo, ressolpc, varoute(13,inum2), reschlao,&
+               &sedcon, varoute(4,k), resorgno, resorgnc,&
+               &varoute(5,k), resorgpo, resorgpc, varoute(6,k),&
+               &resno3o, resno3c, varoute(15,k), resno2o, resno2c,&
+               &varoute(14,k), resnh3o, resnh3c, varoute(7,k),&
+               &ressolpo, ressolpc, varoute(13,k), reschlao,&
                &res_seci(jres), respesti, reactw, volatpst, setlpst, resuspst,&
                &difus, reactb, bury, solpesto + sorpesto, lkpst_conc(jres),&
                &lkspst_conc(jres),iyr
          else if (iscen == 1 .and. isproj == 2) then
             write (8,6000) jres, iida, res_vol(jres), resflwi / 86400.,&
                &(resflwo / 86400.), respcp, resev, ressep, ressedi, ressedo,&
-               &sedcon, varoute(4,inum2), resorgno, resorgnc,&
-               &varoute(5,inum2), resorgpo, resorgpc, varoute(6,inum2),&
-               &resno3o, resno3c, varoute(15,inum2), resno2o, resno2c,&
-               &varoute(14,inum2), resnh3o, resnh3c, varoute(7,inum2),&
-               &ressolpo, ressolpc, varoute(13,inum2), reschlao,&
+               &sedcon, varoute(4,k), resorgno, resorgnc,&
+               &varoute(5,k), resorgpo, resorgpc, varoute(6,k),&
+               &resno3o, resno3c, varoute(15,k), resno2o, resno2c,&
+               &varoute(14,k), resnh3o, resnh3c, varoute(7,k),&
+               &ressolpo, ressolpc, varoute(13,k), reschlao,&
                &res_seci(jres), respesti, reactw, volatpst, setlpst, resuspst,&
                &difus, reactb, bury, solpesto + sorpesto, lkpst_conc(jres),&
                &lkspst_conc(jres), iyr
@@ -390,7 +391,7 @@ subroutine routres(jres)
    else
       !! reservoir has not been constructed yet
       do ii = 1, mvaro
-         varoute(ii,ihout) = varoute(ii,inum2)
+         varoute(ii,ihout) = varoute(ii,k)
       end do
    end if
 

@@ -43,8 +43,6 @@ subroutine lids(sb,j,k,lid_prec)
    jj = urblu(j)
 
    lid_farea = 0.
-   lid_farea_sum = 0.
-   lid_qsurf_total = 0.
    lid_sw_add = 0.
    fr = 0.
 

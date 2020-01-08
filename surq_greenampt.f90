@@ -59,10 +59,14 @@ subroutine surq_greenampt(j)
 !!    f1          |mm H2O        |test value for cumulative infiltration
 !!    ii          |none          |counter
 !!    k           |none          |counter
+!!    lid_farea_sum
+!!    lid_prec
+!!    lid_qsurf_total
 !!    psidt       |mm            |suction at wetting front*initial moisture
 !!                               |deficit
 !!    rateinf(:)  |mm/hr         |infiltration rate for time step
 !!    rintns(:)   |mm/hr         |rainfall intensity
+!!    sb          |none          |subbasin number
 !!    soilw       |mm H2O        |amount of water in soil profile
 !!    tst         |mm H2O        |test value for cumulative infiltration
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -80,7 +84,7 @@ subroutine surq_greenampt(j)
    integer, intent(in) :: j
    real*8, dimension (nstep+1) :: cuminf, cumr, excum, exinc, rateinf, rintns
    integer :: ii, k, sb
-   real*8 :: adj_hc, dthet, f1, lid_prec, psidt, soilw, tst, urban_prec
+   real*8 :: adj_hc, dthet, f1, lid_farea_sum, lid_prec, lid_qsurf_total, psidt, soilw, tst, urban_prec
    !! array location #1 is for last time step of prev day
 
    sb = hru_sub(j)

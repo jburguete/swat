@@ -3,7 +3,11 @@
 !> @author
 !> modified by Javier Burguete
 
-subroutine routels(iru_sub, sb)
+!> @param[in] iru_sub route across landscape unit
+!> @param[in] sb subbasin number
+!> @param[in] k inflow hydrograph storage location number (none)
+!> @param[in] j subbasin number
+subroutine routels(iru_sub, sb, k, j)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
@@ -73,7 +77,7 @@ subroutine routels(iru_sub, sb)
 
    use parm
    implicit none
-   integer, intent(in) :: iru_sub, sb
+   integer, intent(in) :: iru_sub, sb, k, j
    integer :: ii, jj, kk, lyr
    real*8 :: cy, dakm, dep, dr, dr_er, dstor, frac, gwqout, gwqrunon, latqlyr,&
       &latqout, latqrunon,  ls_gwq, ls_latq, ls_overq, orgn, orgp, qs, sed,&
@@ -85,19 +89,19 @@ subroutine routels(iru_sub, sb)
       surfqrunon = 0.
       surfqout = 0.
       if (inum5 == 0) then
-         ls_overq = varoute(29,inum2) * rnum1
+         ls_overq = varoute(29,k) * rnum1
       end if
       if (inum8 == 0) then
-         ls_overq = varoute(31,inum2) * rnum1
+         ls_overq = varoute(31,k) * rnum1
       end if
 !!    sediment
-      sed = varoute(3,inum2) * rnum1
+      sed = varoute(3,k) * rnum1
       !! use surface runoff (mm) for eiq - m3/(10 * 100*km2) = mm
-      ru_eiq(inum3,sb) = ls_overq / (1000. * daru_km(inum3,sb))
-      trancap = ru_ktc(inum3,sb) * ru_c(inum3,sb) *&
-         &ru_eiq(inum3,sb) * ru_k(inum3,sb) *&
-         &ru_a(inum3,sb)**1.4 * ru_ovs(inum3,sb)**1.4
-      trancap = trancap * daru_km(inum3,sb) * 100.   !! t/ha -> t
+      ru_eiq(j,sb) = ls_overq / (1000. * daru_km(j,sb))
+      trancap = ru_ktc(j,sb) * ru_c(j,sb) *&
+         &ru_eiq(j,sb) * ru_k(j,sb) *&
+         &ru_a(j,sb)**1.4 * ru_ovs(j,sb)**1.4
+      trancap = trancap * daru_km(j,sb) * 100.   !! t/ha -> t
       if (sed > trancap) then
          varoute(3,ihout) = trancap
          dr = varoute(3,ihout) / sed
@@ -107,8 +111,8 @@ subroutine routels(iru_sub, sb)
       end if
 
 !!    organic nitrogen
-      orgn = varoute(4,inum2) * rnum1
-      cy = varoute(3,inum2) / (varoute(2,inum2) + 1.e-6)
+      orgn = varoute(4,k) * rnum1
+      cy = varoute(3,k) / (varoute(2,k) + 1.e-6)
       if (cy > .01) then
          enratio = .78 * cy ** (-.2468)
       else
@@ -120,18 +124,18 @@ subroutine routels(iru_sub, sb)
       varoute(4,ihout) = orgn * dr_er
 
 !!    organic phosphorus
-      orgp = varoute(5,inum2) * rnum1
+      orgp = varoute(5,k) * rnum1
       varoute(5,ihout) = orgp * dr_er
 
 !!    nitrate (& nitrite)
-!            no3 = (varoute(6,inum2) + varoute(15,inum2)) * rnum1 ! not used
+!            no3 = (varoute(6,k) + varoute(15,k)) * rnum1 ! not used
 !!    soluble phosphorus
-!            slbp = varoute(7,inum2) * rnum1 ! not used
+!            slbp = varoute(7,k) * rnum1 ! not used
 !!    soluble pesticide not routed
 !!    sorbed pesticide not routed
 !!    chlorophyll-a not routed
 !!    ammonium
-!            nh3 = varoute(14,inum2) * rnum1 ! not used
+!            nh3 = varoute(14,k) * rnum1 ! not used
 !!    CBOD not routed
 !!    dissolved oxygen not routed
 !!    persistent bacteria not routed
@@ -144,14 +148,14 @@ subroutine routels(iru_sub, sb)
       if (ls_overq > 1.e-6) then
          latqout = 0.
          gwqout = 0.
-         do kk = 1, hrutot(inum3)
-            jj= hru1(inum3) + kk - 1
+         do kk = 1, hrutot(j)
+            jj= hru1(j) + kk - 1
             if (iru_sub == 0) then
                frac = hru_fr(jj)
-               dakm = sub_km(inum3)
+               dakm = sub_km(j)
             else
                frac = hru_rufr(sb,kk)
-               dakm = daru_km(inum3,sb)
+               dakm = daru_km(j,sb)
             end if
             if (frac > 1.e-9) then
                xx = frac * dakm * 100.     !!km2*100 = ha
@@ -186,23 +190,23 @@ subroutine routels(iru_sub, sb)
 
 !!    compute lateral flow to next landscape unit
    if (inum6 == 0) then
-      ls_latq = varoute(30,inum2) * rnum1
+      ls_latq = varoute(30,k) * rnum1
       latqout = 0.
       latqrunon = 0.
       if (ls_latq > 1.e-9) then
-         do kk = 1, hrutot(inum3)
-            jj= hru1(inum3) + kk - 1
+         do kk = 1, hrutot(j)
+            jj= hru1(j) + kk - 1
             if (iru_sub == 0) then
                frac = hru_fr(jj)
-               dakm = sub_km(inum3)
+               dakm = sub_km(j)
             else
                frac = hru_rufr(sb,kk)
-               dakm = daru_km(inum3,sb)
+               dakm = daru_km(j,sb)
             end if
             if (frac > 1.e-9) then
                xx = frac * dakm * 100.     !!km2*100 = ha
                latqrunon = ls_latq / (10. * xx)
-               jj= hru1(inum3) + kk - 1
+               jj= hru1(j) + kk - 1
 !!          put in soil layers - weighted by depth of soil layer
                dep = 0.
                xslat = 0.
@@ -228,23 +232,23 @@ subroutine routels(iru_sub, sb)
 !!    compute groundwater flow to next landscape unit -
 !!    used the next day in gwmod - routed with recharge
    if (inum7 == 0) then
-      ls_gwq = varoute(32,inum2) * rnum1
+      ls_gwq = varoute(32,k) * rnum1
       if (ls_gwq > 1.e-6) then
          gwqout = 0.
          gwqrunon = 0.
-         do kk = 1, hrutot(inum3)
-            jj= hru1(inum3) + kk - 1
+         do kk = 1, hrutot(j)
+            jj= hru1(j) + kk - 1
             if (iru_sub == 0) then
                frac = hru_fr(jj)
-               dakm = sub_km(inum3)
+               dakm = sub_km(j)
             else
                frac = hru_rufr(sb,kk)
-               dakm = daru_km(inum3,sb)
+               dakm = daru_km(j,sb)
             end if
             if (frac > 1.e-9) then
                xx = frac * dakm * 100.     !!km2*100 = ha
                gwqrunon = ls_gwq / (10. * xx)
-               jj= hru1(inum3) + kk - 1
+               jj= hru1(j) + kk - 1
                gwq_ru(jj) = gwqrunon
             end if
          end do
@@ -252,7 +256,7 @@ subroutine routels(iru_sub, sb)
    end if
 
    do ii = 29, mvaro
-      varoute(ii,inum2) = 0.
+      varoute(ii,k) = 0.
    end do
 
    return

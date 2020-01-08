@@ -146,7 +146,9 @@ subroutine bmp_ri_pond(sb, kk, riflw, rised)
       !sediment deposition
       sedpnde = qpnd *sedconc / 1.e6 !tons
 
-      ri_sed_cumul(sb,kk) = ri_sed(sb,kk) + sedpndi - sedpnde
+      !ri_sed(sb,kk) seems to be always 0
+      !ri_sed_cumul(sb,kk) = ri_sed(sb,kk) + sedpndi - sedpnde
+      !ri_sed_cumul(sb,kk) = sedpndi - sedpnde ! not used
 
       riflw(1,ii) = qin / (sub_ha *10000. - tsa) * 1000.  !mm
       riflw(2,ii) = outflw(ii) / (sub_ha *10000. - tsa) * 1000.

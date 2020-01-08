@@ -5,13 +5,16 @@
 
 !> this subroutine transfers water
 !> @param[in] j reach or reservoir # from which water is removed (none)
-subroutine transfer(j)
+!> @param[in] k reach or reservoir # to which water is added (none)
+subroutine transfer(j, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    j           |none          |reach or reservoir # from which water is
 !!                               |removed
+!!    k           |none          |reach or reservoir # to which water is
+!!                               |added
 !!    icodes(:)   |none          |routing command code:
 !!                               |0 = finish       9 = save
 !!                               |1 = subbasin    10 = recday
@@ -45,11 +48,6 @@ subroutine transfer(j)
 !!                               |5: hydrograph storage location of 1st
 !!                               |   dataset to be added
 !!                               |6,7,8,9,10,11,14: file number
-!!    inum2       |none          |water destination type:
-!!                               |1 reach
-!!                               |2 reservoir
-!!    inum3       |none          |reach or reservoir # to which water is
-!!                               |added
 !!    inum4       |none          |rule governing transfer of water
 !!                               |1 fraction of water in source transferred
 !!                               |2 minimum volume (res) or flow (rch) left
@@ -129,7 +127,7 @@ subroutine transfer(j)
    use parm
    implicit none
 
-   integer, intent(in) :: j
+   integer, intent(in) :: j, k
    real*8 :: ratio, ratio1, tranmx, volum, xx
    integer :: ii, nhyd_tr
 
@@ -230,9 +228,9 @@ subroutine transfer(j)
          varoute(ii,nhyd_tr) = varoute(ii,nhyd_tr) * ratio
       end do
       !!save vartran to add in rchinit and resinit
-      vartran(2,inum3) = xx
+      vartran(2,k) = xx
       do ii = 3, mvaro
-         vartran(ii,inum3) = varoute(ii,nhyd_tr) * ratio1
+         vartran(ii,k) = varoute(ii,nhyd_tr) * ratio1
       end do
 
    end if

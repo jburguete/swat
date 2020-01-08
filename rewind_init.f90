@@ -356,7 +356,6 @@ subroutine rewind_init
       icode = icodes(j)
       ihout = ihouts(j)
       k = inum1s(j)
-      inum2 = inum2s(j)
       inum3 = inum3s(j)
       rnum1 = rnum1s(j)
       inum4 = inum4s(j)

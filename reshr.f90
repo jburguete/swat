@@ -6,22 +6,23 @@
 !> this subroutine routes water and sediment through reservoirs
 !> computes evaporation and seepage from the reservoir.
 !> @param[in] jres reservoir number (none)
-subroutine reshr(jres)
+!> @param[in] inhyd inflow hydrograph storage location number (none)
+subroutine reshr(jres, inhyd)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jres         |none          |reservoir number
-!!    br(1,:)       |none          |1st shape parameter for reservoir surface
+!!    inhyd        |none          |inflow hydrograph location number
+!!    br(1,:)      |none          |1st shape parameter for reservoir surface
 !!                                |area equation
-!!    br(2,:)       |none          |2nd shape parameter for reservoir surface
+!!    br(2,:)      |none          |2nd shape parameter for reservoir surface
 !!                                |area equation
 !!    curyr        |none          |current year of simulation
 !!    iflodr(1,:)  |none          |beginning month of non-flood season
 !!                                |(needed if IRESCO=2)
 !!    iflodr(2,:)  |none          |ending month of non-flood season
 !!                                |(needed if IRESCO=2)
-!!    inum2        |none          |inflow hydrograph location number
 !!    iresco(:)    |none          |outflow simulation code:
 !!                                |0 compute outflow for uncontrolled reservoir
 !!                                |  with average annual release rate
@@ -83,7 +84,6 @@ subroutine reshr(jres)
 !!    flw         |m^3/s         |reservoir outflow for day
 !!    hhresflwi
 !!    hhressedi
-!!    inhyd       |none          |inflow hydrograph location number
 !!    k           |none          |counter
 !!    sed         |kg/L          |concentration of sediment in reservoir at
 !!                               |beginning of day
@@ -107,8 +107,6 @@ subroutine reshr(jres)
    real*8, dimension(nstep) :: hhresflwi, hhressedi
    real*8 :: flw, sed, targ, vol, vvr, xx
    integer :: inhyd, k
-
-   inhyd = inum2
 
 !! store initial values
    flw = 0.

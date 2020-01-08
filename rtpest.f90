@@ -6,12 +6,14 @@
 !> this subroutine computes the daily stream pesticide balance
 !> (soluble and sorbed)
 !> @param[in] jrch reach number (none)
-subroutine rtpest(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine rtpest(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name          |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch          |none          |reach number
+!!    k             |none          |inflow hydrograph storage location number
 !!    ch_l(2,:)     |km            |length of main channel
 !!    ch_w(2,:)     |m             |average width of main channel
 !!    chpst_conc(:) |mg/(m**3)     |initial pesticide concentration in reach
@@ -29,7 +31,6 @@ subroutine rtpest(jrch)
 !!    drift(:)      |kg            |amount of pesticide drifting onto main
 !!                                 |channel in subbasin
 !!    hru_sub(:)    |none          |subbasin number where reach is located
-!!    inum2         |none          |inflow hydrograph storage location number
 !!    rchdep        |m             |depth of flow on day
 !!    rchwtr        |m^3 H2O       |water stored in reach at beginning of day
 !!    rnum1         |none          |fraction of overland flow
@@ -89,19 +90,20 @@ subroutine rtpest(jrch)
 !!    tday        |days          |flow duration
 !!    wtrin       |m^3 H2O       |volume of water entering reach during time
 !!                               |step
+!!    xx          |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
-!!    Intrinsic: Abs
+!!    Intrinsic: Exp, Abs
 
 !!    ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8 :: bedvol, chpstmass, depth, fd2, frsol, frsrb, pstin, sedcon,&
-      &sedpstmass, solmax, solpstin, sorpstin, tday, wtrin
+      &sedpstmass, solmax, solpstin, sorpstin, tday, wtrin, xx
 
 !! initialize depth of water for pesticide calculations
    if (rchdep < 0.1) then
@@ -114,11 +116,12 @@ subroutine rtpest(jrch)
    bedvol = ch_w(2,jrch) * ch_l(2,jrch) * 1000. * sedpst_act(jrch)
 
 !! calculate volume of water entering reach
-   wtrin = varoute(2,inum2) * (1. - rnum1)
+   xx = 1. - rnum1
+   wtrin = varoute(2,k) * xx
 
 !! pesticide transported into reach during day
-   solpstin = varoute(11,inum2) * (1. - rnum1)
-   sorpstin = varoute(12,inum2) * (1. - rnum1)
+   solpstin = varoute(11,k) * xx
+   sorpstin = varoute(12,k) * xx
    pstin = solpstin + sorpstin
 
    !! calculate mass of pesticide in reach
@@ -165,7 +168,7 @@ subroutine rtpest(jrch)
       !! biological degradation on day in reach
       !! MFW, 3/12/12: modify decay to be 1st order
       !! reactw = chpst_rea(jrch) * chpstmass * tday
-      reactw = chpstmass - (chpstmass * EXP(-1. * chpst_rea(jrch) * tday))
+      reactw = chpstmass - (chpstmass * Exp(-1. * chpst_rea(jrch) * tday))
       chpstmass = chpstmass - reactw
 
       !! calculate amount of pesticide that volatilizes from reach

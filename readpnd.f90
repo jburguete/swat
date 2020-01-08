@@ -490,11 +490,11 @@ subroutine readpnd(i)
          if (eof < 0) exit
          read (104,*,iostat=eof) wtp_sdexp(i)
          if (eof < 0) exit
-         read (104,*,iostat=eof) wtp_sdc1(i)
+         read (104,*,iostat=eof) wtp_sdc(1,i)
          if (eof < 0) exit
-         read (104,*,iostat=eof) wtp_sdc2(i)
+         read (104,*,iostat=eof) wtp_sdc(2,i)
          if (eof < 0) exit
-         read (104,*,iostat=eof) wtp_sdc3(i)
+         read (104,*,iostat=eof) wtp_sdc(3,i)
          if (eof < 0) exit
          read (104,*,iostat=eof) wtp_extdepth(i)
          if (eof < 0) exit
@@ -625,8 +625,12 @@ subroutine readpnd(i)
          if (eof < 0) exit
          !! Green Roof (gr)
          read (104,*,iostat=eof) (gr_onoff(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_imo(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (gr_iyr(i,k),k=1,mudb)
+
+         !read (104,*,iostat=eof) (gr_imo(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         !read (104,*,iostat=eof) (gr_iyr(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+
          read (104,*,iostat=eof) (gr_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_solop(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_etcoef(i,k),k=1,mudb)
@@ -644,8 +648,12 @@ subroutine readpnd(i)
          if (eof < 0) exit
          !! Rain Garden (rg)
          read (104,*,iostat=eof) (rg_onoff(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_imo(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (rg_iyr(i,k),k=1,mudb)
+ 
+         !read (104,*,iostat=eof) (rg_imo(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         !read (104,*,iostat=eof) (rg_iyr(i,k),k=1,mudb) ! not used
+         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+
          read (104,*,iostat=eof) (rg_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_solop(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_etcoef(i,k),k=1,mudb)

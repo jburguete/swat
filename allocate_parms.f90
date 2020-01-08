@@ -179,7 +179,7 @@ subroutine allocate_parms
    allocate (ch_si(mch))
    allocate (ch_wdr(mch))
    allocate (ch_wi(mch))
-   allocate (ch_erodmo(mch,12))
+   allocate (ch_erodmo(12,mch))
    allocate (chlora(mch))
    allocate (chpst_conc(mch))
    allocate (chpst_koc(mch))
@@ -352,10 +352,10 @@ subroutine allocate_parms
    allocate (wcklsp(msub))
    allocate (welev(msub))
 
-   allocate (huminc(msub,12))
-   allocate (radinc(msub,12))
-   allocate (rfinc(msub,12))
-   allocate (tmpinc(msub,12))
+   allocate (huminc(12,msub))
+   allocate (radinc(12,msub))
+   allocate (rfinc(12,msub))
+   allocate (tmpinc(12,msub))
 
    allocate (sub_sftmp(10,msub))
    allocate (sub_smtmp(10,msub))
@@ -1409,8 +1409,6 @@ subroutine allocate_parms
    allocate (ro_bmp_snt(20,mhru))
    allocate (ro_bmp_bact(20,mhru))
 
-   allocate (bmp_flag(mhru))
-
    allocate (bmp_flo(mhru))
    allocate (bmp_sed(mhru))
    allocate (bmp_pp(mhru))
@@ -1436,43 +1434,44 @@ subroutine allocate_parms
    allocate (bmp_bact(mhru))
 
    !retention irrigation
-   allocate(ri_sed(msub,10),ri_fr(msub,10),ri_dim(msub,10),&
+   allocate(ri_fr(msub,10),ri_dim(msub,10),&
       &ri_im(msub,10),ri_iy(msub,10),ri_sa(msub,10),ri_vol(msub,10),&
       &ri_qi(msub,10),ri_k(msub,10),ri_dd(msub,10),ri_evrsv(msub,10),&
-      &ri_dep(msub,10),ri_ndt(msub,10),ri_nirr(msub,30),&
+      &ri_dep(msub,10),ri_nirr(msub,30),&
       &num_noirr(msub),ri_totpvol(nstep),ri_luflg(mhru),&
-      &ri_subkm(msub),ri_sed_cumul(msub,10),irmmdt(nstep),&
-      &ri_pumpv(msub,10),ri_sedi(msub,10))
+      &ri_subkm(msub),ri_pumpv(msub,10),ri_sedi(msub,10))
    allocate(num_ri(msub), ri_pmpvol(10,nstep),hrnopcp(msub,0:nstep),&
       &ri_qloss(10,nstep))
 
    !wet pond
-   allocate(wtp_subnum(mhyd),wtp_onoff(mhyd),wtp_imo(mhyd),&
+   allocate(wtp_onoff(mhyd),wtp_imo(mhyd),&
       &wtp_iyr(mhyd),wtp_dim(mhyd),wtp_stagdis(mhyd),wtp_sdtype(mhyd),&
       &wtp_pvol(mhyd),wtp_pdepth(mhyd),wtp_sdslope(mhyd),&
       &wtp_lenwdth(mhyd),wtp_extdepth(mhyd),wtp_hydeff(mhyd),&
-      &wtp_evrsv(mhyd),wtp_sdintc(mhyd),wtp_sdexp(mhyd),wtp_sdc1(mhyd),&
-      &wtp_sdc2(mhyd),wtp_sdc3(mhyd),wtp_pdia(mhyd),wtp_plen(mhyd),&
+      &wtp_evrsv(mhyd),wtp_sdintc(mhyd),wtp_sdexp(mhyd),&
+      &wtp_pdia(mhyd),wtp_plen(mhyd),&
       &wtp_pmann(mhyd),wtp_ploss(mhyd),wtp_k(mhyd),&
       &wtp_dp(mhyd),wtp_sedi(mhyd),wtp_sede(mhyd),wtp_qi(mhyd))
+    allocate(wtp_sdc(3,mhyd))
 
 !!    LID simulations
 !!    Common variable
 !!    van Genuchten equation's coefficients
    allocate(lid_cuminf_last(mhru,4),lid_sw_last(mhru,4),&
-      &interval_last(mhru,4),lid_f_last(mhru,4),lid_cumr_last(mhru,4),&
+      &lid_f_last(mhru,4),lid_cumr_last(mhru,4),&
       &lid_str_last(mhru,4),lid_farea(mhru,4),lid_qsurf(mhru,4),&
       &lid_sw_add(mhru,4),lid_cumqperc_last(mhru,4),&
-      &lid_cumirr_last(mhru,4),lid_excum_last(mhru,4))    !!  nbs
+      &lid_excum_last(mhru,4))    !!  nbs
+   allocate(lid_cumirr_last(mhru))
 
 !!    Green Roof
-   allocate(gr_onoff(msub,mudb),gr_imo(msub,mudb),gr_iyr(msub,mudb),&
+   allocate(gr_onoff(msub,mudb),&
       &gr_farea(msub,mudb),gr_solop(msub,mudb),gr_etcoef(msub,mudb),&
       &gr_fc(msub,mudb),gr_wp(msub,mudb),gr_ksat(msub,mudb),&
       &gr_por(msub,mudb),gr_hydeff(msub,mudb),gr_soldpt(msub,mudb))
 
 !!    Rain Garden
-   allocate(rg_onoff(msub,mudb),rg_imo(msub,mudb),rg_iyr(msub,mudb),&
+   allocate(rg_onoff(msub,mudb),&
       &rg_farea(msub,mudb),rg_solop(msub,mudb),rg_etcoef(msub,mudb),&
       &rg_fc(msub,mudb),rg_wp(msub,mudb),rg_ksat(msub,mudb),&
       &rg_por(msub,mudb),rg_hydeff(msub,mudb),rg_soldpt(msub,mudb),&

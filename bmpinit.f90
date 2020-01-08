@@ -61,6 +61,7 @@ subroutine bmpinit(ii)
 !!    j           |none          |counter
 !!    k           |none          |counter
 !!    qstg
+!!    ri_ndt
 !!    sub_ha
 !!    wqv
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -74,7 +75,7 @@ subroutine bmpinit(ii)
    implicit none
    integer, intent(in) :: ii
    integer :: j, k
-   real*8 :: bmpfr_ri, bmpfr_sf, hstg, hwq, qstg, sub_ha, wqv
+   real*8 :: bmpfr_ri, bmpfr_sf, hstg, hwq, qstg, ri_ndt, sub_ha, wqv
 
    bmpfr_sf=0.; bmpfr_ri=0.; hstg = 0.; qstg=0.
    sub_ha = sub_km(ii) * 100.
@@ -236,10 +237,10 @@ subroutine bmpinit(ii)
       end if
 
       ! draw down time [number of time step]
-      ri_ndt(ii,k) = (ri_dd(ii,k) - 12.) * 60 / idt  !minus the first dry 12 hours no-pumping
+      ri_ndt = (ri_dd(ii,k) - 12.) * 60 / idt  !minus the first dry 12 hours no-pumping
 
       ! pumping rate that empties the basin in 72 hours with initial 12 hour of no operatrion
-      ri_pumpv(ii,k) = ri_vol(ii,k) / ri_ndt(ii,k) !m3/dt
+      ri_pumpv(ii,k) = ri_vol(ii,k) / ri_ndt !m3/dt
 
       if (ri_im(ii,k)<0.or.ri_im(ii,k)>12) ri_im(ii,k) = 0
       if (ri_iy(ii,k)<1000.and.ri_iy(ii,k)>0) ri_iy(ii,k) = 0

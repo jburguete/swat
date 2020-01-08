@@ -6,12 +6,14 @@
 !> this subroutine performs in-stream nutrient calculations. No transformations
 !> are calculated
 !> @param[in] jrch reach number (none)
-subroutine hhnoqual(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine hhnoqual(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-!!    jrch        |none          |reach number
+!!    jrch             |none          |reach number
+!!    k                |none          |inflow hydrograph storage location number
 !!    ai0              |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    algae(:)         |mg alg/L      |algal biomass concentration in reach
 !!    ammonian(:)      |mg N/L        |ammonia concentration in reach
@@ -29,7 +31,6 @@ subroutine hhnoqual(jrch)
 !!    hhvaroute(17,:,:)|kg O2         |dissolved oxygen
 !!    hrchwtr(ii)      |m^3 H2O       |water stored in reach at beginning of day
 !!    hrtwtr(:)        |m^3 H2O       |flow out of reach
-!!    inum2            |none          |inflow hydrograph storage location number
 !!    nitraten(:)      |mg N/L        |nitrate concentration in reach
 !!    nitriten(:)      |mg N/L        |nitrite concentration in reach
 !!    organicn(:)      |mg N/L        |organic nitrogen concentration in reach
@@ -97,7 +98,7 @@ subroutine hhnoqual(jrch)
    use parm
    implicit none
 
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8 :: algcon, algin, ammoin, cbodcon, cbodin, chlin, disoxin, dispin,&
       &nh3con, nitratin, nitritin, no2con, no3con, o2con, orgncon, orgnin,&
       &orgpcon, orgpin, solpcon, wtmp, wtrin, wtrtot, xx
@@ -106,7 +107,8 @@ subroutine hhnoqual(jrch)
 !! hourly loop
    do ii = 1, nstep
       !! initialize water flowing into reach
-      wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
+      xx = 1. - rnum1
+      wtrin = hhvaroute(2,k,ii) * xx
 
       if (hrtwtr(ii) / (idt * 60.) > 0.01 .and. wtrin > 0.01) then
 !! concentrations
@@ -122,17 +124,17 @@ subroutine hhnoqual(jrch)
          cbodin = 0.
          disoxin = 0.
          if (wtrin > 0.001) then
-            xx = 1000. * (1. - rnum1) / wtrin
-            chlin = xx * hhvaroute(13,inum2,ii) 
+            xx = 1000. * xx / wtrin
+            chlin = xx * hhvaroute(13,k,ii) 
             algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-            orgnin = xx * hhvaroute(4,inum2,ii)
-            ammoin = xx * hhvaroute(14,inum2,ii)
-            nitritin = xx * hhvaroute(15,inum2,ii)
-            nitratin = xx * hhvaroute(6,inum2,ii)
-            orgpin = xx * hhvaroute(5,inum2,ii)
-            dispin = xx * hhvaroute(7,inum2,ii)
-            cbodin = xx * hhvaroute(16,inum2,ii)
-            disoxin= xx * hhvaroute(17,inum2,ii)
+            orgnin = xx * hhvaroute(4,k,ii)
+            ammoin = xx * hhvaroute(14,k,ii)
+            nitritin = xx * hhvaroute(15,k,ii)
+            nitratin = xx * hhvaroute(6,k,ii)
+            orgpin = xx * hhvaroute(5,k,ii)
+            dispin = xx * hhvaroute(7,k,ii)
+            cbodin = xx * hhvaroute(16,k,ii)
+            disoxin= xx * hhvaroute(17,k,ii)
          end if
 
          if (chlin < 1.e-6) chlin = 0.0

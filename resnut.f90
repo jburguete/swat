@@ -6,18 +6,19 @@
 !> this subroutine routes soluble nitrogen and soluble phosphorus through
 !> reservoirs
 !> @param[in] jres reservoir number (none)
-subroutine resnut(jres)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine resnut(jres, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jres        |none          |reservior number
+!!    k           |none          |inflow hydrograph storage location number
 !!    chlar(:)    |none          |chlorophyll-a production coefficient for
 !!                               |reservoir
-!!    inum2       |none          |inflow hydrograph storage location number
-!!    ires(1,:)    |none          |beginning of mid-year nutrient settling
+!!    ires(1,:)   |none          |beginning of mid-year nutrient settling
 !!                               |"season"
-!!    ires(2,:)    |none          |end of mid-year nutrient settling "season"
+!!    ires(2,:)   |none          |end of mid-year nutrient settling "season"
 !!    i_mo        |none          |current month of simulation
 !!    nsetlr(1,:) |m/day         |nitrogen settling rate for 1st season
 !!    nsetlr(2,:) |m/day         |nitrogen settling rate for 2nd season
@@ -87,7 +88,7 @@ subroutine resnut(jres)
    implicit none
 
    real*8 Theta
-   integer, intent(in) :: jres
+   integer, intent(in) :: jres, k
    real*8 :: chlaco, conc_n, conc_p, nitrok, phosk, res_chla, tpco, xx
 
 !! if reservoir volume less than 1 m^3, set all nutrient levels to
@@ -114,12 +115,12 @@ subroutine resnut(jres)
 
    !! add incoming nutrients to those in reservoir
    !! equation 29.1.1 in SWAT manual
-   res_orgn(jres) = res_orgn(jres) + varoute(4,inum2)
-   res_orgp(jres) = res_orgp(jres) + varoute(5,inum2)
-   res_no3(jres) = res_no3(jres) + varoute(6,inum2)
-   res_nh3(jres) = res_nh3(jres) + varoute(14,inum2)
-   res_no2(jres) = res_no2(jres) + varoute(15,inum2)
-   res_solp(jres) = res_solp(jres) + varoute(7,inum2)
+   res_orgn(jres) = res_orgn(jres) + varoute(4,k)
+   res_orgp(jres) = res_orgp(jres) + varoute(5,k)
+   res_no3(jres) = res_no3(jres) + varoute(6,k)
+   res_nh3(jres) = res_nh3(jres) + varoute(14,k)
+   res_no2(jres) = res_no2(jres) + varoute(15,k)
+   res_solp(jres) = res_solp(jres) + varoute(7,k)
 
    conc_p = (res_orgp(jres) + res_solp(jres)) / res_vol(jres)
    conc_n = (res_orgn(jres) + res_no3(jres) + res_nh3(jres) + res_no2(jres)) / res_vol(jres)

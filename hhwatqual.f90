@@ -6,12 +6,14 @@
 !> this subroutine performs in-stream nutrient transformations and water
 !> quality calculations for hourly timestep
 !> @param[in] jrch reach number (none)
-subroutine hhwatqual(jrch)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine hhwatqual(jrch, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name             |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jrch             |none          |reach number
+!!    k                |none          |inflow hydrograph storage location number
 !!    ai0              |ug chla/mg alg|ratio of chlorophyll-a to algal biomass
 !!    ai1              |mg N/mg alg   |fraction of algal biomass that is N
 !!    ai2              |mg P/mg alg   |fraction of algal biomass that is P
@@ -61,7 +63,6 @@ subroutine hhwatqual(jrch)
 !!                                    | u = mumax * fll * Min(fnn, fpp)
 !!                                    |3: harmonic mean
 !!                                    | u = mumax * fll * 2. / ((1/fnn)+(1/fpp))
-!!    inum2            |none          |inflow hydrograph storage location number
 !!    k_l              |MJ/(m2*hr)    |half saturation coefficient for light
 !!    k_n              |mg N/L        |michaelis-menton half-saturation constant
 !!                                    |for nitrogen
@@ -226,7 +227,7 @@ subroutine hhwatqual(jrch)
    implicit none
 
    real*8 Theta, Oxygen_saturation
-   integer, intent(in) :: jrch
+   integer, intent(in) :: jrch, k
    real*8, parameter :: thbc1 = 1.083, thbc2 = 1.047, thbc3 = 1.047,&
       &thbc4 = 1.047, thgra = 1.047, thrho = 1.047, thrk1 = 1.047,&
       &thrk2 = 1.024, thrk3 = 1.024, thrk4 = 1.060, thrs1 = 1.024,&
@@ -241,7 +242,8 @@ subroutine hhwatqual(jrch)
 !! hourly loop
    do ii = 1, nstep
       !! initialize water flowing into reach
-      wtrin = hhvaroute(2,inum2,ii) * (1. - rnum1)
+      xx = 1. - rnum1
+      wtrin = hhvaroute(2,k,ii) * xx
 
       if (hrtwtr(ii) / (idt * 60.) > 0.01) then
 !! concentrations
@@ -258,17 +260,17 @@ subroutine hhwatqual(jrch)
          disoxin = 0.
          cinn = 0.
          if (wtrin > 0.001) then
-            xx = (1. - rnum1) / wtrin
-            chlin = 1000. * hhvaroute(13,inum2,ii) * xx
+            xx = xx / wtrin
+            chlin = 1000. * hhvaroute(13,k,ii) * xx
             algin = 1000. * chlin / ai0        !! QUAL2E equation III-1
-            orgnin = 1000. * hhvaroute(4,inum2,ii) * xx
-            ammoin = 1000. * hhvaroute(14,inum2,ii) * xx
-            nitritin = 1000. * hhvaroute(15,inum2,ii) * xx
-            nitratin = 1000. * hhvaroute(6,inum2,ii) * xx
-            orgpin = 1000. * hhvaroute(5,inum2,ii) * xx
-            dispin = 1000. * hhvaroute(7,inum2,ii) * xx
-            cbodin = 1000. * hhvaroute(16,inum2,ii) * xx
-            disoxin= 1000. * hhvaroute(17,inum2,ii) * xx
+            orgnin = 1000. * hhvaroute(4,k,ii) * xx
+            ammoin = 1000. * hhvaroute(14,k,ii) * xx
+            nitritin = 1000. * hhvaroute(15,k,ii) * xx
+            nitratin = 1000. * hhvaroute(6,k,ii) * xx
+            orgpin = 1000. * hhvaroute(5,k,ii) * xx
+            dispin = 1000. * hhvaroute(7,k,ii) * xx
+            cbodin = 1000. * hhvaroute(16,k,ii) * xx
+            disoxin= 1000. * hhvaroute(17,k,ii) * xx
          end if
 
          if (chlin < 1.e-6) chlin = 0.0

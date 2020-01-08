@@ -244,7 +244,7 @@ subroutine harvestop(j)
    endif
 
    if (hi_bms > 0.) then       !! compute biomass yield !! corrected by cibin Nov/2013
-      yieldbms = hi_bms * (1.-rwt(j)) * bio_ms(j)*harveff
+      yieldbms = hi_bms * (1.-rwt(j)) * bio_ms(j) * harveff
       clipbms = hi_bms * (1.-rwt(j)) * bio_ms(j) * (1. - harveff)
       bio_ms(j) = bio_ms(j) - yieldbms - clipbms !corrected by Jaehak Jeong sep. 2013
       !! calculate nutrients removed with yield
@@ -359,11 +359,11 @@ subroutine harvestop(j)
       !In Jimmy's code, lignin added to sol_LSL is calculated as RLR*LSF*resnew
       !However, I think we should use RLR*resnew; Confirmed with Jimmy
       !sol_LSL(1,j) = sol_LSL(1,j) + RLR* LSF * resnew
-      sol_LSL(1,j) = sol_LSL(1,j) + RLR*resnew
+      sol_LSL(1,j) = sol_LSL(1,j) + RLR * resnew
       sol_LSC(1,j) = sol_LSC(1,j) + 0.42*LSF * resnew
       !In allignment with the sol_LSL calculation, sol_LSLC is also changed
       !sol_LSLC(1,j) = sol_LSLC(1,j) + RLR*0.42*LSF * resnew
-      sol_LSLC(1,j) = sol_LSLC(1,j) + RLR*0.42+resnew
+      sol_LSLC(1,j) = sol_LSLC(1,j) + RLR * 0.42 + resnew
       sol_LSLNC(1,j) = sol_LSC(1,j) - sol_LSLC(1,j)
 
       !X3 = MIN(X6,0.42*LSF * resnew/150)
@@ -448,9 +448,9 @@ subroutine harvestop(j)
          sol_LS(l,j) = sol_LS(l,j) + LSF * resnew
 
          !here a simplified assumption of 0.5 LSL
-         sol_LSL(l,j) = sol_LSL(l,j) + RLR* LSF * resnew
-         sol_LSC(l,j) = sol_LSC(l,j) + 0.42*LSF * resnew
-         sol_LSLC(l,j) = sol_LSLC(l,j) + RLR*0.42*LSF * resnew
+         sol_LSL(l,j) = sol_LSL(l,j) + RLR * LSF * resnew
+         sol_LSC(l,j) = sol_LSC(l,j) + 0.42 * LSF * resnew
+         sol_LSLC(l,j) = sol_LSLC(l,j) + RLR * 0.42 * LSF * resnew
          sol_LSLNC(l,j) = sol_LSC(l,j) - sol_LSLC(1,j)
 
          if (resnew_ne >= (0.42 * LSF * resnew /150)) then

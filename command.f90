@@ -85,8 +85,6 @@ subroutine command(i)
 !!    name        |units         |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    ihout       |none          |variable to hold value for ihouts(:)
-!!    inum1       |none          |variable to hold value for inum1s(:)
-!!    inum2       |none          |variable to hold value for inum2s(:)
 !!    inum3       |none          |variable to hold value for inum3s(:)
 !!    inum4       |none          |variable to hold value for inum4s(:)
 !!    rnum1       |none          |variable to hold value for rnum1s(:)
@@ -97,6 +95,8 @@ subroutine command(i)
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    icode    |none          |variable to hold value for icodes(:)
 !!    ii       |none          |counter
+!!    inum1    |none          |variable to hold value for inum1s(:)
+!!    inum2    |none          |variable to hold value for inum2s(:)
 !!    j        |none          |counter
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -111,7 +111,7 @@ subroutine command(i)
    implicit none
 
    integer, intent(in) :: i
-   integer :: icode, ii, inum1, j
+   integer :: icode, ii, inum1, inum2, j
 
    j = 0
 
@@ -122,18 +122,18 @@ subroutine command(i)
       inum1 = inum1s(j)
       inum2 = inum2s(j)
       inum3 = inum3s(j)
-      rnum1 = rnum1s(j)
       inum4 = inum4s(j)
       inum5 = inum5s(j)
       inum6 = inum6s(j)
       inum7 = inum7s(j)
       inum8 = inum8s(j)
+      rnum1 = rnum1s(j)
 
       select case (icode)
        case (0)
          return
        case (1)
-         call subbasin(i, inum1)
+         call subbasin(i, inum1, inum2, inum3)
          call print_hyd(i)
        case (2)
          call route(i, inum1, inum2)
@@ -142,12 +142,12 @@ subroutine command(i)
          call sumhyd
          call print_hyd(i)
        case (3)
-         call routres(inum1)
+         call routres(inum1, inum2)
          call sumhyd
        case (4)
-         call transfer(inum1)
+         call transfer(inum1, inum3)
        case (5)
-         call addh(inum1)
+         call addh(inum1, inum2)
          call sumhyd
          call print_hyd(i)
        case (6)
@@ -161,7 +161,7 @@ subroutine command(i)
          call recyear(inum1)
          call sumhyd
        case (9)
-         call save(inum1)
+         call save(inum1, inum2)
        case (10)
          call recday(inum1)
          call sumhyd
@@ -173,13 +173,13 @@ subroutine command(i)
        case (13)
          call apex_day(i, inum1)
        case (14)
-         call saveconc(inum1)
+         call saveconc(inum1, inum2)
        case (17)
-         call routeunit(inum1)
+         call routeunit(inum1, inum2)
          call sumhyd
        case (18)
          inum8 = 1
-         call routels(inum1, inum1)
+         call routels(inum1, inum1, inum2, inum3)
          call sumhyd
       end select
 

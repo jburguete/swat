@@ -6,14 +6,15 @@
 !> this subroutine initializes variables for the daily simulation of the
 !> channel routing command loop
 !> @param[in] jres reservoir number
-subroutine resinit(jres)
+!> @param[in] k inflow hydrograph storage location number (none)
+subroutine resinit(jres, k)
 
 !!    ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 !!    name         |units        |definition
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 !!    jres         |none         |reservoir number
+!!    k           |none          |inflow hydrograph storage location number
 !!    ihout        |none         |outflow hydrograph storage location number
-!!    inum2        |none         |inflow hydrograph storage location number
 !!    mvaro        |none         |max number of variables routed through the
 !!                               |reach
 !!    res_sub(:)   |none         |number of subbasin reservoir is in
@@ -78,12 +79,12 @@ subroutine resinit(jres)
    use parm
    implicit none
 
-   integer, intent(in) :: jres
+   integer, intent(in) :: jres, k
    integer :: ii
 
 !! add transfer amounts
    do ii = 2, mvaro
-      varoute(ii,inum2) = varoute(ii,inum2) + vartran(ii,jres)
+      varoute(ii,k) = varoute(ii,k) + vartran(ii,jres)
       vartran(ii,jres) = 0.
    end do
 
@@ -103,11 +104,11 @@ subroutine resinit(jres)
    reschlao = 0.
    resev = 0.
    if(ievent == 0) then  !!urban modeling by J.Jeong
-      resflwi = varoute(2,inum2)
+      resflwi = varoute(2,k)
    else
-      resflwi = hhvaroute(2,inum2,1)
+      resflwi = hhvaroute(2,k,1)
    endif
-   !!     resflwi = varoute(2,inum2)
+   !!     resflwi = varoute(2,k)
    resflwo = 0.
    respcp = 0.
    resnh3o = 0.
@@ -118,20 +119,20 @@ subroutine resinit(jres)
    respesti = 0.
    ressa = 0.
    ressedc = 0.
-   if (varoute(3,inum2) < 1.e-6) varoute(3,inum2) = 0.0
-   ressedi = varoute(3,inum2)
-   ressani = varoute(23,inum2)
-   ressili = varoute(24,inum2)
-   resclai = varoute(25,inum2)
-   ressagi = varoute(26,inum2)
-   reslagi = varoute(27,inum2)
-   resgrai = varoute(28,inum2)
+   if (varoute(3,k) < 1.e-6) varoute(3,k) = 0.0
+   ressedi = varoute(3,k)
+   ressani = varoute(23,k)
+   ressili = varoute(24,k)
+   resclai = varoute(25,k)
+   ressagi = varoute(26,k)
+   reslagi = varoute(27,k)
+   resgrai = varoute(28,k)
 
-   if (varoute(3,inum2) < 1.e-6) varoute(3,inum2) = 0.0
+   if (varoute(3,k) < 1.e-6) varoute(3,k) = 0.0
    if(ievent == 0) then  !!urban modeling by J.Jeong
-      ressedi = varoute(3,inum2)
+      ressedi = varoute(3,k)
    else
-      ressedi = hhvaroute(3,inum2,1)
+      ressedi = hhvaroute(3,k,1)
    endif
    ressedo = 0.
 
@@ -139,9 +140,9 @@ subroutine resinit(jres)
    ressolpo = 0.
    resuspst = 0.
    setlpst = 0.
-   solpesti = varoute(11,inum2)
+   solpesti = varoute(11,k)
    solpesto = 0.
-   sorpesti = varoute(12,inum2)
+   sorpesti = varoute(12,k)
    sorpesto = 0.
    volatpst = 0.
 

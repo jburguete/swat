@@ -52,11 +52,9 @@ subroutine lidinit(i)
    lid_vgcm = 0.50
 
    lid_qsurf = 0.
-   lid_qsurf_total = 0.
-   lid_farea_sum = 0.
    lid_cuminf_last = 0.
+   lid_excum_last = 0.
    lid_sw_last = 0.30
-   interval_last = 0.
    lid_f_last = 0.
    lid_cumr_last = 0.
    lid_str_last = 0.
@@ -67,8 +65,8 @@ subroutine lidinit(i)
 !!    Green Roof
    do kk = 1, mudb
       if (gr_onoff(i,kk)==1) then
-         if (gr_imo(i,kk)<=0)         gr_imo(i,kk) = 1
-         if (gr_iyr(i,kk)<=1000)      gr_iyr(i,kk) = iyr
+         !if (gr_imo(i,kk)<=0)         gr_imo(i,kk) = 1 ! not used
+         !if (gr_iyr(i,kk)<=1000)      gr_iyr(i,kk) = iyr ! not used
          if (gr_farea(i,kk)<=0)       gr_farea(i,kk) = 0.1
          if (gr_solop(i,kk)==0) then
             ! taking the chracteristics of the native HRU soil
@@ -88,8 +86,8 @@ subroutine lidinit(i)
 !!    Rain Garden
    do kk = 1, mudb
       if (rg_onoff(i,kk)==1) then
-         if (rg_imo(i,kk)<=0)          rg_imo(i,kk) = 1
-         if (rg_iyr(i,kk)<=1000)       rg_iyr(i,kk) = iyr
+         !if (rg_imo(i,kk)<=0)          rg_imo(i,kk) = 1 ! not used
+         !if (rg_iyr(i,kk)<=1000)       rg_iyr(i,kk) = iyr ! not used
          if (rg_farea(i,kk) <=0)       rg_farea(i,kk) = 0.1
          if (rg_solop(i,kk)==0) then
             ! taking the chracteristics of the native HRU soil
