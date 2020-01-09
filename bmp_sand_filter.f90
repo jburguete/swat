@@ -109,19 +109,19 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
    kb = 1.38e-16 !Boltzmann constant, g-cm^2/s^2-K
 
    !! Initialize parameters, coefficients, etc
-   tsa = ft_sa(sb,kk)     !total surface area of filter (m^2)
+   tsa = ft_sa(kk,sb)     !total surface area of filter (m^2)
    if (tsa>sub_ha*10000.*0.5) tsa = sub_ha*10000.*0.5 !sandfilter should be smaller than 0.5 times the subbasin area
-   ffsa = ft_fsa(sb,kk)     !fraction of infiltration bed in the filtration basin (m2/m2)
-   mxvol = ft_h(sb,kk) / 1000. * tsa    !max. capacity of the basin (m^3)
-   pdia = ft_pd(sb,kk)       !outflow orifice pipe diameter (mm)
-   splw = ft_bpw(sb,kk)       !spillway overflow weir width (m)
-   ksat = ft_k(sb,kk)      !saturated hydraulic conductivity (mm/hr)
-   por = ft_por(sb,kk)     !filter porosity
-   dp = ft_dp(sb,kk) / 10.      !median diameter of TSS particle (cm)
-   dc = ft_dc(sb,kk) / 10.      !median diameter of filter media (cm)
-   pden = tss_den(sb,kk)     !density of tss particle (g/cm3)
-   alp = ft_alp(sb,kk)     !filter attachment efficiency (0-1)
-   vfiltr = ft_dep(sb,kk) / 1000. * tsa * ffsa * por   !actual volume of filter column (m^3)
+   ffsa = ft_fsa(kk,sb)     !fraction of infiltration bed in the filtration basin (m2/m2)
+   mxvol = ft_h(kk,sb) / 1000. * tsa    !max. capacity of the basin (m^3)
+   pdia = ft_pd(kk,sb)       !outflow orifice pipe diameter (mm)
+   splw = ft_bpw(kk,sb)       !spillway overflow weir width (m)
+   ksat = ft_k(kk,sb)      !saturated hydraulic conductivity (mm/hr)
+   por = ft_por(kk,sb)     !filter porosity
+   dp = ft_dp(kk,sb) / 10.      !median diameter of TSS particle (cm)
+   dc = ft_dc(kk,sb) / 10.      !median diameter of filter media (cm)
+   pden = tss_den(kk,sb)     !density of tss particle (g/cm3)
+   alp = ft_alp(kk,sb)     !filter attachment efficiency (0-1)
+   vfiltr = ft_dep(kk,sb) / 1000. * tsa * ffsa * por   !actual volume of filter column (m^3)
 
    !! wetting front suction head (mm)
    wetfsh = 10. * Exp(6.5309 - 7.32561 * por + 3.809479 * por ** 2 -&
@@ -129,12 +129,12 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
       &0.000799 * 100. ** 2 * por)
 
    !! Get initial values from previous day
-   qpnd(0) = ft_qpnd(sb,kk)
-   qsw(0) = ft_qsw(sb,kk)
-   qin(0) = ft_qin(sb,kk)
-   qout(0) = ft_qout(sb,kk)
-   sedpnd = ft_sedpnd(sb,kk)
-   fc(0) = ft_fc(sb,kk)
+   qpnd(0) = ft_qpnd(kk,sb)
+   qsw(0) = ft_qsw(kk,sb)
+   qin(0) = ft_qin(kk,sb)
+   qout(0) = ft_qout(kk,sb)
+   sedpnd = ft_sedpnd(kk,sb)
+   fc(0) = ft_fc(kk,sb)
 
    do ii=1,nstep
       qloss = 0.
@@ -158,7 +158,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
                &* ffsa !m^3
 
             ! outflow control
-            if (sf_ptp(sb,kk)==1) then
+            if (sf_ptp(kk,sb)==1) then
                phead = (qsw(ii-1)/(tsa*ffsa)/por) * 1000.  !mm
 !                if (phead>pdia/2.) then
                qpipe = Pipeflow(pdia,phead) * dt *3600. !m^3
@@ -178,9 +178,9 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
          hpnd = qpnd(ii) / tsa * 1000. !ponding depth on the filter surface, mm
 
          !spillway overflow
-         if (hpnd > ft_h(sb,kk)) then
+         if (hpnd > ft_h(kk,sb)) then
             qloss = Max(0.,qpnd(ii) - mxvol) !weir outflow
-            hpnd = ft_h(sb,kk)
+            hpnd = ft_h(kk,sb)
             qpnd(ii) = Max(0.,qpnd(ii) - qloss)
          end if
          qpndi = qpnd(ii) + qsw(ii-1)
@@ -246,8 +246,8 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
          else
 
             !darcy flow when saturated
-            qfiltr = ksat * (hpnd + ft_dep(sb,kk)) /&
-               &ft_dep(sb,kk) * dt / 1000. * tsa * ffsa
+            qfiltr = ksat * (hpnd + ft_dep(kk,sb)) /&
+               &ft_dep(kk,sb) * dt / 1000. * tsa * ffsa
             qout(ii) = qfiltr
             qpnd(ii) = qpnd(ii) - qfiltr
 
@@ -272,7 +272,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
 
 
          !check if orifice pipe limits outflow in case outflow control exists
-         if (sf_ptp(sb,kk)==1) then
+         if (sf_ptp(kk,sb)==1) then
             phead = (qsw(ii)/(tsa*ffsa)/por + qpnd(ii)/tsa) * 1000. !mm
             qpipe = Pipeflow(pdia,phead) * dt *3600. !m^3
 
@@ -304,7 +304,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
       endif
 
       ! no outlet control: all the infiltration water is added to shallow aquifer recharge for next day\
-      if (sf_ptp(sb,kk)==0) then
+      if (sf_ptp(kk,sb)==0) then
          bmp_recharge(sb) = bmp_recharge(sb)&
             &+ qout(ii) / (sub_ha*10000.- tsa) *1000.
          qrchg = qout(ii)
@@ -387,7 +387,7 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
 
             ! sediment removal efficiency
             sedrmeff = 1. - Exp(-1.5 * (1. - por) * alp * effct *&
-               &ft_dep(sb,kk) / ft_dc(sb,kk))
+               &ft_dep(kk,sb) / ft_dc(kk,sb))
             ! sediment removed during the time step, tons
             sed_removed =  spndconc * qout(ii) * sedrmeff
             sed(2,ii) = sed_removed
@@ -402,12 +402,12 @@ subroutine bmp_sand_filter(sb, kk, flw, sed)
    end do
 
    ! store end-of-day values for next day
-   ft_qpnd(sb,kk) = qpnd(nstep)
-   ft_qsw(sb,kk) = qsw(nstep)
-   ft_qin(sb,kk) = qin(nstep)
-   ft_qout(sb,kk) = qout(nstep)
-   ft_sedpnd(sb,kk) = sedpnd
-   ft_fc(sb,kk) = fc(nstep)
+   ft_qpnd(kk,sb) = qpnd(nstep)
+   ft_qsw(kk,sb) = qsw(nstep)
+   ft_qin(kk,sb) = qin(nstep)
+   ft_qout(kk,sb) = qout(nstep)
+   ft_sedpnd(kk,sb) = sedpnd
+   ft_fc(kk,sb) = fc(nstep)
 
    return
 end subroutine bmp_sand_filter

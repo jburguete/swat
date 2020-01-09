@@ -61,10 +61,10 @@ subroutine lid_cistern(sb,j,k,lid_prec)
    lid_vol = cs_vol(sb,jj)         ! commented out for testing
    if (lid_vol <= 0) then
       lid_vol = (cs_rdepth(sb,jj) / 1000.) *&
-         &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)         ! for testing, assuming the storage can handle excess rainfall of 2.5 mm
+         &(lid_farea(3,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)         ! for testing, assuming the storage can handle excess rainfall of 2.5 mm
    end if
 
-   lid_str = lid_str_last(j,3)
+   lid_str = lid_str_last(3,j)
    lid_cumirr = lid_cumirr_last(j)
    lid_bypass = 0.
 
@@ -75,10 +75,10 @@ subroutine lid_cistern(sb,j,k,lid_prec)
    end if
 
    if (cs_grcon(sb,jj)==0) then
-      lid_str = lid_str_last(j,3) + (lid_prec / 1000.) *&
-         &(lid_farea(j,3) * fcimp(urblu(j)) * hru_ha(j) * 10000.)           ! m3
+      lid_str = lid_str_last(3,j) + (lid_prec / 1000.) *&
+         &(lid_farea(3,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)           ! m3
    else
-      lid_str = lid_str_last(j,3) + (lid_prec / 1000.) * (hru_ha(j) * 10000.) ! m3
+      lid_str = lid_str_last(3,j) + (lid_prec / 1000.) * (hru_ha(j) * 10000.) ! m3
    end if
 
    if (lid_str > lid_vol) then
@@ -112,12 +112,12 @@ subroutine lid_cistern(sb,j,k,lid_prec)
    lid_cumirr = lid_cumirr + lid_irr
 
    if (k == nstep+1) then
-      lid_sw_add(j,3) = lid_cumirr / (hru_ha(j) * 10000.) * 1000.
+      lid_sw_add(3,j) = lid_cumirr / (hru_ha(j) * 10000.) * 1000.
       lid_cumirr = 0.
    end if
 
    lid_cumirr_last(j) = lid_cumirr
-   lid_str_last(j,3) = lid_str
+   lid_str_last(3,j) = lid_str
 
    return
 end subroutine

@@ -1336,19 +1336,19 @@ subroutine allocate_parms
    allocate (bmpdrain(mhru))
    allocate (subdr_km(mhyd),subdr_ickm(mhyd),sub_cn2(msub))
    ! sedimentation-filtration
-   allocate (num_sf(msub),sf_fr(msub,10),sf_dim(msub,10),&
-      &sf_typ(msub,10),sf_im(msub,10),sf_iy(msub,10),sp_sa(msub,10),&
-      &sp_pvol(msub,10),sp_pd(msub,10),sp_sedi(msub,10),&
-      &sp_sede(msub,10),ft_sa(msub,10),ft_fsa(msub,10),&
-      &ft_dep(msub,10),ft_h(msub,10),ft_pd(msub,10),&
-      &ft_k(msub,10),ft_dp(msub,10),ft_dc(msub,10),&
-      &ft_por(msub,10),tss_den(msub,10),ft_alp(msub,10),&
-      &sp_qi(msub,10),sp_k(msub,10),sp_bpw(msub,10),&
-      &ft_bpw(msub,10),sp_dp(msub,10),&
-      &ft_qfg(msub,10),sp_qfg(msub,10))
-   allocate (sub_ha_imp(msub),ft_qpnd(msub,10),ft_qsw(msub,10),&
-      &ft_qin(msub,10),ft_qout(msub,10),ft_sedpnd(msub,10),&
-      &sf_ptp(msub,10),ft_fc(msub,10),sub_ha_urb(msub))
+   allocate (num_sf(msub),sf_fr(10,msub),sf_dim(10,msub),&
+      &sf_typ(10,msub),sf_im(10,msub),sf_iy(10,msub),sp_sa(10,msub),&
+      &sp_pvol(10,msub),sp_pd(10,msub),sp_sedi(10,msub),&
+      &sp_sede(10,msub),ft_sa(10,msub),ft_fsa(10,msub),&
+      &ft_dep(10,msub),ft_h(10,msub),ft_pd(10,msub),&
+      &ft_k(10,msub),ft_dp(10,msub),ft_dc(10,msub),&
+      &ft_por(10,msub),tss_den(10,msub),ft_alp(10,msub),&
+      &sp_qi(10,msub),sp_k(10,msub),sp_bpw(10,msub),&
+      &ft_bpw(10,msub),sp_dp(10,msub),&
+      &ft_qfg(10,msub),sp_qfg(10,msub))
+   allocate (sub_ha_imp(msub),ft_qpnd(10,msub),ft_qsw(10,msub),&
+      &ft_qin(10,msub),ft_qout(10,msub),ft_sedpnd(10,msub),&
+      &sf_ptp(10,msub),ft_fc(10,msub),sub_ha_urb(msub))
 !! additional var by Ann
 !! Filter Strip variable allocation MJW
    allocate (vfscon(mhru))
@@ -1369,11 +1369,11 @@ subroutine allocate_parms
       &dtp_intcept(msub),&
       &dtp_expont(msub),dtp_coef(3,msub),dtp_ivol(msub),dtp_ised(msub))
 
-   allocate(dtp_wdratio(msub,10),dtp_depweir(msub,10),&
-      &dtp_diaweir(msub,10),dtp_retperd(msub,10),dtp_pcpret(msub,10),&
-      &dtp_cdis(msub,10),dtp_flowrate(msub,10),&
-      &dtp_wrwid(msub,10),dtp_weirtype(msub,10),dtp_weirdim(msub,10),&
-      &dtp_addon(msub,10))
+   allocate(dtp_wdratio(10,msub),dtp_depweir(10,msub),&
+      &dtp_diaweir(10,msub),dtp_pcpret(10,msub),&
+      &dtp_cdis(10,msub),dtp_flowrate(10,msub),&
+      &dtp_wrwid(10,msub),dtp_weirtype(10,msub),dtp_weirdim(10,msub),&
+      &dtp_addon(10,msub))
    !! additional var by jeong for nutrient speciation
    allocate (lat_orgn(mhru))
    allocate (lat_orgp(mhru))
@@ -1457,11 +1457,11 @@ subroutine allocate_parms
 !!    LID simulations
 !!    Common variable
 !!    van Genuchten equation's coefficients
-   allocate(lid_cuminf_last(mhru,4),lid_sw_last(mhru,4),&
-      &lid_f_last(mhru,4),lid_cumr_last(mhru,4),&
-      &lid_str_last(mhru,4),lid_farea(mhru,4),lid_qsurf(mhru,4),&
-      &lid_sw_add(mhru,4),lid_cumqperc_last(mhru,4),&
-      &lid_excum_last(mhru,4))    !!  nbs
+   allocate(lid_cuminf_last(4,mhru),lid_sw_last(4,mhru),&
+      &lid_f_last(4,mhru),lid_cumr_last(4,mhru),&
+      &lid_str_last(4,mhru),lid_farea(4,mhru),lid_qsurf(mhru,4),&
+      &lid_sw_add(4,mhru),lid_cumqperc_last(4,mhru),&
+      &lid_excum_last(4,mhru))    !!  nbs
    allocate(lid_cumirr_last(mhru))
 
 !!    Green Roof
@@ -1526,32 +1526,6 @@ subroutine allocate_parms
    allocate(stoverc_d(mhru))
    allocate(emitc_d(mhru))
    allocate(rspc_d(mhru))
-
-   allocate(sedc_m(mhru))
-   allocate(surfqc_m(mhru))
-   allocate(latc_m(mhru))
-   allocate(percc_m(mhru))
-   allocate(foc_m(mhru))
-   allocate(NPPC_m(mhru))
-   allocate(rsdc_m(mhru))
-   allocate(grainc_m(mhru))
-   allocate(stoverc_m(mhru))
-   allocate(emitc_m(mhru))
-   allocate(soc_m(mhru))
-   allocate(rspc_m(mhru))
-
-   allocate(sedc_a(mhru))
-   allocate(surfqc_a(mhru))
-   allocate(latc_a(mhru))
-   allocate(percc_a(mhru))
-   allocate(foc_a(mhru))
-   allocate(NPPC_a(mhru))
-   allocate(rsdc_a(mhru))
-   allocate(grainc_a(mhru))
-   allocate(stoverc_a(mhru))
-   allocate(emitc_a(mhru))
-   allocate(soc_a(mhru))
-   allocate(rspc_a(mhru))
 
    !Tillage factor on SOM decomposition
    allocate(tillage_switch(mhru))

@@ -53,12 +53,12 @@ subroutine lids(sb,j,k,lid_prec)
        case (19, 20, 21, 24)
          fr = 0.40
       end select
-      lid_farea(j,1) = gr_farea(sb,jj) * fr ! assuming fractions of roof area to impervious area is 0.80 and 0.40 for regidential and commercial/industrial, respectively
+      lid_farea(1,j) = gr_farea(sb,jj) * fr ! assuming fractions of roof area to impervious area is 0.80 and 0.40 for regidential and commercial/industrial, respectively
       call lid_greenroof(sb,j,k,lid_prec)
    end if
 
    if (rg_onoff(sb,jj)==1) then
-      lid_farea(j,2) = rg_farea(sb,jj)
+      lid_farea(2,j) = rg_farea(sb,jj)
       call lid_raingarden(sb,j,k,lid_prec)
    end if
 
@@ -70,10 +70,10 @@ subroutine lids(sb,j,k,lid_prec)
          fr = 0.40
       end select
       if (cs_grcon(sb,jj)==0) then
-         lid_farea(j,3) = cs_farea(sb,jj)
+         lid_farea(3,j) = cs_farea(sb,jj)
          call lid_cistern(sb,j,k,lid_prec)
       else
-         lid_farea(j,3) = gr_farea(sb,jj) * fr ! assuming fractions of roof area to impervious area is 0.80 and 0.40 for regidential and commercial/industrial, respectively
+         lid_farea(3,j) = gr_farea(sb,jj) * fr ! assuming fractions of roof area to impervious area is 0.80 and 0.40 for regidential and commercial/industrial, respectively
          call lid_cistern(sb,j,k,lid_qsurf(j,1))
          lid_qsurf(j,1) = 0.
       end if
@@ -86,7 +86,7 @@ subroutine lids(sb,j,k,lid_prec)
        case (19, 20, 21, 24, 26, 30, 31)
          fr = 0.40
       end select
-      lid_farea(j,4) = pv_farea(sb,jj) * fr
+      lid_farea(4,j) = pv_farea(sb,jj) * fr
       call lid_porpavement(sb,j,k,lid_prec)
    end if
 

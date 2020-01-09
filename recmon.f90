@@ -105,6 +105,7 @@ subroutine recmon(k)
 !!    fn         |none          |number of time steps (float)
 !!    ii         |none          |counter
 !!    j          |none          |counter
+!!    xx         |none          |auxiliar variable
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ SUBROUTINES/FUNCTIONS CALLED ~ ~ ~
@@ -117,7 +118,7 @@ subroutine recmon(k)
    implicit none
 
    integer, intent(in) :: k
-   real*8 :: fn
+   real*8 :: fn, xx
    integer :: ii, j
 
 !! zero flow out variables
@@ -148,18 +149,19 @@ subroutine recmon(k)
    varoute(22,ihout) = cmtlmon(3,k,curyr,i_mo)
 
    !! Assumed equal distribution of sediment
-   varoute(23,ihout) = sedmon(k,curyr,i_mo) * 0.   ! sand
-   varoute(24,ihout) = sedmon(k,curyr,i_mo) * 1.   ! silt
-   varoute(25,ihout) = sedmon(k,curyr,i_mo) * 0.   ! cla
-   varoute(26,ihout) = sedmon(k,curyr,i_mo) * 0.   ! sag
-   varoute(27,ihout) = sedmon(k,curyr,i_mo) * 0.   ! lag
+   xx = sedmon(k,curyr,i_mo)
+   varoute(23,ihout) = xx * 0.   ! sand
+   varoute(24,ihout) = xx * 1.   ! silt
+   varoute(25,ihout) = xx * 0.   ! cla
+   varoute(26,ihout) = xx * 0.   ! sag
+   varoute(27,ihout) = xx * 0.   ! lag
    varoute(28,ihout) = 0.                    ! gravel
 
    if (ievent > 0) then
       fn = Dfloat(nstep)
       do ii = 1, nstep
          hhvaroute(2,ihout,ii) = flomon(k,curyr,i_mo) / fn
-         hhvaroute(3,ihout,ii) = sedmon(k,curyr,i_mo) / fn
+         hhvaroute(3,ihout,ii) = xx / fn
          hhvaroute(4,ihout,ii) = orgnmon(k,curyr,i_mo) / fn
          hhvaroute(5,ihout,ii) = orgpmon(k,curyr,i_mo) / fn
          hhvaroute(6,ihout,ii) = no3mon(k,curyr,i_mo) / fn

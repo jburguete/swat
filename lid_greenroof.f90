@@ -98,11 +98,11 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
    dt = dfloat(idt) / 60.
 
 !!    Initialize parameters and coefficients for green roof modeling
-   lid_sw = lid_sw_last(j,1)
-   lid_f = lid_f_last(j,1)
-   lid_cuminf = lid_cuminf_last(j,1)
-   lid_excum = lid_excum_last(j,1)
-   lid_cumr = lid_cumr_last(j,1)
+   lid_sw = lid_sw_last(1,j)
+   lid_f = lid_f_last(1,j)
+   lid_cuminf = lid_cuminf_last(1,j)
+   lid_excum = lid_excum_last(1,j)
+   lid_cumr = lid_cumr_last(1,j)
 
    if (lid_prec > 0) then
 
@@ -122,21 +122,21 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
 
 !!      Calculate infiltration using the Green-Ampt equation
       do
-         lid_f1 = lid_cuminf_last(j,1) + lid_adj_ksat * dt&
+         lid_f1 = lid_cuminf_last(1,j) + lid_adj_ksat * dt&
             &+ whd * cvwc&
-            &* Log((tst + whd * cvwc) / (lid_cuminf_last(j,1) + whd *&
+            &* Log((tst + whd * cvwc) / (lid_cuminf_last(1,j) + whd *&
             &cvwc))
          if (Abs(lid_f1 - tst) < 0.001) then
             lid_f = lid_adj_ksat * (1 + (whd * cvwc)/lid_f1)
             lid_qinf = lid_f * dt
             if (lid_f > (lid_prec / dt)) then
-               lid_cuminf = lid_cuminf_last(j,1) + lid_prec
+               lid_cuminf = lid_cuminf_last(1,j) + lid_prec
                lid_qinf = lid_prec
             else
-               lid_cuminf = lid_cuminf_last(j,1) + lid_qinf
+               lid_cuminf = lid_cuminf_last(1,j) + lid_qinf
             end if
             lid_excum = lid_cumr - lid_cuminf
-            lid_exinc = lid_excum - lid_excum_last(j,1)
+            lid_exinc = lid_excum - lid_excum_last(1,j)
             exit
          else
             tst = lid_f1
@@ -148,9 +148,9 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
          lid_cuminf = 0
          lid_excum = 0
       else
-         lid_cumr = lid_cumr_last(j,1)
-         lid_cuminf = lid_cuminf_last(j,1)
-         lid_excum = lid_excum_last(j,1)
+         lid_cumr = lid_cumr_last(1,j)
+         lid_cuminf = lid_cuminf_last(1,j)
+         lid_excum = lid_excum_last(1,j)
       end if
       lid_f = 0.
       lid_qinf = 0.
@@ -169,7 +169,7 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
    lid_et = lid_etcoef * pet_day / 1440. * dfloat(idt)
 
 !!    Update soil water content of the amended soil layer considering infiltration, seepage, and evapotranspiration
-   lid_sw = lid_sw_last(j,1) + (lid_qinf - lid_qseep - lid_et) /&
+   lid_sw = lid_sw_last(1,j) + (lid_qinf - lid_qseep - lid_et) /&
       &(lid_soldpt * 1000)
    if (lid_sw < lid_wp) lid_sw = lid_wp
    if (lid_sw > lid_por) lid_sw = lid_por
@@ -189,11 +189,11 @@ subroutine lid_greenroof(sb,j,k,lid_prec)
 !      end if
 !! end temporary
 
-   lid_sw_last(j,1) = lid_sw
-   lid_cumr_last(j,1) = lid_cumr
-   lid_cuminf_last(j,1) = lid_cuminf
-   lid_f_last(j,1) = lid_f
-   lid_excum_last(j,1) = lid_excum
+   lid_sw_last(1,j) = lid_sw
+   lid_cumr_last(1,j) = lid_cumr
+   lid_cuminf_last(1,j) = lid_cuminf
+   lid_f_last(1,j) = lid_f
+   lid_excum_last(1,j) = lid_excum
 
    return
 end subroutine

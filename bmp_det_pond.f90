@@ -94,7 +94,7 @@ subroutine bmp_det_pond(sb)
    sedpnd = dtp_ised(sb) !tons
 
    !! Storage capacity under addon
-   qaddon = dtp_addon(sb,1)**3./(3.*dtp_lwratio(sb)*ch_s(2,sb)**2.) !m3 Note: V = d^3 / (3*R*S^2) |Modify by J. Osorio (3/19/2013)
+   qaddon = dtp_addon(1,sb)**3./(3.*dtp_lwratio(sb)*ch_s(2,sb)**2.) !m3 Note: V = d^3 / (3*R*S^2) |Modify by J. Osorio (3/19/2013)
 
    !! iterate for subdaily flow/sediment routing
    do ii=1,nstep
@@ -117,37 +117,37 @@ subroutine bmp_det_pond(sb)
 
             !! calculate weir discharge
 
-            if (dtp_weirtype(sb,k)==2) then
+            if (dtp_weirtype(k,sb)==2) then
                !! Circular weir
-               dtp_depweir(sb,k) = dtp_diaweir(sb,k) + dtp_addon(sb,k)
+               dtp_depweir(k,sb) = dtp_diaweir(k,sb) + dtp_addon(k,sb)
 
-               if (qdepth>dtp_depweir(sb,k)) then
+               if (qdepth>dtp_depweir(k,sb)) then
                   !! Fully submerged
-                  qdepth = qdepth - dtp_depweir(sb,k)
-                  watdepact = qdepth + dtp_diaweir(sb,k) / 2
-                  warea = pi * dtp_diaweir(sb,k) ** 2 / 4.
+                  qdepth = qdepth - dtp_depweir(k,sb)
+                  watdepact = qdepth + dtp_diaweir(k,sb) / 2
+                  warea = pi * dtp_diaweir(k,sb) ** 2 / 4.
 
                   !! orifice equation
-                  qstage = dtp_cdis(sb,k) * 0.6 * warea *&
+                  qstage = dtp_cdis(k,sb) * 0.6 * warea *&
                      &Sqrt(19.6 * watdepact) !m3/s/unit
                   qstage = qstage * dtp_numweir(sb) * 60. * idt !m^3
                else
                   !! Partially submerged
-                  watdepact = Max(qdepth - dtp_addon(sb,k),0.)
-                  dtp_wrwid(sb,k) = dtp_diaweir(sb,k) * 0.667
+                  watdepact = Max(qdepth - dtp_addon(k,sb),0.)
+                  dtp_wrwid(k,sb) = dtp_diaweir(k,sb) * 0.667
 
                   !! weir/orifice discharge
-                  qstage = dtp_cdis(sb,k) * 1.84 * dtp_wrwid(sb,k) *&
+                  qstage = dtp_cdis(k,sb) * 1.84 * dtp_wrwid(k,sb) *&
                      &watdepact ** 1.5 !m3/s
                   qstage = qstage * dtp_numweir(sb) * 60. * idt !m^3
                end if
 
             else
                !! Rectangular weir
-               watdepact = Max(qdepth - dtp_addon(sb,k),0.)
+               watdepact = Max(qdepth - dtp_addon(k,sb),0.)
 
                !! Estimate weir/orifice discharge
-               qstage = dtp_cdis(sb,k) * 1.84 * dtp_wrwid(sb,k) *&
+               qstage = dtp_cdis(k,sb) * 1.84 * dtp_wrwid(k,sb) *&
                   &watdepact ** 1.5 !m3/s     The Bureau of Reclamation, in their Water Measurement Manual, SI units
                qstage = qstage * dtp_numweir(sb) * 60. * idt !m^3
 
@@ -160,9 +160,9 @@ subroutine bmp_det_pond(sb)
          if(qout>qpnd-qaddon) qout = Max(qpnd - qaddon,0.)
 
          !! Flow over the emergency weir
-         watdepact = qdepth - (dtp_depweir(sb,1) + dtp_addon(sb,1))
-         if (dtp_weirtype(sb,k)==1 .and. watdepact>0.) then
-            qstage = dtp_cdis(sb,k) * 1.84 *&
+         watdepact = qdepth - (dtp_depweir(1,sb) + dtp_addon(1,sb))
+         if (dtp_weirtype(k,sb)==1 .and. watdepact>0.) then
+            qstage = dtp_cdis(k,sb) * 1.84 *&
                &dtp_totwrwid(sb) * (watdepact ** 1.5) * 60. * idt !m3/s
             qout = qout + qstage
          end if

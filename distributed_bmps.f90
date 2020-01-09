@@ -76,19 +76,19 @@ subroutine distributed_bmps(sb)
 
       do kk=1,num_sf(sb)
          !fraction urban runoff to the sed-fil
-         sfflw(1,1:nstep) = sub_ubnrunoff(sb,1:nstep) * sf_fr(sb,kk) !mm
-         sfsed(1,1:nstep) = sub_ubntss(sb,1:nstep) * sf_fr(sb,kk) !tons
+         sfflw(1,1:nstep) = sub_ubnrunoff(sb,1:nstep) * sf_fr(kk,sb) !mm
+         sfsed(1,1:nstep) = sub_ubntss(sb,1:nstep) * sf_fr(kk,sb) !tons
          !total inflow to sedfils
          sf_totalflw(1,:) = sf_totalflw(1,:) + sfflw(1,:) !mm
          sf_totaltss(1,:) = sf_totaltss(1,:) + sfsed(1,:) !tons
 
-         if (iyr>sf_iy(sb,kk) .or.&
-            &(iyr==sf_iy(sb,kk) .and. i_mo>=sf_im(sb,kk))) then
-            if (sf_typ(sb,kk)==2) then !partial scale
+         if (iyr>sf_iy(kk,sb) .or.&
+            &(iyr==sf_iy(kk,sb) .and. i_mo>=sf_im(kk,sb))) then
+            if (sf_typ(kk,sb)==2) then !partial scale
                call bmp_sand_filter(sb, kk, sfflw, sfsed)
                spqm3(:,:) = 0.
                spsed(:,:) = 0.
-               ftqm3(:,:) = sfflw(:,:) * ((sub_ha - ft_sa(sb,kk)&  !m3
+               ftqm3(:,:) = sfflw(:,:) * ((sub_ha - ft_sa(kk,sb)&  !m3
                   &/ 10000.) *10.)
                ftsed(:,:) = sfsed(:,:) !tons
 
@@ -97,11 +97,11 @@ subroutine distributed_bmps(sb)
                   &+ sfflw(3,:) !mm
                sf_totaltss(2,:) = sf_totaltss(2,:) + ftsed(2,:)&
                   &+ ftsed(3,:) !tons
-            else if (sf_typ(sb,kk)==1) then !full scale
+            else if (sf_typ(kk,sb)==1) then !full scale
                !first route through sedimentation pond
                call bmp_sed_pond(sb, kk, sfflw, sfsed)
 
-               spqm3(:,:) = sfflw(:,:) * ((sub_ha - sp_sa(sb,kk)&
+               spqm3(:,:) = sfflw(:,:) * ((sub_ha - sp_sa(kk,sb)&
                   &/ 10000.) *10.)
                spsed(:,:) = sfsed(:,:)
 
@@ -116,7 +116,7 @@ subroutine distributed_bmps(sb)
                ! then the outflow from sed pond goes to sand filter
                call bmp_sand_filter(sb, kk, sfflw, sfsed)
 
-               ftqm3(:,:) = sfflw(:,:) *  ((sub_ha - ft_sa(sb,kk)&
+               ftqm3(:,:) = sfflw(:,:) *  ((sub_ha - ft_sa(kk,sb)&
                   &/ 10000.) *10.) !m3
                ftsed(:,:) = sfsed(:,:)  !tons
 
@@ -131,7 +131,7 @@ subroutine distributed_bmps(sb)
 
                ftqm3(:,:) = 0.
                ftsed(:,:)=0.
-               spqm3(:,:) = sfflw(:,:) * ((sub_ha - sp_sa(sb,kk)&
+               spqm3(:,:) = sfflw(:,:) * ((sub_ha - sp_sa(kk,sb)&
                   &/ 10000.) *10.)
                spsed(:,:) = sfsed(:,:)
                !total (aggregated) outflow from sedfils
@@ -185,7 +185,7 @@ subroutine distributed_bmps(sb)
 
             call bmp_ri_pond(sb, kk, riflw, rised)
 
-            riqm3(:,:) = riflw(:,:)* ((sub_ha - sp_sa(sb,kk)&
+            riqm3(:,:) = riflw(:,:)* ((sub_ha - sp_sa(kk,sb)&
                &/ 10000.) *10.)
          else
             riflw(2,:) = riflw(1,:)

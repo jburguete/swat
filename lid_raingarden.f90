@@ -134,9 +134,9 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
    lid_wp = rg_wp(sb,jj)
    lid_soldpt = rg_soldpt(sb,jj)
    lid_etcoef = rg_etcoef(sb,jj)
-   lid_sarea = lid_farea(j,2) * fcimp(urblu(j)) *&
+   lid_sarea = lid_farea(2,j) * fcimp(urblu(j)) *&
       &hru_ha(j) * 10000. * rg_sarea(sb,jj)
-   lid_barea = lid_farea(j,2) * fcimp(urblu(j)) *&
+   lid_barea = lid_farea(2,j) * fcimp(urblu(j)) *&
       &hru_ha(j) * 10000. * rg_sarea(sb,jj)
    lid_vol = rg_sth(sb,jj) * lid_sarea
    lid_oheight = rg_oheight(sb,jj) * 1000.
@@ -147,15 +147,15 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
    dt = dfloat(idt) / 60.
 
 !!    Initialize parameters and coefficients for rain garden modeling
-   lid_sw = lid_sw_last(j,2)
-   lid_f = lid_f_last(j,2)
-   lid_cuminf = lid_cuminf_last(j,2)
-   lid_cumr = lid_cumr_last(j,2)
-   lid_str = lid_str_last(j,2)
-   lid_cumqperc = lid_cumqperc_last(j,2)
+   lid_sw = lid_sw_last(2,j)
+   lid_f = lid_f_last(2,j)
+   lid_cuminf = lid_cuminf_last(2,j)
+   lid_cumr = lid_cumr_last(2,j)
+   lid_str = lid_str_last(2,j)
+   lid_cumqperc = lid_cumqperc_last(2,j)
 
    lid_str = lid_str + (lid_prec / 1000.) *&
-      &(lid_farea(j,2) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
+      &(lid_farea(2,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
 
    lid_qbypass = lid_str - lid_vol
    if (lid_qbypass > 0.) lid_str = lid_vol
@@ -179,17 +179,17 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
       if (cvwc < 0) cvwc = 0.001*0.95*lid_por
       tst = lid_adj_ksat * dt
       do
-         lid_f1 = lid_cuminf_last(j,2) + lid_adj_ksat * dt&
+         lid_f1 = lid_cuminf_last(2,j) + lid_adj_ksat * dt&
             &+ whd * cvwc * Log((tst + whd * cvwc) /&
-            &(lid_cuminf_last(j,2) + whd * cvwc))
+            &(lid_cuminf_last(2,j) + whd * cvwc))
          if (Abs(lid_f1 - tst) < 0.001) then
             lid_f = lid_adj_ksat * (1 + (whd * cvwc)/lid_f1)
             lid_qinf = lid_f * dt
             if (lid_qinf > lid_str_depth) then
-               lid_cuminf = lid_cuminf_last(j,2) + lid_str_depth
+               lid_cuminf = lid_cuminf_last(2,j) + lid_str_depth
                lid_qinf = lid_str_depth
             else
-               lid_cuminf = lid_cuminf_last(j,2) + lid_qinf
+               lid_cuminf = lid_cuminf_last(2,j) + lid_qinf
             end if
             exit
          else
@@ -198,23 +198,23 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
       end do
 !     else
       if (k == nstep+1) then
-!          lid_sw_add(j,2) = lid_cuminf
+!          lid_sw_add(2,j) = lid_cuminf
          lid_cumr = 0
          lid_cuminf = 0
       else
-         lid_cumr = lid_cumr_last(j,2)
-         lid_cuminf = lid_cuminf_last(j,2)
+         lid_cumr = lid_cumr_last(2,j)
+         lid_cuminf = lid_cuminf_last(2,j)
       end if
 !        lid_qinf = 0.
 !     end if
    else
       if (k == nstep+1) then
-!          lid_sw_add(j,2) = lid_cuminf
+!          lid_sw_add(2,j) = lid_cuminf
          lid_cumr = 0
          lid_cuminf = 0
       else
-         lid_cumr = lid_cumr_last(j,2)
-         lid_cuminf = lid_cuminf_last(j,2)
+         lid_cumr = lid_cumr_last(2,j)
+         lid_cuminf = lid_cuminf_last(2,j)
       end if
       lid_re_sw = (lid_sw - lid_wp)/(lid_por - lid_wp)
       lid_usat_ratio = (lid_re_sw**lid_vgcl) * ((1-(1-lid_re_sw&
@@ -283,14 +283,14 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
    if (lid_vorifice > (lid_str - lid_ostr)) lid_vorifice = lid_str - lid_ostr
    if (lid_vorifice < 0.) lid_vorifice = 0.
    lid_dorifice = lid_vorifice / (hru_ha(j) * 10000.) * 1000. ! mm
-!     & (lid_farea(j,2) * fcimp(urblu(j)) * hru_ha(j) * 10000.) * 1000. ! mm
+!     & (lid_farea(2,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.) * 1000. ! mm
 
 !!    Amount of water seeped out of the amended soil layer (mm)
    lid_perc = lid_ksat * lid_usat_ratio * lid_hydeff
    lid_qperc = lid_perc * dt ! convert mm/hr to mm
    lid_cumqperc = lid_cumqperc + lid_qperc
    if (k == nstep+1) then
-      lid_sw_add(j,2) = lid_cumqperc
+      lid_sw_add(2,j) = lid_cumqperc
       lid_cumqperc = 0.
    end if
 
@@ -303,10 +303,10 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
 
 !!    Update soil water content of the amended soil layer (mm)
    if (lid_str_depth < 0.1) then
-      lid_sw = lid_sw_last(j,2) + (lid_qinf - lid_qperc - lid_et) /&
+      lid_sw = lid_sw_last(2,j) + (lid_qinf - lid_qperc - lid_et) /&
          &(lid_soldpt * 1000)
    else
-      lid_sw = lid_sw_last(j,2) + (lid_qinf - lid_qperc) / (lid_soldpt * 1000)
+      lid_sw = lid_sw_last(2,j) + (lid_qinf - lid_qperc) / (lid_soldpt * 1000)
    end if
    if (lid_sw < lid_wp) lid_sw = lid_wp
    if (lid_sw > lid_fc) lid_sw = lid_fc
@@ -335,12 +335,12 @@ subroutine lid_raingarden(sb,j,k,lid_prec)
    if (lid_str < 0) lid_str = 0.
 
 !!    Assign the calculated soil water content of the amended soil layer, accumulated infiltration depth
-   lid_sw_last(j,2) = lid_sw
-   lid_cumr_last(j,2) = lid_cumr
-   lid_cuminf_last(j,2) = lid_cuminf
-   lid_f_last(j,2) = lid_f
-   lid_str_last(j,2) = lid_str
-   lid_cumqperc_last(j,2) = lid_cumqperc
+   lid_sw_last(2,j) = lid_sw
+   lid_cumr_last(2,j) = lid_cumr
+   lid_cuminf_last(2,j) = lid_cuminf
+   lid_f_last(2,j) = lid_f
+   lid_str_last(2,j) = lid_str
+   lid_cumqperc_last(2,j) = lid_cumqperc
 
    return
 end subroutine

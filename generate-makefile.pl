@@ -21,7 +21,7 @@ foreach $source (@sources)
 }
 print DATA "\nmods = parm.mod\n".
 	"\nswat\$(EXE): \$(mods) \$(objs)\n".
-	"\t\$(cc) \$(LDFLAGS) \$(objs) -o swat\$(EXE)\n".
+	"\t\$(cc) -O3 \$(LDFLAGS) \$(objs) -o swat\$(EXE)\n".
 	"\nstrip:\n\tmake\n\t\$(strip) swat\$(EXE)\n".
 	"\nclean:\n\trm -rf *.mod *.o swat* latex html\n".
 	"\ntar:\n\ttar cJf swat.tar.xz *.f90 *.pl *.sh Makefile\n".

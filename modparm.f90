@@ -4584,8 +4584,6 @@ module parm
    real*8, dimension(:,:), allocatable :: dtp_flowrate
 !> precipitation for different return periods (not used) (mm)
    real*8, dimension(:,:), allocatable :: dtp_pcpret
-!> return period at different stages (years)
-   real*8, dimension(:,:), allocatable :: dtp_retperd
 !> width depth ratio of rectangular weirs at different stages (none)
    real*8, dimension(:,:), allocatable :: dtp_wdratio
    real*8, dimension(:,:), allocatable :: dtp_wrwid
@@ -4702,66 +4700,24 @@ module parm
       &rspc_d, emitc_d
    !!emitc_d include biomass_c eaten by grazing, burnt
 
-!X
-   !!Monthly carbon change by different means (entire soil profile for each HRU)
-   real*8, dimension(:), allocatable :: sedc_m, surfqc_m, latc_m, percc_m,&
-      &foc_m, NPPC_m, rsdc_m, grainc_m, stoverc_m, emitc_m, soc_m,&
-      &rspc_m
-
-   !!Yearly carbon change by different means (entire soil profile for each HRU)
-   real*8, dimension(:), allocatable :: sedc_a, surfqc_a, latc_a,&
-      &percc_a, foc_a, NPPC_a, rsdc_a, grainc_a, stoverc_a, emitc_a,&
-      &soc_a, rspc_a
-
-
-   !! The following variables are defined and calculated locally
-   !! ==================================================================
-   ! HSCTP potential transformation of C in slow humus (kg ha-1 day-1)
-   ! HSNTP potential transformation of N in slow humus (kg ha.1 day-1)
-   ! HPCTP potential transformation of C in passive humus (kg ha-1 day-1)
-   ! HPNTP potential transformation of N in passive humus (kg ha-1 day-1)
-   ! HPR rate of transformation of passive humus under optimal conditions (subsurface
-   ! layers = 0.000012 day-1) (Parton et al.,1993, 1994)
-   ! HSR rate of transformation of slow humus under optimal conditions (all layers
-   ! = 0.0005 day.1) (Parton et al., 1993, 1994; Vitousek et al., 1993)
-   ! KOC liquid C solid partition coefficient for microbial biomass (10^3 m3 Mg-1)
-   ! LMF fraction of the litter that is metabolic
-   ! LMNF fraction of metabolic litter that is N (kg kg-1)
-   ! LMR rate of transformation of metabolic litter under optimal conditions (surface =
-   !  0.0405 day-1; all other layers = 0.0507 day-1) (Parton et al., 1994)
-   ! LMCTP potential transformation of C in metabolic litter (kg ha-1 day-1)
-   ! LMNTP potential transformation of N in metabolic litter (kg ha-1 day-1)
-   ! LSCTP potential transformation of C in structural litter (kg ha-1 day-1)
-   ! LSF fraction of the litter that is structural
-   ! LSLF fraction of structural litter that is lignin (kg kg-1)
-   ! LSNF fraction of structural litter that is N (kg kg-1)
-   ! LSLCTP potential transformation of C in lignin of structural litter (kg ha-1 day-1)
-   ! LSLNCTP potential transformation of C in nonlignin structural litter (kg ha-1 day-1)
-   ! LSNTP potential transformation of N in structural litter (kg ha-1 day-1)
-   ! LSR rate of potential transformation of structural litter under optimal conditions
-   ! (surface = 0.0107 day.1; all other layers = 0.0132 day.1) (Parton et al., 1994)
-   ! NCBM N/C ratio of biomass
-   ! NCHP N/C ratio passive humus
-   ! NCHS N/C ratio of the slow humus
-   ! OX oxygen control on biological processes with soil depth
-   ! Sf fraction of mineral N sorbed to litter: 0.05 for surface litter, 0.1 for belowground litter
-
    !!Tillage factor on SOM decomposition
    integer, dimension(:), allocatable :: tillage_switch
    real*8, dimension(:), allocatable :: tillage_depth
    integer, dimension(:), allocatable :: tillage_days
+!> tillage_factor = 1.6 in 30 days after tillage practices occur; otherwise 1.0
    real*8, dimension(:), allocatable :: tillage_factor
-   ! tillage_factor: = 1.6 in 30 days after tillage practices occur; otherwise 1.0;
 !! By Zhang for C/N cycling
 
    !Flood routing variables by Jaehak Jeong 2017
    real*8 :: dthy !< time interval for subdaily flood routing
    integer, dimension(4) :: IHX
    integer, dimension(:), allocatable :: NHY
-   real*8, dimension(:), allocatable :: RCHX,RCSS,QCAP,CHXA,CHXP
+!X
+   real*8, dimension(:), allocatable :: RCHX, RCSS, QCAP, CHXA, CHXP
    real*8, dimension(:,:,:), allocatable :: QHY
 
    !!Variables for killop.f90 and harvkillop.f90 files
-   real*8 :: ff1, ff2
+   real*8 :: ff1 !< fraction of N, P in residue
+   real*8 :: ff2 !< fraction of N, P in roots
 
 end module parm

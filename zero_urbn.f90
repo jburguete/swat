@@ -93,7 +93,6 @@ subroutine zero_urbn
    dtp_wdratio = 0.
    dtp_depweir = 0.
    dtp_diaweir = 0.
-   dtp_retperd = 0.
    dtp_pcpret = 0.
    dtp_cdis = 1.
    dtp_wrwid = 0.

@@ -100,28 +100,28 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
    lid_soldpt = pv_soldpt(sb,jj)
    lid_drcoef = pv_drcoef(sb,jj)
    lid_vol = pv_grvdep(sb,jj) / 1000. * pv_grvpor(sb,jj) *&
-      &(lid_farea(j,4) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
+      &(lid_farea(4,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
    lid_hydeff = pv_hydeff(sb,jj)
 
    dt = dfloat(idt) / 60.
 
 !!    Initialize parameters and coefficients for green roof modeling
-   lid_sw = lid_sw_last(j,4)
-   lid_f = lid_f_last(j,4)
-   lid_cuminf = lid_cuminf_last(j,4)
-   lid_cumr = lid_cumr_last(j,4)
-   lid_str = lid_str_last(j,4)
-   lid_cumqperc = lid_cumqperc_last(j,4)
+   lid_sw = lid_sw_last(4,j)
+   lid_f = lid_f_last(4,j)
+   lid_cuminf = lid_cuminf_last(4,j)
+   lid_cumr = lid_cumr_last(4,j)
+   lid_str = lid_str_last(4,j)
+   lid_cumqperc = lid_cumqperc_last(4,j)
 
    lid_str = lid_str + (lid_prec / 1000.) *&
-      &(lid_farea(j,4) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
+      &(lid_farea(4,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
 
    lid_qbypass = lid_str - lid_vol
    if (lid_qbypass > 0.) lid_str = lid_vol
    if (lid_qbypass < 0.) lid_qbypass = 0.
    lid_bypass = lid_qbypass / (hru_ha(j) * 10000.) * 1000.
 
-   lid_str_depth = lid_str / (lid_farea(j,4) * fcimp(urblu(j)) *&
+   lid_str_depth = lid_str / (lid_farea(4,j) * fcimp(urblu(j)) *&
       &hru_ha(j) * 10000.) * 1000.
 
    if (lid_str_depth > 0.) Then
@@ -140,17 +140,17 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
       tst = lid_adj_ksat * dt
       do
          lid_f1 = 0.
-         lid_f1 = lid_cuminf_last(j,4) + lid_adj_ksat * dt&
+         lid_f1 = lid_cuminf_last(4,j) + lid_adj_ksat * dt&
             &+ whd * cvwc * Log((tst + whd * cvwc) /&
-            &(lid_cuminf_last(j,4) + whd * cvwc))
+            &(lid_cuminf_last(4,j) + whd * cvwc))
          if (Abs(lid_f1 - tst) < 0.001) then
             lid_f = lid_adj_ksat * (1 + (whd * cvwc)/lid_f1)
             lid_qinf = lid_f * dt ! (mm)
             if (lid_qinf > lid_str_depth) then
-               lid_cuminf = lid_cuminf_last(j,4) + lid_str_depth
+               lid_cuminf = lid_cuminf_last(4,j) + lid_str_depth
                lid_qinf = lid_str_depth
             else
-               lid_cuminf = lid_cuminf_last(j,4) + lid_qinf
+               lid_cuminf = lid_cuminf_last(4,j) + lid_qinf
             end if
             exit
          else
@@ -159,21 +159,21 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
       end do
 !      else
       if (k == nstep+1) then
-!          lid_sw_add(j,4) = lid_cuminf
+!          lid_sw_add(4,j) = lid_cuminf
          lid_cumr = 0
          lid_cuminf = 0
       else
-         lid_cumr = lid_cumr_last(j,4)
-         lid_cuminf = lid_cuminf_last(j,4)
+         lid_cumr = lid_cumr_last(4,j)
+         lid_cuminf = lid_cuminf_last(4,j)
       end if
    else
       if (k == nstep+1) then
-!          lid_sw_add(j,4) = lid_cuminf
+!          lid_sw_add(4,j) = lid_cuminf
          lid_cumr = 0
          lid_cuminf = 0
       else
-         lid_cumr = lid_cumr_last(j,4)
-         lid_cuminf = lid_cuminf_last(j,4)
+         lid_cumr = lid_cumr_last(4,j)
+         lid_cuminf = lid_cuminf_last(4,j)
       end if
       lid_re_sw = (lid_sw - lid_wp)/(lid_por - lid_wp)
       lid_usat_ratio = (lid_re_sw**lid_vgcl) * ((1-(1-lid_re_sw&
@@ -183,24 +183,24 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
    end if
 
    lid_vinf = lid_qinf / 1000.0 *&
-      &(lid_farea(j,4) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
+      &(lid_farea(4,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
 
 !!    Amount of water percolated out of the amended soil layer into the native HRU soil (mm)
    lid_perc = lid_ksat * lid_usat_ratio * lid_hydeff
    lid_qperc = lid_perc * dt
    lid_cumqperc = lid_cumqperc + (1-lid_drcoef)*lid_qperc
    if (k == nstep+1) then
-      lid_sw_add(j,4) = lid_cumqperc
+      lid_sw_add(4,j) = lid_cumqperc
       lid_cumqperc = 0.
    end if
 
 !!    Amount of water drained out of the drainage pipe (mm)
    lid_qdrain = lid_drcoef * lid_qperc
    lid_vdrain = lid_qdrain / 1000.0 *&
-      &(lid_farea(j,4) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
+      &(lid_farea(4,j) * fcimp(urblu(j)) * hru_ha(j) * 10000.)
 
 !!    Update soil water content of the amended soil layer (mm)
-   lid_sw = lid_sw_last(j,4) + (lid_qinf - lid_qperc - lid_qdrain) /&
+   lid_sw = lid_sw_last(4,j) + (lid_qinf - lid_qperc - lid_qdrain) /&
       &(lid_soldpt * 1000)
    if (lid_sw < lid_wp) lid_sw = lid_wp
    if (lid_sw > lid_por) lid_sw = lid_por
@@ -224,12 +224,12 @@ subroutine lid_porpavement(sb,j,k,lid_prec)
    lid_str = lid_str - lid_vinf - lid_vdrain
    if (lid_str < 0) lid_str = 0.
 
-   lid_sw_last(j,4) = lid_sw
-   lid_cumr_last(j,4) = lid_cumr
-   lid_cuminf_last(j,4) = lid_cuminf
-   lid_f_last(j,4) = lid_f
-   lid_str_last(j,4) = lid_str
-   lid_cumqperc_last(j,4) = lid_cumqperc
+   lid_sw_last(4,j) = lid_sw
+   lid_cumr_last(4,j) = lid_cumr
+   lid_cuminf_last(4,j) = lid_cuminf
+   lid_f_last(4,j) = lid_f
+   lid_str_last(4,j) = lid_str
+   lid_cumqperc_last(4,j) = lid_cumqperc
 
    return
 end

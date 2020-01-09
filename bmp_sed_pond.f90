@@ -82,17 +82,17 @@ subroutine bmp_sed_pond(sb, kk, flw, sed)
    flw(2,:) = 0.; sed(2,:) = 0.
 
    !! Initialize parameters, coefficients, etc
-   tsa = sp_sa(sb,kk)     !total surface area of pond (m^2)
-   mxvol = sp_pvol(sb,kk)    !max. capacity of the basin (m^3)
-   mxh = sp_pvol(sb,kk) / sp_sa(sb,kk) !max. depth of water, m
-   splw = sp_bpw(sb,kk)       !spillway overflow weir width (m)
-   pdia = sp_pd(sb,kk)       !outflow orifice pipe diameter (mm)
-   ksat = sp_k(sb,kk)      !saturated hydraulic conductivity (mm/hr)
-   dp = sp_dp(sb,kk) * 1000. !median particle size of TSS, micrometer
+   tsa = sp_sa(kk,sb)     !total surface area of pond (m^2)
+   mxvol = sp_pvol(kk,sb)    !max. capacity of the basin (m^3)
+   mxh = sp_pvol(kk,sb) / sp_sa(kk,sb) !max. depth of water, m
+   splw = sp_bpw(kk,sb)       !spillway overflow weir width (m)
+   pdia = sp_pd(kk,sb)       !outflow orifice pipe diameter (mm)
+   ksat = sp_k(kk,sb)      !saturated hydraulic conductivity (mm/hr)
+   dp = sp_dp(kk,sb) * 1000. !median particle size of TSS, micrometer
 
    !! Get initial values from previous day
-   qpnd = sp_qi(sb,kk) !m^3
-   spndconc = sp_sedi(sb,kk)
+   qpnd = sp_qi(kk,sb) !m^3
+   spndconc = sp_sedi(kk,sb)
    qevap = 0
 
    do ii=1,nstep
@@ -193,11 +193,11 @@ subroutine bmp_sed_pond(sb, kk, flw, sed)
       spndconc = spndconc * 1.e6 !mg/l
 
       !Estimate TSS removal due to sedimentation
-      if (spndconc>sp_sede(sb,kk)) then
+      if (spndconc>sp_sede(kk,sb)) then
          ksed = Min(134.8,41.1 * hpnd ** -(0.999))  !decay coefficient, Huber et al. 2006
          td = qpnd / qpipe / nstep !detention time, day
-         spndconc = (spndconc - sp_sede(sb,kk)) * Exp(-ksed * td) +&
-            &sp_sede(sb,kk)
+         spndconc = (spndconc - sp_sede(kk,sb)) * Exp(-ksed * td) +&
+            &sp_sede(kk,sb)
       endif
 
       !Sediment coming out of the pond
@@ -211,8 +211,8 @@ subroutine bmp_sed_pond(sb, kk, flw, sed)
    end do
 
    ! Store end-of-day values for next day
-   sp_qi(sb,kk) = qpnd
-   sp_sedi(sb,kk) = spndconc
+   sp_qi(kk,sb) = qpnd
+   sp_sedi(kk,sb) = spndconc
 
 
    return

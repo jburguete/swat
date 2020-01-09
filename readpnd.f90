@@ -25,9 +25,9 @@ subroutine readpnd(i)
 !!                               |wetland
 !!    dtp_addon(:,:)|m           |The distance between spillway levels
 !!    dtp_cdis(:,:)|none         |Discharge coeffieicne for weir/orifice flow
-!!    dtp_coef(1,:)|none          |Coefficient of 3rd degree in the polynomial equation
-!!    dtp_coef(2,:)|none          |Coefficient of 2nd degree in the polynomial equation
-!!    dtp_coef(3,:)|none          |Coefficient of 1st degree in the polynomial equation
+!!    dtp_coef(1,:)|none         |Coefficient of 3rd degree in the polynomial equation
+!!    dtp_coef(2,:)|none         |Coefficient of 2nd degree in the polynomial equation
+!!    dtp_coef(3,:)|none         |Coefficient of 1st degree in the polynomial equation
 !!    dtp_depweir(:,:)|m         |Depth of rectangular wier at different stages
 !!    dtp_diaweir(:,:)|m         |Diameter of orifice hole at different stages
 !!    dtp_evrsv   |none          |detention pond evaporation coefficient
@@ -52,16 +52,16 @@ subroutine readpnd(i)
 !!    dtp_wdratio(:,:)|none      |Width depth ratio of rectangular weirs
 !!    dtp_weirdim(:,:)|none      |Weir dimensions, 1=read user input, 0=use model calculation
 !!    dtp_weirtype(:,:)|none     |Type of weir: 1=rectangular and 2=circular
-!!    iflod(1,:)   |none          |beginning month of non-flood season
-!!    iflod(2,:)   |none          |ending month of non-flood season
-!!    ipnd(1,:)    |none          |beginning month of nutrient settling season
-!!    ipnd(2,:)    |none          |ending month of nutrient settling season
+!!    iflod(1,:)  |none          |beginning month of non-flood season
+!!    iflod(2,:)  |none          |ending month of non-flood season
+!!    ipnd(1,:)   |none          |beginning month of nutrient settling season
+!!    ipnd(2,:)   |none          |ending month of nutrient settling season
 !!    ndtarg(:)   |none          |number of days required to reach target
 !!                               |storage from current pond storage
-!!    nsetlp(1,:)  |m/day         |nitrogen settling rate for 1st season
-!!    nsetlp(2,:)  |m/day         |nitrogen settling rate for 2nd season
-!!    nsetlw(1,:)  |m/day         |nitrogen settling rate for 1st season
-!!    nsetlw(2,:)  |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlp(1,:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlp(2,:) |m/day         |nitrogen settling rate for 2nd season
+!!    nsetlw(1,:) |m/day         |nitrogen settling rate for 1st season
+!!    nsetlw(2,:) |m/day         |nitrogen settling rate for 2nd season
 !!    pnd_esa(:)  |ha            |surface area of ponds when filled to
 !!                               |emergency spillway
 !!    pnd_evol(:) |10**4 m**3 H2O|runoff volume from catchment area needed
@@ -81,10 +81,10 @@ subroutine readpnd(i)
 !!    pnd_sed(:)  |mg/L          |sediment concentration in pond water
 !!    pnd_solp(:) |kg P          |amount of soluble P in pond
 !!    pnd_vol(:)  |10**4 m**3 H2O|volume of water in ponds
-!!    psetlp(1,:)  |m/day         |phosphorus settling rate for 1st season
-!!    psetlp(2,:)  |m/day         |phosphorus settling rate for 2nd season
-!!    psetlw(1,:)  |m/day         |phosphorus settling rate for 1st season
-!!    psetlw(2,:)  |m/day         |phosphorus settling rate for 2nd season
+!!    psetlp(1,:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlp(2,:) |m/day         |phosphorus settling rate for 2nd season
+!!    psetlw(1,:) |m/day         |phosphorus settling rate for 1st season
+!!    psetlw(2,:) |m/day         |phosphorus settling rate for 2nd season
 !!    seccip(:)   |none          |water clarity coefficient for pond
 !!    secciw(:)   |none          |water clarity coefficient for wetland
 !!    wet_fr(:)   |none          |fraction of HRU/subbasin area that drains
@@ -186,18 +186,16 @@ subroutine readpnd(i)
    implicit none
 
    integer, intent(in) :: i
-   real*8, dimension(mudb) :: dummy
-   integer, dimension(mudb) :: idummy
    character (len=200) :: lus
    character (len=80) :: titldum
-   character(len=13) :: dpd_file, lid_file, rib_file, sfb_file, wpd_file
+   character(len=13) :: dpd_file, dummy, lid_file, rib_file, sfb_file, wpd_file
    real*8 :: pnd_d50, pnd_d50mm, pndevcoeff, schla, schlaw, sn1, sn2,&
       &snw1, snw2, sp1, sp2, spndesa, spndev, spndfr, spndk, spndns, spndpsa,&
       &spndpv, spnds, spndv, spno3, sporgn, sporgp, spsolp, sseci, sseciw,&
       &sub_ha, sw1, sw2, swetfr, swetk, swetmsa, swetmv, swetns, swetnsa,&
       &swetnv, swets, swetv, swno3, sworgn, sworgp, swsolp, velsetlpnd,&
       &wetevcoeff
-   integer :: eof, ii, j, k, l, sifld1, sifld2, sndt, spnd1, spnd2
+   integer :: eof, idummy, ii, j, k, l, sifld1, sifld2, sndt, spnd1, spnd2
 
    dpd_file = ""
    lid_file = ""
@@ -421,25 +419,25 @@ subroutine readpnd(i)
          if (eof < 0) exit
 
          j = dtp_numstage(i)
-         read (104,*,iostat=eof) (dtp_weirtype(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_weirtype(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_weirdim(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_weirdim(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_wdratio(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_wdratio(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_depweir(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_depweir(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_diaweir(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_diaweir(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_addon(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_addon(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_flowrate(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_flowrate(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_cdis(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_cdis(k,i),k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_retperd(i,k),k=1,j)
+         read (104,*,iostat=eof) (dummy,k=1,j)
          if (eof < 0) exit
-         read (104,*,iostat=eof) (dtp_pcpret(i,k),k=1,j)
+         read (104,*,iostat=eof) (dtp_pcpret(k,i),k=1,j)
          if (eof < 0) exit
          exit
       end do
@@ -580,35 +578,35 @@ subroutine readpnd(i)
          read (104,5100,iostat=eof) titldum
 
          j = num_sf(i)
-         read (104,*,iostat=eof) (sf_fr(i,k),k=1,j)
-         read (104,*,iostat=eof) (sf_typ(i,k),k=1,j)
-         read (104,*,iostat=eof) (sf_dim(i,k),k=1,j)
-         read (104,*,iostat=eof) (sf_ptp(i,k),k=1,j)
-         read (104,*,iostat=eof) (sf_im(i,k),k=1,j)
-         read (104,*,iostat=eof) (sf_iy(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_sa(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_pvol(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_qfg(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_pd(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_qi(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_bpw(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_k(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_dp(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_sedi(i,k),k=1,j)
-         read (104,*,iostat=eof) (sp_sede(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_sa(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_fsa(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_qfg(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_pd(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_dep(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_bpw(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_k(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_dp(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_dc(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_h(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_por(i,k),k=1,j)
-         read (104,*,iostat=eof) (tss_den(i,k),k=1,j)
-         read (104,*,iostat=eof) (ft_alp(i,k),k=1,j)
+         read (104,*,iostat=eof) (sf_fr(k,i),k=1,j)
+         read (104,*,iostat=eof) (sf_typ(k,i),k=1,j)
+         read (104,*,iostat=eof) (sf_dim(k,i),k=1,j)
+         read (104,*,iostat=eof) (sf_ptp(k,i),k=1,j)
+         read (104,*,iostat=eof) (sf_im(k,i),k=1,j)
+         read (104,*,iostat=eof) (sf_iy(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_sa(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_pvol(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_qfg(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_pd(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_qi(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_bpw(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_k(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_dp(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_sedi(k,i),k=1,j)
+         read (104,*,iostat=eof) (sp_sede(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_sa(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_fsa(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_qfg(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_pd(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_dep(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_bpw(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_k(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_dp(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_dc(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_h(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_por(k,i),k=1,j)
+         read (104,*,iostat=eof) (tss_den(k,i),k=1,j)
+         read (104,*,iostat=eof) (ft_alp(k,i),k=1,j)
          close (104)
          exit
       end do
@@ -629,9 +627,9 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (gr_onoff(i,k),k=1,mudb)
 
          !read (104,*,iostat=eof) (gr_imo(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
          !read (104,*,iostat=eof) (gr_iyr(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
 
          read (104,*,iostat=eof) (gr_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_solop(i,k),k=1,mudb)
@@ -642,19 +640,19 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (gr_por(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_hydeff(i,k),k=1,mudb)
          read (104,*,iostat=eof) (gr_soldpt(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
          if (eof < 0) exit
          !! Rain Garden (rg)
          read (104,*,iostat=eof) (rg_onoff(i,k),k=1,mudb)
  
          !read (104,*,iostat=eof) (rg_imo(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
          !read (104,*,iostat=eof) (rg_iyr(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
 
          read (104,*,iostat=eof) (rg_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_solop(i,k),k=1,mudb)
@@ -675,35 +673,35 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (rg_orifice(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_oheight(i,k),k=1,mudb)
          read (104,*,iostat=eof) (rg_odia(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
          !! CiStern (CS)
          read (104,*,iostat=eof) (cs_onoff(i,k),k=1,mudb)
 
          !read (104,*,iostat=eof) (cs_imo(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
          !read (104,*,iostat=eof) (cs_iyr(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
 
          read (104,*,iostat=eof) (cs_grcon(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_vol(i,k),k=1,mudb)
          read (104,*,iostat=eof) (cs_rdepth(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
          !! Porous paVement (PV)
          read (104,*,iostat=eof) (pv_onoff(i,k),k=1,mudb)
 
          !read (104,*,iostat=eof) (pv_imo(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
          !read (104,*,iostat=eof) (pv_iyr(i,k),k=1,mudb) ! not used
-         read (104,*,iostat=eof) (idummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (idummy,k=1,mudb)
 
          read (104,*,iostat=eof) (pv_farea(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_grvdep(i,k),k=1,mudb)
@@ -715,11 +713,11 @@ subroutine readpnd(i)
          read (104,*,iostat=eof) (pv_ksat(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_por(i,k),k=1,mudb)
          read (104,*,iostat=eof) (pv_hydeff(i,k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
-         read (104,*,iostat=eof) (dummy(k),k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
+         read (104,*,iostat=eof) (dummy,k=1,mudb)
          close (104)
          exit
       end do

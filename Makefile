@@ -7,7 +7,7 @@ objs = addh.o albedo.o allocate_parms.o alph.o anfert.o apex_day.o apply.o ascrv
 mods = parm.mod
 
 swat$(EXE): $(mods) $(objs)
-	$(cc) $(LDFLAGS) $(objs) -o swat$(EXE)
+	$(cc) -O3 $(LDFLAGS) $(objs) -o swat$(EXE)
 
 strip:
 	make
